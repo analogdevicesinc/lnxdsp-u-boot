@@ -1,0 +1,12 @@
+if TARGET_SC573_EZKIT
+
+config SYS_VENDOR
+	default "adi"
+
+config SYS_BOARD
+	default "sc573-ezkit"
+
+config SYS_CONFIG_NAME
+	default "sc573-ezkit"
+
+endif

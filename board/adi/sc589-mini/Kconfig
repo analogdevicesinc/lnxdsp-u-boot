@@ -1,0 +1,12 @@
+if TARGET_SC589_MINI
+
+config SYS_VENDOR
+	default "adi"
+
+config SYS_BOARD
+	default "sc589-mini"
+
+config SYS_CONFIG_NAME
+	default "sc589-mini"
+
+endif
