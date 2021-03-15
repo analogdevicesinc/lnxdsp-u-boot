@@ -75,6 +75,9 @@ static const char * const compat_names[COMPAT_COUNT] = {
 	COMPAT(ALTERA_SOCFPGA_FPGA0, "altr,socfpga-a10-fpga-mgr"),
 	COMPAT(ALTERA_SOCFPGA_NOC, "altr,socfpga-a10-noc"),
 	COMPAT(ALTERA_SOCFPGA_CLK_INIT, "altr,socfpga-a10-clk-init")
+	COMPAT(ADI_SC57X, "adi,sc57x"),
+	COMPAT(ADI_SC58X, "adi,sc58x"),
+	COMPAT(ADI_SC59X, "adi,sc59x"),
 };
 
 const char *fdtdec_get_compatible(enum fdt_compat_id id)
