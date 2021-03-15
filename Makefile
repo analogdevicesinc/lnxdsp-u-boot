@@ -1914,6 +1914,15 @@ cmd_cpp_lds = $(CPP) -Wp,-MD,$(depfile) $(cpp_flags) $(LDPPFLAGS) \
 u-boot.lds: $(LDSCRIPT) prepare FORCE
 	$(call if_changed_dep,cpp_lds)
 
+ifdef_any_of = $(filter-out undefined,$(foreach v,$(1),$(origin $(v))))
+ifneq ($(call ifdef_any_of,CONFIG_SC59X CONFIG_SC58X CONFIG_SC57X),)
+RENAME_FILES += u-boot u-boot.bin u-boot.ldr u-boot.srec u-boot.lds u-boot.map
+
+u-boot-$(CONFIG_SYS_BOARD).ldr: $(ALL-y)
+	@$(foreach file,$(RENAME_FILES),\
+		mv $(file) $(subst u-boot, u-boot-$(CONFIG_SYS_BOARD), $(file));)
+endif
+
 spl/u-boot-spl.bin: spl/u-boot-spl
 	@:
 	$(SPL_SIZE_CHECK)
