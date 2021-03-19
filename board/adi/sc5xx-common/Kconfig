@@ -1,0 +1,8 @@
+
+config ADI_SPI3
+	bool "ADI SPI3 driver"
+	default y
+
+config ADI_GPIO2
+	bool "ADI GPIO2 driver"
+	default y
