@@ -6,13 +6,13 @@
 
 #include <common.h>
 #include <command.h>
+#ifdef CONFIG_PPC
 #include <asm/ppc.h>
+#endif
 
 static int do_reginfo(struct cmd_tbl *cmdtp, int flag, int argc,
 		      char *const argv[])
 {
-	print_reginfo();
-
 	return 0;
 }
 
