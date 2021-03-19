@@ -4,7 +4,7 @@ choice
 	prompt "SC59X board select"
 
 config TARGET_SC594_SOM_EZKIT
-	bool "Support sc594 SOM-based EZkit
+	bool "Support sc594 SOM-based EZkit"
 
 endchoice
 

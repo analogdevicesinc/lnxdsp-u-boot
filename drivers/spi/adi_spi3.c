@@ -15,6 +15,7 @@
 
 #include <common.h>
 #include <malloc.h>
+#include <log.h>
 #include <spi.h>
 #include <asm/io.h>
 #include <asm/gpio.h>
@@ -129,9 +130,11 @@ struct spi_slave *spi_setup_slave(unsigned int bus, unsigned int cs,
 	sdev->slave.memory_map = (void *)CONFIG_SPI_MM_BASE;
 #endif
 
+#ifdef DBB
 	/* Select quad rx and tx mode for SPI data transfer */
 	sdev->slave.op_mode_rx = SPI_OPM_RX_QOF << 1;
 	sdev->slave.op_mode_tx = SPI_OPM_TX_QPP;
+#endif
 
 	writel(0x0, &sdev->regs->control);
 	writel(0x0, &sdev->regs->rx_control);
@@ -188,6 +191,7 @@ static int spi_pio_xfer(struct adi_spi_slave *sdev, const u8 *tx, u8 *rx,
 	while (!(readl(&sdev->regs->status) & SPI_STAT_RFE))
 		readl(&sdev->regs->rfifo);
 
+#ifdef DBB
 	if (flags & SPI_XFER_QUAD) {
 		/* switch current SPI transfer to quad SPI mode */
 		writel((sdev->control & ~SPI_CTL_SOSI) | SPI_CTL_MIO_QUAD,
@@ -232,6 +236,7 @@ static int spi_pio_xfer(struct adi_spi_slave *sdev, const u8 *tx, u8 *rx,
 			return -1;
 
 	} else {
+#endif
 		/* Set current SPI transfer in normal mode and trigger
 		 * the bi-direction transfer by tx write operation.
 		 */
@@ -251,7 +256,7 @@ static int spi_pio_xfer(struct adi_spi_slave *sdev, const u8 *tx, u8 *rx,
 				*rx++ = value;
 			debug("rx:%x\n", value);
 		}
-	}
+//	}
 
 	return 0;
 }

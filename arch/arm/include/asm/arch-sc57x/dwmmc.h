@@ -3,4 +3,4 @@
  * Licensed under the GPL-2 or later.
  */
 
-int sc5xx_dwmmc_init(bd_t *bis);
+int sc5xx_dwmmc_init(struct bd_info *bis);

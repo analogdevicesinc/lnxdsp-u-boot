@@ -592,11 +592,12 @@ enum command_ret_t cmd_process(int flag, int argc, char *const argv[],
 
 #if defined(CONFIG_SYS_XTRACE)
 	char *xtrace;
+	int i;
 
 	xtrace = env_get("xtrace");
 	if (xtrace) {
 		puts("+");
-		for (int i = 0; i < argc; i++) {
+		for (i = 0; i < argc; i++) {
 			puts(" ");
 			puts(argv[i]);
 		}

@@ -9,4 +9,8 @@ config SYS_BOARD
 config SYS_CONFIG_NAME
 	default "sc573-ezkit"
 
+config ADI_CPU
+	string
+	default "ADSP-SC573-0.0"
+
 endif

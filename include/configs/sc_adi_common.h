@@ -5,23 +5,25 @@
 #ifndef __CONFIG_SC_ADI_COMMON_H
 #define __CONFIG_SC_ADI_COMMON_H
 
-#include <generated/autoconf.h>
+//#include <generated/autoconf.h>
 
 /*
  * Command Settings
  */
 #ifndef _CONFIG_CMD_DEFAULT_H
-# include <config_cmd_default.h>
+
+//# include <config_cmd_default.h>
+
 # ifdef ADI_CMDS_NETWORK
 #  define CONFIG_CMD_DHCP
-#  define CONFIG_BOOTP_SUBNETMASK
-#  define CONFIG_BOOTP_GATEWAY
-#  define CONFIG_BOOTP_DNS
+//#  define CONFIG_BOOTP_SUBNETMASK
+//#  define CONFIG_BOOTP_GATEWAY
+//#  define CONFIG_BOOTP_DNS
 #  define CONFIG_BOOTP_NTPSERVER
 #  define CONFIG_KEEP_SERVERADDR
 #  define CONFIG_CMD_DNS
 #  define CONFIG_CMD_PING
-#  define CONFIG_CMD_NET
+//#  define CONFIG_CMD_NET
 #  ifdef CONFIG_MII
 #   define CONFIG_CMD_MII
 #  endif
@@ -42,6 +44,10 @@
 #  define CONFIG_CMD_FAT
 #  define CONFIG_DOS_PARTITION
 # endif
+# if defined(CONFIG_CMD_FAT) && !defined(CONFIG_FS_FAT)
+#  define CONFIG_FS_FAT
+#  define CONFIG_FS_FAT_MAX_CLUSTSIZE 65536
+# endif
 # ifdef CONFIG_MMC_SPI
 #  define CONFIG_CMD_MMC_SPI
 # endif
@@ -56,7 +62,7 @@
 #  undef CONFIG_CMD_IMLS
 # endif
 # define CONFIG_CMD_CACHE
-# define CONFIG_CMD_ELF
+//# define CONFIG_CMD_ELF
 # define CONFIG_CMD_GPIO
 # define CONFIG_CMD_REGINFO
 # define CONFIG_CMD_STRINGS
@@ -250,7 +256,7 @@
  * Boot Paramter Settings
  */
 #define CONFIG_CMDLINE_TAG              1       /* enable passing of ATAGs */
-#define CONFIG_OF_LIBFDT                /* Device Tree support */
+//#define CONFIG_OF_LIBFDT                /* Device Tree support */
 #define CONFIG_SETUP_MEMORY_TAGS        1
 #define CONFIG_SYS_GENERIC_BOARD
 
@@ -272,7 +278,7 @@
 #   define CONFIG_SYS_AUTOLOAD "no"
 #  endif
 # endif
-# define CONFIG_IP_DEFRAG
+//# define CONFIG_IP_DEFRAG
 # define CONFIG_NET_RETRY_COUNT 20
 #endif
 
@@ -304,6 +310,7 @@
 #endif
 #ifndef CONFIG_SPI_MM_BASE
 # define CONFIG_SPI_MM_BASE      0x60000000
+# define CONFIG_SYS_FLASH_BASE   0x60000000
 #endif
 #ifndef CONFIG_SPI_MM_SIZE
 # define CONFIG_SPI_MM_SIZE      0x20000000
@@ -315,6 +322,7 @@
  */
 #ifndef CONFIG_SC59X
 	#define CONFIG_ENV_OFFSET       0x10000
+	#define CONFIG_ENV_ADDR         (CONFIG_SYS_FLASH_BASE + CONFIG_ENV_OFFSET)
 	#define CONFIG_ENV_SIZE         0x2000
 	#define CONFIG_ENV_SECT_SIZE    0x10000
 	/* We need envcrc to embed the env into LDRs */
@@ -327,19 +335,19 @@
  * Misc Settings
  */
 #define CONFIG_SYS_HZ			1000
-#define CONFIG_SYS_LONGHELP		/* undef to save memory */
+//#define CONFIG_SYS_LONGHELP		/* undef to save memory */
 #define CONFIG_SYS_HUSH_PARSER		/* use "hush" command parser */
-#define CONFIG_SYS_PROMPT		"sc # "
+//#define CONFIG_SYS_PROMPT		"sc # "
 #define CONFIG_SYS_CBSIZE		512	/* Console I/O Buffer Size */
 #define CONFIG_SYS_PBSIZE		(CONFIG_SYS_CBSIZE + sizeof(CONFIG_SYS_PROMPT) + 16)
 #define CONFIG_SYS_MAXARGS		16
 #define CONFIG_BOARD_EARLY_INIT_F
-#define CONFIG_CMD_MEMORY
+//#define CONFIG_CMD_MEMORY
 #define CONFIG_MISC_INIT_R
-#define CONFIG_ADI_GPIO2
+//#define CONFIG_ADI_GPIO2
 #define CONFIG_SOFT_SWITCH
 #define CONFIG_ARCH_HEADER_IN_MACH
-#define CONFIG_DISPLAY_CPUINFO
+//#define CONFIG_DISPLAY_CPUINFO
 #define CONFIG_BUILD_LDR
 
 #ifdef CONFIG_SC5XX_DWMMC

@@ -26,7 +26,7 @@
 
 static struct dwmci_host dwmci_host;
 
-int sc5xx_dwmmc_init(bd_t *bis)
+int sc5xx_dwmmc_init(struct bd_info *bis)
 {
 	int ret;
 	const unsigned short pins[] = PORTMUX_PINS;
