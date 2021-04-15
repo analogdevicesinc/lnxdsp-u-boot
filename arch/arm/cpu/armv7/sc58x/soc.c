@@ -8,6 +8,7 @@
 #include <asm/system.h>
 #include <asm/arch/portmux.h>
 #include <adi_uart4.h>
+#include <cpu_func.h>
 
 void reset_cpu(ulong addr)
 {
@@ -31,7 +32,7 @@ void v7_outer_cache_enable(void)
 }
 #endif
 
-int arch_cpu_init()
+int arch_cpu_init(void)
 {
 #ifdef CONFIG_DEBUG_EARLY_SERIAL
 	return serial_early_init();
@@ -54,7 +55,7 @@ int print_cpuinfo(void)
 	char buf[32];
 
 	printf("CPU:   ADSP %s (Detected Rev: %d.%d) (%s boot)\n",
-		CONFIG_CPU, get_cpu_id() & 0xf00000 >> 20, get_cpu_id() & 0xf,
+		CONFIG_ADI_CPU, get_cpu_id() & 0xf00000 >> 20, get_cpu_id() & 0xf,
 		get_sc_boot_mode(CONFIG_SC_BOOT_MODE));
 
 	printf("VCO: %s MHz, ", strmhz(buf, get_vco()));

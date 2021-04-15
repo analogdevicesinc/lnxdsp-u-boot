@@ -10,7 +10,7 @@
 /*
  * Processor Settings
  */
-#define CONFIG_ADI_CPU		"ADSP-SC589-0.1"
+//#define CONFIG_ADI_CPU		"ADSP-SC589-0.1"
 #ifdef CONFIG_SC59X_CHAIN_BOOT
 # define CONFIG_LOADADDR	0x84000000
 # define CONFIG_RSA		/* RSA for FIT authen. */
