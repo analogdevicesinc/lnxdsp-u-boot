@@ -33,7 +33,7 @@ unsigned long get_vco(void)
 
 	return cached_vco;
 */
-	return CONFIG_VCO_HZ;
+	return ADI_VCO_HZ;
 }
 
 /* Get the Core clock */
@@ -58,7 +58,7 @@ unsigned long get_cclk(void)
 
 	return cached_cclk;
 #endif
-	return CONFIG_CCLK_HZ;
+	return ADI_CCLK_HZ;
 }
 
 /* Get the System clock */
@@ -96,7 +96,7 @@ static unsigned long _get_sclk(u_long *cache)
 
 unsigned long get_sclk(void)
 {
-	return CONFIG_SCLK_HZ;
+	return ADI_SCLK_HZ;
 /*	return _get_sclk(&cached_sclk);*/
 }
 
@@ -114,12 +114,12 @@ unsigned long get_sclk1(void)
 
 unsigned long get_oclk(void)
 {
-	return CONFIG_VCO_HZ / CONFIG_OCLK_DIV;
+	return ADI_VCO_HZ / CONFIG_OCLK_DIV;
 /*	return _get_sclk(&cached_oclk);*/
 }
 
 unsigned long get_dclk(void)
 {
-	return CONFIG_VCO_HZ / CONFIG_DCLK_DIV;
+	return ADI_VCO_HZ / CONFIG_DCLK_DIV;
 /*	return _get_sclk(&cached_dclk);*/
 }

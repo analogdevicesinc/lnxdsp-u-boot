@@ -52,11 +52,11 @@
 #define CONFIG_OCLK_DIV			 (8)
 //#define CONFIG_DIV_S1SELEX       (6)
 
-#define CONFIG_VCO_HZ  (CONFIG_CLKIN_HZ * CONFIG_VCO_MULT)
-#define CONFIG_CCLK_HZ (CONFIG_VCO_HZ / CONFIG_CCLK_DIV)
-#define CONFIG_SCLK_HZ (CONFIG_VCO_HZ / CONFIG_SCLK_DIV)
+//#define ADI_VCO_HZ  (CONFIG_CLKIN_HZ * CONFIG_VCO_MULT)
+//#define ADI_CCLK_HZ (ADI_VCO_HZ / CONFIG_CCLK_DIV)
+//#define ADI_SCLK_HZ (ADI_VCO_HZ / CONFIG_SCLK_DIV)
 
-#define CONFIG_SYS_TIMERGROUP	TIMER_GROUP
+//#define CONFIG_SYS_TIMERGROUP	TIMER_GROUP
 #define CONFIG_SYS_TIMERBASE	TIMER0_CONFIG
 
 /*
@@ -160,7 +160,7 @@
 #define CONFIG_SPI_FLASH_MTD
 
 #define CONFIG_CQSPI_REF_CLK		500000000
-#define CONFIG_CQSPI_DECODER		0
+//#define CONFIG_CQSPI_DECODER		0
 #define CONFIG_CMD_SF
 //#define CONFIG_CMD_SPI
 
@@ -200,15 +200,15 @@
 	"update_ospi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 0:0; sf write ${loadaddr} 0x6C0000 ${filesize};\0" \
 	"update_ospi_zImage=tftp ${loadaddr} ${ramfile}; sf probe 0:0; sf write ${loadaddr} 0xC0000 ${filesize}; setenv zimagesize ${filesize};\0" \
 	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; sf write ${loadaddr} 0xA0000 ${filesize}; setenv dtbsize ${filesize};\0"\
-	"spiargs=set bootargs " CONFIG_BOOTARGS_SPI "\0" \
+	"spiargs=set bootargs " ADI_BOOTARGS_SPI "\0" \
 	"spiboot=run ospi_boot_sc594\0" \
 	"ospi_boot_sc594=run spiargs; sf probe 0:0; sf read ${loadaddr} 0xC0000 ${zimagesize}; sf read ${dtbaddr} 0xA0000 ${dtbsize}; bootz ${loadaddr} - ${dtbaddr}\0"
 
-#define CONFIG_BOOTARGS_SPI \
+#define ADI_BOOTARGS_SPI \
         "root=/dev/mtdblock4 " \
         "rootfstype=jffs2 " \
         "clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
-        CONFIG_BOOTARGS_VIDEO \
+        ADI_BOOTARGS_VIDEO \
         "earlyprintk=serial,uart0,57600 " \
         "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
                         __stringify(CONFIG_BAUDRATE) " "\

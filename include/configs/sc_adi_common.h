@@ -104,39 +104,39 @@
 #endif
 
 #ifdef CONFIG_VIDEO
-# define CONFIG_BOOTARGS_VIDEO "console=tty0 "
+# define ADI_BOOTARGS_VIDEO "console=tty0 "
 #else
-# define CONFIG_BOOTARGS_VIDEO ""
+# define ADI_BOOTARGS_VIDEO ""
 #endif
 
-#define CONFIG_BOOTARGS_ROOT_NAND "/dev/mtdblock2 rw"
-#define CONFIG_BOOTARGS_ROOT_SDCARD    "/dev/mmcblk0p1 rw"
+#define ADI_BOOTARGS_ROOT_NAND "/dev/mtdblock2 rw"
+#define ADI_BOOTARGS_ROOT_SDCARD    "/dev/mmcblk0p1 rw"
 
-#define CONFIG_BOOTARGS_SDCARD	\
-	"root=" CONFIG_BOOTARGS_ROOT_SDCARD " " \
+#define ADI_BOOTARGS_SDCARD	\
+	"root=" ADI_BOOTARGS_ROOT_SDCARD " " \
 	"rootfstype=ext2 " \
 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
-	CONFIG_BOOTARGS_VIDEO \
+	ADI_BOOTARGS_VIDEO \
 	"earlyprintk=serial,uart0,57600 " \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "\
 	"mem=" CONFIG_LINUX_MEMSIZE
 
-#define CONFIG_BOOTARGS_NFS	\
+#define ADI_BOOTARGS_NFS	\
 	"root=/dev/nfs rw " \
 	"nfsroot=${serverip}:${rootpath},tcp,nfsvers=3 " \
 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
-	CONFIG_BOOTARGS_VIDEO \
+	ADI_BOOTARGS_VIDEO \
 	"earlyprintk=serial,uart0,57600 " \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "\
 	"mem=" CONFIG_LINUX_MEMSIZE
 
 #define CONFIG_BOOTARGS	\
-	"root=" CONFIG_BOOTARGS_ROOT_NAND " " \
+	"root=" ADI_BOOTARGS_ROOT_NAND " " \
 	"rootfstype=jffs2 " \
 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
-	CONFIG_BOOTARGS_VIDEO \
+	ADI_BOOTARGS_VIDEO \
 	"earlyprintk=serial,uart0,57600 " \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "\
@@ -185,9 +185,9 @@
 	"initramaddr=" INITRAMADDR "\0" \
 	"dtbfile=" CONFIG_DTBNAME "\0" \
 	"dtbaddr=" CONFIG_DTBLOADADDR "\0" \
-	"sdcardargs=set bootargs " CONFIG_BOOTARGS_SDCARD "\0" \
+	"sdcardargs=set bootargs " ADI_BOOTARGS_SDCARD "\0" \
 	"ramargs=set bootargs " CONFIG_BOOTARGS "\0" \
-	"nfsargs=set bootargs " CONFIG_BOOTARGS_NFS "\0" \
+	"nfsargs=set bootargs " ADI_BOOTARGS_NFS "\0" \
 	"ramboot_emmc=" \
 		"mmc rescan;" \
 		"mmc dev 0 0;" \
@@ -334,6 +334,11 @@
 /*
  * Misc Settings
  */
+
+#define ADI_VCO_HZ (CONFIG_CLKIN_HZ * CONFIG_VCO_MULT)
+#define ADI_CCLK_HZ (ADI_VCO_HZ / CONFIG_CCLK_DIV)
+#define ADI_SCLK_HZ (ADI_VCO_HZ / CONFIG_SCLK_DIV)
+
 #define CONFIG_SYS_HZ			1000
 //#define CONFIG_SYS_LONGHELP		/* undef to save memory */
 //#define CONFIG_SYS_HUSH_PARSER		/* use "hush" command parser */

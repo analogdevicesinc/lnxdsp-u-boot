@@ -10,11 +10,11 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 static struct gptimer3_group_regs *timer_group = (struct gptimer3_group_regs *)
-							CONFIG_SYS_TIMERGROUP;
+							TIMER_GROUP;
 struct gptimer3 *timer_base = (struct gptimer3 *)CONFIG_SYS_TIMERBASE;
 
 #define MAX_TIM_LOAD	0xFFFFFFFF
-#define TIMER_CLOCK		(CONFIG_SCLK_HZ/CONFIG_SCLK0_DIV)
+#define TIMER_CLOCK		(ADI_SCLK_HZ/CONFIG_SCLK0_DIV)
 
 /* Functions just to satisfy the linker */
 /*

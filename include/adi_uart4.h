@@ -197,7 +197,7 @@ __attribute__((always_inline))
 static inline void serial_early_set_baud(uint32_t baud)
 {
 	struct uart4_reg *reg = adi_uart4_get_regs(CONFIG_UART_CONSOLE);
-	uint16_t divisor = (CONFIG_SCLK_HZ + (baud * 8)) / (baud * 16);
+	uint16_t divisor = (ADI_SCLK_HZ + (baud * 8)) / (baud * 16);
 
 	/* Program the divisor to get the baud rate we want */
 	writel(divisor, &reg->clock);
