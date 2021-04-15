@@ -16,6 +16,7 @@
 #include <common.h>
 #include <malloc.h>
 #include <log.h>
+#include <console.h>
 #include <spi.h>
 #include <asm/io.h>
 #include <asm/gpio.h>
@@ -78,7 +79,7 @@ void spi_cs_deactivate(struct spi_slave *slave)
 	}
 }
 
-void spi_init()
+void spi_init(void)
 {
 }
 

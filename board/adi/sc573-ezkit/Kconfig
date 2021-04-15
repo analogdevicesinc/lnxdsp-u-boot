@@ -14,3 +14,63 @@ config ADI_CPU
 	default "ADSP-SC573-0.0"
 
 endif
+config DTBLOADADDR
+	string
+	default "0x84000000"
+
+config VCO_MULT
+	int
+	default 18
+
+config CCLK_DIV
+	int
+	default 1
+
+config SCLK_DIV
+	int
+	default 2
+
+config SCLK0_DIV
+	int
+	default 2
+
+config DCLK_DIV
+	int
+	default 2
+
+config OCLK_DIV
+	int
+	default 3
+
+config DTBNAME
+	string
+	default "sc573-ezkit.dtb"
+
+config DW_PORTS
+	int
+	default 1
+
+config GENERIC_MMC
+	bool
+	default y
+
+config SC5XX_DWMMC
+	bool
+	default y
+
+config ENV_IS_EMBEDDED_IN_LDR
+	bool
+	default y
+
+config LINUX_MEMSIZE
+	string
+	default "224M"
+
+config SC57X_SPI
+	bool
+	default y
+
+config USB_SC57X
+	bool
+	default y
+

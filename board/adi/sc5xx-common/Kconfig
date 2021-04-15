@@ -6,3 +6,115 @@ config ADI_SPI3
 config ADI_GPIO2
 	bool "ADI GPIO2 driver"
 	default y
+config CMD_SC57X_OTP
+	bool
+	default y
+
+config DEBUG_DUMP
+	int
+	default 1
+
+config KALLSYMS
+	int
+	default 1
+
+config SPI_IMG_SIZE
+	hex
+	default 0x80000
+
+config SYS_GENERIC_BOARD
+	bool
+	default y
+
+config SPI_MM_BASE
+	hex
+	default 0x60000000
+
+config SYS_FLASH_BASE   
+	hex
+	default 0x60000000
+
+config SPI_MM_SIZE
+	hex
+	default 0x20000000
+
+config SYS_HUSH_PARSER
+	bool
+	default y
+
+config SOFT_SWITCH
+	bool
+	default n
+
+config ARCH_HEADER_IN_MACH
+	bool
+	default y
+
+config BUILD_LDR
+	bool
+	default y
+
+config SC5XX_BUS_WIDTH
+	int
+	default 4
+
+config CLKIN_HZ
+	int
+	default 25000000
+
+config CLKIN_HALF
+	int
+	default 0
+
+config SCLK1_DIV
+	int
+	default 2
+
+config SMC_GCTL_VAL
+	hex
+	default 0x00000010
+
+config SMC_B0CTL_VAL
+	hex
+	default 0x01007011
+
+config SMC_B0TIM_VAL
+	hex
+	default 0x08170977
+
+config SMC_B0ETIM_VAL
+	hex
+	default 0x00092231
+
+config SYS_MEMTEST_RESERVE_SIZE
+	hex
+	default 0x400000
+
+config DW_AUTONEG
+	bool
+	default y
+
+config SYS_I2C_ADI
+	bool
+	default y
+
+config MUSB_HCD
+	bool
+	default y
+
+config MUSB_TIMEOUT
+	int
+	default 100000
+
+config SYS_NO_FLASH
+	bool
+	default y
+
+config UART_CONSOLE
+	int
+	default 0
+
+config UART4_SERIAL
+	bool
+	default y
+

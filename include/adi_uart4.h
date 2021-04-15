@@ -12,6 +12,7 @@
 #define __ADI_UART4_H__
 
 #include <asm/arch/serial.h>
+#include <serial.h>
 
 /*
  * UART4 Masks

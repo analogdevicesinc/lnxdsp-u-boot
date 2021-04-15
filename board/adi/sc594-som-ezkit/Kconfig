@@ -9,4 +9,64 @@ config SYS_BOARD
 config SYS_CONFIG_NAME
 	default "sc594-som-ezkit"
 
+config CCLK_DIV
+	int
+	default 2
+
+config CGU1_CCLK_DIV
+	int
+	default 64
+
+config CGU1_DCLK_DIV
+	int
+	default 2
+
+config CGU1_DIV_S1SELEX
+	int
+	default 4
+
+config CGU1_OCLK_DIV
+	int
+	default 4
+
+config CGU1_SCLK0_DIV
+	int
+	default 2
+
+config CGU1_SCLK1_DIV
+	int
+	default 2
+
+config CGU1_SCLK_DIV
+	int
+	default 16
+
+config CGU1_VCO_MULT
+	int
+	default 8
+
+config DEBUG_EARLY_SERIAL
+	bool
+	default y
+
+config DIV_S1SELEX
+	int
+	default 6
+
+config SC59X_SPI
+	bool
+	default y
+
+config USB_SC59X
+	bool
+	default y
+
+config ADI_SPI3_DM
+	bool
+	default y
+
+config CMD_SC58X_OTP
+	bool
+	default y
+
 endif

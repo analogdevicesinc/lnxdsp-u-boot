@@ -71,9 +71,9 @@
 #  undef CONFIG_CMD_SAVEENV
 # endif
 #if defined(CONFIG_SC58X) || defined(CONFIG_SC59X)
-# define CONFIG_CMD_SC58X_OTP
+//# define CONFIG_CMD_SC58X_OTP
 #elif defined(CONFIG_SC57X)
-# define CONFIG_CMD_SC57X_OTP
+//# define CONFIG_CMD_SC57X_OTP
 #endif
 #endif
 
@@ -87,8 +87,8 @@
  * Debug Settings
  */
 #define CONFIG_ENV_OVERWRITE	1
-#define CONFIG_DEBUG_DUMP	1
-#define CONFIG_KALLSYMS		1
+//#define CONFIG_DEBUG_DUMP	1
+//#define CONFIG_KALLSYMS		1
 #define CONFIG_PANIC_HANG	1
 
 
@@ -146,7 +146,7 @@
 # define UBOOT_ENV_FILE "u-boot-" CONFIG_SYS_BOARD ".ldr"
 # if (CONFIG_SC_BOOT_MODE == SC_BOOT_SPI_MASTER)
 #  ifndef CONFIG_SPI_IMG_SIZE
-#   define CONFIG_SPI_IMG_SIZE 0x80000
+//#   define CONFIG_SPI_IMG_SIZE 0x80000
 #  endif
 #  define UBOOT_ENV_UPDATE \
 		"sf probe " __stringify(CONFIG_SC_BOOT_SPI_BUS) ":" \
@@ -258,7 +258,7 @@
 #define CONFIG_CMDLINE_TAG              1       /* enable passing of ATAGs */
 //#define CONFIG_OF_LIBFDT                /* Device Tree support */
 #define CONFIG_SETUP_MEMORY_TAGS        1
-#define CONFIG_SYS_GENERIC_BOARD
+//#define CONFIG_SYS_GENERIC_BOARD
 
 /*
  * Network Settings
@@ -309,11 +309,11 @@
 # define CONFIG_SPI_FLASH_WINBOND
 #endif
 #ifndef CONFIG_SPI_MM_BASE
-# define CONFIG_SPI_MM_BASE      0x60000000
-# define CONFIG_SYS_FLASH_BASE   0x60000000
+//# define CONFIG_SPI_MM_BASE      0x60000000
+//# define CONFIG_SYS_FLASH_BASE   0x60000000
 #endif
 #ifndef CONFIG_SPI_MM_SIZE
-# define CONFIG_SPI_MM_SIZE      0x20000000
+//# define CONFIG_SPI_MM_SIZE      0x20000000
 #endif
 
 
@@ -336,7 +336,7 @@
  */
 #define CONFIG_SYS_HZ			1000
 //#define CONFIG_SYS_LONGHELP		/* undef to save memory */
-#define CONFIG_SYS_HUSH_PARSER		/* use "hush" command parser */
+//#define CONFIG_SYS_HUSH_PARSER		/* use "hush" command parser */
 //#define CONFIG_SYS_PROMPT		"sc # "
 #define CONFIG_SYS_CBSIZE		512	/* Console I/O Buffer Size */
 #define CONFIG_SYS_PBSIZE		(CONFIG_SYS_CBSIZE + sizeof(CONFIG_SYS_PROMPT) + 16)
@@ -345,14 +345,14 @@
 //#define CONFIG_CMD_MEMORY
 #define CONFIG_MISC_INIT_R
 //#define CONFIG_ADI_GPIO2
-#define CONFIG_SOFT_SWITCH
-#define CONFIG_ARCH_HEADER_IN_MACH
+//#define CONFIG_SOFT_SWITCH
+//#define CONFIG_ARCH_HEADER_IN_MACH
 //#define CONFIG_DISPLAY_CPUINFO
-#define CONFIG_BUILD_LDR
+//#define CONFIG_BUILD_LDR
 
 #ifdef CONFIG_SC5XX_DWMMC
 # ifndef CONFIG_SC5XX_BUS_WIDTH
-#  define CONFIG_SC5XX_BUS_WIDTH   4
+//#  define CONFIG_SC5XX_BUS_WIDTH   4
 # endif
 #endif
 
