@@ -62,7 +62,7 @@ unsigned long flash_init(void)
 	return 0;
 }
 
-int dram_init()
+int dram_init(void)
 {
 	gd->ram_size = CONFIG_SYS_SDRAM_SIZE;
 	return 0;
@@ -134,13 +134,14 @@ int board_phy_config(struct phy_device *phydev)
 #ifdef CONFIG_GENERIC_MMC
 int board_mmc_init(struct bd_info *bis)
 {
-	int ret;
 #ifdef CONFIG_DWMMC
-	ret = sc5xx_dwmmc_init(bis);
+	int ret = sc5xx_dwmmc_init(bis);
 	if (ret)
 		printf("dwmmc init failed\n");
-#endif
 	return ret;
+#else
+	return 0;
+#endif
 }
 #endif
 

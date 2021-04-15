@@ -10,7 +10,7 @@
 /*
  * Processor Settings
  */
-#define CONFIG_CPU		"ADSP-SC589-0.1"
+//#define CONFIG_CPU		"ADSP-SC589-0.1"
 #ifdef CONFIG_SC58X_CHAIN_BOOT
 # define CONFIG_LOADADDR	0xC4000000
 # define CONFIG_RSA		/* RSA for FIT authen. */
@@ -162,7 +162,7 @@
 #define CONFIG_GENERIC_MMC
 #define CONFIG_MMC
 #define CONFIG_SC5XX_DWMMC
-#define CONFIG_DWMMC
+//#define ADI_DWMMC
 #define CONFIG_BOUNCE_BUFFER
 
 /*

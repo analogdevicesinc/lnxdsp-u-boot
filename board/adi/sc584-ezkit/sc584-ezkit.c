@@ -15,6 +15,7 @@
 #include <asm/arch/portmux.h>
 #include <asm/arch/sc58x.h>
 #include <asm/arch-sc58x/dwmmc.h>
+#include <linux/delay.h>
 #include <watchdog.h>
 #include "soft_switch.h"
 
@@ -66,7 +67,7 @@ unsigned long flash_init(void)
 	return 0;
 }
 
-int dram_init()
+int dram_init(void)
 {
 	gd->ram_size = CONFIG_SYS_SDRAM_SIZE;
 	return 0;
@@ -77,7 +78,7 @@ void s_init(void)
 }
 
 #ifdef CONFIG_DESIGNWARE_ETH
-int board_eth_init(bd_t *bis)
+int board_eth_init(struct bd_info *bis)
 {
 	int ret = 0;
 
@@ -147,7 +148,7 @@ int board_phy_config(struct phy_device *phydev)
 #endif
 
 #ifdef CONFIG_GENERIC_MMC
-int board_mmc_init(bd_t *bis)
+int board_mmc_init(struct bd_info *bis)
 {
 	int ret;
 #ifdef CONFIG_DWMMC

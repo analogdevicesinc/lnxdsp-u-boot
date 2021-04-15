@@ -3,10 +3,26 @@ if TARGET_SC589_EZKIT
 config SYS_VENDOR
 	default "adi"
 
+config ADI_CPU
+	string
+	default	"ADSP-SC589-0.1"
+
 config SYS_BOARD
 	default "sc589-ezkit"
 
 config SYS_CONFIG_NAME
 	default "sc589-ezkit"
+
+config MMC_DW
+	bool
+	default y
+
+config SC58X_SPI
+	bool
+	default y
+
+config USB_SC58X
+	bool
+	default y
 
 endif

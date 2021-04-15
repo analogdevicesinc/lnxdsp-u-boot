@@ -3,6 +3,10 @@ if TARGET_SC594_SOM_EZKIT
 config SYS_VENDOR
 	default "adi"
 
+config ADI_CPU
+	string
+	default "ADSP-SC589-0.1"
+
 config SYS_BOARD
 	default "sc594-som-ezkit"
 

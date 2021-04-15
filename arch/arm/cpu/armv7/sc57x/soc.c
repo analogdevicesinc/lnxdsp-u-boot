@@ -8,6 +8,7 @@
 #include <asm/system.h>
 #include <asm/arch/portmux.h>
 #include <adi_uart4.h>
+#include <cpu_func.h>
 
 void reset_cpu(ulong addr)
 {
@@ -31,7 +32,7 @@ void v7_outer_cache_enable(void)
 }
 #endif
 
-int arch_cpu_init()
+int arch_cpu_init(void)
 {
 #ifdef CONFIG_DEBUG_EARLY_SERIAL
 	return serial_early_init();
