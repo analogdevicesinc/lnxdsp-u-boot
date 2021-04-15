@@ -10,7 +10,7 @@
 /*
  * Processor Settings
  */
-#define CONFIG_CPU		"ADSP-SC589-0.1"
+#define CONFIG_ADI_CPU		"ADSP-SC589-0.1"
 #ifdef CONFIG_SC59X_CHAIN_BOOT
 # define CONFIG_LOADADDR	0x84000000
 # define CONFIG_RSA		/* RSA for FIT authen. */
@@ -29,28 +29,28 @@
  *	SCLK1 = SCLK / SCLK1_DIV
  */
 /* CONFIG_CLKIN_HZ is any value in Hz					*/
-#define CONFIG_CLKIN_HZ			(25000000)
+//#define CONFIG_CLKIN_HZ			(25000000)
 /* CLKIN_HALF controls the DF bit in PLL_CTL      0 = CLKIN		*/
 /*                                                1 = CLKIN / 2		*/
-#define CONFIG_CLKIN_HALF		(0)
+//#define CONFIG_CLKIN_HALF		(0)
 
-#define CONFIG_CGU1_VCO_MULT	 (64)
-#define CONFIG_CGU1_CCLK_DIV	 (2)
-#define CONFIG_CGU1_SCLK_DIV	 (4)
-#define CONFIG_CGU1_SCLK0_DIV	 (4)
-#define CONFIG_CGU1_SCLK1_DIV	 (2)
-#define CONFIG_CGU1_DCLK_DIV	 (2)
-#define CONFIG_CGU1_OCLK_DIV	 (16)
-#define CONFIG_CGU1_DIV_S1SELEX  (8)
+//#define CONFIG_CGU1_VCO_MULT	 (64)
+//#define CONFIG_CGU1_CCLK_DIV	 (2)
+//#define CONFIG_CGU1_SCLK_DIV	 (4)
+//#define CONFIG_CGU1_SCLK0_DIV	 (4)
+//#define CONFIG_CGU1_SCLK1_DIV	 (2)
+//#define CONFIG_CGU1_DCLK_DIV	 (2)
+//#define CONFIG_CGU1_OCLK_DIV	 (16)
+//#define CONFIG_CGU1_DIV_S1SELEX  (8)
 
 #define CONFIG_VCO_MULT			 (80)
-#define CONFIG_CCLK_DIV			 (2)
+//#define CONFIG_CCLK_DIV			 (2)
 #define CONFIG_SCLK_DIV			 (4)
 #define CONFIG_SCLK0_DIV		 (4)
-#define CONFIG_SCLK1_DIV		 (2)
+//#define CONFIG_SCLK1_DIV		 (2)
 #define CONFIG_DCLK_DIV			 (2)
 #define CONFIG_OCLK_DIV			 (8)
-#define CONFIG_DIV_S1SELEX       (6)
+//#define CONFIG_DIV_S1SELEX       (6)
 
 #define CONFIG_VCO_HZ  (CONFIG_CLKIN_HZ * CONFIG_VCO_MULT)
 #define CONFIG_CCLK_HZ (CONFIG_VCO_HZ / CONFIG_CCLK_DIV)
@@ -81,7 +81,7 @@
 #define CONFIG_SYS_MALLOC_LEN	(1024 * 1024)
 
 /* Reserve 4MB in DRAM for Tlb, Text, Malloc pool, Global data, Stack, etc. */
-#define CONFIG_SYS_MEMTEST_RESERVE_SIZE	(4 * 1024 * 1024)
+//#define CONFIG_SYS_MEMTEST_RESERVE_SIZE	(4 * 1024 * 1024)
 #define CONFIG_SYS_MEMTEST_START		CONFIG_SYS_SDRAM_BASE
 #define CONFIG_SYS_MEMTEST_END			(CONFIG_SYS_SDRAM_BASE + \
 				CONFIG_SYS_SDRAM_SIZE - \
@@ -97,11 +97,11 @@
 #define CONFIG_HOSTNAME		"sc59x"
 #define CONFIG_DESIGNWARE_ETH
 #define CONFIG_DW_PORTS		2
-#define CONFIG_DW_AUTONEG
+//#define CONFIG_DW_AUTONEG
 #define CONFIG_DW_ALTDESCRIPTOR
 #define CONFIG_DW_AXI_BURST_LEN 16
 #define CONFIG_MII
-#define CONFIG_PHYLIB
+//#define CONFIG_PHYLIB
 #define CONFIG_PHY_TI
 #define CONFIG_ETHADDR	02:80:ad:20:31:e8
 #define CONFIG_ETH1ADDR	02:80:ad:20:31:e9
@@ -110,14 +110,14 @@
  * I2C Settings
  */
 #define CONFIG_SYS_I2C
-#define CONFIG_SYS_I2C_ADI
+//#define CONFIG_SYS_I2C_ADI
 #define CONFIG_SYS_MAX_I2C_BUS 3
 
 /*
  * USB Settings
  */
-#define CONFIG_MUSB_HCD
-#define CONFIG_USB_SC59X
+//#define CONFIG_MUSB_HCD
+//#define CONFIG_USB_SC59X
 #define CONFIG_MUSB_TIMEOUT 100000
 #define MUSB_HW_VERSION2
 #define CONFIG_USB_STORAGE
@@ -137,7 +137,7 @@
  */
 #define CONFIG_ENV_IS_IN_SPI_FLASH
 #define CONFIG_ENV_OFFSET       0x80000
-#define CONFIG_ENV_SIZE         0x20000
+//#define CONFIG_ENV_SIZE         0x20000
 #define CONFIG_ENV_SECT_SIZE    0x20000
 #define CONFIG_ENV_SPI_BUS 0
 #define CONFIG_ENV_SPI_CS 0
@@ -147,13 +147,13 @@
  */
 #ifdef CONFIG_OF_CONTROL
 
-#define CONFIG_CMD_DM
-#define CONFIG_DM
-#define CONFIG_DM_SPI
-#define CONFIG_DM_SPI_FLASH
+//#define CONFIG_CMD_DM
+//#define CONFIG_DM
+//#define CONFIG_DM_SPI
+//#define CONFIG_DM_SPI_FLASH
 #define CONFIG_CADENCE_QSPI
 
-#define CONFIG_SPI_FLASH
+//#define CONFIG_SPI_FLASH
 #define CONFIG_SPI_FLASH_MACRONIX
 #define CONFIG_SPI_FLASH_ISSI
 #define CONFIG_SPI_FLASH_BAR
@@ -162,28 +162,28 @@
 #define CONFIG_CQSPI_REF_CLK		500000000
 #define CONFIG_CQSPI_DECODER		0
 #define CONFIG_CMD_SF
-#define CONFIG_CMD_SPI
+//#define CONFIG_CMD_SPI
 
 #endif
 
 /*
  * SPI - Via Device Tree Support
  */
-#define CONFIG_ADI_SPI3_DM
-#define CONFIG_SC59X_SPI
-#define CONFIG_CMD_SPI
+//#define CONFIG_ADI_SPI3_DM
+//#define CONFIG_SC59X_SPI
+//#define CONFIG_CMD_SPI
 #define CONFIG_ENV_SPI_MAX_HZ	10000000
-#define CONFIG_SF_DEFAULT_SPEED	10000000
-#define CONFIG_SF_DEFAULT_MODE  SPI_MODE_3
+//#define CONFIG_SF_DEFAULT_SPEED	10000000
+//#define CONFIG_SF_DEFAULT_MODE  SPI_MODE_3
 
 /*
  * Misc Settings
  */
-#define CONFIG_DEBUG_EARLY_SERIAL
-#define CONFIG_SYS_NO_FLASH
+//#define CONFIG_DEBUG_EARLY_SERIAL
+//#define CONFIG_SYS_NO_FLASH
 #define CONFIG_UART_CONSOLE	0
 #define CONFIG_BAUDRATE		57600
-#define CONFIG_UART4_SERIAL
+//#define CONFIG_UART4_SERIAL
 #define CONFIG_LINUX_MEMSIZE	"992M"
 #define CONFIG_CMD_BOOTZ
 
@@ -213,6 +213,15 @@
         "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
                         __stringify(CONFIG_BAUDRATE) " "\
         "mem=" CONFIG_LINUX_MEMSIZE
+
+//#define CONFIG_MMC_DW
+
+//#define CONFIG_SPI_MEM
+//#define CONFIG_DEFAULT_SPI_MODE 3
+//#define CONFIG_DEFAULT_SPI_BUS  2
+
+//#define CONFIG_SF_DEFAULT_BUS   2
+//#define CONFIG_SF_DEFAULT_CS    1
 
 #include <configs/sc_adi_common.h>
 

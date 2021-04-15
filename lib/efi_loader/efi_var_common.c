@@ -23,7 +23,18 @@ struct efi_auth_var_name_type {
 	const enum efi_auth_var_type type;
 };
 
+static const u16 char16_t_PK[] = { 'P', 'K', '\0' };
+static const u16 char16_t_KEK[] = { 'K', 'E', 'K', '\0' };
+static const u16 char16_t_db[] = { 'd', 'b', '\0' };
+static const u16 char16_t_dbx[] = { 'd', 'b', 'x', '\0' };
+
 static const struct efi_auth_var_name_type name_type[] = {
+#if 1
+	{ char16_t_PK, &efi_global_variable_guid, EFI_AUTH_VAR_PK},
+	{ char16_t_KEK, &efi_global_variable_guid, EFI_AUTH_VAR_KEK},
+	{ char16_t_db, &efi_guid_image_security_database, EFI_AUTH_VAR_DB},
+	{ char16_t_dbx, &efi_guid_image_security_database, EFI_AUTH_VAR_DBX},
+#else
 	{u"PK", &efi_global_variable_guid, EFI_AUTH_VAR_PK},
 	{u"KEK", &efi_global_variable_guid, EFI_AUTH_VAR_KEK},
 	{u"db",  &efi_guid_image_security_database, EFI_AUTH_VAR_DB},
@@ -32,6 +43,7 @@ static const struct efi_auth_var_name_type name_type[] = {
 	{u"dbt",  &efi_guid_image_security_database, EFI_AUTH_VAR_DBT},
 	{u"dbr",  &efi_guid_image_security_database, EFI_AUTH_VAR_DBR},
 	*/
+#endif
 };
 
 static bool efi_secure_boot;
@@ -336,7 +348,9 @@ bool efi_secure_boot_enabled(void)
 
 enum efi_auth_var_type efi_auth_var_get_type(u16 *name, const efi_guid_t *guid)
 {
-	for (size_t i = 0; i < ARRAY_SIZE(name_type); ++i) {
+	size_t i;
+
+	for (i = 0; i < ARRAY_SIZE(name_type); ++i) {
 		if (!u16_strcmp(name, name_type[i].name) &&
 		    !guidcmp(guid, name_type[i].guid))
 			return name_type[i].type;
