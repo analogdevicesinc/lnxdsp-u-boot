@@ -159,10 +159,10 @@
 # ifdef CONFIG_NETCONSOLE
 #  define NETCONSOLE_ENV \
 	"nc=" \
-		"set ncip ${serverip};" \
-		"set stdin nc;" \
-		"set stdout nc;" \
-		"set stderr nc" \
+		"setenv ncip ${serverip};" \
+		"setenv stdin nc;" \
+		"setenv stdout nc;" \
+		"setenv stderr nc" \
 		"\0"
 # else
 #  define NETCONSOLE_ENV
@@ -175,7 +175,7 @@
 		"tftp ${loadaddr} ${ubootfile};" \
 		UBOOT_ENV_UPDATE \
 		"\0" \
-	"addip=set bootargs ${bootargs} " \
+	"addip=setenv bootargs ${bootargs} " \
 		"ip=${ipaddr}:${serverip}:${gatewayip}:${netmask}:" \
 		   "${hostname}:eth0:off" \
 		"\0" \
@@ -185,9 +185,9 @@
 	"initramaddr=" INITRAMADDR "\0" \
 	"dtbfile=" CONFIG_DTBNAME "\0" \
 	"dtbaddr=" CONFIG_DTBLOADADDR "\0" \
-	"sdcardargs=set bootargs " ADI_BOOTARGS_SDCARD "\0" \
-	"ramargs=set bootargs " CONFIG_BOOTARGS "\0" \
-	"nfsargs=set bootargs " ADI_BOOTARGS_NFS "\0" \
+	"sdcardargs=setenv bootargs " ADI_BOOTARGS_SDCARD "\0" \
+	"ramargs=setenv bootargs " CONFIG_BOOTARGS "\0" \
+	"nfsargs=setenv bootargs " ADI_BOOTARGS_NFS "\0" \
 	"ramboot_emmc=" \
 		"mmc rescan;" \
 		"mmc dev 0 0;" \
@@ -250,6 +250,7 @@
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	NETWORK_ENV_SETTINGS \
 	BOARD_ENV_SETTINGS \
+	"ethaddr=02:80:ad:20:31:e8\0" \
 	ADI_ENV_SETTINGS
 
 /*
@@ -322,13 +323,13 @@
  */
 #ifndef CONFIG_SC59X
 	#define CONFIG_ENV_OFFSET       0x10000
-	#define CONFIG_ENV_ADDR         (CONFIG_SYS_FLASH_BASE + CONFIG_ENV_OFFSET)
 	#define CONFIG_ENV_SIZE         0x2000
 	#define CONFIG_ENV_SECT_SIZE    0x10000
 	/* We need envcrc to embed the env into LDRs */
 	#ifdef CONFIG_ENV_IS_EMBEDDED_IN_LDR
 	# define CONFIG_BUILD_ENVCRC
 	#endif
+	#define CONFIG_ENV_ADDR         0
 #endif
 
 /*

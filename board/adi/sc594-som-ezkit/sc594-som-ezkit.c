@@ -30,7 +30,6 @@ static void bss_clear(void)
 		*to++ = 0;
 }
 
-
 DECLARE_GLOBAL_DATA_PTR;
 int board_early_init_f(void)
 {
@@ -173,7 +172,7 @@ int board_phy_config(struct phy_device *phydev)
 int board_mmc_init(struct bd_info *bis)
 {
 	int ret;
-#ifdef CONFIG_DWMMC
+#ifdef CONFIG_MMC_DW
 	ret = sc5xx_dwmmc_init(bis);
 	if (ret)
 		printf("dwmmc init failed\n");

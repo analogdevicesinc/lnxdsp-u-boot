@@ -134,7 +134,7 @@ int board_phy_config(struct phy_device *phydev)
 #ifdef CONFIG_GENERIC_MMC
 int board_mmc_init(struct bd_info *bis)
 {
-#ifdef CONFIG_DWMMC
+#ifdef CONFIG_MMC_DW
 	int ret = sc5xx_dwmmc_init(bis);
 	if (ret)
 		printf("dwmmc init failed\n");
