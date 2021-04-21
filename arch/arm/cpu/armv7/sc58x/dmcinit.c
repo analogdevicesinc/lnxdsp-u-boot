@@ -100,9 +100,6 @@ void DMC_PHY_Init(struct dmc_param DMC_Param_List)
 
 void DMC_Controller_Init(struct dmc_param DMC_Param_List)
 {
-	//int temp;
-	//int *ptemp;
-
 	if (DMC_Param_List.dmc_no == 0) {
 		/* 1. Program the DMC controller registers: DMCx_CFG, DMCx_TR0,
 		 * DMCx_TR1, DMCx_TR2, DMCx_MR(DDR2/LPDDR)/DMCx_MR0(DDR3),
@@ -132,8 +129,6 @@ void DMC_Controller_Init(struct dmc_param DMC_Param_List)
 		/* 6. Workaround for anomaly#20000037 */
 		if (DMC_Param_List.anomaly_20000037_applicable == true) {
 			/* Perform dummy read to any DMC location */
-			//ptemp = 0x80000000;
-			//temp = *ptemp;
 			readl(0x80000000);
 
 			writel(readl(REG_DMC0_PHY_CTL0) | 0x1000, REG_DMC0_PHY_CTL0);
@@ -175,8 +170,6 @@ void DMC_Controller_Init(struct dmc_param DMC_Param_List)
 		/* 6. Workaround for anomaly#20000037 */
 		if (DMC_Param_List.anomaly_20000037_applicable == true) {
 			/* Perform dummy read to any DMC location */
-			//ptemp = 0x80000000;
-			//temp = *ptemp;
 			readl(0x80000000);
 
 			/* Set DMCx_PHY_CTL0.RESETDAT bit */
