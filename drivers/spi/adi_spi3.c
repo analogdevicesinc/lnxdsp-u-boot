@@ -271,8 +271,7 @@ int spi_xfer(struct spi_slave *slave, unsigned int bitlen, const void *dout,
 	uint bytes = bitlen / 8;
 	int ret = 0;
 
-	//debug("%s: bus:%i cs:%i bitlen:%i bytes:%i flags:%lx\n", __func__,
-	printf("%s: bus:%i cs:%i bitlen:%i bytes:%i flags:%lx\n", __func__,
+	debug("%s: bus:%i cs:%i bitlen:%i bytes:%i flags:%lx\n", __func__,
 		slave->bus, slave->cs, bitlen, bytes, flags);
 
 #ifdef CONFIG_SPI_FLASH_MMAP

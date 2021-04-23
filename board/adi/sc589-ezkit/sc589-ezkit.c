@@ -17,6 +17,7 @@
 #include <asm/arch-sc58x/dwmmc.h>
 #include <linux/delay.h>
 #include <watchdog.h>
+#include <spi_flash.h>
 #include "soft_switch.h"
 
 extern char __bss_start, __bss_end;
@@ -57,6 +58,10 @@ void set_spu_securep_msec(int n, bool msec)
 /* miscellaneous platform dependent initialisations */
 int misc_init_r(void)
 {
+	if (!spi_flash_probe(CONFIG_SF_DEFAULT_BUS, CONFIG_SF_DEFAULT_CS,
+			     CONFIG_SF_DEFAULT_SPEED, CONFIG_SF_DEFAULT_MODE))
+		printf("spi flash probe failed\n");
+
 	printf("other init\n");
 	set_spu_securep_msec(55, 1);
 	set_spu_securep_msec(56, 1);
