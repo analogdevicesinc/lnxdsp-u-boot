@@ -98,6 +98,11 @@ void DMC_PHY_Init(struct dmc_param DMC_Param_List)
 	}
 }
 
+static u32 read32(u32 addr)
+{
+	return *(volatile u32 *)addr;
+}
+
 void DMC_Controller_Init(struct dmc_param DMC_Param_List)
 {
 	if (DMC_Param_List.dmc_no == 0) {
@@ -129,7 +134,7 @@ void DMC_Controller_Init(struct dmc_param DMC_Param_List)
 		/* 6. Workaround for anomaly#20000037 */
 		if (DMC_Param_List.anomaly_20000037_applicable == true) {
 			/* Perform dummy read to any DMC location */
-			readl(0x80000000);
+			read32(0x80000000); // readl broken ?
 
 			writel(readl(REG_DMC0_PHY_CTL0) | 0x1000, REG_DMC0_PHY_CTL0);
 			/* Clear DMCx_PHY_CTL0.RESETDAT bit */
@@ -170,7 +175,7 @@ void DMC_Controller_Init(struct dmc_param DMC_Param_List)
 		/* 6. Workaround for anomaly#20000037 */
 		if (DMC_Param_List.anomaly_20000037_applicable == true) {
 			/* Perform dummy read to any DMC location */
-			readl(0x80000000);
+			read32(0x80000000); // readl broken ?
 
 			/* Set DMCx_PHY_CTL0.RESETDAT bit */
 			writel(readl(REG_DMC1_PHY_CTL0) | 0x1000, REG_DMC1_PHY_CTL0);
