@@ -20,17 +20,27 @@
 #include <spi_flash.h>
 #include "soft_switch.h"
 
+extern char __rel_dyn_start, __rel_dyn_end;
 extern char __bss_start, __bss_end;
+
 static void bss_clear(void)
 {
-	u32 *to = (void *)&__bss_start;
+	u32 bss_start = (u32)&__bss_start;
+	u32 bss_end = (u32)&__bss_end;
+	u32 rel_dyn_end = (u32)&__rel_dyn_end;
+	u32 *to;
+
+	if (rel_dyn_end >= bss_start && rel_dyn_end <= bss_end)
+		to = (u32 *)rel_dyn_end;
+	else
+		to = (u32 *)bss_start;
+
 	int i, sz;
 
-	sz = &__bss_end - &__bss_start;
+	sz = bss_end - (u32)to;
 	for (i = 0; i < sz; i += 4)
 		*to++ = 0;
 }
-
 
 DECLARE_GLOBAL_DATA_PTR;
 int board_early_init_f(void)
@@ -67,6 +77,7 @@ int misc_init_r(void)
 	set_spu_securep_msec(56, 1);
 	set_spu_securep_msec(58, 1);
 	set_spu_securep_msec(153, 1);
+
 #ifdef CONFIG_SOFT_SWITCH
 	return setup_soft_switches(switch_config_array, NUM_SWITCH);
 #else
