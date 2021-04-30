@@ -32,7 +32,7 @@ static struct switch_config switch_config_array_ethernet_enabled[NUM_SWITCH] = {
 		.dir0 = 0x0, /* all output */
 		.dir1 = 0x0, /* all output */
 		.value0 = 0x0,
-		.value1 = 0xC1,
+		.value1 = 0xC0,
 	},
 
 	{
@@ -55,7 +55,7 @@ static struct switch_config switch_config_array_ethernet_enabled[NUM_SWITCH] = {
 		.i2c_addr = 0x21,
 		.dir0 = 0x0, /* all output */
 		.dir1 = 0x0, /* all output */
-		.value0 = 0x1F,
+		.value0 = 0x7,
 		.value1 = 0x0,
 	},
 
@@ -83,7 +83,7 @@ static struct switch_config switch_config_array_ethernet_disabled[NUM_SWITCH] = 
 		.dir0 = 0x0, /* all output */
 		.dir1 = 0x0, /* all output */
 		.value0 = 0x0,
-		.value1 = 0x1,
+		.value1 = 0x0,
 	},
 
 	{
@@ -106,7 +106,7 @@ static struct switch_config switch_config_array_ethernet_disabled[NUM_SWITCH] = 
 		.i2c_addr = 0x21,
 		.dir0 = 0x0, /* all output */
 		.dir1 = 0x0, /* all output */
-		.value0 = 0x18,
+		.value0 = 0x0,
 		.value1 = 0x0,
 	},
 

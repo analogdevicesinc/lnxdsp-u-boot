@@ -1,0 +1,55 @@
+/dts-v1/;
+
+/ {
+	model = "ADI sc594-som-ezkit";
+	compatible = "adi,sc594-som-ezkit", "adi,sc59x";
+
+ 	aliases {
+		spi0 = "/spi@31027000";
+ 	};
+
+	soc {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "simple-bus";
+		device_type = "soc";
+		/*interrupt-parent = <&intc>;*/
+		ranges;
+
+		qspi: spi@31027000 {
+			compatible = "cadence,qspi";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x31027000 0x1000>,
+				  <0x30400000 0x1000>;
+			interrupts = <0 151 4>;
+			/*clocks = <&qspi_clk>;*/
+			ext-decoder = <0>;  /* external decoder */
+			num-cs = <4>;
+			fifo-depth = <128>;
+			bus-num = <0>;
+			status = "disabled";
+		};
+	};
+};
+
+&qspi {
+	status = "okay";
+
+	flash0: is25lx256@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "is25lx256";
+		reg = <0>;      /* chip select */
+		spi-max-frequency = <112000000>;
+		/*m25p,fast-read;*/
+		/*page-size = <256>;*/
+		/*block-size = <16>;*/ /* 2^16, 64KB */
+		read-delay = <40>;  /* delay value in read data capture register */
+		tshsl-ns = <500>;
+		tsd2d-ns = <500>;
+		tchsh-ns = <40>;
+		tslch-ns = <40>;
+	};
+};
+
