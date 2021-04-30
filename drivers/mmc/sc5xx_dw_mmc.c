@@ -1,7 +1,12 @@
 #include <common.h>
 #include <dwmmc.h>
 
-#ifdef CONFIG_SC58X
+
+#if defined(CONFIG_SC59X)
+#include <asm/arch-sc59x/clock.h>
+#include <asm/arch-sc59x/portmux.h>
+#include <asm/arch-sc59x/sc59x.h>
+#elif defined(CONFIG_SC58X)
 #include <asm/arch-sc58x/clock.h>
 #include <asm/arch-sc58x/portmux.h>
 #include <asm/arch-sc58x/sc58x.h>

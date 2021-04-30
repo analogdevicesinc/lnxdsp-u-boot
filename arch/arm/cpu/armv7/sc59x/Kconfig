@@ -1,21 +1,15 @@
-if SC58X
+if SC59X
 
 choice
-	prompt "SC58X board select"
+	prompt "SC59X board select"
 
-config TARGET_SC589_EZKIT
-	bool "Support sc589 EZkit"
-
-config TARGET_SC584_EZKIT
-	bool "Support sc584 EZkit"
-
-config TARGET_SC589_MINI
-	bool "Support sc589 Mini Board"
+config TARGET_SC594_SOM_EZKIT
+	bool "Support sc594 SOM-based EZkit
 
 endchoice
 
 config SC_BOOT_MODE
-	int "SC58X boot mode select"
+	int "SC59X boot mode select"
 	default 1
 	range 0 7
 	help
@@ -24,14 +18,14 @@ config SC_BOOT_MODE
 	  Mode 7: boot ldr over uart
 
 config CLOCK_SPEED_500MHZ
-	bool "Enable 500MHz CORE Clock for SC58x"
+	bool "Enable 500MHz CORE Clock for SC59x"
 	default n
-	depends on SC58X=y
+	depends on SC59X=y
 	help
-	  Allow user to enable or disable SC58x core running at 500MHz.
+	  Allow user to enable or disable SC59x core running at 500MHz.
 
 config SC_BOOT_SPI_BUS
-	int "SC58X SPI bus ID for SPI boot"
+	int "SC59X SPI bus ID for SPI boot"
 	default 2
 	range 0 2
 	depends on SC_BOOT_MODE=1
@@ -39,7 +33,7 @@ config SC_BOOT_SPI_BUS
 	  Specify the SPI bus ID to update the u-boot image for SPI boot.
 
 config SC_BOOT_SPI_SSEL
-	int "SC58X SPI Chip Select ID for SPI boot"
+	int "SC59X SPI Chip Select ID for SPI boot"
 	default 1
 	range 1 7
 	depends on SC_BOOT_MODE=1
@@ -54,9 +48,9 @@ config CMD_ICC
 	  bootrom load multicore LDR image into the memory.
 
 config SYS_SOC
-	default "sc58x"
+	default "sc59x"
 
-config SC58X_CHAIN_BOOT
+config SC59X_CHAIN_BOOT
 	bool "Chained U-Boot for Secure Boot"
 	default n
 	depends on SC_BOOT_MODE=1
@@ -66,13 +60,10 @@ config SC58X_CHAIN_BOOT
 config SPI_UBOOT_OFF
 	hex "Offset of main u-boot bootstream on SPI flash"
 	default 0x1000
-	depends on SC58X_CHAIN_BOOT=y
+	depends on SC59X_CHAIN_BOOT=y
 	help
 	  Specifiy the offset of the second stage u-boot bootstream on SPI flash
 
-source "board/adi/sc589-ezkit/Kconfig"
-source "board/adi/sc584-ezkit/Kconfig"
-source "board/adi/sc589-mini/Kconfig"
 source "board/adi/sc594-som-ezkit/Kconfig"
 
 endif

@@ -1,0 +1,12 @@
+if TARGET_SC594_SOM_EZKIT
+
+config SYS_VENDOR
+	default "adi"
+
+config SYS_BOARD
+	default "sc594-som-ezkit"
+
+config SYS_CONFIG_NAME
+	default "sc594-som-ezkit"
+
+endif
