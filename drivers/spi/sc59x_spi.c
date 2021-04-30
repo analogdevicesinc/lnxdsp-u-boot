@@ -17,7 +17,12 @@
 #include <spi.h>
 #include <asm/arch/cpu.h>
 #include <asm/arch/portmux.h>
+
+#ifdef CONFIG_DM_SPI
+#include "adi_spi3_dm.h"
+#else
 #include "adi_spi3.h"
+#endif
 
 #define MAX_SPI_NUM 2
 
@@ -51,6 +56,29 @@ int adi_spi_cs_valid(unsigned int bus, unsigned int cs)
 	return cs >= 1 && cs <= (MAX_CTRL_CS - 5);
 }
 
+
+#ifdef CONFIG_DM_SPI
+void adi_spi_setup_reg(struct adi_spi_platdata * platdata, int bus)
+{
+	switch (bus) {
+	case 0:
+		platdata->regs = (struct spi_regs *)SPI0_REGBASE;
+		break;
+	case 1:
+		platdata->regs = (struct spi_regs *)SPI1_REGBASE;
+		break;
+	default:
+		platdata->regs = (struct spi_regs *)SPI2_REGBASE;
+		break;
+	}
+}
+
+void adi_spi_setup_cs(struct adi_spi_priv * priv, int bus, unsigned int cs)
+{
+	pins[bus][0] = cs_pins[bus][cs - 1];	
+	priv->pins = pins[bus];
+}
+#else
 struct adi_spi_slave *adi_spi_setup(unsigned int bus, unsigned int cs)
 {
 	struct adi_spi_slave *sdev;
@@ -73,3 +101,4 @@ struct adi_spi_slave *adi_spi_setup(unsigned int bus, unsigned int cs)
 	}
 	return sdev;
 }
+#endif

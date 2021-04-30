@@ -6,6 +6,7 @@
 
  	aliases {
 		spi0 = "/spi@31027000";
+		spi2 = "/spi@31030000";
  	};
 
 	soc {
@@ -30,6 +31,17 @@
 			bus-num = <0>;
 			status = "disabled";
 		};
+
+		spi2: spi@31030000 {
+			compatible = "adi,spi3";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x31030000 0x1000>;
+			bus-num = <2>;
+			spi-max-frequency = <10000000>;
+			status = "disabled";
+		};
+
 	};
 };
 
@@ -51,5 +63,28 @@
 		tchsh-ns = <40>;
 		tslch-ns = <40>;
 	};
+};
+
+&spi2 {
+	status = "okay";
+
+/* mx66lm1g45 and is25lp512 are mutually exclusive */
+
+/*
+	flash1: mx66lm1g45@1 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "mx66lm1g45";
+		reg = <1>;
+	};
+*/
+
+	flash1: is25lp512@2 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "is25lp512";
+		reg = <1>;
+	};
+
 };
 

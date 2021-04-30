@@ -25,6 +25,15 @@ int board_early_init_f(void)
 	hw_watchdog_init();
 #endif
 
+#ifdef CONFIG_SOFT_SWITCH
+	static const unsigned short pins_i2c2[] = P_I2C2;
+	peripheral_request_list(pins_i2c2, "i2c2");
+
+	return setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
+#else
+	return 0;
+#endif
+
 	return 0;
 }
 
@@ -48,20 +57,14 @@ int misc_init_r(void)
 //	set_spu_securep_msec(153, 1);
 
 #ifdef CONFIG_CADENCE_QSPI
-	static const unsigned short pins[] = P_OSPI0;
-	if (peripheral_request_list(pins, "ospi0")){
+	static const unsigned short pins_ospi0[] = P_OSPI0;
+	if (peripheral_request_list(pins_ospi0, "ospi0")){
 		printf("Unable to pinmux OSPI0\r\n");
 	}
 #endif
 
-#ifdef CONFIG_SOFT_SWITCH
-	static const unsigned short pins_i2c2[] = P_I2C2;
-	peripheral_request_list(pins_i2c2, "i2c2");
+return 0;
 
-	return setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
-#else
-	return 0;
-#endif
 }
 
 unsigned long flash_init(void)

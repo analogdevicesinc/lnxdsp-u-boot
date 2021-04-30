@@ -10,6 +10,8 @@
 
 #define NUM_SWITCH      2
 
+#undef MX66LM1G45 /* use IS25LP512 */
+
 static struct switch_config switch_config_array_ethernet_enabled[NUM_SWITCH] = {
 	{
 /*
@@ -32,7 +34,11 @@ static struct switch_config switch_config_array_ethernet_enabled[NUM_SWITCH] = {
 		.dir0 = 0x0, /* all output */
 		.dir1 = 0x0, /* all output */
 		.value0 = 0x0,
+#ifdef MX66LM1G45		
+		.value1 = 0xC1,
+#else /* IS25LP512 */
 		.value1 = 0xC0,
+#endif
 	},
 
 	{
@@ -55,7 +61,11 @@ static struct switch_config switch_config_array_ethernet_enabled[NUM_SWITCH] = {
 		.i2c_addr = 0x21,
 		.dir0 = 0x0, /* all output */
 		.dir1 = 0x0, /* all output */
-		.value0 = 0x7,
+#ifdef MX66LM1G45		
+		.value0 = 0x1F,
+#else /* IS25LP512 */
+		.value0 = 0x07,
+#endif
 		.value1 = 0x0,
 	},
 
@@ -83,7 +93,11 @@ static struct switch_config switch_config_array_ethernet_disabled[NUM_SWITCH] = 
 		.dir0 = 0x0, /* all output */
 		.dir1 = 0x0, /* all output */
 		.value0 = 0x0,
+#ifdef MX66LM1G45		
+		.value1 = 0x1,
+#else /* IS25LP512 */
 		.value1 = 0x0,
+#endif
 	},
 
 	{
@@ -106,7 +120,11 @@ static struct switch_config switch_config_array_ethernet_disabled[NUM_SWITCH] = 
 		.i2c_addr = 0x21,
 		.dir0 = 0x0, /* all output */
 		.dir1 = 0x0, /* all output */
-		.value0 = 0x0,
+#ifdef MX66LM1G45		
+		.value0 = 0x18,
+#else /* IS25LP512 */
+		.value0 = 0x00,
+#endif
 		.value1 = 0x0,
 	},
 
