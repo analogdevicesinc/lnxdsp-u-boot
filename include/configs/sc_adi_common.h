@@ -236,10 +236,15 @@
 #ifndef BOARD_ENV_SETTINGS
 # define BOARD_ENV_SETTINGS
 #endif
+
+#if ! defined(CONFIG_SC59X)
+	#define ADI_ENV_SETTINGS "\0"
+#endif
+
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	NETWORK_ENV_SETTINGS \
-	BOARD_ENV_SETTINGS
-
+	BOARD_ENV_SETTINGS \
+	ADI_ENV_SETTINGS
 
 /*
  * Boot Paramter Settings
@@ -308,14 +313,15 @@
 /*
  * Env Storage Settings
  */
-#define CONFIG_ENV_OFFSET       0x10000
-#define CONFIG_ENV_SIZE         0x2000
-#define CONFIG_ENV_SECT_SIZE    0x10000
-/* We need envcrc to embed the env into LDRs */
-#ifdef CONFIG_ENV_IS_EMBEDDED_IN_LDR
-# define CONFIG_BUILD_ENVCRC
+#ifndef CONFIG_SC59X
+	#define CONFIG_ENV_OFFSET       0x10000
+	#define CONFIG_ENV_SIZE         0x2000
+	#define CONFIG_ENV_SECT_SIZE    0x10000
+	/* We need envcrc to embed the env into LDRs */
+	#ifdef CONFIG_ENV_IS_EMBEDDED_IN_LDR
+	# define CONFIG_BUILD_ENVCRC
+	#endif
 #endif
-
 
 /*
  * Misc Settings
