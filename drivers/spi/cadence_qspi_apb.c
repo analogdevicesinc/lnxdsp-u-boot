@@ -37,6 +37,7 @@
 #include <spi-mem.h>
 #include <malloc.h>
 #include "cadence_qspi.h"
+#include "../../arch/arm/cpu/armv7/sc59x/adsp594.h"
 
 #define CQSPI_REG_POLL_US			1 /* 1us */
 #define CQSPI_REG_RETRY				10000
@@ -810,3 +811,220 @@ void cadence_qspi_apb_enter_xip(void *reg_base, char xip_dummy)
 	reg |= (1 << CQSPI_REG_RD_INSTR_MODE_EN_LSB);
 	writel(reg, reg_base + CQSPI_REG_RD_INSTR);
 }
+
+#ifdef CONFIG_SC59X
+
+#define SCB5_SPI2_OSPI_REMAP 0x30400000
+#define OSPI0_MMAP_ADDRESS 0x60000000
+
+int cadence_qspi_direct_read(struct cadence_spi_platdata *plat,
+	unsigned int cmdlen, const u8 *cmdbuf,
+	unsigned int rxlen, const u8 *rxbuf)
+{
+	unsigned int reg;
+	unsigned int curVal;
+	unsigned int addr_bytes;
+	unsigned int dummy_clk;
+	unsigned int dummy_bytes;
+	unsigned int addr_value;
+
+	if (cmdlen >= 5)
+		/* to cater fast read where cmd + addr + dummy */
+		addr_bytes = cmdlen - 2;
+	else
+		/* for normal read (only ramtron as of now) */
+		addr_bytes = cmdlen - 1;
+
+	*(uint32_t*)SCB5_SPI2_OSPI_REMAP = 0x1U;
+
+	cadence_qspi_apb_controller_enable(plat->regbase);
+
+    /* Configure the address mode of flash */
+	curVal = readl(plat->regbase + CQSPI_REG_SIZE);
+	curVal &= ~BITM_OSPI_DSCTL_ADDRSZ;
+	curVal |= (((uint32_t)(3U)-1U) << BITP_OSPI_DSCTL_ADDRSZ) & BITM_OSPI_DSCTL_ADDRSZ;
+	writel(curVal, plat->regbase + CQSPI_REG_SIZE);
+
+    /* Configure the modedata value */
+	curVal = readl(plat->regbase + CQSPI_REG_MODE_BIT);
+	curVal &= ~BITM_OSPI_MBCTL_MODE;
+	curVal |= ((uint32_t)(0) << BITP_OSPI_MBCTL_MODE) & BITM_OSPI_MBCTL_MODE;
+	writel(curVal, plat->regbase + CQSPI_REG_MODE_BIT);
+
+    /* Clear the contents of the Read instruction register */
+    writel(0, plat->regbase + CQSPI_REG_RD_INSTR);
+
+    /* Configure the opcode */
+    /*
+    curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+    curVal |= (((uint32_t)(0x03) << BITP_OSPI_DRICTL_OPCODERD) & BITP_OSPI_DRICTL_OPCODERD) |
+              (((uint32_t)(0x10) << BITP_OSPI_DRICTL_DMYRD) & BITP_OSPI_DRICTL_DMYRD);
+    writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
+    */
+
+
+	/* Configure the opcode */
+	curVal = cmdbuf[0] << CQSPI_REG_RD_INSTR_OPCODE_LSB;
+
+#if (CONFIG_SPI_FLASH_QUAD == 1)
+	/* Instruction and address at DQ0, data at DQ0-3. */
+	curVal |= CQSPI_INST_TYPE_QUAD << CQSPI_REG_RD_INSTR_TYPE_DATA_LSB;
+#endif
+
+	/* The remaining lenght is dummy bytes. */
+	dummy_bytes = cmdlen - addr_bytes - 1;
+	if (dummy_bytes) {
+		if (dummy_bytes > CQSPI_DUMMY_BYTES_MAX)
+			dummy_bytes = CQSPI_DUMMY_BYTES_MAX;
+
+		curVal |= (1 << CQSPI_REG_RD_INSTR_MODE_EN_LSB);
+
+		/* Convert to clock cycles. */
+		dummy_clk = dummy_bytes * CQSPI_DUMMY_CLKS_PER_BYTE;
+		/* Need to minus the mode byte (8 clocks). */
+		dummy_clk -= CQSPI_DUMMY_CLKS_PER_BYTE;
+
+		if (dummy_clk)
+			curVal |= (dummy_clk & CQSPI_REG_RD_INSTR_DUMMY_MASK)
+				<< CQSPI_REG_RD_INSTR_DUMMY_LSB;
+	}
+
+	writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
+
+    /* OSPI Single Mode */
+    curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+    curVal |= (0UL << BITP_OSPI_DRICTL_INSTRTYP) |
+              (0UL << BITP_OSPI_DRICTL_ADDRTRNSFR) |
+              (0UL << BITP_OSPI_DRICTL_DATATRNSFR);
+    writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
+
+    /* Clear the DTR mode bits */
+    curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+    curVal &= ~(BITM_OSPI_DRICTL_DDREN);
+    writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
+
+    curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
+    curVal &= ~(BITM_OSPI_CTL_DTREN);
+    curVal = writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
+
+    /*! Data transfer with Command, Address and data transffered in STR mode */
+    curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+    curVal |= (0UL << BITP_OSPI_DRICTL_DDREN);
+    writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
+
+    /* Make sure the dual op-code is not enabled */
+    curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
+    curVal &= ~BITM_OSPI_CTL_OPCODEEN;
+    curVal = writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
+
+    /* enable DAC controller */
+    curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
+    curVal |= BITM_OSPI_CTL_DACEN;
+    curVal = writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
+
+	addr_value = cadence_qspi_apb_cmd2addr(&cmdbuf[1], addr_bytes);
+
+    /* Perform the transfer */
+    uint32_t count = 0;
+    uint8_t *pReadBuffer = rxbuf;
+    uint8_t *pFlashAddress = (uint8_t *)OSPI0_MMAP_ADDRESS+addr_value;
+
+    for (count = 0U; count < rxlen; count++)
+    {
+        *pReadBuffer++ = *pFlashAddress++;
+        while(!CQSPI_REG_IS_IDLE(plat->regbase));
+    }
+
+	return 0;
+}
+
+int cadence_qspi_direct_write(struct cadence_spi_platdata *plat,
+	unsigned int cmdlen, const u8 *cmdbuf,
+	unsigned int txlen, const u8 *txbuf)
+{
+	unsigned int reg;
+	unsigned int curVal;
+	unsigned int addr_value;
+
+	*(uint32_t*)SCB5_SPI2_OSPI_REMAP = 0x1U;
+
+	cadence_qspi_apb_controller_enable(plat->regbase);
+
+    /* Configure the address mode of flash */
+	curVal = readl(plat->regbase + CQSPI_REG_SIZE);
+	curVal &= ~BITM_OSPI_DSCTL_ADDRSZ;
+	curVal |= (((uint32_t)(3U)-1U) << BITP_OSPI_DSCTL_ADDRSZ) & BITM_OSPI_DSCTL_ADDRSZ;
+	writel(curVal, plat->regbase + CQSPI_REG_SIZE);
+
+    /* Configure the modedata value */
+	curVal = readl(plat->regbase + CQSPI_REG_MODE_BIT);
+	curVal &= ~BITM_OSPI_MBCTL_MODE;
+	curVal |= ((uint32_t)(0) << BITP_OSPI_MBCTL_MODE) & BITM_OSPI_MBCTL_MODE;
+	writel(curVal, plat->regbase + CQSPI_REG_MODE_BIT);
+
+    /* Clear the contents of the Write instruction register */
+    writel(0, plat->regbase + CQSPI_REG_WR_INSTR);
+    curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+    curVal &= (~BITM_OSPI_DRICTL_INSTRTYP);
+    writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
+
+
+    /* Configure the opcode */
+/*
+    curVal = readl(plat->regbase + CQSPI_REG_WR_INSTR);
+    curVal |= (((uint32_t)(0x02) << BITP_OSPI_DWICTL_OPCODEWR) & BITM_OSPI_DWICTL_OPCODEWR) |
+              (((uint32_t)(0x10) << BITP_OSPI_DWICTL_DMYWR) & BITM_OSPI_DWICTL_DMYWR);
+    writel(curVal, plat->regbase + CQSPI_REG_WR_INSTR);
+*/
+
+	/* Configure the opcode */
+	curVal = cmdbuf[0] << CQSPI_REG_WR_INSTR_OPCODE_LSB;
+	writel(curVal, plat->regbase + CQSPI_REG_WR_INSTR);
+
+    /* OSPI Single Mode */
+    curVal = readl(plat->regbase + CQSPI_REG_WR_INSTR);
+    curVal |= (0UL << BITP_OSPI_DWICTL_ADDRTRNSFR) |
+              (0UL << BITP_OSPI_DWICTL_DATATRNSFR);
+    writel(curVal, plat->regbase + CQSPI_REG_WR_INSTR);
+
+    /* Clear the DTR mode bits */
+    curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+    curVal &= ~(BITM_OSPI_DRICTL_DDREN);
+    writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
+
+    curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
+    curVal &= ~(BITM_OSPI_CTL_DTREN);
+    curVal = writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
+
+    /*! Data transfer with Command, Address and data transffered in STR mode */
+    curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+    curVal |= (0UL << BITP_OSPI_DRICTL_DDREN);
+    writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
+
+    /* Make sure the dual op-code is not enabled */
+    curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
+    curVal &= ~BITM_OSPI_CTL_OPCODEEN;
+    curVal = writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
+
+    /* enable DAC controller */
+    curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
+    curVal |= BITM_OSPI_CTL_DACEN;
+    curVal = writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
+
+	addr_value = cadence_qspi_apb_cmd2addr(&cmdbuf[1], cmdlen >= 5 ? 4 : 3);
+
+    /* Perform the transfer */
+    uint32_t count = 0;
+    uint8_t *pWriteBuffer = txbuf;
+    uint8_t *pFlashAddress = (uint8_t *)OSPI0_MMAP_ADDRESS+addr_value;
+	
+    for (count = 0U; count < txlen; count++)
+    {
+        *pFlashAddress++ = *pWriteBuffer++;
+        while(!CQSPI_REG_IS_IDLE(plat->regbase));
+    }
+
+	return 0;
+}
+
+#endif

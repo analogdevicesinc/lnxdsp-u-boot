@@ -116,16 +116,13 @@
 /*
  * SPI Settings
  */
+/*
 #define CONFIG_ADI_SPI3
 #define CONFIG_SC59X_SPI
 #define CONFIG_CMD_SPI
 #define CONFIG_ENV_SPI_MAX_HZ	5000000
 #define CONFIG_SF_DEFAULT_SPEED	5000000
-#define CONFIG_SPI_FLASH
-#define CONFIG_SPI_FLASH_MACRONIX
-#define CONFIG_SPI_FLASH_ISSI
-#define CONFIG_SPI_FLASH_BAR
-/*#define CONFIG_SPI_FLASH_MMAP*/
+*/
 
 /*
  * USB Settings
@@ -139,21 +136,52 @@
 /*
  * SDH Settings
  */
+/*
 #define CONFIG_GENERIC_MMC
 #define CONFIG_MMC
 #define CONFIG_MMC_SPI
 #define CONFIG_CMD_MMC_SPI
+*/
 
 /*
  * Env Storage Settings
  */
+#define CONFIG_ENV_IS_NOWHERE
+/*
 #define CONFIG_ENV_IS_IN_SPI_FLASH
+*/
 #define CONFIG_ENV_OFFSET       0x80000
 #define CONFIG_ENV_SIZE         0x2000
 #define CONFIG_ENV_SECT_SIZE    0x10000
-/*#define CONFIG_ENV_IS_EMBEDDED_IN_LDR*/
+/*
 #define CONFIG_ENV_SPI_BUS 2
 #define CONFIG_ENV_SPI_CS 1
+*/
+
+/* OSPI - Via Device Tree Support
+ *
+ */
+#ifdef CONFIG_OF_CONTROL
+
+#define CONFIG_CMD_DM
+#define CONFIG_DM
+#define CONFIG_DM_SPI
+#define CONFIG_DM_SPI_FLASH
+
+#define CONFIG_CADENCE_QSPI
+
+#define CONFIG_SPI_FLASH
+#define CONFIG_SPI_FLASH_MACRONIX
+#define CONFIG_SPI_FLASH_ISSI
+#define CONFIG_SPI_FLASH_BAR
+#define CONFIG_SPI_FLASH_MTD
+
+#define CONFIG_CQSPI_REF_CLK		500000000
+#define CONFIG_CQSPI_DECODER		0
+#define CONFIG_CMD_SF
+#define CONFIG_CMD_SPI
+
+#endif
 
 /*
  * Misc Settings
