@@ -950,7 +950,7 @@ int cadence_qspi_direct_write(struct cadence_spi_platdata *plat,
     /* Configure the address mode of flash */
 	curVal = readl(plat->regbase + CQSPI_REG_SIZE);
 	curVal &= ~BITM_OSPI_DSCTL_ADDRSZ;
-	curVal |= (((uint32_t)(3U)-1U) << BITP_OSPI_DSCTL_ADDRSZ) & BITM_OSPI_DSCTL_ADDRSZ;
+	curVal |= (((uint32_t)(4U)-1U) << BITP_OSPI_DSCTL_ADDRSZ) & BITM_OSPI_DSCTL_ADDRSZ;
 	writel(curVal, plat->regbase + CQSPI_REG_SIZE);
 
     /* Configure the modedata value */
@@ -1021,7 +1021,7 @@ int cadence_qspi_direct_write(struct cadence_spi_platdata *plat,
         while(!CQSPI_REG_IS_IDLE(plat->regbase));
     }
 
-	return 0;
+    return 0;
 }
 
 #endif
