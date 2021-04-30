@@ -25,6 +25,13 @@ int board_early_init_f(void)
 	hw_watchdog_init();
 #endif
 
+#ifdef CONFIG_CADENCE_QSPI
+	static const unsigned short pins_ospi0[] = P_OSPI0;
+	if (peripheral_request_list(pins_ospi0, "ospi0")){
+		printf("Unable to pinmux OSPI0\r\n");
+	}
+#endif
+
 #ifdef CONFIG_SOFT_SWITCH
 	static const unsigned short pins_i2c2[] = P_I2C2;
 	peripheral_request_list(pins_i2c2, "i2c2");
@@ -55,13 +62,6 @@ int misc_init_r(void)
 //	set_spu_securep_msec(56, 1);
 //	set_spu_securep_msec(58, 1);
 //	set_spu_securep_msec(153, 1);
-
-#ifdef CONFIG_CADENCE_QSPI
-	static const unsigned short pins_ospi0[] = P_OSPI0;
-	if (peripheral_request_list(pins_ospi0, "ospi0")){
-		printf("Unable to pinmux OSPI0\r\n");
-	}
-#endif
 
 return 0;
 

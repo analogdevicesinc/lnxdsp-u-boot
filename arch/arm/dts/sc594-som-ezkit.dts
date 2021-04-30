@@ -52,16 +52,12 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 		compatible = "is25lx256";
-		reg = <0>;      /* chip select */
+		reg = <0>;
 		spi-max-frequency = <112000000>;
-		/*m25p,fast-read;*/
-		/*page-size = <256>;*/
-		/*block-size = <16>;*/ /* 2^16, 64KB */
-		read-delay = <40>;  /* delay value in read data capture register */
-		tshsl-ns = <500>;
-		tsd2d-ns = <500>;
-		tchsh-ns = <40>;
-		tslch-ns = <40>;
+		tshsl-ns = <50>;
+		tsd2d-ns = <50>;
+		tchsh-ns = <4>;
+		tslch-ns = <4>;
 	};
 };
 

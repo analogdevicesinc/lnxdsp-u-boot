@@ -135,11 +135,11 @@
  * Env Storage Settings
  */
 #define CONFIG_ENV_IS_IN_SPI_FLASH
-#define CONFIG_ENV_OFFSET       0x80000
+#define CONFIG_ENV_OFFSET       0x70000
 #define CONFIG_ENV_SIZE         0x2000
 #define CONFIG_ENV_SECT_SIZE    0x10000
-#define CONFIG_ENV_SPI_BUS 2
-#define CONFIG_ENV_SPI_CS 1
+#define CONFIG_ENV_SPI_BUS 0
+#define CONFIG_ENV_SPI_CS 0
 
 /* OSPI - Via Device Tree Support
  *
@@ -194,11 +194,14 @@
 	"rfsfile=adsp-sc5xx-minimal-adsp-sc594-som-ezkit.jffs2\0" \
 	"dtbsize=0x100000\0" \
 	"zimagesize=0x1000000\0" \
-	"update_spi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 2:1; sf erase 0x1190000 0x6E70000; sf write ${loadaddr} 0x1190000 ${filesize}\0" \
-	"update_spi_zImage=tftp ${loadaddr} ${ramfile}; sf probe 2:1; sf erase 0x90000 0x1000000; sf write ${loadaddr} 0x90000 ${filesize}; setenv zimagesize ${filesize}; saveenv\0" \
-	"update_spi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; sf erase 0x1090000 0x100000; sf write ${loadaddr} 0x1090000 ${filesize}; setenv dtbsize ${filesize}; saveenv\0"\
+	"update_ospi_sc594=sf probe 0:0; sf erase 0 0x2000000; run update_ospi_uboot; run update_ospi_dtb; run update_ospi_zImage; run update_ospi_rfs; saveenv\0" \
+	"update_ospi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe 0:0; sf write ${loadaddr} 0x0 ${filesize}\0" \
+	"update_ospi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 0:0; sf write ${loadaddr} 0x690000 ${filesize};\0" \
+	"update_ospi_zImage=tftp ${loadaddr} ${ramfile}; sf probe 0:0; sf write ${loadaddr} 0x90000 ${filesize}; setenv zimagesize ${filesize};\0" \
+	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; sf write ${loadaddr} 0x80000 ${filesize}; setenv dtbsize ${filesize};\0"\
 	"spiargs=set bootargs " CONFIG_BOOTARGS_SPI "\0" \
-	"spiboot=run spiargs; sf probe 2:1; sf read ${loadaddr} 0x90000 ${zimagesize}; sf read ${dtbaddr} 0x1090000 ${dtbsize}; bootz ${loadaddr} - ${dtbaddr}\0"
+	"spiboot=run ospi_boot_sc594\0" \
+	"ospi_boot_sc594=run spiargs; sf probe 0:0; sf read ${loadaddr} 0x90000 ${zimagesize}; sf read ${dtbaddr} 0x80000 ${dtbsize}; bootz ${loadaddr} - ${dtbaddr}\0"
 
 #define CONFIG_BOOTARGS_SPI \
         "root=/dev/mtdblock4 " \
