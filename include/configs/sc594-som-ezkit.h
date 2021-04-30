@@ -112,18 +112,6 @@
 #define CONFIG_SYS_I2C_ADI
 #define CONFIG_SYS_MAX_I2C_BUS 3
 
-
-/*
- * SPI Settings
- */
-/*
-#define CONFIG_ADI_SPI3
-#define CONFIG_SC59X_SPI
-#define CONFIG_CMD_SPI
-#define CONFIG_ENV_SPI_MAX_HZ	5000000
-#define CONFIG_SF_DEFAULT_SPEED	5000000
-*/
-
 /*
  * USB Settings
  */
@@ -146,17 +134,12 @@
 /*
  * Env Storage Settings
  */
-#define CONFIG_ENV_IS_NOWHERE
-/*
 #define CONFIG_ENV_IS_IN_SPI_FLASH
-*/
 #define CONFIG_ENV_OFFSET       0x80000
 #define CONFIG_ENV_SIZE         0x2000
 #define CONFIG_ENV_SECT_SIZE    0x10000
-/*
 #define CONFIG_ENV_SPI_BUS 2
 #define CONFIG_ENV_SPI_CS 1
-*/
 
 /* OSPI - Via Device Tree Support
  *
@@ -167,7 +150,6 @@
 #define CONFIG_DM
 #define CONFIG_DM_SPI
 #define CONFIG_DM_SPI_FLASH
-
 #define CONFIG_CADENCE_QSPI
 
 #define CONFIG_SPI_FLASH
@@ -182,6 +164,16 @@
 #define CONFIG_CMD_SPI
 
 #endif
+
+/*
+ * SPI - Via Device Tree Support
+ */
+#define CONFIG_ADI_SPI3_DM
+#define CONFIG_SC59X_SPI
+#define CONFIG_CMD_SPI
+#define CONFIG_ENV_SPI_MAX_HZ	10000000
+#define CONFIG_SF_DEFAULT_SPEED	10000000
+#define CONFIG_SF_DEFAULT_MODE  SPI_MODE_3
 
 /*
  * Misc Settings
