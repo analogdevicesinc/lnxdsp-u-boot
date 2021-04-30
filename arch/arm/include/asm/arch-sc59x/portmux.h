@@ -56,37 +56,27 @@
 #define P_UART1_RTS     (P_DEFINED | P_IDENT(GPIO_PD2) | P_FUNCT(0))
 #define P_UART1_CTS     (P_DEFINED | P_IDENT(GPIO_PD3) | P_FUNCT(0))
 
-#define P_UART2_TX      (P_DEFINED | P_IDENT(GPIO_PE11) | P_FUNCT(1))
-#define P_UART2_RX      (P_DEFINED | P_IDENT(GPIO_PE10) | P_FUNCT(1))
-#define P_UART2_RTS     (P_DEFINED | P_IDENT(GPIO_PE12) | P_FUNCT(1))
-#define P_UART2_CTS     (P_DEFINED | P_IDENT(GPIO_PE13) | P_FUNCT(1))
+#define P_UART2_TX      (P_DEFINED | P_IDENT(GPIO_PD11) | P_FUNCT(1))
+#define P_UART2_RX      (P_DEFINED | P_IDENT(GPIO_PD10) | P_FUNCT(1))
+#define P_UART2_RTS     (P_DEFINED | P_IDENT(GPIO_PD12) | P_FUNCT(1))
+#define P_UART2_CTS     (P_DEFINED | P_IDENT(GPIO_PD13) | P_FUNCT(1))
 
 /* SPI Port Mux */
-#define P_SPI0_SCK      (P_DEFINED | P_IDENT(GPIO_PC9) | P_FUNCT(0))
-#define P_SPI0_MISO     (P_DEFINED | P_IDENT(GPIO_PC10) | P_FUNCT(0))
-#define P_SPI0_MOSI     (P_DEFINED | P_IDENT(GPIO_PC11) | P_FUNCT(0))
-#define P_SPI0_RDY      (P_DEFINED | P_IDENT(GPIO_PC12) | P_FUNCT(1))
+#define P_SPI0_SCK      (P_DEFINED | P_IDENT(GPIO_PA6) | P_FUNCT(0))
+#define P_SPI0_MISO     (P_DEFINED | P_IDENT(GPIO_PA7) | P_FUNCT(0))
+#define P_SPI0_MOSI     (P_DEFINED | P_IDENT(GPIO_PA8) | P_FUNCT(0))
+#define P_SPI0_RDY      (P_DEFINED | P_IDENT(GPIO_PH1) | P_FUNCT(1))
 
-#define P_SPI0_SSEL1    (P_DEFINED | P_IDENT(GPIO_PC7) | P_FUNCT(1))
-#define P_SPI0_SSEL2    (P_DEFINED | P_IDENT(GPIO_PD1) | P_FUNCT(0))
-#define P_SPI0_SSEL3    (P_DEFINED | P_IDENT(GPIO_PC12) | P_FUNCT(0))
-#define P_SPI0_SSEL4    (P_DEFINED | P_IDENT(GPIO_PC0) | P_FUNCT(2))
-#define P_SPI0_SSEL5    (P_DEFINED | P_IDENT(GPIO_PE1) | P_FUNCT(1))
-#define P_SPI0_SSEL6    (P_DEFINED | P_IDENT(GPIO_PE2) | P_FUNCT(1))
-#define P_SPI0_SSEL7    (P_DEFINED | P_IDENT(GPIO_PE3) | P_FUNCT(1))
+#define P_SPI0_SSEL1    (P_DEFINED | P_IDENT(GPIO_PA9) | P_FUNCT(0))
+#define P_SPI0_SSEL2    (P_DEFINED | P_IDENT(GPIO_PB5) | P_FUNCT(2))
 
-#define P_SPI1_SCK      (P_DEFINED | P_IDENT(GPIO_PE13) | P_FUNCT(0))
-#define P_SPI1_MISO     (P_DEFINED | P_IDENT(GPIO_PE14) | P_FUNCT(0))
-#define P_SPI1_MOSI     (P_DEFINED | P_IDENT(GPIO_PE15) | P_FUNCT(0))
-#define P_SPI1_RDY      (P_DEFINED | P_IDENT(GPIO_PE8) | P_FUNCT(2))
+#define P_SPI1_SCK      (P_DEFINED | P_IDENT(GPIO_PA10) | P_FUNCT(1))
+#define P_SPI1_MISO     (P_DEFINED | P_IDENT(GPIO_PA11) | P_FUNCT(1))
+#define P_SPI1_MOSI     (P_DEFINED | P_IDENT(GPIO_PA12) | P_FUNCT(1))
+#define P_SPI1_RDY      (P_DEFINED | P_IDENT(GPIO_PB4) | P_FUNCT(1))
 
-#define P_SPI1_SSEL1    (P_DEFINED | P_IDENT(GPIO_PC13) | P_FUNCT(1))
-#define P_SPI1_SSEL2    (P_DEFINED | P_IDENT(GPIO_PE7) | P_FUNCT(2))
-#define P_SPI1_SSEL3    (P_DEFINED | P_IDENT(GPIO_PE11) | P_FUNCT(1))
-#define P_SPI1_SSEL4    (P_DEFINED | P_IDENT(GPIO_PE12) | P_FUNCT(1))
-#define P_SPI1_SSEL5    (P_DEFINED | P_IDENT(GPIO_PE8) | P_FUNCT(1))
-#define P_SPI1_SSEL6    (P_DEFINED | P_IDENT(GPIO_PF0) | P_FUNCT(1))
-#define P_SPI1_SSEL7    (P_DEFINED | P_IDENT(GPIO_PF1) | P_FUNCT(1))
+#define P_SPI1_SSEL1    (P_DEFINED | P_IDENT(GPIO_PA13) | P_FUNCT(1))
+#define P_SPI1_SSEL2    (P_DEFINED | P_IDENT(GPIO_PB10) | P_FUNCT(1))
 
 #define P_SPI2_SCK      (P_DEFINED | P_IDENT(GPIO_PA4) | P_FUNCT(0))
 #define P_SPI2_MISO     (P_DEFINED | P_IDENT(GPIO_PA0) | P_FUNCT(0))
@@ -96,11 +86,6 @@
 
 #define P_SPI2_SSEL1    (P_DEFINED | P_IDENT(GPIO_PA5) | P_FUNCT(0))
 #define P_SPI2_SSEL2    (P_DEFINED | P_IDENT(GPIO_PB3) | P_FUNCT(2))
-#define P_SPI2_SSEL3    (P_DEFINED | P_IDENT(GPIO_PB12) | P_FUNCT(1))
-#define P_SPI2_SSEL4    (P_DEFINED | P_IDENT(GPIO_PC1) | P_FUNCT(3))
-#define P_SPI2_SSEL5    (P_DEFINED | P_IDENT(GPIO_PB7) | P_FUNCT(1))
-#define P_SPI2_SSEL6    (P_DEFINED | P_IDENT(GPIO_PC3) | P_FUNCT(3))
-#define P_SPI2_SSEL7    (P_DEFINED | P_IDENT(GPIO_PB9) | P_FUNCT(1))
 
 /* SMC Port Mux */
 #define P_SMC_A1            (P_DEFINED | P_IDENT(GPIO_PB5) | P_FUNCT(3))
@@ -159,18 +144,21 @@
 #define P_SMC_ABE0          (P_DEFINED | P_IDENT(GPIO_PE14) | P_FUNCT(3))
 #define P_SMC_ABE1          (P_DEFINED | P_IDENT(GPIO_PE15) | P_FUNCT(3))
 
-/*MSI*/                                                                                                                                                                                                              
-#define P_MSI0_D0           (P_DEFINED | P_IDENT(GPIO_PF2) | P_FUNCT(0))                                                                                                                                             
-#define P_MSI0_D1           (P_DEFINED | P_IDENT(GPIO_PF3) | P_FUNCT(0))                                                                                                                                             
-#define P_MSI0_D2           (P_DEFINED | P_IDENT(GPIO_PF4) | P_FUNCT(0))                                                                                                                                             
-#define P_MSI0_D3           (P_DEFINED | P_IDENT(GPIO_PF5) | P_FUNCT(0))                                                                                                                                             
-#define P_MSI0_D4           (P_DEFINED | P_IDENT(GPIO_PF6) | P_FUNCT(0))                                                                                                                                             
-#define P_MSI0_D5           (P_DEFINED | P_IDENT(GPIO_PF7) | P_FUNCT(0))                                                                                                                                             
-#define P_MSI0_D6           (P_DEFINED | P_IDENT(GPIO_PF8) | P_FUNCT(0))                                                                                                                                             
-#define P_MSI0_D7           (P_DEFINED | P_IDENT(GPIO_PF9) | P_FUNCT(0))                                                                                                                                             
-#define P_MSI0_CMD          (P_DEFINED | P_IDENT(GPIO_PF10) | P_FUNCT(0))                                                                                                                                            
-#define P_MSI0_CLK          (P_DEFINED | P_IDENT(GPIO_PF11) | P_FUNCT(0))                                                                                                                                            
-#define P_MSI0_CDb          (P_DEFINED | P_IDENT(GPIO_PF12) | P_FUNCT(0))   
+/*MSI*/
+/*                                                                                                                                                                                                  
+#define P_MSI0_D0           (P_DEFINED | P_IDENT(GPIO_PF2) | P_FUNCT(0))
+#define P_MSI0_D1           (P_DEFINED | P_IDENT(GPIO_PF3) | P_FUNCT(0))
+#define P_MSI0_D2           (P_DEFINED | P_IDENT(GPIO_PF4) | P_FUNCT(0))
+#define P_MSI0_D3           (P_DEFINED | P_IDENT(GPIO_PF5) | P_FUNCT(0))
+#define P_MSI0_D4           (P_DEFINED | P_IDENT(GPIO_PF6) | P_FUNCT(0))
+#define P_MSI0_D5           (P_DEFINED | P_IDENT(GPIO_PF7) | P_FUNCT(0))
+#define P_MSI0_D6           (P_DEFINED | P_IDENT(GPIO_PF8) | P_FUNCT(0))
+#define P_MSI0_D7           (P_DEFINED | P_IDENT(GPIO_PF9) | P_FUNCT(0))
+#define P_MSI0_CMD          (P_DEFINED | P_IDENT(GPIO_PF10) | P_FUNCT(0))
+#define P_MSI0_CLK          (P_DEFINED | P_IDENT(GPIO_PF11) | P_FUNCT(0))
+#define P_MSI0_CDb          (P_DEFINED | P_IDENT(GPIO_PF12) | P_FUNCT(0))
+*/
+
 /* EMAC RMII Port Mux */
 #define P_MII0_ETxD0	(P_DEFINED | P_IDENT(GPIO_PH9) | P_FUNCT(0))
 #define P_MII0_ETxD1	(P_DEFINED | P_IDENT(GPIO_PH10) | P_FUNCT(0))

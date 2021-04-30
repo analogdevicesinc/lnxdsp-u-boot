@@ -34,16 +34,13 @@ static unsigned short pins[][7] = {
 
 static const unsigned short cs_pins[][7] = {
 	[0] = {
-		P_SPI0_SSEL1, P_SPI0_SSEL2, P_SPI0_SSEL3, P_SPI0_SSEL4,
-		P_SPI0_SSEL5, P_SPI0_SSEL6, P_SPI0_SSEL7,
+		P_SPI0_SSEL1, P_SPI0_SSEL2,
 	},
 	[1] = {
-		P_SPI1_SSEL1, P_SPI1_SSEL2, P_SPI1_SSEL3, P_SPI1_SSEL4,
-		P_SPI1_SSEL5, P_SPI1_SSEL6, P_SPI1_SSEL7,
+		P_SPI1_SSEL1, P_SPI1_SSEL2,
 	},
 	[2] = {
-		P_SPI2_SSEL1, P_SPI2_SSEL2, P_SPI2_SSEL3, P_SPI2_SSEL4,
-		P_SPI2_SSEL5, P_SPI2_SSEL6, P_SPI2_SSEL7,
+		P_SPI2_SSEL1, P_SPI2_SSEL2,
 	},
 };
 
@@ -51,10 +48,7 @@ int adi_spi_cs_valid(unsigned int bus, unsigned int cs)
 {
 	if (bus > MAX_SPI_NUM)
 		return 0;
-	if (bus == MAX_SPI_NUM)
-		return cs >= 1 && cs <= (MAX_CTRL_CS - 0);
-	else
-		return cs >= 1 && cs <= MAX_CTRL_CS;
+	return cs >= 1 && cs <= (MAX_CTRL_CS - 5);
 }
 
 struct adi_spi_slave *adi_spi_setup(unsigned int bus, unsigned int cs)

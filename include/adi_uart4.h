@@ -137,10 +137,10 @@ static inline void serial_early_do_portmux(void)
 		PORT_x_MUX_4_FUNC_1, PD4); /* RX: D; mux 4; func 1; PD4 */
 		break;
 	case 2:
-		serial_early_do_mach_portmux('E', PORT_x_MUX_11_MASK,
-		PORT_x_MUX_11_FUNC_2, PE11); /* TX: E; mux 11; func 2; PE11 */
-		serial_early_do_mach_portmux('E', PORT_x_MUX_10_MASK,
-		PORT_x_MUX_10_FUNC_2, PE10); /* RX: E; mux 10; func 2; PE10 */
+		serial_early_do_mach_portmux('D', PORT_x_MUX_11_MASK,
+		PORT_x_MUX_11_FUNC_2, PD11); /* TX: D; mux 11; func 2; PD11 */
+		serial_early_do_mach_portmux('D', PORT_x_MUX_10_MASK,
+		PORT_x_MUX_10_FUNC_2, PD10); /* RX: D; mux 10; func 2; PD10 */
 		break;
 	}
 #else

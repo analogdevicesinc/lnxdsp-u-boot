@@ -140,23 +140,19 @@
  */
 #define CONFIG_GENERIC_MMC
 #define CONFIG_MMC
-#define CONFIG_SC5XX_DWMMC
-#define CONFIG_DWMMC
-#define CONFIG_BOUNCE_BUFFER
+#define CONFIG_MMC_SPI
+#define CONFIG_CMD_MMC_SPI
 
 /*
  * Env Storage Settings
  */
-/*
 #define CONFIG_ENV_IS_IN_SPI_FLASH
-#define CONFIG_ENV_OFFSET       0x10000
+#define CONFIG_ENV_OFFSET       0x80000
 #define CONFIG_ENV_SIZE         0x2000
 #define CONFIG_ENV_SECT_SIZE    0x10000
-#define CONFIG_ENV_IS_EMBEDDED_IN_LDR
+/*#define CONFIG_ENV_IS_EMBEDDED_IN_LDR*/
 #define CONFIG_ENV_SPI_BUS 2
 #define CONFIG_ENV_SPI_CS 1
-*/
-#define CONFIG_ENV_IS_NOWHERE
 
 /*
  * Misc Settings
@@ -166,11 +162,30 @@
 #define CONFIG_UART_CONSOLE	0
 #define CONFIG_BAUDRATE		57600
 #define CONFIG_UART4_SERIAL
-#define CONFIG_LINUX_MEMSIZE	"224M"
+#define CONFIG_LINUX_MEMSIZE	"992M"
 #define CONFIG_CMD_BOOTZ
 
-#define CONFIG_BOOTCOMMAND	"run ramboot"
-#define INITRAMADDR "0xC5000000"
+#define CONFIG_BOOTCOMMAND	"run spiboot"
+#define INITRAMADDR "0x85000000"
+
+#define ADI_ENV_SETTINGS \
+	"fdt_high=0xFFFFFFFF\0" \
+	"rfsfile=adsp-sc5xx-minimal-adsp-sc594-som-ezkit.jffs2\0" \
+	"update_spi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 2:1; sf erase 0x1190000 0x6E70000; sf write ${loadaddr} 0x1190000 ${filesize}\0" \
+	"update_spi_zImage=tftp ${loadaddr} ${ramfile}; sf probe 2:1; sf erase 0x90000 0x1000000; sf write ${loadaddr} 0x90000 ${filesize}\0" \
+	"update_spi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; sf erase 0x1090000 0x100000; sf write ${loadaddr} 0x1090000 ${filesize}\0"\
+	"spiargs=set bootargs " CONFIG_BOOTARGS_SPI "\0" \
+	"spiboot=run spiargs; sf probe 2:1; sf read ${loadaddr} 0x90000 0x500000; sf read ${dtbaddr} 0x1090000 0x100000; bootz ${loadaddr} - ${dtbaddr}\0"
+
+#define CONFIG_BOOTARGS_SPI \
+        "root=/dev/mtdblock4 " \
+        "rootfstype=jffs2 " \
+        "clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
+        CONFIG_BOOTARGS_VIDEO \
+        "earlyprintk=serial,uart0,57600 " \
+        "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
+                        __stringify(CONFIG_BAUDRATE) " "\
+        "mem=" CONFIG_LINUX_MEMSIZE
 
 #include <configs/sc_adi_common.h>
 
