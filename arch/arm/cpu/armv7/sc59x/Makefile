@@ -33,7 +33,7 @@ $(obj)/init-$(CONFIG_SYS_BOARD).elf: $(obj)/init_main.o $(obj)/init.o $(obj)/dmc
 
 ifeq ($(CONFIG_SC59X_CHAIN_BOOT),y)
 quiet_cmd_ldr_init = 
-      cmd_ldr_init = $(LDR) -T $(CONFIG_CPU) -c $@ $^  --bcode=1 --use-vmas
+      cmd_ldr_init = $(LDR) -T $(CONFIG_CPU) -c $@ $^  --bcode=2 --use-vmas
 
 $(obj)/init-$(CONFIG_SYS_BOARD).ldr: $(obj)/init-$(CONFIG_SYS_BOARD)
 	$(call if_changed,ldr_init)
