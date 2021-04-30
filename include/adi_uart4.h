@@ -122,6 +122,28 @@ static inline void serial_early_puts(const char *s)
 __attribute__((always_inline))
 static inline void serial_early_do_portmux(void)
 {
+#if defined(CONFIG_SC59X)
+	switch (CONFIG_UART_CONSOLE) {
+	case 0:
+		serial_early_do_mach_portmux('A', PORT_x_MUX_6_MASK,
+		PORT_x_MUX_6_FUNC_2, PA6); /* TX: A; mux 6; func 2; PA6 */
+		serial_early_do_mach_portmux('A', PORT_x_MUX_7_MASK,
+		PORT_x_MUX_7_FUNC_2, PA7); /* RX: A; mux 6; func 2; PA7 */
+		break;
+	case 1:
+		serial_early_do_mach_portmux('D', PORT_x_MUX_5_MASK,
+		PORT_x_MUX_5_FUNC_1, PD5); /* TX: D; mux 5; func 1; PD5 */
+		serial_early_do_mach_portmux('D', PORT_x_MUX_4_MASK,
+		PORT_x_MUX_4_FUNC_1, PD4); /* RX: D; mux 4; func 1; PD4 */
+		break;
+	case 2:
+		serial_early_do_mach_portmux('E', PORT_x_MUX_11_MASK,
+		PORT_x_MUX_11_FUNC_2, PE11); /* TX: E; mux 11; func 2; PE11 */
+		serial_early_do_mach_portmux('E', PORT_x_MUX_10_MASK,
+		PORT_x_MUX_10_FUNC_2, PE10); /* RX: E; mux 10; func 2; PE10 */
+		break;
+	}
+#else
 	switch (CONFIG_UART_CONSOLE) {
 	case 0:
 		serial_early_do_mach_portmux('C', PORT_x_MUX_13_MASK,
@@ -142,6 +164,7 @@ static inline void serial_early_do_portmux(void)
 		PORT_x_MUX_13_FUNC_1, PD13); /* RX: D; mux 13; func 1; PD13 */
 		break;
 	}
+#endif
 }
 
 __attribute__((always_inline))

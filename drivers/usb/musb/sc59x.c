@@ -19,8 +19,6 @@
 
 #if defined(CONFIG_SC59X)
 #include <asm/arch/sc59x.h>
-#else
-#include <asm/arch/sc58x.h>
 #endif
 
 #include "musb_core.h"
