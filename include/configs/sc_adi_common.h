@@ -103,11 +103,31 @@
 # define CONFIG_BOOTARGS_VIDEO ""
 #endif
 
-#define CONFIG_BOOTCOMMAND	"run ramboot"
-#define CONFIG_BOOTARGS_ROOT "/dev/mtdblock2 rw"
+#define CONFIG_BOOTARGS_ROOT_NAND "/dev/mtdblock2 rw"
+#define CONFIG_BOOTARGS_ROOT_SDCARD    "/dev/mmcblk0p1 rw"
+
+#define CONFIG_BOOTARGS_SDCARD	\
+	"root=" CONFIG_BOOTARGS_ROOT_SDCARD " " \
+	"rootfstype=ext2 " \
+	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
+	CONFIG_BOOTARGS_VIDEO \
+	"earlyprintk=serial,uart0,57600 " \
+	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
+			__stringify(CONFIG_BAUDRATE) " "\
+	"mem=" CONFIG_LINUX_MEMSIZE
+
+#define CONFIG_BOOTARGS_NFS	\
+	"root=/dev/nfs rw " \
+	"nfsroot=${serverip}:${rootpath},tcp,nfsvers=3 " \
+	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
+	CONFIG_BOOTARGS_VIDEO \
+	"earlyprintk=serial,uart0,57600 " \
+	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
+			__stringify(CONFIG_BAUDRATE) " "\
+	"mem=" CONFIG_LINUX_MEMSIZE
 
 #define CONFIG_BOOTARGS	\
-	"root=" CONFIG_BOOTARGS_ROOT " " \
+	"root=" CONFIG_BOOTARGS_ROOT_NAND " " \
 	"rootfstype=jffs2 " \
 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
 	CONFIG_BOOTARGS_VIDEO \
@@ -154,28 +174,58 @@
 		   "${hostname}:eth0:off" \
 		"\0" \
 	\
-	"ramfile=uImage\0" \
+	"ramfile=zImage\0" \
+	"initramfile=ramdisk.cpio.xz.u-boot\0" \
+	"initramaddr=" INITRAMADDR "\0" \
 	"dtbfile=" CONFIG_DTBNAME "\0" \
 	"dtbaddr=" CONFIG_DTBLOADADDR "\0" \
+	"sdcardargs=set bootargs " CONFIG_BOOTARGS_SDCARD "\0" \
 	"ramargs=set bootargs " CONFIG_BOOTARGS "\0" \
+	"nfsargs=set bootargs " CONFIG_BOOTARGS_NFS "\0" \
+	"ramboot_emmc=" \
+		"mmc rescan;" \
+		"mmc dev 0 0;" \
+		"ext2load mmc 0:1 ${loadaddr} /boot/${ramfile};" \
+		"ext2load mmc 0:1 ${dtbaddr} /boot/${dtbfile};" \
+		"ext2load mmc 0:1 ${initramaddr} /boot/${initramfile};" \
+		"run sdcardargs;" \
+		"run addip;" \
+		"bootz ${loadaddr} ${initramaddr} ${dtbaddr}" \
+		"\0" \
+	\
 	"ramboot=" \
+		"tftp ${loadaddr} ${ramfile};" \
+		"tftp ${dtbaddr} ${dtbfile};" \
+		"tftp ${initramaddr} ${initramfile};" \
+		"run ramargs;" \
+		"run addip;" \
+		"bootz ${loadaddr} ${initramaddr} ${dtbaddr}" \
+		"\0" \
+	\
+	"norboot=" \
 		"tftp ${loadaddr} ${ramfile};" \
 		"tftp ${dtbaddr} ${dtbfile};" \
 		"run ramargs;" \
 		"run addip;" \
-		"bootm ${loadaddr} - ${dtbaddr}" \
+		"bootz ${loadaddr} - ${dtbaddr}" \
 		"\0" \
 	\
-	"nfsfile=vmImage\0" \
-	"nfsargs=set bootargs " \
-		"root=/dev/nfs rw " \
-		"nfsroot=${serverip}:${rootpath},tcp,nfsvers=3" \
+	"sdcardboot=" \
+		"mmc rescan;" \
+		"mmc dev 0 0;" \
+		"ext2load mmc 0:1 ${loadaddr} /boot/${ramfile};" \
+		"ext2load mmc 0:1 ${dtbaddr} /boot/${dtbfile};" \
+		"run sdcardargs;" \
+		"bootz ${loadaddr} - ${dtbaddr}" \
 		"\0" \
+	\
+	"nfsfile=zImage\0" \
 	"nfsboot=" \
 		"tftp ${loadaddr} ${nfsfile};" \
+		"tftp ${dtbaddr} ${dtbfile};" \
 		"run nfsargs;" \
 		"run addip;" \
-		"bootm" \
+		"bootz ${loadaddr} - ${dtbaddr}" \
 		"\0"
 #else
 # define NETWORK_ENV_SETTINGS

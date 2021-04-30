@@ -156,7 +156,10 @@
 #define CONFIG_BAUDRATE		57600
 #define CONFIG_UART4_SERIAL
 #define CONFIG_LINUX_MEMSIZE	"112M"
+#define CONFIG_CMD_BOOTZ
 
+#define CONFIG_BOOTCOMMAND	"run ramboot"
+#define INITRAMADDR "0x8C000000"
 
 #include <configs/sc_adi_common.h>
 
