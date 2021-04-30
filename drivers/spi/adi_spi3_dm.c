@@ -95,10 +95,6 @@ static int adi_spi_probe(struct udevice *bus)
 	priv->memory_map = (void *)CONFIG_SPI_MM_BASE;
 #endif
 
-	/* Select quad rx and tx mode for SPI data transfer */
-	//slave->op_mode_rx = SPI_OPM_RX_QOF << 1;
-	//slave->op_mode_tx = SPI_OPM_TX_QPP;
-
 	writel(0x0, &plat->regs->control);
 	writel(0x0, &plat->regs->rx_control);
 	writel(0x0, &plat->regs->tx_control);
