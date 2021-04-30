@@ -59,6 +59,8 @@
 #define pREG_DMC0_EMR3              ((volatile uint32_t*)0x3107006C)
 #define pREG_DMC0_DLLCTL            ((volatile uint32_t*)0x31070080)
 
+#define pREG_CDU0_CLKINSEL          ((volatile uint32_t*)0x3108F044)
+
 #define DMC_DATACYC                        12
 #define DMC_DLLCALRDCNT                    240
 
@@ -228,6 +230,7 @@ typedef struct
 }ADI_DMC_CONFIG;
 
 void DMC_Config(void);
+void adi_dmc_lane_reset(bool reset);
 
 #endif /* CONFIG_DMC0 */
 

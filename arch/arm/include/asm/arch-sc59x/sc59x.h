@@ -103,6 +103,7 @@
 #define CGU0_STAT                   0x3108D008         /* CGU0 Status Register */
 #define CGU0_DIV                    0x3108D00C         /* CGU0 Clocks Divisor Register */
 #define CGU0_CLKOUTSEL              0x3108D010         /* CGU0 CLKOUT Select Register */
+#define CGU0_DIVEX                  0x3108D040         /* CGU0 DIV Register Extension */
 
 /* =========================
         CGU1
