@@ -156,6 +156,7 @@
 #define CONFIG_BAUDRATE		57600
 #define CONFIG_UART4_SERIAL
 #define CONFIG_LINUX_MEMSIZE	"224M"
+#define CONFIG_CMD_BOOTZ
 
 /*
  * SDH Settings
@@ -165,6 +166,9 @@
 #define CONFIG_SC5XX_DWMMC
 #define CONFIG_DWMMC
 #define CONFIG_BOUNCE_BUFFER
+
+#define CONFIG_BOOTCOMMAND	"run ramboot"
+#define INITRAMADDR "0x85000000"
 
 #include <configs/sc_adi_common.h>
 

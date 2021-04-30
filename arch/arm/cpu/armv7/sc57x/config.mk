@@ -39,6 +39,4 @@ LDR_FLAGS += $(LDR_FLAGS-y)
 LDR_FLAGS += $(LDR_FLAGS-$(CONFIG_SC_BOOT_MODE))
 endif
 # Select the Analog Devices processor.
-ifeq ($(CONFIG_TARGET_SC573_EZKIT),y)
-PLATFORM_RELFLAGS += -mproc=ADSP-SC573
-endif
+PLATFORM_RELFLAGS += -fno-stack-protector -std=gnu89 -mfpu=neon-vfpv4 -march=armv7-a

@@ -38,11 +38,6 @@ LDR_FLAGS += $(LDR_FLAGS-y)
 # Set some default LDR flags based on boot mode.
 LDR_FLAGS += $(LDR_FLAGS-$(CONFIG_SC_BOOT_MODE))
 endif
+
 # Select the Analog Devices processor.
-ifeq ($(CONFIG_TARGET_SC589_EZKIT),y)
-PLATFORM_RELFLAGS += -mproc=ADSP-SC589
-else
-ifeq ($(CONFIG_TARGET_SC584_EZKIT),y)
-PLATFORM_RELFLAGS += -mproc=ADSP-SC584
-endif
-endif
+PLATFORM_RELFLAGS += -fno-stack-protector -std=gnu89 -mfpu=neon-vfpv4 -march=armv7-a
