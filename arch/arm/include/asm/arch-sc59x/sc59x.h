@@ -81,18 +81,18 @@
 /* =========================
         RCU0
    ========================= */
-#define RCU0_CTL                    0x3108B000         /* RCU0 Control Register */
-#define RCU0_STAT                   0x3108B004         /* RCU0 Status Register */
-#define RCU0_CRCTL                  0x3108B008         /* RCU0 Core Reset Control Register */
-#define RCU0_CRSTAT                 0x3108B00C         /* RCU0 Core Reset Status Register */
-#define RCU0_SIDIS                  0x3108B010         /* RCU0 System Interface Disable Register */
-#define RCU0_MSG_SET                0x3108B064         /* RCU0 Message Set Bits Register */
+#define RCU0_CTL                    0x3108C000         /* RCU0 Control Register */
+#define RCU0_STAT                   0x3108C004         /* RCU0 Status Register */
+#define RCU0_CRCTL                  0x3108C008         /* RCU0 Core Reset Control Register */
+#define RCU0_CRSTAT                 0x3108C00C         /* RCU0 Core Reset Status Register */
+#define RCU0_SIDIS                  0x3108C01C         /* RCU0 System Interface Disable Register */
+#define RCU0_MSG_SET                0x3108C070         /* RCU0 Message Set Bits Register */
 
 
 /* =========================
         SPU MMR base
    ========================= */
-#define REG_SPU0_CTL                    0x3108C000         /* SPU0 Control Register */
+#define REG_SPU0_CTL                    0x3108B000         /* SPU0 Control Register */
 
 
 /* =========================
