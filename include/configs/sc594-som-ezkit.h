@@ -171,11 +171,13 @@
 #define ADI_ENV_SETTINGS \
 	"fdt_high=0xFFFFFFFF\0" \
 	"rfsfile=adsp-sc5xx-minimal-adsp-sc594-som-ezkit.jffs2\0" \
+	"dtbsize=0x100000\0" \
+	"zimagesize=0x1000000\0" \
 	"update_spi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 2:1; sf erase 0x1190000 0x6E70000; sf write ${loadaddr} 0x1190000 ${filesize}\0" \
-	"update_spi_zImage=tftp ${loadaddr} ${ramfile}; sf probe 2:1; sf erase 0x90000 0x1000000; sf write ${loadaddr} 0x90000 ${filesize}\0" \
-	"update_spi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; sf erase 0x1090000 0x100000; sf write ${loadaddr} 0x1090000 ${filesize}\0"\
+	"update_spi_zImage=tftp ${loadaddr} ${ramfile}; sf probe 2:1; sf erase 0x90000 0x1000000; sf write ${loadaddr} 0x90000 ${filesize}; setenv zimagesize ${filesize}; saveenv\0" \
+	"update_spi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; sf erase 0x1090000 0x100000; sf write ${loadaddr} 0x1090000 ${filesize}; setenv dtbsize ${filesize}; saveenv\0"\
 	"spiargs=set bootargs " CONFIG_BOOTARGS_SPI "\0" \
-	"spiboot=run spiargs; sf probe 2:1; sf read ${loadaddr} 0x90000 0x500000; sf read ${dtbaddr} 0x1090000 0x100000; bootz ${loadaddr} - ${dtbaddr}\0"
+	"spiboot=run spiargs; sf probe 2:1; sf read ${loadaddr} 0x90000 ${zimagesize}; sf read ${dtbaddr} 0x1090000 ${dtbsize}; bootz ${loadaddr} - ${dtbaddr}\0"
 
 #define CONFIG_BOOTARGS_SPI \
         "root=/dev/mtdblock4 " \
