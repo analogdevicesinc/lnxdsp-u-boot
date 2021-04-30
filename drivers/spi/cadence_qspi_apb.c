@@ -38,6 +38,7 @@
 #include <malloc.h>
 #include "cadence_qspi.h"
 #include "../../arch/arm/cpu/armv7/sc59x/adsp594.h"
+#include "../../arch/arm/cpu/armv7/sc59x/adsp594_mdma.h"
 
 #define CQSPI_REG_POLL_US			1 /* 1us */
 #define CQSPI_REG_RETRY				10000
@@ -820,6 +821,7 @@ void cadence_qspi_apb_enter_xip(void *reg_base, char xip_dummy)
 #define OSPI0_MMAP_ADDRESS 0x60000000
 
 #define ADI_OCTAL
+#define ADI_OCTAL_USE_DMA
 
 int cadence_qspi_direct_read(struct cadence_spi_platdata *plat,
 	unsigned int cmdlen, const u8 *cmdbuf,
@@ -921,6 +923,9 @@ int cadence_qspi_direct_read(struct cadence_spi_platdata *plat,
     writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
 #endif
 
+#ifdef ADI_OCTAL_USE_DMA
+	memcopy_dma(rxbuf, OSPI0_MMAP_ADDRESS+addr_value, rxlen);
+#else
     /* Perform the transfer */
     uint32_t count = 0;
     uint8_t *pReadBuffer = rxbuf;
@@ -965,23 +970,25 @@ int cadence_qspi_direct_write(struct cadence_spi_platdata *plat,
     curVal &= (~BITM_OSPI_DRICTL_INSTRTYP);
     writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
 
-
     /* Configure the opcode */
-/*
     curVal = readl(plat->regbase + CQSPI_REG_WR_INSTR);
-    curVal |= (((uint32_t)(0x02) << BITP_OSPI_DWICTL_OPCODEWR) & BITM_OSPI_DWICTL_OPCODEWR) |
-              (((uint32_t)(0x10) << BITP_OSPI_DWICTL_DMYWR) & BITM_OSPI_DWICTL_DMYWR);
+#ifdef ADI_OCTAL
+	curVal |= (((uint32_t)(0x82) << BITP_OSPI_DWICTL_OPCODEWR) & BITM_OSPI_DWICTL_OPCODEWR);    
+#else
+	curVal |= (((uint32_t)(0x02) << BITP_OSPI_DWICTL_OPCODEWR) & BITM_OSPI_DWICTL_OPCODEWR);
+#endif
     writel(curVal, plat->regbase + CQSPI_REG_WR_INSTR);
-*/
 
-	/* Configure the opcode */
-	curVal = cmdbuf[0] << CQSPI_REG_WR_INSTR_OPCODE_LSB;
-	writel(curVal, plat->regbase + CQSPI_REG_WR_INSTR);
-
-    /* OSPI Single Mode */
     curVal = readl(plat->regbase + CQSPI_REG_WR_INSTR);
+#ifdef ADI_OCTAL
+    /* OSPI Octal Mode */
+    curVal |= (3UL << BITP_OSPI_DWICTL_ADDRTRNSFR) |
+              (3UL << BITP_OSPI_DWICTL_DATATRNSFR);
+#else    
+    /* OSPI Single Mode */
     curVal |= (0UL << BITP_OSPI_DWICTL_ADDRTRNSFR) |
               (0UL << BITP_OSPI_DWICTL_DATATRNSFR);
+#endif
     writel(curVal, plat->regbase + CQSPI_REG_WR_INSTR);
 
     /* Clear the DTR mode bits */
@@ -995,7 +1002,12 @@ int cadence_qspi_direct_write(struct cadence_spi_platdata *plat,
 
     /*! Data transfer with Command, Address and data transffered in STR mode */
     curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+#ifdef ADI_OCTAL    
     curVal |= (0UL << BITP_OSPI_DRICTL_DDREN);
+    //curVal |= (1UL << BITP_OSPI_DRICTL_DDREN);
+#else
+    curVal |= (0UL << BITP_OSPI_DRICTL_DDREN);
+#endif
     writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
 
     /* Make sure the dual op-code is not enabled */
@@ -1010,16 +1022,38 @@ int cadence_qspi_direct_write(struct cadence_spi_platdata *plat,
 
 	addr_value = cadence_qspi_apb_cmd2addr(&cmdbuf[1], cmdlen >= 5 ? 4 : 3);
 
+#ifdef ADI_OCTAL 
+	/* Update the DRIR register here to support Octal IO Read mode - Not supported by existing driver */
+    curVal = readl(plat->regbase + CQSPI_REG_WR_INSTR);
+    curVal &= ~((3UL << BITP_OSPI_DRICTL_ADDRTRNSFR));
+    writel(curVal, plat->regbase + CQSPI_REG_WR_INSTR);
+#endif
+
+#ifdef ADI_OCTAL_USE_DMA
+	memcopy_dma(OSPI0_MMAP_ADDRESS+addr_value, txbuf, txlen);
+#else
     /* Perform the transfer */
     uint32_t count = 0;
-    uint8_t *pWriteBuffer = txbuf;
-    uint8_t *pFlashAddress = (uint8_t *)OSPI0_MMAP_ADDRESS+addr_value;
+    uint64_t *pWriteBuffer = txbuf;
+    uint64_t *pFlashAddress = (uint64_t *)(OSPI0_MMAP_ADDRESS+addr_value);
+    uint8_t *pWriteBuffer8;
+    uint8_t *pFlashAddress8;
 
-    for (count = 0U; count < txlen; count++)
+    for (count = 0U; count < (txlen / 8); count++)
     {
-        *pFlashAddress++ = *pWriteBuffer++;
-        while(!CQSPI_REG_IS_IDLE(plat->regbase));
+        *(uint64_t*)pFlashAddress++ = *(uint64_t*)pWriteBuffer++;
     }
+
+    if(txlen % 8){
+		pWriteBuffer8 = (uint8_t*)pWriteBuffer;
+		pFlashAddress8 = (uint8_t*)pFlashAddress;
+
+	    for (count = 0U; count < (txlen % 8); count++)
+	    {
+	        *(uint8_t*)pFlashAddress8++ = *(uint8_t*)pWriteBuffer8++;
+	    }
+	}
+#endif
 
     return 0;
 }
