@@ -29,14 +29,6 @@
 
 #define CLKIN_SC589     25000000          /* CLKIN to processor in Hz */
 
-#define PLLCLK_MAX_589      1000
-#define CCLK_MAX_589        450
-#define SYSCLK_MAX_589      225
-#define S0CLK_MAX_589       113
-#define S1CLK_MAX_589       113
-#define DDRCLK_MAX_589      450
-#define OUTCLK_MAX_589      450
-
 /*  PLL Multiplier and Divisor Selections (Required Value, Bit Position) */
 #define MSEL(X)   		((X << BITP_CGU_CTL_MSEL) 				& BITM_CGU_CTL_MSEL) 						/* PLL Multiplier Select */
 #define DF(X)	  		((X << BITP_CGU_CTL_DF) 				& BITM_CGU_CTL_DF )							/* Divide frequency[true or false] */
@@ -70,45 +62,6 @@ struct CGU_Settings
 	uint32_t div_DSEL:5;
 	uint32_t div_OSEL:7;
 	uint32_t divex_S1SELEX:8;
-};
-
-struct _CDU_MAPPINGS
-{
-	uint32_t cfg0_SEL:2;
-	uint32_t cfg0_EN:1;
-	uint32_t cfg1_SEL:2;
-	uint32_t cfg1_EN:1;
-	uint32_t cfg2_SEL:2;
-	uint32_t cfg2_EN:1;
-	uint32_t cfg3_SEL:2;
-	uint32_t cfg3_EN:1;
-	uint32_t cfg4_SEL:2;
-	uint32_t cfg4_EN:1;
-	uint32_t cfg5_SEL:2;
-	uint32_t cfg5_EN:1;
-	uint32_t cfg6_SEL:2;
-	uint32_t cfg6_EN:1;
-	uint32_t cfg7_SEL:2;
-	uint32_t cfg7_EN:1;
-	uint32_t cfg8_SEL:2;
-	uint32_t cfg8_EN:1;
-	uint32_t cfg9_SEL:2;
-	uint32_t cfg9_EN:1;
-	uint32_t reserved0:5; /* 32 bits */
-};
-
-
-struct _CGU_CLOCKDIVIDERS
-{
-	uint32_t ctl_MSEL:7;
-	uint32_t ctl_DF:1;
-	uint32_t div_CSEL:5;
-	uint32_t div_SYSSEL:5;
-	uint32_t div_S0SEL:3;
-	uint32_t div_S1SEL:3;
-	uint32_t div_DSEL:5;
-	uint32_t div_OSEL:7;
-	uint32_t reserved0:28; /* 64 bits */
 };
 
 /* =========================
