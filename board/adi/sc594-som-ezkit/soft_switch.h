@@ -25,14 +25,14 @@ static struct switch_config switch_config_array_ethernet_enabled[NUM_SWITCH] = {
 	| | | | | | | 0- EEPROM_EN     |  | | | | | | | 0- OCTAL_SPI_CS_EN
 	| | | | | | | |                |  | | | | | | | |
 	O O O O O O O O                |  O O O O O O O O   (I/O direction)
-	0 0 0 0 0 0 0 0                |  1 1 0 0 0 0 0 0   (value being set)
+	0 0 0 0 0 0 0 0                |  1 1 0 0 0 0 0 1   (value being set)
 */
 		.i2c_bus = 2,
 		.i2c_addr = 0x22,
 		.dir0 = 0x0, /* all output */
 		.dir1 = 0x0, /* all output */
 		.value0 = 0x0,
-		.value1 = 0xC0,
+		.value1 = 0xC1,
 	},
 
 	{
@@ -49,13 +49,13 @@ static struct switch_config switch_config_array_ethernet_enabled[NUM_SWITCH] = {
 	| | | | | | | 0- LED           |  | | | | | | | 0- Unused
 	| | | | | | | |                |  | | | | | | | |
 	O O O O O O O O                |  O O O O O O O O   (I/O direction)
-	0 0 0 0 0 0 0 0                |  1 1 0 0 0 0 0 0   (value being set)
+	0 0 0 1 1 1 1 1                |  0 0 0 0 0 0 0 0   (value being set)
 */
 		.i2c_bus = 2,
 		.i2c_addr = 0x21,
 		.dir0 = 0x0, /* all output */
 		.dir1 = 0x0, /* all output */
-		.value0 = 0x7,
+		.value0 = 0x1F,
 		.value1 = 0x0,
 	},
 
@@ -76,14 +76,14 @@ static struct switch_config switch_config_array_ethernet_disabled[NUM_SWITCH] = 
 	| | | | | | | 0- EEPROM_EN     |  | | | | | | | 0- OCTAL_SPI_CS_EN
 	| | | | | | | |                |  | | | | | | | |
 	O O O O O O O O                |  O O O O O O O O   (I/O direction)
-	0 0 0 0 0 0 0 0                |  1 1 0 0 0 0 0 0   (value being set)
+	0 0 0 0 0 0 0 0                |  0 0 0 0 0 0 0 1   (value being set)
 */
 		.i2c_bus = 2,
 		.i2c_addr = 0x22,
 		.dir0 = 0x0, /* all output */
 		.dir1 = 0x0, /* all output */
 		.value0 = 0x0,
-		.value1 = 0xC0,
+		.value1 = 0x1,
 	},
 
 	{
@@ -100,13 +100,13 @@ static struct switch_config switch_config_array_ethernet_disabled[NUM_SWITCH] = 
 	| | | | | | | 0- LED           |  | | | | | | | 0- Unused
 	| | | | | | | |                |  | | | | | | | |
 	O O O O O O O O                |  O O O O O O O O   (I/O direction)
-	0 0 0 0 0 0 0 0                |  1 1 0 0 0 0 0 0   (value being set)
+	0 0 0 1 1 0 0 0                |  0 0 0 0 0 0 0 0   (value being set)
 */
 		.i2c_bus = 2,
 		.i2c_addr = 0x21,
 		.dir0 = 0x0, /* all output */
 		.dir1 = 0x0, /* all output */
-		.value0 = 0x0,
+		.value0 = 0x18,
 		.value1 = 0x0,
 	},
 
