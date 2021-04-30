@@ -94,8 +94,7 @@ int board_eth_init(bd_t *bis)
 {
 	int ret = 0;
 
-	if (CONFIG_DW_PORTS & 1) {
-
+	if (CONFIG_DW_PORTS >= 1) {
 		gpio_request(GPIO_PG12, "emac0_phy_pwdn");
 		gpio_direction_output(GPIO_PG12, 1);
 
@@ -114,7 +113,7 @@ int board_eth_init(bd_t *bis)
 					PHY_INTERFACE_MODE_RGMII);
 	}
 
-	if (CONFIG_DW_PORTS & 2) {
+	if (CONFIG_DW_PORTS >= 2) {
 		static const unsigned short pins[] = P_RMII1;
 		if (!peripheral_request_list(pins, "emac1"))
 			ret += designware_initialize(REG_EMAC1_MACCFG, 0);
