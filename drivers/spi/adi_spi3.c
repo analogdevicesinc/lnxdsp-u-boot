@@ -272,11 +272,23 @@ int spi_xfer(struct spi_slave *slave, unsigned int bitlen, const void *dout,
 	if (flags & SPI_XFER_MMAP) {
 		u32 control = sdev->control;
 		u32 delay = SPI_DLY_LEADX | SPI_DLY_LAGX | 3;
-		u32 mmrdh =  3 << SPI_MMRDH_ADRSIZE_OFF;
 		u32 ssel = readl(&sdev->regs->ssel);
 
+#if defined(CONFIG_SPI_FLASH_STMICRO)
+		/* Use Fast read quad IO command in memory mapped mode */
+		u32 mmrdh =  3 << SPI_MMRDH_ADRSIZE_OFF;
+		mmrdh |= 0xEB | 5 << SPI_MMRDH_DMYSIZE_OFF;
+#elif defined(CONFIG_SPI_FLASH_ISSI)
+		u32 mmrdh =  4 << SPI_MMRDH_ADRSIZE_OFF;
+		mmrdh |= 0xEC | 3 << SPI_MMRDH_DMYSIZE_OFF;
+		/* TODO : Temporary fix to enable bit 11 to  set bus width to 4.
+		Need to make this part specific */
+		mmrdh |= (1 << 11);
+#else
+		u32 mmrdh =  3 << SPI_MMRDH_ADRSIZE_OFF;
 		/* Use Octal word read quad IO command in memory mapped mode */
 		mmrdh |= 0xE3 | 1 << SPI_MMRDH_DMYSIZE_OFF;
+#endif
 		mmrdh |= 1 << SPI_MMRDH_TRIDMY_OFF;
 		/* Ask SPI controller to send out address via 4-pin mode */
 		mmrdh |= SPI_MMRDH_ADRPINS | SPI_MMRDH_MERGE;
