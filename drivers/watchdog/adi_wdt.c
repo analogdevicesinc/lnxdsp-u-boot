@@ -16,6 +16,7 @@
 #elif defined(CONFIG_SC57X)
 #include <asm/arch/sc57x.h>
 #endif
+#include <asm/arch/clock.h>
 #include <asm/arch/watchdog.h>
 #include <asm/io.h>
 
