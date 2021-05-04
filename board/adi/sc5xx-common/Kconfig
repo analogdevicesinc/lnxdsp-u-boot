@@ -118,3 +118,10 @@ config UART4_SERIAL
 	bool
 	default y
 
+config ADI_WATCHDOG
+	bool
+	default n
+
+config WATCHDOG_TIMEOUT_MSECS
+	int
+	default 10000
