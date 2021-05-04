@@ -362,11 +362,9 @@
 # endif
 #endif
 
-/*
-#define CONFIG_HW_WATCHDOG
-#define CONFIG_ADI_WATCHDOG
-#define CONFIG_WATCHDOG_TIMEOUT_MSECS 10000
-*/
+#ifdef CONFIG_ADI_WATCHDOG
+# define CONFIG_HW_WATCHDOG
+#endif
 
 #define CONFIG_RSA
 
