@@ -17,7 +17,7 @@ else
 CREATE_LDR_ENV =
 endif
 
-ALL-y += u-boot.ldr u-boot-$(CONFIG_SYS_BOARD).ldr
+INPUTS-y += u-boot.ldr u-boot-$(CONFIG_SYS_BOARD).ldr
 
 LDR_FLAGS-y :=
 

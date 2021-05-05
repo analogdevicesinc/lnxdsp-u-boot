@@ -17,7 +17,7 @@ else
 CREATE_LDR_ENV =
 endif
 
-ALL-y += u-boot.ldr u-boot-$(CONFIG_SYS_BOARD).ldr
+INPUTS-y += u-boot.ldr u-boot-$(CONFIG_SYS_BOARD).ldr
 
 LDR_FLAGS-y :=
 
@@ -38,5 +38,6 @@ LDR_FLAGS += $(LDR_FLAGS-y)
 # Set some default LDR flags based on boot mode.
 LDR_FLAGS += $(LDR_FLAGS-$(CONFIG_SC_BOOT_MODE))
 endif
+
 # Select the Analog Devices processor.
 PLATFORM_RELFLAGS += -fno-stack-protector -std=gnu89 -mfpu=neon-vfpv4 -march=armv7-a
