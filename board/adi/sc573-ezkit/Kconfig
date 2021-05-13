@@ -74,3 +74,6 @@ config USB_SC57X
 	bool
 	default y
 
+config MMC_DW
+	bool
+	default y
