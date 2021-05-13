@@ -32,6 +32,7 @@
 #  undef CONFIG_CMD_NET
 #  undef CONFIG_CMD_NFS
 # endif
+/*
 # ifdef CONFIG_MMC
 #  define CONFIG_CMD_MMC
 #  define CONFIG_CMD_EXT2
@@ -44,6 +45,7 @@
 #  define CONFIG_CMD_FAT
 #  define CONFIG_DOS_PARTITION
 # endif
+*/
 # if defined(CONFIG_CMD_FAT) && !defined(CONFIG_FS_FAT)
 #  define CONFIG_FS_FAT
 #  define CONFIG_FS_FAT_MAX_CLUSTSIZE 65536

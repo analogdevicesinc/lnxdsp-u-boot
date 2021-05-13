@@ -17,11 +17,36 @@
 #include <asm/arch-sc57x/dwmmc.h>
 #include <linux/delay.h>
 #include <watchdog.h>
+#include <spi_flash.h>
 #include "soft_switch.h"
+
+extern char __rel_dyn_start, __rel_dyn_end;
+extern char __bss_start, __bss_end;
+
+static void bss_clear(void)
+{
+	u32 bss_start = (u32)&__bss_start;
+	u32 bss_end = (u32)&__bss_end;
+	u32 rel_dyn_end = (u32)&__rel_dyn_end;
+	u32 *to;
+
+	if (rel_dyn_end >= bss_start && rel_dyn_end <= bss_end)
+		to = (u32 *)rel_dyn_end;
+	else
+		to = (u32 *)bss_start;
+
+	int i, sz;
+
+	sz = bss_end - (u32)to;
+	for (i = 0; i < sz; i += 4)
+		*to++ = 0;
+}
 
 DECLARE_GLOBAL_DATA_PTR;
 int board_early_init_f(void)
 {
+	bss_clear();
+
 #ifdef CONFIG_HW_WATCHDOG
 	hw_watchdog_init();
 #endif
@@ -43,6 +68,10 @@ void set_spu_securep_msec(int n, bool msec)
 /* miscellaneous platform dependent initialisations */
 int misc_init_r(void)
 {
+	if (!spi_flash_probe(CONFIG_SF_DEFAULT_BUS, CONFIG_SF_DEFAULT_CS,
+			     CONFIG_SF_DEFAULT_SPEED, CONFIG_SF_DEFAULT_MODE))
+		printf("spi flash probe failed\n");
+
 	printf("other init\n");
 	set_spu_securep_msec(41, 1);
 	set_spu_securep_msec(45, 1);
