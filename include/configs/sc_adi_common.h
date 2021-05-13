@@ -53,9 +53,11 @@
 # ifdef CONFIG_MMC_SPI
 #  define CONFIG_CMD_MMC_SPI
 # endif
+/*
 # ifdef CONFIG_SPI_FLASH
 #  define CONFIG_CMD_SF
 # endif
+*/
 # ifdef CONFIG_SYS_I2C
 #  define CONFIG_CMD_I2C
 # endif
