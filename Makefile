@@ -1322,10 +1322,18 @@ u-boot-nodtb.bin: u-boot FORCE
 	$(call cmd,static_rela,$<,$@,$(CONFIG_SYS_TEXT_BASE))
 	$(BOARD_SIZE_CHECK)
 
+ifeq ($(CONFIG_SC59X_64),y)
+u-boot.ldr:	u-boot
+		$(CREATE_LDR_ENV)
+		elfloader -proc ADSP-SC598 -o $@ -core0=$< $(LDR_FLAGS)
+		$(BOARD_SIZE_CHECK)
+else
 u-boot.ldr:	u-boot
 		$(CREATE_LDR_ENV)
 		$(LDR) -T $(CONFIG_ADI_CPU) -c $@ $< $(LDR_FLAGS)
 		$(BOARD_SIZE_CHECK)
+endif
+
 
 # binman
 # ---------------------------------------------------------------------------
@@ -1915,7 +1923,7 @@ u-boot.lds: $(LDSCRIPT) prepare FORCE
 	$(call if_changed_dep,cpp_lds)
 
 ifdef_any_of = $(filter-out undefined,$(foreach v,$(1),$(origin $(v))))
-ifneq ($(call ifdef_any_of,CONFIG_SC59X CONFIG_SC58X CONFIG_SC57X),)
+ifneq ($(call ifdef_any_of,CONFIG_SC59X_64 CONFIG_SC59X CONFIG_SC58X CONFIG_SC57X),)
 RENAME_FILES += u-boot u-boot.bin u-boot.ldr u-boot.srec u-boot.lds u-boot.map
 
 u-boot-$(CONFIG_SYS_BOARD).ldr: $(INPUTS-y)

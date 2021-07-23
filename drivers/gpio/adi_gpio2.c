@@ -19,12 +19,12 @@ static struct str_ident {
 	char name[RESOURCE_LABEL_SIZE];
 } str_ident[MAX_RESOURCES];
 
-static void gpio_error(unsigned gpio)
+static void gpio_error(uint32_t gpio)
 {
 	printf("adi_gpio2: GPIO %d wasn't requested!\n", gpio);
 }
 
-static void set_label(unsigned short ident, const char *label)
+static void set_label(uint16_t ident, const char *label)
 {
 	if (label) {
 		strncpy(str_ident[ident].name, label,
@@ -33,12 +33,12 @@ static void set_label(unsigned short ident, const char *label)
 	}
 }
 
-static char *get_label(unsigned short ident)
+static char *get_label(uint16_t ident)
 {
 	return *str_ident[ident].name ? str_ident[ident].name : "UNKNOWN";
 }
 
-static int cmp_label(unsigned short ident, const char *label)
+static int32_t cmp_label(uint16_t ident, const char *label)
 {
 	if (label == NULL)
 		printf("adi_gpio2: please provide none-null label\n");
@@ -53,12 +53,12 @@ static int cmp_label(unsigned short ident, const char *label)
 #define is_reserved(m, i, e) (map_entry(m, i) & gpio_bit(i))
 #define reserve(m, i)        (map_entry(m, i) |= gpio_bit(i))
 #define unreserve(m, i)      (map_entry(m, i) &= ~gpio_bit(i))
-#define DECLARE_RESERVED_MAP(m, c) unsigned short reserved_##m##_map[c]
+#define DECLARE_RESERVED_MAP(m, c) uint16_t reserved_##m##_map[c]
 
 static DECLARE_RESERVED_MAP(gpio, GPIO_BANK_NUM);
 static DECLARE_RESERVED_MAP(peri, gpio_bank(MAX_RESOURCES));
 
-inline int check_gpio(unsigned gpio)
+inline int32_t check_gpio(uint32_t gpio)
 {
 #if defined(CONFIG_BF54x)
 	if (gpio == GPIO_PB15 || gpio == GPIO_PC14 || gpio == GPIO_PC15 ||
@@ -71,7 +71,7 @@ inline int check_gpio(unsigned gpio)
 	return 0;
 }
 
-static void port_setup(unsigned gpio, unsigned short usage)
+static void port_setup(uint32_t gpio, uint16_t usage)
 {
 #if defined(CONFIG_BF54x)
 	if (usage == GPIO_USAGE)
@@ -86,7 +86,7 @@ static void port_setup(unsigned gpio, unsigned short usage)
 #endif
 }
 
-inline void portmux_setup(unsigned short per)
+inline void portmux_setup(uint16_t per)
 {
 	u32 pmux;
 	u16 ident = P_IDENT(per);
@@ -100,7 +100,7 @@ inline void portmux_setup(unsigned short per)
 	gpio_array[gpio_bank(ident)]->port_mux = pmux;
 }
 
-inline u16 get_portmux(unsigned short per)
+inline u16 get_portmux(uint16_t per)
 {
 	u32 pmux;
 	u16 ident = P_IDENT(per);
@@ -110,7 +110,7 @@ inline u16 get_portmux(unsigned short per)
 	return pmux >> (2 * gpio_sub_n(ident)) & 0x3;
 }
 
-unsigned short get_gpio_dir(unsigned gpio)
+uint16_t get_gpio_dir(uint32_t gpio)
 {
 	return 0x01 &
 		(gpio_array[gpio_bank(gpio)]->dir_clear >> gpio_sub_n(gpio));
@@ -128,9 +128,9 @@ unsigned short get_gpio_dir(unsigned gpio)
 * DESCRIPTION: Peripheral Resource Allocation and Setup API
 **************************************************************/
 
-int peripheral_request(unsigned short per, const char *label)
+int32_t peripheral_request(uint16_t per, const char *label)
 {
-	unsigned short ident = P_IDENT(per);
+	uint16_t ident = P_IDENT(per);
 
 	/*
 	 * Don't cares are pins with only one dedicated function
@@ -187,10 +187,10 @@ int peripheral_request(unsigned short per, const char *label)
 	return 0;
 }
 
-int peripheral_request_list(const unsigned short per[], const char *label)
+int32_t peripheral_request_list(const uint16_t per[], const char *label)
 {
 	u16 cnt;
-	int ret;
+	int32_t ret;
 
 	for (cnt = 0; per[cnt] != 0; cnt++) {
 		ret = peripheral_request(per[cnt], label);
@@ -206,9 +206,9 @@ int peripheral_request_list(const unsigned short per[], const char *label)
 	return 0;
 }
 
-void peripheral_free(unsigned short per)
+void peripheral_free(uint16_t per)
 {
-	unsigned short ident = P_IDENT(per);
+	uint16_t ident = P_IDENT(per);
 
 	if (per & P_DONTCARE)
 		return;
@@ -227,7 +227,7 @@ void peripheral_free(unsigned short per)
 	set_label(ident, "free");
 }
 
-void peripheral_free_list(const unsigned short per[])
+void peripheral_free_list(const uint16_t per[])
 {
 	u16 cnt;
 	for (cnt = 0; per[cnt] != 0; cnt++)
@@ -245,7 +245,7 @@ void peripheral_free_list(const unsigned short per[])
 * DESCRIPTION: GPIO Driver API
 **************************************************************/
 
-int gpio_request(unsigned gpio, const char *label)
+int32_t gpio_request(uint32_t gpio, const char *label)
 {
 	if (check_gpio(gpio) < 0)
 		return -EINVAL;
@@ -278,7 +278,7 @@ int gpio_request(unsigned gpio, const char *label)
 	return 0;
 }
 
-int gpio_free(unsigned gpio)
+int32_t gpio_free(uint32_t gpio)
 {
 	if (check_gpio(gpio) < 0)
 		return -1;
@@ -298,7 +298,7 @@ int gpio_free(unsigned gpio)
 #ifdef ADI_SPECIAL_GPIO_BANKS
 static DECLARE_RESERVED_MAP(special_gpio, gpio_bank(MAX_RESOURCES));
 
-int special_gpio_request(unsigned gpio, const char *label)
+int32_t special_gpio_request(uint32_t gpio, const char *label)
 {
 	/*
 	 * Allow that the identical GPIO can
@@ -330,7 +330,7 @@ int special_gpio_request(unsigned gpio, const char *label)
 	return 0;
 }
 
-void special_gpio_free(unsigned gpio)
+void special_gpio_free(uint32_t gpio)
 {
 	if (unlikely(!is_reserved(special_gpio, gpio, 0))) {
 		gpio_error(gpio);
@@ -343,7 +343,7 @@ void special_gpio_free(unsigned gpio)
 }
 #endif
 
-static inline void __gpio_direction_input(unsigned gpio)
+static inline void __gpio_direction_input(uint32_t gpio)
 {
 	gpio_array[gpio_bank(gpio)]->dir_clear = gpio_bit(gpio);
 #if defined(CONFIG_BF54x)
@@ -353,9 +353,9 @@ static inline void __gpio_direction_input(unsigned gpio)
 #endif
 }
 
-int gpio_direction_input(unsigned gpio)
+int32_t gpio_direction_input(uint32_t gpio)
 {
-	unsigned long flags;
+	uint32_t flags;
 
 	if (!is_reserved(gpio, gpio, 0)) {
 		gpio_error(gpio);
@@ -369,7 +369,7 @@ int gpio_direction_input(unsigned gpio)
 	return 0;
 }
 
-int gpio_set_value(unsigned gpio, int arg)
+int32_t gpio_set_value(uint32_t gpio, int32_t arg)
 {
 	if (arg)
 		gpio_array[gpio_bank(gpio)]->data_set = gpio_bit(gpio);
@@ -379,9 +379,9 @@ int gpio_set_value(unsigned gpio, int arg)
 	return 0;
 }
 
-int gpio_direction_output(unsigned gpio, int value)
+int32_t gpio_direction_output(uint32_t gpio, int32_t value)
 {
-	unsigned long flags;
+	uint32_t flags;
 
 	if (!is_reserved(gpio, gpio, 0)) {
 		gpio_error(gpio);
@@ -403,14 +403,14 @@ int gpio_direction_output(unsigned gpio, int value)
 	return 0;
 }
 
-int gpio_get_value(unsigned gpio)
+int32_t gpio_get_value(uint32_t gpio)
 {
 	return 1 & (gpio_array[gpio_bank(gpio)]->data >> gpio_sub_n(gpio));
 }
 
 void gpio_labels(void)
 {
-	int c, gpio;
+	int32_t c, gpio;
 
 	for (c = 0; c < MAX_RESOURCES; c++) {
 		gpio = is_reserved(gpio, c, 1);

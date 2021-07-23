@@ -101,14 +101,14 @@ struct uart4_reg {
 	u32 rxdiv_cnt;
 };
 
-static inline struct uart4_reg *adi_uart4_get_regs(int portnum)
+static inline struct uart4_reg *adi_uart4_get_regs(uint32_t portnum)
 {
 	return (struct uart4_reg *) adi_uart4_ports[portnum];
 }
 
-static inline unsigned short *adi_uart4_get_pins(int portnum)
+static inline uint16_t *adi_uart4_get_pins(uint32_t portnum)
 {
-	return (unsigned short *) adi_uart4_pinmux_pins[portnum];
+	return (uint16_t *) adi_uart4_pinmux_pins[portnum];
 }
 
 __attribute__((always_inline))
@@ -123,7 +123,7 @@ static inline void serial_early_puts(const char *s)
 __attribute__((always_inline))
 static inline void serial_early_do_portmux(void)
 {
-#if defined(CONFIG_SC59X)
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
 	switch (CONFIG_UART_CONSOLE) {
 	case 0:
 		serial_early_do_mach_portmux('A', PORT_x_MUX_6_MASK,
@@ -169,7 +169,7 @@ static inline void serial_early_do_portmux(void)
 }
 
 __attribute__((always_inline))
-static inline int serial_early_init(void)
+static inline uint32_t serial_early_init(void)
 {
 	struct uart4_reg *reg = adi_uart4_get_regs(CONFIG_UART_CONSOLE);
 
@@ -183,7 +183,7 @@ static inline int serial_early_init(void)
 }
 
 __attribute__((always_inline))
-static inline int serial_early_uninit(void)
+static inline uint32_t serial_early_uninit(void)
 {
 	struct uart4_reg *reg = adi_uart4_get_regs(CONFIG_UART_CONSOLE);
 

@@ -1,0 +1,86 @@
+/dts-v1/;
+
+/ {
+	model = "ADI sc598-som-ezkit";
+	compatible = "adi,sc598-som-ezkit", "adi,sc59x";
+
+ 	aliases {
+		spi0 = "/spi@31027000";
+		spi2 = "/spi@31030000";
+ 	};
+
+	soc {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "simple-bus";
+		device_type = "soc";
+		/*interrupt-parent = <&intc>;*/
+		ranges;
+
+		qspi: spi@31027000 {
+			compatible = "cadence,qspi";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x31027000 0x1000>,
+				  <0x30400000 0x1000>;
+			interrupts = <0 151 4>;
+			/*clocks = <&qspi_clk>;*/
+			ext-decoder = <0>;  /* external decoder */
+			num-cs = <4>;
+			fifo-depth = <128>;
+			bus-num = <0>;
+			status = "disabled";
+		};
+
+		spi2: spi@31030000 {
+			compatible = "adi,spi3";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x31030000 0x1000>;
+			bus-num = <2>;
+			spi-max-frequency = <10000000>;
+			status = "disabled";
+		};
+
+	};
+};
+
+&qspi {
+	status = "okay";
+
+	flash0: is25lx256@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "is25lx256";
+		reg = <0>;
+		spi-max-frequency = <112000000>;
+		tshsl-ns = <50>;
+		tsd2d-ns = <50>;
+		tchsh-ns = <4>;
+		tslch-ns = <4>;
+	};
+};
+
+&spi2 {
+	status = "okay";
+
+/* mx66lm1g45 and is25lp512 are mutually exclusive */
+
+/*
+	flash1: mx66lm1g45@1 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "mx66lm1g45";
+		reg = <1>;
+	};
+*/
+
+	flash1: is25lp512@2 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "is25lp512";
+		reg = <1>;
+	};
+
+};
+

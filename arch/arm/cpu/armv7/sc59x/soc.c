@@ -15,23 +15,6 @@ void reset_cpu(ulong addr)
 	writel(1, RCU0_CTL);
 }
 
-#ifndef CONFIG_SYS_DCACHE_OFF
-void enable_caches(void)
-{
-	/* Enable D-cache. I-cache is already enabled in start.S */
-	dcache_enable();
-}
-#endif
-
-#ifndef CONFIG_SYS_L2CACHE_OFF
-/*
- * Sets L2 cache related parameters before enabling data cache
- */
-void v7_outer_cache_enable(void)
-{
-}
-#endif
-
 int arch_cpu_init(void)
 {
 #ifdef CONFIG_DEBUG_EARLY_SERIAL

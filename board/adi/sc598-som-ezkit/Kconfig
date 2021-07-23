@@ -1,0 +1,104 @@
+if TARGET_SC598_SOM_EZKIT
+
+config SYS_VENDOR
+	default "adi"
+
+config ADI_CPU
+	string
+	default "ADSP-SC589-0.1"
+
+config SYS_BOARD
+	default "sc598-som-ezkit"
+
+config SYS_CONFIG_NAME
+	default "sc598-som-ezkit"
+
+config VCO_MULT
+	int
+	default 80
+
+config CCLK_DIV
+	int
+	default 2
+
+config SCLK_DIV
+	int
+	default 4
+
+config SCLK0_DIV
+	int
+	default 4
+
+config SCLK1_DIV
+	int
+	default 2
+
+config DCLK_DIV
+	int
+	default 2
+
+config OCLK_DIV
+	int
+	default 8
+
+config DIV_S1SELEX
+	int
+	default 6
+
+config CGU1_VCO_MULT
+	int
+	default 64
+
+config CGU1_CCLK_DIV
+	int
+	default 2
+
+config CGU1_SCLK_DIV
+	int
+	default 4
+
+config CGU1_SCLK0_DIV
+	int
+	default 4
+
+config CGU1_SCLK1_DIV
+	int
+	default 2
+
+config CGU1_DCLK_DIV
+	int
+	default 2
+
+config CGU1_OCLK_DIV
+	int
+	default 16
+
+config CGU1_DIV_S1SELEX
+	int
+	default 8
+
+config DEBUG_EARLY_SERIAL
+	bool
+	default y
+
+config DIV_S1SELEX
+	int
+	default 6
+
+config SC59X_SPI
+	bool
+	default n
+
+config USB_SC59X
+	bool
+	default n
+
+config ADI_SPI3_DM
+	bool
+	default n
+
+config CMD_SC58X_OTP
+	bool
+	default y
+
+endif

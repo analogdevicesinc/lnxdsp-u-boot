@@ -621,6 +621,10 @@ config SC59X
 	bool "sc59x SoC"
 	select CPU_V7A
 
+config SC59X_64
+	bool "sc59x SoC"
+	select ARM64
+
 config TARGET_X600
 	bool "Support x600"
 	select BOARD_LATE_INIT
@@ -1874,6 +1878,7 @@ source "arch/arm/cpu/armv7/ls102xa/Kconfig"
 source "arch/arm/cpu/armv7/sc57x/Kconfig"
 source "arch/arm/cpu/armv7/sc58x/Kconfig"
 source "arch/arm/cpu/armv7/sc59x/Kconfig"
+source "arch/arm/cpu/armv8/sc59x-64/Kconfig"
 
 source "arch/arm/mach-imx/mx2/Kconfig"
 

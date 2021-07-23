@@ -15,13 +15,13 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define CONSOLE_PORT CONFIG_UART_CONSOLE
 
-unsigned int baudrate = CONFIG_BAUDRATE;
+uint32_t baudrate = CONFIG_BAUDRATE;
 static void uart_setbrg(void);
 
-static inline int uart_init(void)
+static inline int32_t uart_init(void)
 {
 	struct uart4_reg *regs = adi_uart4_get_regs(CONSOLE_PORT);
-	unsigned short *pins = adi_uart4_get_pins(CONSOLE_PORT);
+	uint16_t *pins = adi_uart4_get_pins(CONSOLE_PORT);
 
 	if (peripheral_request_list(pins, "adi-uart4"))
 		return -1;
@@ -35,10 +35,10 @@ static inline int uart_init(void)
 	return 0;
 }
 
-static inline int uart_uninit(void)
+static inline int32_t uart_uninit(void)
 {
 	struct uart4_reg *regs = adi_uart4_get_regs(CONSOLE_PORT);
-	unsigned short *pins = adi_uart4_get_pins(CONSOLE_PORT);
+	uint16_t *pins = adi_uart4_get_pins(CONSOLE_PORT);
 
 	/* disable the UART by clearing UEN */
 	writel(0, &regs->control);
@@ -57,6 +57,8 @@ static void serial_set_divisor(uint16_t divisor)
 
 void uart_putc(const char c)
 {
+	volatile uint32_t val;
+
 	struct uart4_reg *regs = adi_uart4_get_regs(CONSOLE_PORT);
 	/* send a \r for compatibility */
 	if (c == '\n')
@@ -64,9 +66,9 @@ void uart_putc(const char c)
 
 	WATCHDOG_RESET();
 
-	/* wait for the hardware fifo to clear up */
-	while (!(readl(&regs->status) & THRE))
-		continue;
+	do{
+		val = readl(&regs->status);
+	}while(!(val & THRE));
 
 	/* queue the character for transmission */
 	writel(c, &regs->thr);
@@ -74,7 +76,7 @@ void uart_putc(const char c)
 	WATCHDOG_RESET();
 }
 
-static int uart_tstc(void)
+static int32_t uart_tstc(void)
 {
 	struct uart4_reg *regs = adi_uart4_get_regs(CONSOLE_PORT);
 
@@ -83,7 +85,7 @@ static int uart_tstc(void)
 	return (readl(&regs->status) & DR) ? 1 : 0;
 }
 
-static int uart_getc(void)
+static int32_t uart_getc(void)
 {
 	struct uart4_reg *regs = adi_uart4_get_regs(CONSOLE_PORT);
 	u32 uart_rbr_val;
@@ -101,7 +103,11 @@ static int uart_getc(void)
 
 static void uart_setbrg(void)
 {
+#ifndef ADI_FPGA_BOARD
 	uint16_t divisor = (get_uart_clk() + (baudrate * 8)) / (baudrate * 16);
+#else
+	uint16_t divisor = (12500000 + (baudrate * 8)) / (baudrate * 16);
+#endif
 	baudrate = gd->baudrate;
 
 	/* Program the divisor to get the baud rate we want */
