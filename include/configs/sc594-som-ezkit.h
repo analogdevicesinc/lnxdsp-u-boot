@@ -114,25 +114,6 @@
 #define CONFIG_SYS_MAX_I2C_BUS 3
 
 /*
- * USB Settings
- */
-//#define CONFIG_MUSB_HCD
-//#define CONFIG_USB_SC59X
-#define CONFIG_MUSB_TIMEOUT 100000
-#define MUSB_HW_VERSION2
-#define CONFIG_USB_STORAGE
-
-/*
- * SDH Settings
- */
-/*
-#define CONFIG_GENERIC_MMC
-#define CONFIG_MMC
-#define CONFIG_MMC_SPI
-#define CONFIG_CMD_MMC_SPI
-*/
-
-/*
  * Env Storage Settings
  */
 #define CONFIG_ENV_IS_IN_SPI_FLASH
