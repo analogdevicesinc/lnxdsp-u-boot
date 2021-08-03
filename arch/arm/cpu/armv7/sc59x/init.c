@@ -43,10 +43,11 @@ __attribute__((always_inline)) static inline void dmcdelay(uint32_t delay)
   /* There is no zero-overhead loop on ARM, so assume each iteration takes
    * 4 processor cycles (based on examination of -O3 and -Ofast output).
    */
-  uint32_t i, remainder;
+  static uint32_t i, remainder;
+  static float f;
 
   /* Convert DDR cycles to core clock cycles */
-  float f = (float)delay * 1.25;
+  f = (float)delay * 1.25;
   delay = (uint32_t)(f+0.5);
 
   /* Round up to multiple of 4 */
@@ -63,18 +64,26 @@ __attribute__((always_inline)) static inline void dmcdelay(uint32_t delay)
 __attribute__((always_inline)) static inline
 void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useExtension)
 {
-	uint32_t dNewCguDiv = ((OSEL(pCGU_Settings->div_OSEL)) |
-					(SYSSEL(pCGU_Settings->div_SYSSEL)) |
-					(CSEL(pCGU_Settings->div_CSEL)) |
-					(S0SEL(pCGU_Settings->div_S0SEL))|
-					(S1SEL(pCGU_Settings->div_S1SEL))|
-					(DSEL(pCGU_Settings->div_DSEL)));
-	uint32_t cgu_offset = 0x1000 * uiCguNo;
+	static uint32_t dNewCguDiv;
+	static uint32_t cgu_offset;
+
+	if(uiCguNo == 0){
+		cgu_offset = 0;
+	}else{
+		cgu_offset = 0x1000;
+	}
+
+	dNewCguDiv =  OSEL(pCGU_Settings->div_OSEL);
+	dNewCguDiv |= SYSSEL(pCGU_Settings->div_SYSSEL);
+	dNewCguDiv |= CSEL(pCGU_Settings->div_CSEL);
+	dNewCguDiv |= S0SEL(pCGU_Settings->div_S0SEL);
+	dNewCguDiv |= S1SEL(pCGU_Settings->div_S1SEL);
+	dNewCguDiv |= DSEL(pCGU_Settings->div_DSEL);
 
 	if(useExtension){
 		writel(dNewCguDiv,CGU0_DIV + cgu_offset);
 	}else{
-		writel(0x4024482,CGU0_DIV + cgu_offset);
+		writel(0x4024482, CGU0_DIV + cgu_offset);
 	}
 
 	dmcdelay(1000);
@@ -168,8 +177,7 @@ uint32_t CGU1_write(uint32_t uiClkOutSel, bool useExtension)
 __attribute__((always_inline)) static inline
 uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel, uint32_t uiClkoutsel, bool useExtension)
 {
-	uint32_t result = 0;
-	uint32_t status;
+	static uint32_t result = 0;
 
 	if (uiCguNo == 0) {
 
@@ -207,8 +215,8 @@ uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel, uint32_t uiClkoutsel, b
 
 __attribute__((always_inline)) static inline void cgu_init(void)
 {
-	CGU_Init(0,0, 0, 1);
-	CGU_Init(1,0, 0, 0);
+	CGU_Init(0, 0, 0, 1);
+	CGU_Init(1, 0, 0, 0);
 }
 
 __attribute__((always_inline)) static inline void cdu_init(void)
@@ -260,7 +268,7 @@ ddr_init(void)
 	DMC_Config();
 }
 
-static volatile int i = 0;
+//static volatile int i = 0;
 
 void initcode(void)
 {
