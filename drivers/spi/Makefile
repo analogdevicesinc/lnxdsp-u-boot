@@ -17,6 +17,7 @@ obj-$(CONFIG_SPI_MEM) += spi-mem-nodm.o
 endif
 
 obj-$(CONFIG_ADI_SPI3) += adi_spi3.o
+obj-$(CONFIG_ADI_SPI3_DM) += adi_spi3_dm.o
 obj-$(CONFIG_SC59X_SPI) += sc59x_spi.o
 obj-$(CONFIG_SC58X_SPI) += sc58x_spi.o
 obj-$(CONFIG_SC57X_SPI) += sc57x_spi.o

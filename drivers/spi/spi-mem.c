@@ -23,6 +23,10 @@
 #include <dm/device_compat.h>
 #endif
 
+#ifdef CONFIG_SC59X
+#include <linux/mtd/spi-nor.h>
+#endif
+
 #ifndef __UBOOT__
 /**
  * spi_controller_dma_map_mem_op_data() - DMA-map the buffer attached to a
@@ -220,6 +224,15 @@ int spi_mem_exec_op(struct spi_slave *slave, const struct spi_mem_op *op)
 	int ret;
 	int i;
 
+	//printf("spi_mem_op cmdbuswidth: %x opcode %x\n", op->cmd.buswidth, op->cmd.opcode);
+	//printf("spi_mem_op addrnbytes %x addrbuswidth: %x addrval %llx %llu\n", op->addr.nbytes, op->addr.buswidth, op->addr.val, op->addr.val);
+	//printf("spi_mem_op dummynbytes %x dummybuswidth: %x\n", op->dummy.nbytes, op->dummy.buswidth);
+	//printf("spi_mem_op datawidth: %x datadir: %x datanbytes %x \n", op->data.buswidth, op->data.dir, op->data.nbytes);
+	//for(i = 0; i < op->data.nbytes; i++){
+	//	printf(" %x ", ((u8*)op->data.buf.in)[i]);
+	//}
+	//printf("\n");
+
 	if (!spi_mem_supports_op(slave, op))
 		return -ENOTSUPP;
 
@@ -388,8 +401,37 @@ int spi_mem_exec_op(struct spi_slave *slave, const struct spi_mem_op *op)
 
 	/* 2nd transfer: rx or tx data path */
 	if (tx_buf || rx_buf) {
-		ret = spi_xfer(slave, op->data.nbytes * 8, tx_buf,
-			       rx_buf, SPI_XFER_END);
+		#ifdef CONFIG_SC59X
+			flag = SPI_XFER_END;
+
+			/* If current SPI command is a SPI quad read or write,
+			 * mark the flags of next SPI transfer operation as
+			 * SPI_XFER_QUAD, for the adi_spi3_dm driver
+			 */
+
+			uint32_t quadOperationList[] = {
+				SPINOR_OP_PP_1_1_4,
+				SPINOR_OP_PP_1_4_4,
+				SPINOR_OP_READ_1_1_4,
+				SPINOR_OP_READ_1_4_4,
+				SPINOR_OP_READ_1_1_4_4B,
+				SPINOR_OP_READ_1_4_4_4B,
+				SPINOR_OP_PP_1_1_4_4B,
+				SPINOR_OP_PP_1_4_4_4B,
+			};
+
+			for(i = 0; i < 8; i++){
+				if(op->cmd.opcode == quadOperationList[i]){
+					flag |= SPI_XFER_QUAD;
+				}
+			}
+
+			ret = spi_xfer(slave, op->data.nbytes * 8, tx_buf,
+				       rx_buf, flag);
+		#else
+			ret = spi_xfer(slave, op->data.nbytes * 8, tx_buf,
+				       rx_buf, SPI_XFER_END);
+		#endif
 		if (ret)
 			return ret;
 	}

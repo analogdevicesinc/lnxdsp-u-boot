@@ -824,20 +824,13 @@ void cadence_qspi_apb_enter_xip(void *reg_base, char xip_dummy)
 #define ADI_OCTAL_USE_DMA
 
 int cadence_qspi_direct_read(struct cadence_spi_platdata *plat,
-	unsigned int cmdlen, const u8 *cmdbuf,
-	unsigned int rxlen, const u8 *rxbuf)
+				   const struct spi_mem_op *op)
 {
 	unsigned int reg;
 	unsigned int curVal;
-	unsigned int addr_bytes;
-	unsigned int addr_value;
-
-	if (cmdlen >= 5)
-		/* to cater fast read where cmd + addr + dummy */
-		addr_bytes = cmdlen - 2;
-	else
-		/* for normal read (only ramtron as of now) */
-		addr_bytes = cmdlen - 1;
+	unsigned int addr_value = op->addr.val;
+	unsigned int rxlen = op->data.nbytes;
+	u8 *rxbuf = op->data.buf.in;
 
 	*(uint32_t*)SCB5_SPI2_OSPI_REMAP = 0x1U;
 
@@ -846,7 +839,7 @@ int cadence_qspi_direct_read(struct cadence_spi_platdata *plat,
     /* Configure the address mode of flash */
 	curVal = readl(plat->regbase + CQSPI_REG_SIZE);
 	curVal &= ~BITM_OSPI_DSCTL_ADDRSZ;
-	curVal |= (((uint32_t)(3U)-1U) << BITP_OSPI_DSCTL_ADDRSZ) & BITM_OSPI_DSCTL_ADDRSZ;
+	curVal |= (((uint32_t)(4U)-1U) << BITP_OSPI_DSCTL_ADDRSZ) & BITM_OSPI_DSCTL_ADDRSZ;
 	writel(curVal, plat->regbase + CQSPI_REG_SIZE);
 
     /* Configure the modedata value */
@@ -857,7 +850,6 @@ int cadence_qspi_direct_read(struct cadence_spi_platdata *plat,
 
     /* Clear the contents of the Read instruction register */
     writel(0, plat->regbase + CQSPI_REG_RD_INSTR);
-
 
     /* Configure the opcode */
     curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
@@ -913,9 +905,6 @@ int cadence_qspi_direct_read(struct cadence_spi_platdata *plat,
     curVal |= BITM_OSPI_CTL_DACEN;
     writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
 
-	addr_value = cadence_qspi_apb_cmd2addr(&cmdbuf[1], addr_bytes);
-
-
 #ifdef ADI_OCTAL 
 	/* Update the DRIR register here to support Octal IO Read mode - Not supported by existing driver */
     curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
@@ -928,25 +917,38 @@ int cadence_qspi_direct_read(struct cadence_spi_platdata *plat,
 #else
     /* Perform the transfer */
     uint32_t count = 0;
-    uint8_t *pReadBuffer = rxbuf;
-    uint8_t *pFlashAddress = (uint8_t *)OSPI0_MMAP_ADDRESS+addr_value;
+    uint64_t *pReadBuffer = rxbuf;
+    uint64_t *pFlashAddress = (uint64_t *)(OSPI0_MMAP_ADDRESS+addr_value);
+    uint8_t *pReadBuffer8;
+    uint8_t *pFlashAddress8;
 
-    for (count = 0U; count < rxlen; count++)
+    for (count = 0U; count < (rxlen / 8); count++)
     {
-        *(uint8_t*)pReadBuffer++ = *(uint8_t*)pFlashAddress++;
-        //while(!CQSPI_REG_IS_IDLE(plat->regbase));
+        *(uint64_t*)pReadBuffer++ = *(uint64_t*)pFlashAddress++;
     }
 
-	return 0;
+    if(rxlen % 8){
+		pReadBuffer8 = (uint8_t*)pReadBuffer;
+		pFlashAddress8 = (uint8_t*)pFlashAddress;
+
+	    for (count = 0U; count < (rxlen % 8); count++)
+	    {
+	        *(uint8_t*)pReadBuffer8++ = *(uint8_t*)pFlashAddress8++;
+	    }
+	}
+#endif
+
+    return 0;
 }
 
 int cadence_qspi_direct_write(struct cadence_spi_platdata *plat,
-	unsigned int cmdlen, const u8 *cmdbuf,
-	unsigned int txlen, const u8 *txbuf)
+				   const struct spi_mem_op *op)
 {
 	unsigned int reg;
 	unsigned int curVal;
-	unsigned int addr_value;
+	unsigned int addr_value = op->addr.val;
+	unsigned int txlen = op->data.nbytes;
+	u8 *txbuf = op->data.buf.out;
 
 	*(uint32_t*)SCB5_SPI2_OSPI_REMAP = 0x1U;
 
@@ -1019,8 +1021,6 @@ int cadence_qspi_direct_write(struct cadence_spi_platdata *plat,
     curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
     curVal |= BITM_OSPI_CTL_DACEN;
     writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
-
-	addr_value = cadence_qspi_apb_cmd2addr(&cmdbuf[1], cmdlen >= 5 ? 4 : 3);
 
 #ifdef ADI_OCTAL 
 	/* Update the DRIR register here to support Octal IO Read mode - Not supported by existing driver */

@@ -2592,7 +2592,6 @@ int spi_nor_scan(struct spi_nor *nor)
 	ret = spi_nor_setup(nor, info, &params, &hwcaps);
 	if (ret)
 		return ret;
-
 	if (nor->addr_width) {
 		/* already configured from SFDP */
 	} else if (info->addr_width) {
@@ -2605,11 +2604,15 @@ int spi_nor_scan(struct spi_nor *nor)
 		    info->flags & SPI_NOR_4B_OPCODES)
 			spi_nor_set_4byte_opcodes(nor, info);
 #else
-	/* Configure the BAR - discover bank cmds and read current bank */
-	nor->addr_width = 3;
-	ret = read_bar(nor, info);
-	if (ret < 0)
-		return ret;
+	if (info->flags & SPI_NOR_4B_MODE){
+		nor->addr_width = 4;
+	}else{
+		/* Configure the BAR - discover bank cmds and read current bank */
+		nor->addr_width = 3;
+		ret = read_bar(nor, info);
+		if (ret < 0)
+			return ret;
+	}
 #endif
 	} else {
 		nor->addr_width = 3;

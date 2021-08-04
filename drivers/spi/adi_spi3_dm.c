@@ -16,13 +16,14 @@
  */
 
 #include <common.h>
+#include <log.h>
 #include <malloc.h>
 #include <spi.h>
 #include <asm/io.h>
 #include <asm/gpio.h>
 #include <dm.h>
 #include <errno.h>
-#include <libfdt.h>
+//#include <libfdt.h>
 #include <fdtdec.h>
 #ifndef CONFIG_ARCH_HEADER_IN_MACH
 #include <asm/clock.h>
@@ -48,7 +49,7 @@ static int adi_spi_ofdata_to_platdata(struct udevice *bus)
 	struct adi_spi_platdata *plat = dev_get_platdata(bus);
 	struct adi_spi_priv *priv = dev_get_priv(bus);
 	const void *blob = gd->fdt_blob;
-	int node = bus->of_offset;
+	int node = dev_of_offset(bus);
 	int subnode;
 
 	plat->max_hz = fdtdec_get_int(blob, node, "spi-max-frequency", 500000);
@@ -107,11 +108,11 @@ static int adi_spi_remove(struct udevice *dev)
 	return -ENODEV;
 }
 
-static int adi_spi_claim_bus(struct udevice *bus)
+static int adi_spi_claim_bus(struct udevice *dev)
 {
-	struct adi_spi_platdata *plat = bus->platdata;
-	struct adi_spi_priv *priv = dev_get_priv(bus);
-
+	struct adi_spi_priv *priv;
+	struct udevice *bus = dev->parent;
+	priv = dev_get_priv(bus);
 
 	debug("%s: control:%i clock:%i\n", __func__, priv->control, priv->clock);
 
@@ -122,10 +123,11 @@ static int adi_spi_claim_bus(struct udevice *bus)
 	return 0;
 }
 
-static int adi_spi_release_bus(struct udevice *bus)
+static int adi_spi_release_bus(struct udevice *dev)
 {
-	struct adi_spi_platdata *plat = bus->platdata;
-	struct adi_spi_priv *priv = dev_get_priv(bus);
+	struct adi_spi_priv *priv;
+	struct udevice *bus = dev->parent;
+	priv = dev_get_priv(bus);
 
 	debug("%s: control:%i clock:%i\n", __func__, priv->control, priv->clock);
 
@@ -230,9 +232,9 @@ static int adi_spi_pio_xfer(struct adi_spi_priv *priv, const u8 *tx, u8 *rx,
 				0x40000)
 				if (ctrlc())
 					return -1;
-		} else
+		} else {
 			return -1;
-
+		}
 	} else {
 		/* Set current SPI transfer in normal mode and trigger
 		 * the bi-direction transfer by tx write operation.
@@ -368,6 +370,8 @@ static int adi_spi_set_speed(struct udevice *bus, uint speed)
 		clock--;
 
 	priv->clock = clock;
+
+	debug("%s: priv->clock: %x, speed: %x, get_spi_clk(): %x\n", __func__, clock, speed, get_spi_clk());
 
 	return 0;
 }
