@@ -137,6 +137,8 @@ const struct flash_info spi_nor_ids[] = {
 	{ INFO("is25wp256",  0x9d7019, 0, 64 * 1024, 512,
 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
 			SPI_NOR_4B_OPCODES) },
+	{ INFO("is25lp512",  0x9d601a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
+	{ INFO("is25lx256", 0x9d5a19, 0, 128 * 1024, 256, SPI_NOR_4B_MODE) },
 #endif
 #ifdef CONFIG_SPI_FLASH_MACRONIX	/* MACRONIX */
 	/* Macronix */
@@ -162,8 +164,8 @@ const struct flash_info spi_nor_ids[] = {
 	{ INFO("mx66l1g45g",  0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
 	{ INFO("mx25l1633e", 0xc22415, 0, 64 * 1024,   32, SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES | SECT_4K) },
 	{ INFO("mx25r6435f", 0xc22817, 0, 64 * 1024,   128,  SECT_4K) },
+	{ INFO("mx66lm1g45", 0xc2853b, 0, 64 * 1024, 2048, 0 /*SECT_4K*/) },
 #endif
-
 #ifdef CONFIG_SPI_FLASH_STMICRO		/* STMICRO */
 	/* Micron */
 	{ INFO("n25q016a",	 0x20bb15, 0, 64 * 1024,   32, SECT_4K | SPI_NOR_QUAD_READ) },

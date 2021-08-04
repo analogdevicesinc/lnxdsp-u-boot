@@ -1,9 +1,9 @@
 /*
- * U-boot - Configuration file for sc589 EZ-Kit board
+ * U-boot - Configuration file for sc594 SOM EZ-Kit board
  */
 
-#ifndef __CONFIG_SC589_EZKIT_H
-#define __CONFIG_SC589_EZKIT_H
+#ifndef __CONFIG_SC594_EZKIT_H
+#define __CONFIG_SC594_EZKIT_H
 
 #include <asm/arch/config.h>
 
@@ -68,7 +68,7 @@
 #define	CONFIG_NR_DRAM_BANKS		1
 #define CONFIG_SYS_SDRAM_BASE	0x82000000
 #define CONFIG_SYS_SDRAM_SIZE	0x3E000000
-#define CONFIG_SYS_TEXT_BASE	0x82200000
+#define CONFIG_SYS_TEXT_BASE	0xB2200000
 #define CONFIG_SYS_LOAD_ADDR	0x0
 #define CONFIG_SYS_INIT_SP_ADDR (CONFIG_SYS_SDRAM_BASE + 0x3f000)
 
@@ -113,28 +113,15 @@
 //#define CONFIG_SYS_I2C_ADI
 #define CONFIG_SYS_MAX_I2C_BUS 3
 
-/*
- * Env Storage Settings
- */
-#define CONFIG_ENV_IS_IN_SPI_FLASH
-#define CONFIG_ENV_OFFSET       0x80000
-//#define CONFIG_ENV_SIZE         0x20000
-#define CONFIG_ENV_SECT_SIZE    0x20000
-#define CONFIG_ENV_SPI_BUS 0
-#define CONFIG_ENV_SPI_CS 0
-
 /* OSPI - Via Device Tree Support
  *
  */
 #ifdef CONFIG_OF_CONTROL
 
-//#define CONFIG_CMD_DM
-//#define CONFIG_DM
-//#define CONFIG_DM_SPI
-//#define CONFIG_DM_SPI_FLASH
+#define CONFIG_CMD_DM
 #define CONFIG_CADENCE_QSPI
 
-//#define CONFIG_SPI_FLASH
+#define CONFIG_SPI_FLASH
 #define CONFIG_SPI_FLASH_MACRONIX
 #define CONFIG_SPI_FLASH_ISSI
 #define CONFIG_SPI_FLASH_BAR
@@ -150,12 +137,12 @@
 /*
  * SPI - Via Device Tree Support
  */
-//#define CONFIG_ADI_SPI3_DM
-//#define CONFIG_SC59X_SPI
-//#define CONFIG_CMD_SPI
+#define CONFIG_ADI_SPI3_DM
+#define CONFIG_SC59X_SPI
+#define CONFIG_CMD_SPI
 #define CONFIG_ENV_SPI_MAX_HZ	10000000
-//#define CONFIG_SF_DEFAULT_SPEED	10000000
-//#define CONFIG_SF_DEFAULT_MODE  SPI_MODE_3
+#define CONFIG_SF_DEFAULT_SPEED	10000000
+#define CONFIG_SF_DEFAULT_MODE  SPI_MODE_3
 
 /*
  * Misc Settings
@@ -181,7 +168,7 @@
 	"update_ospi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 0:0; sf write ${loadaddr} 0x6C0000 ${filesize};\0" \
 	"update_ospi_zImage=tftp ${loadaddr} ${ramfile}; sf probe 0:0; sf write ${loadaddr} 0xC0000 ${filesize}; setenv zimagesize ${filesize};\0" \
 	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; sf write ${loadaddr} 0xA0000 ${filesize}; setenv dtbsize ${filesize};\0"\
-	"spiargs=set bootargs " ADI_BOOTARGS_SPI "\0" \
+	"spiargs=setenv bootargs " ADI_BOOTARGS_SPI "\0" \
 	"spiboot=run ospi_boot_sc594\0" \
 	"ospi_boot_sc594=run spiargs; sf probe 0:0; sf read ${loadaddr} 0xC0000 ${zimagesize}; sf read ${dtbaddr} 0xA0000 ${dtbsize}; bootz ${loadaddr} - ${dtbaddr}\0"
 
@@ -194,15 +181,6 @@
         "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
                         __stringify(CONFIG_BAUDRATE) " "\
         "mem=" CONFIG_LINUX_MEMSIZE
-
-//#define CONFIG_MMC_DW
-
-//#define CONFIG_SPI_MEM
-//#define CONFIG_DEFAULT_SPI_MODE 3
-//#define CONFIG_DEFAULT_SPI_BUS  2
-
-//#define CONFIG_SF_DEFAULT_BUS   2
-//#define CONFIG_SF_DEFAULT_CS    1
 
 #include <configs/sc_adi_common.h>
 

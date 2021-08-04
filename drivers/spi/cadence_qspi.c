@@ -25,6 +25,11 @@
 #define CQSPI_READ			2
 #define CQSPI_WRITE			3
 
+#ifdef CONFIG_SC59X
+#define CQSPI_DIRECT_READ		4
+#define CQSPI_DIRECT_WRITE		5
+#endif
+
 static int cadence_spi_write_speed(struct udevice *bus, uint hz)
 {
 	struct cadence_spi_platdata *plat = bus->platdata;
@@ -249,12 +254,20 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 		if (!op->addr.nbytes)
 			mode = CQSPI_STIG_READ;
 		else
+			#ifdef CONFIG_SC59X
+			mode = CQSPI_DIRECT_READ;
+			#else
 			mode = CQSPI_READ;
+			#endif
 	} else {
 		if (!op->addr.nbytes || !op->data.buf.out)
 			mode = CQSPI_STIG_WRITE;
 		else
+			#ifdef CONFIG_SC59X
+			mode = CQSPI_DIRECT_WRITE;
+			#else
 			mode = CQSPI_WRITE;
+			#endif
 	}
 
 	switch (mode) {
@@ -262,7 +275,23 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 		err = cadence_qspi_apb_command_read(base, op);
 		break;
 	case CQSPI_STIG_WRITE:
-		err = cadence_qspi_apb_command_write(base, op);
+		{
+#ifdef CONFIG_SC59X
+			static int octalDDR = 0;
+			if(!octalDDR){
+				struct spi_mem_op opTemp;
+				char data[1];
+				octalDDR = 1;
+				printf("Set VCR to Octal DDR without DQS\r\n");
+				opTemp.cmd.opcode = 0x81;
+				data[0] = 0xC7;
+				opTemp.data.buf.out = data;
+				opTemp.data.nbytes = 1;
+				cadence_qspi_apb_command_write(base, &opTemp);
+			}
+#endif
+			err = cadence_qspi_apb_command_write(base, op);
+		}
 		break;
 	case CQSPI_READ:
 		err = cadence_qspi_apb_read_setup(plat, op);
@@ -274,6 +303,14 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 		if (!err)
 			err = cadence_qspi_apb_write_execute(plat, op);
 		break;
+#ifdef CONFIG_SC59X
+	case CQSPI_DIRECT_WRITE:
+		err = cadence_qspi_direct_write(plat, op);
+		break;
+	case CQSPI_DIRECT_READ:
+		err = cadence_qspi_direct_read(plat, op);
+		break;
+#endif
 	default:
 		err = -1;
 		break;

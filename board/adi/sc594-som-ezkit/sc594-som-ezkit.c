@@ -168,19 +168,6 @@ int board_phy_config(struct phy_device *phydev)
 }
 #endif
 
-#ifdef CONFIG_GENERIC_MMC
-int board_mmc_init(struct bd_info *bis)
-{
-	int ret;
-#ifdef CONFIG_MMC_DW
-	ret = sc5xx_dwmmc_init(bis);
-	if (ret)
-		printf("dwmmc init failed\n");
-#endif
-	return ret;
-}
-#endif
-
 int board_init(void)
 {
 	gd->bd->bi_arch_number = MACH_TYPE_SC594_SOM_EZKIT;

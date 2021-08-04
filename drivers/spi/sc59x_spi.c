@@ -39,13 +39,13 @@ static unsigned short pins[][7] = {
 
 static const unsigned short cs_pins[][7] = {
 	[0] = {
-		P_SPI0_SSEL1, P_SPI0_SSEL2,
+		P_SPI0_SSEL1, P_SPI0_SSEL2, 0, 0, 0, 0, 0,
 	},
 	[1] = {
-		P_SPI1_SSEL1, P_SPI1_SSEL2,
+		P_SPI1_SSEL1, P_SPI1_SSEL2, 0, 0, 0, 0, 0,
 	},
 	[2] = {
-		P_SPI2_SSEL1, P_SPI2_SSEL2,
+		P_SPI2_SSEL1, P_SPI2_SSEL2, 0, 0, 0, 0, 0,
 	},
 };
 
