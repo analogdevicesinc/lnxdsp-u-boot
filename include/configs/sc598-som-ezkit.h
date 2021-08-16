@@ -10,6 +10,10 @@
 
 #define ADI_FPGA_BOARD 1
 
+#define CONFIG_GICV3
+#define GICD_BASE 0x31200000
+#define GICR_BASE 0x31240000
+
 /*
  * Processor Settings
  */

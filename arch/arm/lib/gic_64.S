@@ -89,9 +89,15 @@ ENTRY(gic_init_secure_percpu)
 	b.eq	2f
 	add	x9, x9, #(2 << 16)
 	b	1b
-
 	/* x9: ReDistributor Base Address of Current CPU */
-2:	mov	w10, #~0x2
+2:
+#ifdef CONFIG_SC59X_64
+	/* Power on the redistributor BITM_GIC_GICR0_PWRR_RDPD */
+	ldr w10, [x9, GICR_PWRR]
+	bic w10, w10, #1
+	str w10, [x9, GICR_PWRR]
+#endif
+	mov	w10, #~0x2
 	ldr	w11, [x9, GICR_WAKER]
 	and	w11, w11, w10		/* Clear ProcessorSleep */
 	str	w11, [x9, GICR_WAKER]
