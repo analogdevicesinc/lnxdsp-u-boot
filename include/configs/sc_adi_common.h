@@ -247,7 +247,7 @@
 # define BOARD_ENV_SETTINGS
 #endif
 
-#if ! defined(CONFIG_SC59X)
+#if ! (defined(CONFIG_SC59X) | defined (CONFIG_SC59X_64))
 	#define ADI_ENV_SETTINGS "\0"
 #endif
 
