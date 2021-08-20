@@ -15984,10 +15984,12 @@
 #define BITP_CGU_CTL_LOCK                    31            /*  Lock */
 #define BITP_CGU_CTL_WFI                     30            /*  Wait For Idle */
 #define BITP_CGU_CTL_S1SELEXEN               17            /*  SCLK1 Extension Divider Enable */
+#define BITP_CGU_CTL_S0SELEXEN               16            /*  SCLK0 Extension Divider Enable */
 #define BITP_CGU_CTL_MSEL                     8            /*  Multiplier Select */
 #define BITP_CGU_CTL_DF                       0            /*  Divide Frequency */
 #define BITM_CGU_CTL_LOCK                    (_ADI_MSK_3(0x80000000,0x80000000UL, uint32_t  ))    /*  Lock */
 #define BITM_CGU_CTL_WFI                     (_ADI_MSK_3(0x40000000,0x40000000UL, uint32_t  ))    /*  Wait For Idle */
+#define BITM_CGU_CTL_S0SELEXEN               (_ADI_MSK_3(0x00010000,0x00010000UL,uint32_t))    /* SCLK0 Extension Divider Enable */
 #define BITM_CGU_CTL_S1SELEXEN               (_ADI_MSK_3(0x00020000,0x00020000UL, uint32_t  ))    /*  SCLK1 Extension Divider Enable */
 #define BITM_CGU_CTL_MSEL                    (_ADI_MSK_3(0x00007F00,0x00007F00UL, uint32_t  ))    /*  Multiplier Select */
 #define BITM_CGU_CTL_DF                      (_ADI_MSK_3(0x00000001,0x00000001UL, uint32_t  ))    /*  Divide Frequency */
@@ -16238,6 +16240,8 @@
 #define REG_CDU0_CFG10                       0x3108F028            /*  CDU0 CDU Configuration */
 #define REG_CDU0_CFG11                       0x3108F02C            /*  CDU0 CDU Configuration */
 #define REG_CDU0_CFG12                       0x3108F030            /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG13                       0x3108F034            /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG14                       0x3108F038            /*  CDU0 CDU Configuration */
 #define REG_CDU0_CFGn(i)                     (REG_CDU0_CFG0 + ((i) * 4))
 #define REG_CDU0_CFGn_COUNT                  13
 
@@ -16249,6 +16253,8 @@
    ------------------------------------------------------------------------------------------------------------------------- */
 #define BITP_CDU_STAT_LWERR                  17            /*  Lock Write Error */
 #define BITP_CDU_STAT_ADRERR                 16            /*  Address Error */
+#define BITP_CDU_STAT_CLKO14                 14            /*  CDU_CLKO14 Status */
+#define BITP_CDU_STAT_CLKO13                 13            /*  CDU_CLKO13 Status */
 #define BITP_CDU_STAT_CLKO12                 12            /*  CDU_CLKO12 Status */
 #define BITP_CDU_STAT_CLKO11                 11            /*  CDU_CLKO11 Status */
 #define BITP_CDU_STAT_CLKO10                 10            /*  CDU_CLKO10 Status */
@@ -16264,6 +16270,8 @@
 #define BITP_CDU_STAT_CLKO0                   0            /*  CDU_CLKO0 Status */
 #define BITM_CDU_STAT_LWERR                  (_ADI_MSK_3(0x00020000,0x00020000UL, uint32_t  ))    /*  Lock Write Error */
 #define BITM_CDU_STAT_ADRERR                 (_ADI_MSK_3(0x00010000,0x00010000UL, uint32_t  ))    /*  Address Error */
+#define BITM_CDU_STAT_CLKO14                 (_ADI_MSK_3(0x00004000,0x00004000UL,uint32_t))    /* CDU_CLKO14 Status */
+#define BITM_CDU_STAT_CLKO13                 (_ADI_MSK_3(0x00002000,0x00002000UL,uint32_t))    /* CDU_CLKO13 Status */
 #define BITM_CDU_STAT_CLKO12                 (_ADI_MSK_3(0x00001000,0x00001000UL, uint32_t  ))    /*  CDU_CLKO12 Status */
 #define BITM_CDU_STAT_CLKO11                 (_ADI_MSK_3(0x00000800,0x00000800UL, uint32_t  ))    /*  CDU_CLKO11 Status */
 #define BITM_CDU_STAT_CLKO10                 (_ADI_MSK_3(0x00000400,0x00000400UL, uint32_t  ))    /*  CDU_CLKO10 Status */

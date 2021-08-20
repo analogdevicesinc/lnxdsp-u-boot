@@ -23,7 +23,8 @@ static struct CGU_Settings Clock_Dividers0 = {
 	CONFIG_SCLK1_DIV,
 	CONFIG_DCLK_DIV,
 	CONFIG_OCLK_DIV,
-	CONFIG_DIV_S1SELEX
+	CONFIG_DIV_S1SELEX,
+	0,
 };
 
 static struct CGU_Settings Clock_Dividers1 = {
@@ -34,8 +35,9 @@ static struct CGU_Settings Clock_Dividers1 = {
 	CONFIG_CGU1_SCLK0_DIV,
 	CONFIG_CGU1_SCLK1_DIV,
 	CONFIG_CGU1_DCLK_DIV,
-	CONFIG_CGU1_OCLK_DIV, 
-	CONFIG_CGU1_DIV_S1SELEX
+	CONFIG_CGU1_OCLK_DIV,
+	CONFIG_CGU1_DIV_S1SELEX,
+	CONFIG_CGU1_DIV_S0SELEX
 };
 
 __attribute__((always_inline)) static inline void dmcdelay(uint32_t delay)
@@ -61,7 +63,7 @@ __attribute__((always_inline)) static inline void dmcdelay(uint32_t delay)
 }
 
 __attribute__((always_inline)) static inline
-void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useExtension)
+void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useExtension0, bool useExtension1)
 {
 	uint32_t dNewCguDiv = ((OSEL(pCGU_Settings->div_OSEL)) |
 					(SYSSEL(pCGU_Settings->div_SYSSEL)) |
@@ -70,12 +72,9 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
 					(S1SEL(pCGU_Settings->div_S1SEL))|
 					(DSEL(pCGU_Settings->div_DSEL)));
 	uint32_t cgu_offset = 0x1000 * uiCguNo;
+	uint32_t extension;
 
-	if(useExtension){
-		writel(dNewCguDiv,CGU0_DIV + cgu_offset);
-	}else{
-		writel(0x4024482,CGU0_DIV + cgu_offset);
-	}
+	writel(dNewCguDiv, CGU0_DIV + cgu_offset);
 
 	dmcdelay(1000);
 
@@ -85,11 +84,20 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
 
 	dmcdelay(1000);
 
-	if(useExtension){
-		writel((BITM_CGU_CTL_S1SELEXEN | MSEL(pCGU_Settings->ctl_MSEL) | DF(pCGU_Settings->ctl_DF)) &
+	if(useExtension1 || useExtension0){
+		extension = 0;
+		if(useExtension1)
+			extension |= BITM_CGU_CTL_S1SELEXEN;
+		if(useExtension0)
+			extension |= BITM_CGU_CTL_S0SELEXEN;
+
+		writel(( extension | MSEL(pCGU_Settings->ctl_MSEL) | DF(pCGU_Settings->ctl_DF)) &
 			(~BITM_CGU_CTL_LOCK), CGU0_CTL + cgu_offset);
 
-		while(!(readl(CGU0_CTL + cgu_offset) & BITM_CGU_CTL_S1SELEXEN)) {};
+		if(useExtension1)
+			while(!(readl(CGU0_CTL + cgu_offset) & BITM_CGU_CTL_S1SELEXEN)) {};
+		if(useExtension0)
+			while(!(readl(CGU0_CTL + cgu_offset) & BITM_CGU_CTL_S0SELEXEN)) {};
 
 	}else{
 		writel((MSEL(pCGU_Settings->ctl_MSEL) | DF(pCGU_Settings->ctl_DF)) &
@@ -105,7 +113,7 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
 
 	dmcdelay(1000);
 
-	if(useExtension){
+	if(useExtension1 || useExtension0){
 
 	    //Put PLL in to Bypass Mode
 		writel(BITM_CGU_PLLCTL_PLLEN | BITM_CGU_PLLCTL_PLLBPST, CGU0_PLLCTL + cgu_offset);
@@ -113,7 +121,11 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
 
 		dmcdelay(1000);
 
-		writel(0x60030, CGU0_DIVEX + cgu_offset);
+		if(useExtension1)
+			writel((pCGU_Settings->divex_S1SELEX << 16) | 0x30, CGU0_DIVEX + cgu_offset);
+
+		if(useExtension0)
+			writel((pCGU_Settings->divex_S0SELEX << 0) | 0x30, CGU0_DIVEX + cgu_offset);
 
 		dmcdelay(1000);
 
@@ -142,16 +154,16 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
  * @return       Status
  */
 __attribute__((always_inline)) static inline
-uint32_t CGU0_write(uint32_t uiClkOutSel, bool useExtension)
+uint32_t CGU0_write(uint32_t uiClkOutSel, bool useExtension0, bool useExtension1)
 {
-	Program_Cgu(0, &Clock_Dividers0, useExtension);
+	Program_Cgu(0, &Clock_Dividers0, useExtension0, useExtension1);
 	return 0;
 }
 
 __attribute__((always_inline)) static inline
-uint32_t CGU1_write(uint32_t uiClkOutSel, bool useExtension)
+uint32_t CGU1_write(uint32_t uiClkOutSel, bool useExtension0, bool useExtension1)
 {
-	Program_Cgu(1, &Clock_Dividers1, useExtension);
+	Program_Cgu(1, &Clock_Dividers1, useExtension0, useExtension1);
 	return 0;
 }
 
@@ -166,7 +178,7 @@ uint32_t CGU1_write(uint32_t uiClkOutSel, bool useExtension)
  * @return	Success/Error code.
  */
 __attribute__((always_inline)) static inline
-uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel, uint32_t uiClkoutsel, bool useExtension)
+uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel, uint32_t uiClkoutsel, bool useExtension0, bool useExtension1)
 {
 	uint32_t result = 0;
 	uint32_t status;
@@ -184,7 +196,7 @@ uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel, uint32_t uiClkoutsel, b
 
 		dmcdelay(1000);
 
-		CGU0_write(uiClkoutsel, useExtension);
+		CGU0_write(uiClkoutsel, useExtension0, useExtension1);
 
 	} else if (uiCguNo == 1) {
 
@@ -199,7 +211,7 @@ uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel, uint32_t uiClkoutsel, b
 
 		dmcdelay(1000);
 
-		CGU1_write(uiClkoutsel, useExtension);
+		CGU1_write(uiClkoutsel, useExtension0, useExtension1);
 	}
 	return result;
 }
@@ -207,21 +219,27 @@ uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel, uint32_t uiClkoutsel, b
 
 __attribute__((always_inline)) static inline void cgu_init(void)
 {
-	CGU_Init(0,0, 0, 1);
-	CGU_Init(1,0, 0, 0);
+	CGU_Init(0, 0, 0, 0, 1);
+	CGU_Init(1, 0, 0, 1, 1);
 }
 
 __attribute__((always_inline)) static inline void cdu_init(void)
 {
-
 	writel((0 << 1) | 0x1, REG_CDU0_CFG0);
 	while (readl(REG_CDU0_STAT) & (1 << 0));
 
 	writel((0 << 1) | 0x1, REG_CDU0_CFG1);
 	while (readl(REG_CDU0_STAT) & (1 << 1));
 
-	writel((0 << 1) | 0x1, REG_CDU0_CFG2);
+	writel((3 << 1) | 0x1, REG_CDU0_CFG2);
 	while (readl(REG_CDU0_STAT) & (1 << 2));
+
+	/* DDR - Source from DCLK_1 */
+	writel((0 << 1) | 0x1, REG_CDU0_CFG3);
+	while (readl(REG_CDU0_STAT) & (1 << 3));
+
+	writel((1 << 1) | 0x1, REG_CDU0_CFG4);
+	while (readl(REG_CDU0_STAT) & (1 << 4));
 
 	writel((0 << 1) | 0x1, REG_CDU0_CFG5);
 	while (readl(REG_CDU0_STAT) & (1 << 5));
@@ -234,6 +252,9 @@ __attribute__((always_inline)) static inline void cdu_init(void)
 	writel((0 << 1) | 0x1, REG_CDU0_CFG7);
 	while (readl(REG_CDU0_STAT) & (1 << 7));
 
+	writel((1 << 1) | 0x1, REG_CDU0_CFG8);
+	while (readl(REG_CDU0_STAT) & (1 << 8));
+
 	writel((0 << 1) | 0x1, REG_CDU0_CFG9);
 	while (readl(REG_CDU0_STAT) & (1 << 9));
 
@@ -243,36 +264,49 @@ __attribute__((always_inline)) static inline void cdu_init(void)
 	writel((0 << 1) | 0x1, REG_CDU0_CFG12);
 	while (readl(REG_CDU0_STAT) & (1 << 12));
 
-	/* DDR - Source from DCLK_1 */
-	writel((1 << 1) | 0x1, REG_CDU0_CFG3);
-	while (readl(REG_CDU0_STAT) & (1 << 3));
+	writel((1 << 1) | 0x1, REG_CDU0_CFG13);
+	while (readl(REG_CDU0_STAT) & (1 << 13));
 
-	writel((1 << 1) | 0x1, REG_CDU0_CFG4);
-	while (readl(REG_CDU0_STAT) & (1 << 4));
+	writel((1 << 1) | 0x1, REG_CDU0_CFG14);
+	while (readl(REG_CDU0_STAT) & (1 << 14));
+}
 
-	writel((1 << 1) | 0x1, REG_CDU0_CFG8);
-	while (readl(REG_CDU0_STAT) & (1 << 8));
+__attribute__((always_inline)) static inline void
+ddr_init(void)
+{
+	DMC_Config();
 }
 
 void initcode(void)
 {
-		cdu_init();
-		//cgu_init();
-        //Enable board LEDs 7, 9, and 10 (Real Board)
-		// - PORTC_01, PORTC_02, PORTC_03
-        //*(uint32_t*)(0x3100411C) = 0xE;
-        //*(uint32_t*)(0x3100410C) = 0xE;
+# ifdef MEM_DDR3
+	adi_dmc_lane_reset(true);
+# endif
 
-        //Enable board LEDs 7, 9, and 10 (FPGA Board)
-        // - PORTC_12, PORTC_13, PORTC_14
-        *(uint32_t*)(0x3100411C) = 0x7000;
-        *(uint32_t*)(0x3100410C) = 0x7000;
+	cdu_init();
+	cgu_init();
 
-        return 0;
+# ifdef MEM_DDR3
+	adi_dmc_lane_reset(false);
+# endif
+
+	ddr_init();
+
+    //Enable board LEDs 7, 9, and 10 (Real Board)
+	// - PORTC_01, PORTC_02, PORTC_03
+    //*(uint32_t*)(0x3100411C) = 0xE;
+    //*(uint32_t*)(0x3100410C) = 0xE;
+
+    //Enable board LEDs 7, 9, and 10 (FPGA Board)
+    // - PORTC_12, PORTC_13, PORTC_14
+    *(uint32_t*)(0x3100411C) = 0x7000;
+    *(uint32_t*)(0x3100410C) = 0x7000;
+
+    return 0;
 }
 
 int adi_armv8_initcode(void)
 {
-        initcode();
-        return 0;
+    initcode();
+    return 0;
 }

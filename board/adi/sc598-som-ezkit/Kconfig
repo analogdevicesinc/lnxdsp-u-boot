@@ -47,15 +47,15 @@ config DIV_S1SELEX
 
 config CGU1_VCO_MULT
 	int
-	default 64
+	default 72
 
 config CGU1_CCLK_DIV
 	int
-	default 2
+	default 16
 
 config CGU1_SCLK_DIV
 	int
-	default 4
+	default 8
 
 config CGU1_SCLK0_DIV
 	int
@@ -67,23 +67,23 @@ config CGU1_SCLK1_DIV
 
 config CGU1_DCLK_DIV
 	int
-	default 2
+	default 18
 
 config CGU1_OCLK_DIV
 	int
 	default 16
 
+config CGU1_DIV_S0SELEX
+	int
+	default 36
+
 config CGU1_DIV_S1SELEX
 	int
-	default 8
+	default 90
 
 config DEBUG_EARLY_SERIAL
 	bool
 	default y
-
-config DIV_S1SELEX
-	int
-	default 6
 
 config SC59X_SPI
 	bool

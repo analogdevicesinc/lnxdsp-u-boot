@@ -86,7 +86,7 @@
 #define CFG0_BIT_DMC_CTL_RDTOWR                     5ul
 
 
-#define CFG0_REG_DMC_CTL_VALUE      ((CFG0_BIT_DMC_CTL_DDR3EN<<BITP_DMC_CTL_DDR3EN)|(BITM_DMC_CTL_INIT)|(CFG0_BIT_DMC_CTL_RDTOWR<<BITP_DMC_CTL_RDTOWR)|(BITM_DMC_CTL_AL_EN))
+#define CFG0_REG_DMC_CTL_VALUE      ((CFG0_BIT_DMC_CTL_DDR3EN<<BITP_DMC_CTL_DDR3EN)|(BITM_DMC_CTL_INIT)|(CFG0_BIT_DMC_CTL_RDTOWR<<BITP_DMC_CTL_RDTOWR))
 
 /*****************************************DMC_CFG**********************************************/
 
@@ -98,10 +98,10 @@
    ENUM_DMC_CFG_EXTBANK1)     /* External Banks - always 1 bank */
 /*****************************************DMC_DLLCTL*******************************************/
 /*! DLL Calibration RD Count */
-#define ADI_DMC_PARAM_DLLCOUNT                    240ul
+#define ADI_DMC_PARAM_DLLCOUNT                    247ul
 
 /*! Data Cycles - ceil( 15ns/DDRclock in Hz) */
-#define CFG0_REG_DMC_DATACYC                        12ul
+#define CFG0_REG_DMC_DATACYC                        10ul
 
 /*! Value for the DMC_DLLCTL (DMC DLL Control) register. */
 #define CFG0_REG_DMC_DLLCTL_VALUE \
@@ -110,15 +110,15 @@
 
 /*****************************************DMC_TR0**********************************************/
 /*! Trcd value in DDR clock cycles*/
-#define CFG0_BIT_DMC_TR0_TRCD                       11ul
+#define CFG0_BIT_DMC_TR0_TRCD                       9ul
 /*! Twtr value in DDR clock cycles*/
-#define CFG0_BIT_DMC_TR0_TWTR                       6ul
+#define CFG0_BIT_DMC_TR0_TWTR                       5ul
 /*! Trp value in DDR clock cycles*/
-#define CFG0_BIT_DMC_TR0_TRP                        11ul
+#define CFG0_BIT_DMC_TR0_TRP                        9ul
 /*! Tras value in DDR clock cycles*/
-#define CFG0_BIT_DMC_TR0_TRAS                       28ul
+#define CFG0_BIT_DMC_TR0_TRAS                       24ul
 /*! Trc value in DDR clock cycles*/
-#define CFG0_BIT_DMC_TR0_TRC                        39ul
+#define CFG0_BIT_DMC_TR0_TRC                        33ul
 /*! Tmrd value in DDR clock cycles*/
 #define CFG0_BIT_DMC_TR0_TMRD                       4ul
 
@@ -126,23 +126,23 @@
 
 /*****************************************DMC_TR1**********************************************/
 /*! Tref value in DDR clock cycles*/
-#define CFG0_BIT_DMC_TR1_TREF                        6240ul
+#define CFG0_BIT_DMC_TR1_TREF                        5200ul
 
 /*! Trrd value in DDR clock cycles*/
-#define CFG0_BIT_DMC_TR1_TRRD                        6ul
+#define CFG0_BIT_DMC_TR1_TRRD                        5ul
 
 #define CFG0_REG_DMC_TR1_VALUE      ((CFG0_BIT_DMC_TR1_TREF<<BITP_DMC_TR1_TREF)|(CFG0_BIT_DMC_TR1_TRFC<<BITP_DMC_TR1_TRFC)|(CFG0_BIT_DMC_TR1_TRRD<<BITP_DMC_TR1_TRRD))
 
 /*****************************************DMC_TR2**********************************************/
 
 /*! Tfaw value in DDR clock cycles*/
-#define CFG0_BIT_DMC_TR2_TFAW                          32ul
+#define CFG0_BIT_DMC_TR2_TFAW                          30ul
 /*! Trtp value in DDR clock cycles*/
-#define CFG0_BIT_DMC_TR2_TRTP                          6ul
+#define CFG0_BIT_DMC_TR2_TRTP                          5ul
 /*! Twr value in DDR clock cycles*/
-#define CFG0_BIT_DMC_TR2_TWR                           12ul
+#define CFG0_BIT_DMC_TR2_TWR                           10ul
 /*! Txp value in DDR clock cycles*/
-#define CFG0_BIT_DMC_TR2_TXP                           5ul
+#define CFG0_BIT_DMC_TR2_TXP                           4ul
 /*! Tcke value in DDR clock cycles*/
 #define CFG0_BIT_DMC_TR2_TCKE                          4ul
 
@@ -162,11 +162,11 @@
 /*! CAS Read latency bit 0 value*/
 #define CFG0_BIT_DMC_MR0_CL0                            0ul
 /*! CAS Read latency [2:1] bits*/
-#define CFG0_BIT_DMC_MR0_CL                             7ul
+#define CFG0_BIT_DMC_MR0_CL                             5ul
 /*! Constant value, should not be altered*/
 #define CFG0_BIT_DMC_MR0_DLLRST                         1ul
 /*! Write recovery value*/
-#define CFG0_BIT_DMC_MR0_WRRECOV                        6ul
+#define CFG0_BIT_DMC_MR0_WRRECOV                        5ul
 
 #define CFG0_REG_DMC_MR0_VALUE             ((CFG0_BIT_DMC_MR0_BLEN<<BITP_DMC_MR_BLEN)|(CFG0_BIT_DMC_MR0_CL0<<BITP_DMC_MR_CL0)|(CFG0_BIT_DMC_MR0_CL<<BITP_DMC_MR_CL)|(CFG0_BIT_DMC_MR0_DLLRST<<BITP_DMC_MR_DLLRST)|(CFG0_BIT_DMC_MR0_WRRECOV<<BITP_DMC_MR_WRRECOV))
 
@@ -192,16 +192,16 @@
 
 /**************************************** DMC  MR2MR3**********************************************/
 /*! CAS write latency*/
-#define CFG0_BIT_DMC_MR2_CWL                              3ul
+#define CFG0_BIT_DMC_MR2_CWL                              2ul
 #define CFG0_REG_DMC_MR2MR3      ((((CFG0_BIT_DMC_MR2_CWL<<BITP_DMC_MR2_CWL))<<16)|BITM_DMC_EMR3_MPR)
 #define CFG0_REG_DMC_MRMR1        (CFG0_REG_DMC_MR1_VALUE|(CFG0_REG_DMC_MR0_VALUE<<16))
 
 #if defined(MEM_ISSI_4Gb_DDR3_800MHZ)
 #define CFG0_BIT_DMC_CFG_SDRSIZE                    (ENUM_DMC_CFG_SDRSIZE4G)
-#define CFG0_BIT_DMC_TR1_TRFC                        208ul
+#define CFG0_BIT_DMC_TR1_TRFC                        174ul
 #elif defined(MEM_ISSI_8Gb_DDR3_800MHZ)
 #define CFG0_BIT_DMC_CFG_SDRSIZE                    (ENUM_DMC_CFG_SDRSIZE8G)
-#define CFG0_BIT_DMC_TR1_TRFC                        280ul
+#define CFG0_BIT_DMC_TR1_TRFC                        234ul
 #else
 # error "No DDR part name is defined for this board."
 #endif

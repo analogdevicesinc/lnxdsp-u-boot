@@ -62,6 +62,7 @@ struct CGU_Settings
 	uint32_t div_DSEL:5;
 	uint32_t div_OSEL:7;
 	uint32_t divex_S1SELEX:8;
+	uint32_t divex_S0SELEX:8;
 };
 
 /* =========================
