@@ -24,6 +24,8 @@ ENTRY(_main)
 	ldr	sp, =(CONFIG_INIT_ELF_STACK_ADDR)
 
 	bl	initcode
+	/* Return control to the debugger */
+	BKPT #0
 ENDPROC(_main)
 
 .thumb
