@@ -17,7 +17,7 @@
 #define TrigCalib 0ul
 #define OfstdCycle 2ul
 
-#define cclkdclk_ratio 1.25f
+#define cclkdclk_ratio (1.8f)
 
 #define PHY_CALIB_METHOD2 1
 
@@ -182,7 +182,11 @@ __attribute__((always_inline)) static inline void adi_dmc_ctrl_init()
   /* program Dll timing register */
   *pREG_DMC0_DLLCTL = ((config.ulDDR_DLLCTLCFG) >> 16ul) & 0xFFFFul;
 
+  dmcdelay(2000u);
+
   *pREG_DMC0_DDR_CA_CTL |= BITM_DMC_DDR_CA_CTL_SW_REFRESH;
+
+  dmcdelay(5u);
 
   *pREG_DMC0_DDR_ROOT_CTL |= BITM_DMC_DDR_ROOT_CTL_SW_REFRESH | (OfstdCycle << BITP_DMC_DDR_ROOT_CTL_PIPE_OFSTDCYCLE);
 
@@ -193,9 +197,12 @@ __attribute__((always_inline)) static inline void adi_dmc_ctrl_init()
 
   /* Add necessary delay depending on the configuration */
   t_EMR1 = (config.ulDDR_MREMR1 & BITM_DMC_MR1_WL)>>BITP_DMC_MR1_WL;
-  dmcdelay(600u);  
+
+  dmcdelay(600u);
+
   if(t_EMR1 != 0u)
   {
+     dmcdelay(600u);
      while(((*pREG_DMC0_MR1 & BITM_DMC_MR1_WL)>>BITP_DMC_MR1_WL) != 0ul) { }
   }
 
@@ -204,14 +211,16 @@ __attribute__((always_inline)) static inline void adi_dmc_ctrl_init()
   dmcdelay(2000u);
   if(t_EMR3 != 0u)
   {
+     dmcdelay(2000u);
      while(((*pREG_DMC0_EMR3 & BITM_DMC_EMR3_MPR)>>BITP_DMC_EMR3_MPR) != 0ul) { }
   }
 
 
   t_CTL = (config.ulDDR_CTL & BITM_DMC_CTL_RL_DQS)>>BITP_DMC_CTL_RL_DQS;
-  dmcdelay(600u);  
+  dmcdelay(600u);
   if(t_CTL != 0u)
   {
+     dmcdelay(600u);
      while(((*pREG_DMC0_CTL & BITM_DMC_CTL_RL_DQS)>>BITP_DMC_CTL_RL_DQS) != 0ul){ }
   }
 
@@ -227,6 +236,7 @@ __attribute__((always_inline)) static inline void adi_dmc_ctrl_init()
   *pREG_DMC0_DDR_LANE0_CTL1 |= BITM_DMC_DDR_LANE0_CTL1_COMP_DCYCLE;
   *pREG_DMC0_DDR_LANE1_CTL1 |= BITM_DMC_DDR_LANE1_CTL1_COMP_DCYCLE;
 
+  dmcdelay(10u);
 
   *pREG_DMC0_DDR_LANE0_CTL1 &= (~BITM_DMC_DDR_LANE0_CTL1_COMP_DCYCLE);
   *pREG_DMC0_DDR_LANE1_CTL1 &= (~BITM_DMC_DDR_LANE1_CTL1_COMP_DCYCLE);
