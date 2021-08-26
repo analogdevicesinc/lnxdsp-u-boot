@@ -35,7 +35,7 @@ config SCLK1_DIV
 
 config DCLK_DIV
 	int
-	default 2
+	default 3
 
 config OCLK_DIV
 	int
