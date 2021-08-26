@@ -19,7 +19,7 @@
 
 #include <linux/types.h>
 #include <asm/io.h>
-#include "adsp594.h"
+#include "adsp598.h"
 
 #define CONFIG_DMC0
 
