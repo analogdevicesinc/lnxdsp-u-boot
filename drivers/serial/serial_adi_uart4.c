@@ -103,11 +103,7 @@ static int32_t uart_getc(void)
 
 static void uart_setbrg(void)
 {
-#ifndef ADI_FPGA_BOARD
 	uint16_t divisor = (get_uart_clk() + (baudrate * 8)) / (baudrate * 16);
-#else
-	uint16_t divisor = (12500000 + (baudrate * 8)) / (baudrate * 16);
-#endif
 	baudrate = gd->baudrate;
 
 	/* Program the divisor to get the baud rate we want */
