@@ -681,7 +681,6 @@ static init_fnc_t init_sequence_r[] = {
 	initr_reloc,
 	/* TODO: could x86/PPC have this also perhaps? */
 #ifdef CONFIG_ARM
-#ifndef ADI_FPGA_BOARD
 	initr_caches,
 	/* Note: For Freescale LS2 SoCs, new MMU table is created in DDR.
 	 *	 A temporary mapping of IFC high region is since removed,
@@ -689,7 +688,6 @@ static init_fnc_t init_sequence_r[] = {
 	 *	 until board_init() is called below to remap IFC to high
 	 *	 region.
 	 */
-#endif
 #endif
 	initr_reloc_global_data,
 #if defined(CONFIG_SYS_INIT_RAM_LOCK) && defined(CONFIG_E500)
