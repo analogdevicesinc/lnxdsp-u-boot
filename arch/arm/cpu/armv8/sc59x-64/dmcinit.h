@@ -33,6 +33,8 @@
 #define BITP_DMC_CTL_AL_EN          27 /* AL_EN */
 #define BITM_DMC_CTL_AL_EN          (1uL<<BITP_DMC_CTL_AL_EN)
 
+#define pREG_PLL_CFG_tst            ((volatile uint32_t*)0x310046E8)
+
 #define pREG_DMC0_DDR_SCRATCH_2     ((volatile uint32_t*)0x31071074)
 #define pREG_DMC0_DDR_SCRATCH_3     ((volatile uint32_t*)0x31071078)
 

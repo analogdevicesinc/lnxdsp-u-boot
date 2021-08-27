@@ -220,7 +220,31 @@ uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel, uint32_t uiClkoutsel, b
 __attribute__((always_inline)) static inline void cgu_init(void)
 {
 	CGU_Init(0, 0, 0, 0, 1);
-	CGU_Init(1, 0, 0, 1, 1);
+//	CGU_Init(1, 0, 0, 1, 1);
+}
+
+
+__attribute__((always_inline)) static inline void Enable_VCOby5(uint32_t CGUn, bool Enable)
+{
+	if(Enable)
+	{
+		if(CGUn == 0)
+		{
+			*pREG_PLL_CFG_tst |= 0x40;
+		}
+		else if(CGUn == 1)
+		{
+			*pREG_PLL_CFG_tst |= 0x80;
+		}
+		else
+		{
+			while(1);
+		}
+	}
+	else
+	{
+
+	}
 }
 
 __attribute__((always_inline)) static inline void cdu_init(void)
@@ -236,7 +260,11 @@ __attribute__((always_inline)) static inline void cdu_init(void)
 
 	/* DDR - Source from DCLK_1 */
 	writel((0 << 1) | 0x1, REG_CDU0_CFG3);
-	while (readl(REG_CDU0_STAT) & (1 << 3));
+
+	/* DDR (VCO/5 = 800MHz) */
+	//Enable_VCOby5(0, 1);
+	//writel((2 << 1) | 0x1, REG_CDU0_CFG3);
+	//while (readl(REG_CDU0_STAT) & (1 << 3));
 
 	writel((1 << 1) | 0x1, REG_CDU0_CFG4);
 	while (readl(REG_CDU0_STAT) & (1 << 4));
@@ -294,15 +322,9 @@ void initcode(void)
 
     //Enable board LEDs 7, 9, and 10 (Real Board)
 	// - PORTC_01, PORTC_02, PORTC_03
-    //*(uint32_t*)(0x3100411C) = 0xE;
-    //*(uint32_t*)(0x3100410C) = 0xE;
+    *(uint32_t*)(0x3100411C) = 0xE;
+    *(uint32_t*)(0x3100410C) = 0xE;
 
-    //Enable board LEDs 7, 9, and 10 (FPGA Board)
-    // - PORTC_12, PORTC_13, PORTC_14
-    *(uint32_t*)(0x3100411C) = 0x7000;
-    *(uint32_t*)(0x3100410C) = 0x7000;
-
-    return 0;
 }
 
 int adi_armv8_initcode(void)
