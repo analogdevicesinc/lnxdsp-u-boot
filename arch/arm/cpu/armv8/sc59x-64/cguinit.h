@@ -40,6 +40,7 @@
 #define OSEL(X)   		((X  << BITP_CGU_DIV_OSEL)				& BITM_CGU_DIV_OSEL) 						/* OUTCLK Divisor Select */
 #define CLKOUTSEL(X)    ((X  << BITP_CGU_CLKOUTSEL_CLKOUTSEL)	& BITM_CGU_CLKOUTSEL_CLKOUTSEL) 			/* CLKOUT select	*/
 #define USBCLKSEL(X)    ((X  << BITP_CGU_CLKOUTSEL_USBCLKSEL)	& BITM_CGU_CLKOUTSEL_USBCLKSEL) 			/* USBCLKSEL select */
+#define S0SELEX(X)      ((X  << BITP_CGU_DIVEX_S0SELEX)         & BITM_CGU_DIVEX_S0SELEX)
 #define S1SELEX(X)      ((X  << BITP_CGU_DIVEX_S1SELEX)         & BITM_CGU_DIVEX_S1SELEX)
 
 #define DIV_MASK		(BITM_CGU_DIV_CSEL | BITM_CGU_DIV_S0SEL | BITM_CGU_DIV_SYSSEL |BITM_CGU_DIV_S1SEL | BITM_CGU_DIV_DSEL | BITM_CGU_DIV_OSEL)
@@ -101,6 +102,9 @@ struct CGU_Settings
 
 #define BITP_CGU_DIVEX_S1SELEX               16
 #define BITM_CGU_DIVEX_S1SELEX               (_ADI_MSK(0x00FF0000, uint32_t))    /*  SCLK 1 Extension Divisor */
+
+#define BITP_CGU_DIVEX_S0SELEX               0
+#define BITM_CGU_DIVEX_S0SELEX               (_ADI_MSK(0x000000FF, uint32_t))    /*  SCLK 0 Extension Divisor */
 
 /* -------------------------------------------------------------------------------
         CGU_PLLCTL                           Pos/Masks                        Description

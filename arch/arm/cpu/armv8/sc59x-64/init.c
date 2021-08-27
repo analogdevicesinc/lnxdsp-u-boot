@@ -24,7 +24,7 @@ static struct CGU_Settings Clock_Dividers0 = {
 	CONFIG_DCLK_DIV,
 	CONFIG_OCLK_DIV,
 	CONFIG_DIV_S1SELEX,
-	0,
+	0x30,
 };
 
 static struct CGU_Settings Clock_Dividers1 = {
@@ -71,8 +71,22 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
 					(S0SEL(pCGU_Settings->div_S0SEL))|
 					(S1SEL(pCGU_Settings->div_S1SEL))|
 					(DSEL(pCGU_Settings->div_DSEL)));
+
 	uint32_t cgu_offset = 0x1000 * uiCguNo;
-	uint32_t extension;
+	uint32_t extension = 0;
+
+	if(useExtension0){
+		dNewCguDiv |= (readl(CGU0_DIV + cgu_offset) & (BITM_CGU_DIV_S0SEL));
+	}
+	else{
+		dNewCguDiv |= (S0SEL(pCGU_Settings->div_S0SEL));
+	}
+
+	if(useExtension1){
+		dNewCguDiv |= (readl(CGU0_DIV + cgu_offset) & (BITM_CGU_DIV_S1SEL));
+	}else{
+		dNewCguDiv |= (S1SEL(pCGU_Settings->div_S1SEL));
+	}
 
 	writel(dNewCguDiv, CGU0_DIV + cgu_offset);
 
@@ -84,25 +98,18 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
 
 	dmcdelay(1000);
 
-	if(useExtension1 || useExtension0){
-		extension = 0;
-		if(useExtension1)
-			extension |= BITM_CGU_CTL_S1SELEXEN;
-		if(useExtension0)
-			extension |= BITM_CGU_CTL_S0SELEXEN;
+	if(useExtension1)
+		extension |= BITM_CGU_CTL_S1SELEXEN;
 
-		writel(( extension | MSEL(pCGU_Settings->ctl_MSEL) | DF(pCGU_Settings->ctl_DF)) &
+	if(useExtension0)
+		extension |= BITM_CGU_CTL_S0SELEXEN;
+
+	writel(( extension | MSEL(pCGU_Settings->ctl_MSEL) | DF(pCGU_Settings->ctl_DF)) &
 			(~BITM_CGU_CTL_LOCK), CGU0_CTL + cgu_offset);
 
-		if(useExtension1)
-			while(!(readl(CGU0_CTL + cgu_offset) & BITM_CGU_CTL_S1SELEXEN)) {};
-		if(useExtension0)
-			while(!(readl(CGU0_CTL + cgu_offset) & BITM_CGU_CTL_S0SELEXEN)) {};
+	if(useExtension0 | useExtension1)
+		while(!(readl(CGU0_CTL + cgu_offset) & (BITM_CGU_CTL_S1SELEXEN|BITM_CGU_CTL_S0SELEXEN))) {};
 
-	}else{
-		writel((MSEL(pCGU_Settings->ctl_MSEL) | DF(pCGU_Settings->ctl_DF)) &
-			(~BITM_CGU_CTL_LOCK), CGU0_CTL + cgu_offset);
-	}
 
 	dmcdelay(1000);
 
@@ -121,11 +128,8 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
 
 		dmcdelay(1000);
 
-		if(useExtension1)
-			writel((pCGU_Settings->divex_S1SELEX << 16) | 0x30, CGU0_DIVEX + cgu_offset);
-
-		if(useExtension0)
-			writel((pCGU_Settings->divex_S0SELEX << 0) | 0x30, CGU0_DIVEX + cgu_offset);
+		if(useExtension0 | useExtension1)
+			writel( S0SELEX(pCGU_Settings->divex_S0SELEX) | S1SELEX(pCGU_Settings->divex_S1SELEX), CGU0_DIVEX + cgu_offset);
 
 		dmcdelay(1000);
 
@@ -143,7 +147,6 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
 	}
 
 }
-
 
 /* @brief       Performs a CGU write operation.
  * @details	This function performs the write operation to configure new
@@ -220,7 +223,7 @@ uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel, uint32_t uiClkoutsel, b
 __attribute__((always_inline)) static inline void cgu_init(void)
 {
 	CGU_Init(0, 0, 0, 0, 1);
-//	CGU_Init(1, 0, 0, 1, 1);
+	CGU_Init(1, 0, 0, 1, 1);
 }
 
 
