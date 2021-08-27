@@ -19,7 +19,7 @@
 
 #define cclkdclk_ratio (1.8f)
 
-#define PHY_CALIB_METHOD2 1
+#define PHY_CALIB_METHOD2 0
 
 static ADI_DMC_CONFIG config =
 {
