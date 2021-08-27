@@ -14,6 +14,12 @@ ENTRY(_main)
 	ldr	x0, =(CONFIG_INIT_ELF_STACK_ADDR)
 	bic	sp, x0, #0xf	/* 16-byte alignment for ABI compliance */
 	bl	initcode
+
+	/* This is loaded in via JTAG (GDB+OpenOCD) -- No need to return to ROM */
+	loop_forever:
+		nop
+		bl loop_forever
+
 ENDPROC(_main)
 
 ENTRY(_start)

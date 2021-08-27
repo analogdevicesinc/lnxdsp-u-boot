@@ -14,9 +14,21 @@ ENTRY(_main)
 	ldr	x0, =(CONFIG_INIT_ELF_STACK_ADDR)
 	bic	sp, x0, #0xf	/* 16-byte alignment for ABI compliance */
 	bl	initcode
+
+	/* Restore stack, return to ROM */
+	nop
+	ldp     x29, x30, [sp], #32
+	ret
+
 ENDPROC(_main)
 
 ENTRY(_start)
+
+	/* Store stack from ROM */
+	stp     x29, x30, [sp, #-32]!
+	mov     x29, sp
+	str     x0, [sp, #24]
+
 	.align 3
 
 		/*
