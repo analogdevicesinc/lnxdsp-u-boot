@@ -36,7 +36,7 @@ struct twi_regs {
 	ureg(int_mask);
 	ureg(fifo_ctl);
 	ureg(fifo_stat);
-	char __pad[0x50];
+	u8 __pad[0x50];
 	ureg(xmt_data8);
 	ureg(xmt_data16);
 	ureg(rcv_data8);
@@ -70,9 +70,9 @@ struct adi_i2c_msg {
 #define I2C_M_COMBO		0x4
 #define I2C_M_STOP		0x2
 #define I2C_M_READ		0x1
-	int len;		/* msg length */
+	u32 len;		/* msg length */
 	u8 *buf;		/* pointer to msg data */
-	int alen;		/* addr length */
+	u32 alen;		/* addr length */
 	u8 *abuf;		/* addr buffer */
 };
 

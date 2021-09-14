@@ -28,7 +28,7 @@ static struct mm_region sc598_mem_map[] = {
 		.size = 0x80000000UL,
 		.attrs = PTE_BLOCK_MEMTYPE(MT_DEVICE_NGNRNE) |
 			 PTE_BLOCK_NON_SHARE |
-			 PTE_BLOCK_PXN | PTE_BLOCK_UXN		
+			 PTE_BLOCK_PXN | PTE_BLOCK_UXN
 	}, {
 		/* DDR */
 		.virt = 0x80000000UL,
@@ -71,14 +71,14 @@ int board_early_init_f(void)
 //	}
 //#endif
 
-//#ifdef CONFIG_SOFT_SWITCH
-	//static const unsigned short pins_i2c2[] = P_I2C2;
-	//peripheral_request_list(pins_i2c2, "i2c2");
+#ifdef CONFIG_SOFT_SWITCH
+	static const unsigned short pins_i2c2[] = P_I2C2;
+	peripheral_request_list(pins_i2c2, "i2c2");
 
-	//return setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
-//#else
-//	return 0;
-//#endif
+	return setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
+#else
+	return 0;
+#endif
 
 	return 0;
 }
@@ -133,32 +133,33 @@ int board_eth_init(struct bd_info *bis)
 {
 	int ret = 0;
 
-//	if (CONFIG_DW_PORTS >= 1) {
-//		gpio_request(GPIO_PG12, "emac0_phy_pwdn");
-//		gpio_direction_output(GPIO_PG12, 1);
+	if (CONFIG_DW_PORTS >= 1) {
+		gpio_request(GPIO_PG12, "emac0_phy_pwdn");
+		gpio_direction_output(GPIO_PG12, 1);
 
-//		setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
-//		mdelay(20);
-//		setup_soft_switches(switch_config_array_ethernet_disabled, NUM_SWITCH);
-//		mdelay(90);
-//		setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
-//		mdelay(20);
+		setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
+		mdelay(20);
+		setup_soft_switches(switch_config_array_ethernet_disabled, NUM_SWITCH);
+		mdelay(90);
+		setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
+		mdelay(20);
 
-//		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
-		
-//		static const unsigned short pins[] = P_RGMII0;
-//		if (!peripheral_request_list(pins, "emac0"))
-//			ret += designware_initialize(REG_EMAC0_MACCFG,
-//					PHY_INTERFACE_MODE_RGMII);
-//	}
+		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
 
-//	if (CONFIG_DW_PORTS >= 2) {
-//		static const unsigned short pins[] = P_RMII1;
-//		if (!peripheral_request_list(pins, "emac1"))
-//			ret += designware_initialize(REG_EMAC1_MACCFG, 0);
-//	}
+		//static const unsigned short pins[] = P_RGMII0;
+		//if (!peripheral_request_list(pins, "emac0"))
+		//	ret += designware_initialize(REG_EMAC0_MACCFG,
+		//			PHY_INTERFACE_MODE_RGMII);
+	}
 
-	return ret;
+
+	if (CONFIG_DW_PORTS >= 2) {
+		//static const unsigned short pins[] = P_RMII1;
+		//if (!peripheral_request_list(pins, "emac1"))
+		//	ret += designware_initialize(REG_EMAC1_MACCFG, 0);
+	}
+
+	return 0;
 }
 
 int board_phy_config(struct phy_device *phydev)

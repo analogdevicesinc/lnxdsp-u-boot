@@ -14,16 +14,21 @@
 
 #define IODIRA          0x0
 #define IODIRB          0x1
+#define GPPUA           0xC
+#define GPPUB           0xD
 #define OLATA           0x14
 #define OLATB           0x15
 
 struct switch_config {
-	int i2c_bus;
-	int i2c_addr; /* i2c address of the switch */
+	u32 i2c_bus;
+	u32 i2c_addr; /* i2c address of the switch */
 	u8 dir0; /* IODIRA */
 	u8 dir1; /* IODIRB */
 	u8 value0; /* OLATA */
 	u8 value1; /* OLATB */
+	u8 is23018;
+	u8 pullup0;
+	u8 pullup1;
 };
 
 static inline int setup_soft_switch(struct switch_config *config)
@@ -33,6 +38,15 @@ static inline int setup_soft_switch(struct switch_config *config)
 	ret = i2c_set_bus_num(config->i2c_bus);
 	if (ret)
 		return ret;
+
+	if(config->is23018){
+		ret = i2c_write(config->i2c_addr, GPPUA, 1, &config->pullup0, 1);
+		if (ret)
+			return ret;
+		ret = i2c_write(config->i2c_addr, GPPUB, 1, &config->pullup1, 1);
+		if (ret)
+			return ret;
+	}
 
 	ret = i2c_write(config->i2c_addr, OLATA, 1, &config->value0, 1);
 	if (ret)
