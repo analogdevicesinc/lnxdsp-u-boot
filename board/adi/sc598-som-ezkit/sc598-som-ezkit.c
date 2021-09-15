@@ -145,21 +145,20 @@ int board_eth_init(struct bd_info *bis)
 		mdelay(20);
 
 		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
-
-		//static const unsigned short pins[] = P_RGMII0;
-		//if (!peripheral_request_list(pins, "emac0"))
-		//	ret += designware_initialize(REG_EMAC0_MACCFG,
-		//			PHY_INTERFACE_MODE_RGMII);
+		
+		static const unsigned short pins[] = P_RGMII0;
+		if (!peripheral_request_list(pins, "emac0"))
+			ret += designware_initialize(REG_EMAC0_MACCFG,
+					PHY_INTERFACE_MODE_RGMII);
 	}
-
 
 	if (CONFIG_DW_PORTS >= 2) {
-		//static const unsigned short pins[] = P_RMII1;
-		//if (!peripheral_request_list(pins, "emac1"))
-		//	ret += designware_initialize(REG_EMAC1_MACCFG, 0);
+		static const unsigned short pins[] = P_RMII1;
+		if (!peripheral_request_list(pins, "emac1"))
+			ret += designware_initialize(REG_EMAC1_MACCFG, 0);
 	}
 
-	return 0;
+	return ret;
 }
 
 int board_phy_config(struct phy_device *phydev)
