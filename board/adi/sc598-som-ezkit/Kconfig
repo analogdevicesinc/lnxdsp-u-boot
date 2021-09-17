@@ -5,7 +5,7 @@ config SYS_VENDOR
 
 config ADI_CPU
 	string
-	default "ADSP-SC589-0.1"
+	default "ADSP-SC598-0.0"
 
 config SYS_BOARD
 	default "sc598-som-ezkit"

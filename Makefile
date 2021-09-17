@@ -1322,18 +1322,10 @@ u-boot-nodtb.bin: u-boot FORCE
 	$(call cmd,static_rela,$<,$@,$(CONFIG_SYS_TEXT_BASE))
 	$(BOARD_SIZE_CHECK)
 
-ifeq ($(CONFIG_SC59X_64),y)
-u-boot.ldr:	u-boot
-		$(CREATE_LDR_ENV)
-		elfloader -proc ADSP-SC598 -o $@ -core0=$< $(LDR_FLAGS)
-		$(BOARD_SIZE_CHECK)
-else
 u-boot.ldr:	u-boot
 		$(CREATE_LDR_ENV)
 		$(LDR) -T $(CONFIG_ADI_CPU) -c $@ $< $(LDR_FLAGS)
 		$(BOARD_SIZE_CHECK)
-endif
-
 
 # binman
 # ---------------------------------------------------------------------------
