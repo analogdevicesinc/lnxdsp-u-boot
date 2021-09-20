@@ -53,6 +53,62 @@ _bss_end_ofs:
 	.quad	__bss_end - _start
 
 reset:
+
+#if CONFIG_SC59X_64
+.macro set_register addr val
+	ldr w2, =\val
+	ldr x3, =\addr
+	str w2, [x3]
+.endm
+
+.macro setup_smpu
+	set_register 0x31007800 0x500 //SMPU0
+	set_register 0x31083800 0x500 //SMPU2
+	set_register 0x31084800 0x500 //SMPU3
+	set_register 0x31085800 0x500 //SMPU4
+	set_register 0x31086800 0x500 //SMPU5
+	set_register 0x31087800 0x500 //SMPU6
+	set_register 0x310A0800 0x500 //SMPU9
+	set_register 0x310A1800 0x500 //SMPU11
+	set_register 0x31012800 0x500 //SMPU12
+.endm
+
+.macro setup_spu0
+	ldr w2, =0
+	ldr x3, =0x3108BA00
+	ldr x4, =0
+	setup_spu0_loop:
+		str w2, [x3]
+		add x4, x4, #1
+		add x3, x3, #4
+		cmp x4, #214
+		bne setup_spu0_loop
+.endm
+
+.macro disable_mmu
+	# disable M bit to turn off MMU
+	mrs x0, SCTLR_EL1
+	bic x0, x0, #1
+	msr SCTLR_EL1, x0
+	mrs x0, SCTLR_EL2
+	bic x0, x0, #1
+	msr SCTLR_EL2, x0
+	mrs x0, SCTLR_EL3
+	bic x0, x0, #1
+	msr SCTLR_EL3, x0
+.endm
+
+	//Adjust DDR Prefetch
+	ldr x0,=0x31076000
+	mov w1, #0x1
+	str w1,[x0]
+	isb
+
+	setup_spu0
+	setup_smpu
+	disable_mmu
+#endif
+
 	/* Allow the board to save important registers */
 	b	save_boot_params
 .globl	save_boot_params_ret
