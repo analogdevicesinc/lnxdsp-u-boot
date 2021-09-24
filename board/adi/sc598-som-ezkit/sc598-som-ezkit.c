@@ -144,8 +144,11 @@ int board_eth_init(struct bd_info *bis)
 		setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
 		mdelay(20);
 
+		// select RGMII, little endian for both ports
 		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
-		
+		writel(readl(REG_PADS0_PCFG0) & ~(1 << 19), REG_PADS0_PCFG0);
+		writel(readl(REG_PADS0_PCFG0) & ~(1 << 20), REG_PADS0_PCFG0);
+
 		static const unsigned short pins[] = P_RGMII0;
 		if (!peripheral_request_list(pins, "emac0"))
 			ret += designware_initialize(REG_EMAC0_MACCFG,
