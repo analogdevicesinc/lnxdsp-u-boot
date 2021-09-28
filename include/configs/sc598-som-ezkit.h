@@ -181,7 +181,7 @@
 	"update_ospi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 0:0; sf write ${loadaddr} 0x6C0000 ${filesize};\0" \
 	"update_ospi_zImage=tftp ${loadaddr} ${ramfile}; sf probe 0:0; sf write ${loadaddr} 0xC0000 ${filesize}; setenv zimagesize ${filesize};\0" \
 	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; sf write ${loadaddr} 0xA0000 ${filesize}; setenv dtbsize ${filesize};\0"\
-	"spiargs=set bootargs " ADI_BOOTARGS_SPI "\0" \
+	"spiargs=setenv bootargs " ADI_BOOTARGS_SPI "\0" \
 	"spiboot=run ospi_boot_sc594\0" \
 	"ospi_boot_sc594=run spiargs; sf probe 0:0; sf read ${loadaddr} 0xC0000 ${zimagesize}; sf read ${dtbaddr} 0xA0000 ${dtbsize}; bootz ${loadaddr} - ${dtbaddr}\0"
 
@@ -190,7 +190,7 @@
         "rootfstype=jffs2 " \
         "clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
         ADI_BOOTARGS_VIDEO \
-        "earlyprintk=serial,uart0,57600 " \
+        ADI_EARLYPRINTK \
         "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
                         __stringify(CONFIG_BAUDRATE) " "\
         "mem=" CONFIG_LINUX_MEMSIZE

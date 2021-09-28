@@ -107,6 +107,12 @@
 # endif
 #endif
 
+#ifdef CONFIG_SC59X_64
+# define ADI_EARLYPRINTK "earlycon=adi_uart,0x31003000 "
+#else
+# define ADI_EARLYPRINTK "earlyprintk=serial,uart0,57600 "
+#endif
+
 #ifdef CONFIG_VIDEO
 # define ADI_BOOTARGS_VIDEO "console=tty0 "
 #else
@@ -121,7 +127,7 @@
 	"rootfstype=ext2 " \
 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
 	ADI_BOOTARGS_VIDEO \
-	"earlyprintk=serial,uart0,57600 " \
+	ADI_EARLYPRINTK \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "\
 	"mem=" CONFIG_LINUX_MEMSIZE
@@ -131,7 +137,7 @@
 	"nfsroot=${serverip}:${rootpath},tcp,nfsvers=3 " \
 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
 	ADI_BOOTARGS_VIDEO \
-	"earlyprintk=serial,uart0,57600 " \
+	ADI_EARLYPRINTK \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "\
 	"mem=" CONFIG_LINUX_MEMSIZE
@@ -141,7 +147,7 @@
 	"rootfstype=jffs2 " \
 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
 	ADI_BOOTARGS_VIDEO \
-	"earlyprintk=serial,uart0,57600 " \
+	ADI_EARLYPRINTK \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "\
 		"mem=" CONFIG_LINUX_MEMSIZE
