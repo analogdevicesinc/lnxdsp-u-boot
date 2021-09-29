@@ -151,14 +151,14 @@ int board_eth_init(struct bd_info *bis)
 
 		static const unsigned short pins[] = P_RGMII0;
 		if (!peripheral_request_list(pins, "emac0"))
-			ret += designware_initialize(REG_EMAC0_MACCFG,
+			ret += dwmac4_initialize(REG_EMAC0_MACCFG,
 					PHY_INTERFACE_MODE_RGMII);
 	}
 
 	if (CONFIG_DW_PORTS >= 2) {
 		static const unsigned short pins[] = P_RMII1;
 		if (!peripheral_request_list(pins, "emac1"))
-			ret += designware_initialize(REG_EMAC1_MACCFG, 0);
+			ret += dwmac4_initialize(REG_EMAC1_MACCFG, 0);
 	}
 
 	return ret;
