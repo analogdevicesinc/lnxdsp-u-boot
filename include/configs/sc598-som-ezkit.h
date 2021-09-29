@@ -15,6 +15,8 @@
 /*
  * Processor Settings
  */
+#define CONFIG_ARMV8_SPIN_TABLE
+
 //#define CONFIG_ADI_CPU		"ADSP-SC589-0.1"
 #ifdef CONFIG_SC59X_CHAIN_BOOT
 # define CONFIG_LOADADDR	0x84000000
