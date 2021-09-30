@@ -209,9 +209,14 @@ int board_mmc_init(struct bd_info *bis)
 
 int board_init(void)
 {
+	void __iomem *timer = 0x310ae000;
+
 	gd->bd->bi_arch_number = MACH_TYPE_SC594_SOM_EZKIT;
 	/* boot param addr */
 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + (0x100);
+
+	// enable coresight timestamp generator with default settings
+	writel(1, timer);
 
 	return 0;
 }
