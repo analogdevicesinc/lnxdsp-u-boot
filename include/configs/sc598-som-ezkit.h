@@ -12,6 +12,9 @@
 #define GICD_BASE 0x31200000
 #define GICR_BASE 0x31240000
 
+/* ARM Timer */
+#define COUNTER_FREQUENCY		31250000 //500/16=31.25 MHz
+
 /*
  * Processor Settings
  */
