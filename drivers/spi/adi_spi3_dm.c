@@ -63,7 +63,7 @@ static int adi_spi_ofdata_to_platdata(struct udevice *bus)
 	}
 
 	/* Read other parameters from DT */
-	plat->cs_num = fdtdec_get_addr(blob, subnode, "reg");
+	plat->cs_num = fdtdec_get_int(blob, subnode, "reg", 0);
 
 	return 0;
 }

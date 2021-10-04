@@ -87,13 +87,17 @@ config DEBUG_EARLY_SERIAL
 
 config SC59X_SPI
 	bool
-	default n
+	default y
 
 config USB_SC59X
 	bool
 	default n
 
 config ADI_SPI3_DM
+	bool
+	default y
+
+config ADI_SPI3
 	bool
 	default n
 

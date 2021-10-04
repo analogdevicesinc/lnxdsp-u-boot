@@ -46,7 +46,7 @@
 };
 
 &qspi {
-	status = "okay";
+	status = "disabled";
 
 	flash0: is25lx256@0 {
 		#address-cells = <1>;
@@ -63,17 +63,6 @@
 
 &spi2 {
 	status = "okay";
-
-/* mx66lm1g45 and is25lp512 are mutually exclusive */
-
-/*
-	flash1: mx66lm1g45@1 {
-		#address-cells = <1>;
-		#size-cells = <1>;
-		compatible = "mx66lm1g45";
-		reg = <1>;
-	};
-*/
 
 	flash1: is25lp512@2 {
 		#address-cells = <1>;

@@ -109,8 +109,10 @@
 
 #ifdef CONFIG_SC59X_64
 # define ADI_EARLYPRINTK "earlycon=adi_uart,0x31003000 "
+# define IMAGEFILE "Image"
 #else
 # define ADI_EARLYPRINTK "earlyprintk=serial,uart0,57600 "
+# define IMAGEFILE "zImage"
 #endif
 
 #ifdef CONFIG_VIDEO
@@ -190,7 +192,7 @@
 		   "${hostname}:eth0:off" \
 		"\0" \
 	\
-	"ramfile=zImage\0" \
+	"ramfile=" IMAGEFILE "\0" \
 	"initramfile=ramdisk.cpio.xz.u-boot\0" \
 	"initramaddr=" INITRAMADDR "\0" \
 	"dtbfile=" CONFIG_DTBNAME "\0" \
@@ -235,7 +237,7 @@
 		"bootz ${loadaddr} - ${dtbaddr}" \
 		"\0" \
 	\
-	"nfsfile=zImage\0" \
+	"nfsfile=" IMAGEFILE "\0" \
 	"nfsboot=" \
 		"tftp ${loadaddr} ${nfsfile};" \
 		"tftp ${dtbaddr} ${dtbfile};" \
@@ -332,6 +334,7 @@
  * Env Storage Settings
  */
 #ifndef CONFIG_SC59X
+#ifndef CONFIG_SC59X_64
 	#define CONFIG_ENV_OFFSET       0x10000
 	#define CONFIG_ENV_SIZE         0x2000
 	#define CONFIG_ENV_SECT_SIZE    0x10000
@@ -340,6 +343,7 @@
 	# define CONFIG_BUILD_ENVCRC
 	#endif
 	#define CONFIG_ENV_ADDR         0
+#endif
 #endif
 
 /*
