@@ -98,8 +98,8 @@ reset:
 	msr SCTLR_EL3, x0
 .endm
 
-	//Adjust DDR Prefetch
-	ldr x0,=0x31076000
+	/* Alter outstanding transactions property of A55*/
+	ldr x0,=0x30643108  /* SCB6 A55 M0 Ib.fn Mod */
 	mov w1, #0x1
 	str w1,[x0]
 	isb
