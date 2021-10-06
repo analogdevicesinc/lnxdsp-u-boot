@@ -104,6 +104,31 @@ reset:
 	str w1,[x0]
 	isb
 
+	# configure DDR prefetch behavior, per ADI
+	set_register 0x31076000 0x1
+	isb
+
+	# disable prefetching associated with L1, L2, and L3 caches
+	mrs x0, S3_0_c15_c1_4
+	# L3WSCTL, disable streaming
+	orr x0, x0, #(1 << 30)
+	orr x0, x0, #(1 << 29)
+	# L2WSCTL, disable streaming
+	orr x0, x0, #(1 << 28)
+	orr x0, x0, #(1 << 27)
+	# L1WSCTL, disable streaming
+	orr x0, x0, #(1 << 26)
+	orr x0, x0, #(1 << 25)
+	# L1PCTL, disable prefetch
+	bic x0, x0, #(1 << 15)
+	bic x0, x0, #(1 << 14)
+	bic x0, x0, #(1 << 13)
+	# L3PCTL, disable prefetch
+	orr x0, x0, #(1 << 12)
+	bic x0, x0, #(1 << 11)
+	bic x0, x0, #(1 << 10)
+	msr S3_0_c15_c1_4, x0
+
 	setup_spu0
 	setup_smpu
 	disable_mmu
