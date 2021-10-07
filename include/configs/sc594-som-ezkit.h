@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
  * U-boot - Configuration file for sc594 SOM EZ-Kit board
- * Copyright 2021 Analog Device Inc.
+ * Copyright 2021 Analog Devices Inc.
  */
 
 #ifndef __CONFIG_SC594_EZKIT_H
@@ -163,16 +163,24 @@
 #define ADI_ENV_SETTINGS \
 	"fdt_high=0xFFFFFFFF\0" \
 	"rfsfile=adsp-sc5xx-minimal-adsp-sc594-som-ezkit.jffs2\0" \
+	"dtb_addr=0xA0000\0" \
 	"dtbsize=0x20000\0" \
+	"zimage_addr=0xC0000\0" \
 	"zimagesize=0x600000\0" \
-	"update_ospi_sc594=sf probe 0:0; sf erase 0 0x2000000; run update_ospi_uboot; run update_ospi_dtb; run update_ospi_zImage; run update_ospi_rfs; sleep 3; saveenv\0" \
-	"update_ospi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe 0:0; sf write ${loadaddr} 0x0 ${filesize}\0" \
-	"update_ospi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 0:0; sf write ${loadaddr} 0x6C0000 ${filesize};\0" \
-	"update_ospi_zImage=tftp ${loadaddr} ${ramfile}; sf probe 0:0; sf write ${loadaddr} 0xC0000 ${filesize}; setenv zimagesize ${filesize};\0" \
-	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; sf write ${loadaddr} 0xA0000 ${filesize}; setenv dtbsize ${filesize};\0"\
+	"rfs_addr=0x6C0000\0" \
+	"rfssize=0x3940000\0" \
+	"spidev=2:1\0" \
+	"update_spi_all=run update_spi_uboot; run update_spi_dtb; run update_spi_zImage; run update_spi_rfs; sleep 3; saveenv\0" \
+	"update_spi_uboot=sf probe ${spidev}; sf erase 0 0xA0000; tftp ${loadaddr} ${ubootfile}; sf write ${loadaddr} 0x0 ${filesize}\0" \
+	"update_spi_dtb=sf probe ${spidev}; sf erase ${dtb_addr} 0x20000; tftp ${loadaddr} ${dtbfile}; sf write ${loadaddr} ${dtb_addr} ${filesize}; setenv dtbsize ${filesize};\0"\
+	"update_spi_zImage=sf probe ${spidev}; sf erase ${zimage_addr} 0x600000; tftp ${loadaddr} ${ramfile}; sf write ${loadaddr} ${zimage_addr} ${filesize}; setenv zimagesize ${filesize};\0" \
+	"update_spi_rfs=sf probe ${spidev}; sf erase ${rfs_addr} ${rfssize}; tftp ${loadaddr} ${rfsfile}; sf write ${loadaddr} ${rfs_addr} ${filesize};\0" \
 	"spiargs=setenv bootargs " ADI_BOOTARGS_SPI "\0" \
-	"spiboot=run ospi_boot_sc594\0" \
-	"ospi_boot_sc594=run spiargs; sf probe 0:0; sf read ${loadaddr} 0xC0000 ${zimagesize}; sf read ${dtbaddr} 0xA0000 ${dtbsize}; bootz ${loadaddr} - ${dtbaddr}\0"
+	"set_ospi_dev=setenv spidev 0:0; setenv rfssize 0x1940000\0" \
+	"set_qspi_dev=setenv spidev 2:1; setenv rfssize 0x3940000\0" \
+	"spiboot=run spiargs; sf probe ${spidev}; sf read ${loadaddr} ${zimage_addr} ${zimagesize}; sf read ${dtbaddr} ${dtb_addr} ${dtbsize}; bootz ${loadaddr} - ${dtbaddr}\0" \
+	"ospi_boot=run set_ospi_dev; run spiboot\0" \
+	"qspi_boot=run set_qspi_dev; run spiboot\0"
 
 #define ADI_BOOTARGS_SPI \
         "root=/dev/mtdblock4 " \

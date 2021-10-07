@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
  * U-boot - Common configuration file for ADI SC serial board
- * Copyright 2021 Analog Device Inc.
+ * Copyright 2021 Analog Devices Inc.
  */
 
 #ifndef __CONFIG_SC_ADI_COMMON_H
