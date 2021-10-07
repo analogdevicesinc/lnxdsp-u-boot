@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
  * U-boot - Configuration file for sc594 SOM EZ-Kit board
- * (C) Copyright 2021
+ * Copyright 2021 Analog Device Inc.
  */
 
 #ifndef __CONFIG_SC594_EZKIT_H
