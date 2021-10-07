@@ -1,5 +1,7 @@
+/* SPDX-License-Identifier: GPL-2.0+ */
 /*
  * U-boot - Configuration file for sc594 SOM EZ-Kit board
+ * Copyright 2021 Analog Device Inc.
  */
 
 #ifndef __CONFIG_SC594_EZKIT_H
@@ -150,7 +152,7 @@
 //#define CONFIG_DEBUG_EARLY_SERIAL
 //#define CONFIG_SYS_NO_FLASH
 #define CONFIG_UART_CONSOLE	0
-#define CONFIG_BAUDRATE		57600
+#define CONFIG_BAUDRATE		115200
 //#define CONFIG_UART4_SERIAL
 #define CONFIG_LINUX_MEMSIZE	"992M"
 #define CONFIG_CMD_BOOTZ
