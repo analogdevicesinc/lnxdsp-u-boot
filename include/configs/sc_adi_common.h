@@ -1,5 +1,7 @@
+/* SPDX-License-Identifier: GPL-2.0+ */
 /*
  * U-boot - Common configuration file for ADI SC serial board
+ * (C) Copyright 2021
  */
 
 #ifndef __CONFIG_SC_ADI_COMMON_H
@@ -121,7 +123,7 @@
 	"rootfstype=ext2 " \
 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
 	ADI_BOOTARGS_VIDEO \
-	"earlyprintk=serial,uart0,57600 " \
+	"earlyprintk=serial,uart0,115200 " \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "\
 	"mem=" CONFIG_LINUX_MEMSIZE
@@ -131,7 +133,7 @@
 	"nfsroot=${serverip}:${rootpath},tcp,nfsvers=3 " \
 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
 	ADI_BOOTARGS_VIDEO \
-	"earlyprintk=serial,uart0,57600 " \
+	"earlyprintk=serial,uart0,115200 " \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "\
 	"mem=" CONFIG_LINUX_MEMSIZE
@@ -141,7 +143,7 @@
 	"rootfstype=jffs2 " \
 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
 	ADI_BOOTARGS_VIDEO \
-	"earlyprintk=serial,uart0,57600 " \
+	"earlyprintk=serial,uart0,115200 " \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "\
 		"mem=" CONFIG_LINUX_MEMSIZE
