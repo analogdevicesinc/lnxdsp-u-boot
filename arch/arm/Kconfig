@@ -80,7 +80,7 @@ config STATIC_RELA
 
 config DMA_ADDR_T_64BIT
 	bool
-	default y if ARM64
+	default y if ARM64 && !SC59X_64
 
 config HAS_VBAR
 	bool

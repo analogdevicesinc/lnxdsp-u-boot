@@ -196,18 +196,18 @@ int board_phy_config(struct phy_device *phydev)
 }
 #endif
 
-#ifdef CONFIG_GENERIC_MMC
-int board_mmc_init(struct bd_info *bis)
+int adi_mmc_init()
 {
-	int ret;
-#ifdef CONFIG_MMC_DW
-	ret = sc5xx_dwmmc_init(bis);
-	if (ret)
-		printf("dwmmc init failed\n");
-#endif
+	int ret = 0;
+
+	static const unsigned short pins[] = P_EMSI0;
+	if (!peripheral_request_list(pins, "emsi0")){
+		return -1;
+	}
+
 	return ret;
 }
-#endif
+
 
 int board_init(void)
 {
@@ -219,6 +219,10 @@ int board_init(void)
 
 	// enable coresight timestamp generator with default settings
 	writel(1, timer);
+
+#ifdef CONFIG_MMC_SDHCI_ADI
+	adi_mmc_init();
+#endif
 
 	return 0;
 }
