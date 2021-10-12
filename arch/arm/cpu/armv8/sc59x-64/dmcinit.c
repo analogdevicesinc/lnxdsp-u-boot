@@ -14,12 +14,25 @@
 
 #ifdef CONFIG_DMC0
 
+#define DQS_Default_Delay 3ul
+
+#define DelayTrim 1
+#define Lane0_DQS_Delay 1
+#define Lane1_DQS_Delay 1
+
 #define TrigCalib 0ul
+#define CLKDIR 0ul
 #define OfstdCycle 2ul
 
-#define cclkdclk_ratio (1.8f)
+#define cclkdclk_ratio (1.5f)
 
-#define PHY_CALIB_METHOD2 0
+#define DqsTrim 0
+#define Dqscode 0ul
+
+#define ClkTrim 0
+#define Clkcode 0ul
+
+#define PHY_CALIB_METHOD2 1
 
 static ADI_DMC_CONFIG config =
 {
@@ -30,31 +43,22 @@ static ADI_DMC_CONFIG config =
         CFG0_REG_DMC_TR0_VALUE,
         CFG0_REG_DMC_TR1_VALUE,
         CFG0_REG_DMC_TR2_VALUE,
-        0x00786464ul,
+        0x00785A64ul,
         0ul,
         0x70000000ul
 };
 
 __attribute__((always_inline)) static inline void dmcdelay(uint32_t delay)
 {
-  /* There is no zero-overhead loop on ARM, so assume each iteration takes
-   * 4 processor cycles (based on examination of -O3 and -Ofast output).
-   */
-  uint32_t i, remainder;
+    uint32_t i;
 
-  /* Convert DDR cycles to core clock cycles */
-  float f = (float)delay * cclkdclk_ratio;
-  delay = (uint32_t)(f+0.5);
+    /* Convert DDR cycles to core clock cycles */
+    float f = (float)delay * cclkdclk_ratio;
+    delay = (uint32_t)f;
 
-  /* Round up to multiple of 4 */
-  remainder = delay % 4;
-  if (remainder != 0u) {
-    delay += (4u - remainder);
-  }
-
-  for(i=0; i<delay; i+=4) {
-    asm("nop");
-  }
+    for(i=delay; i>0ul; i--){
+        __asm__("NOP");
+    }
 }
 
 /* DMC phy ZQ calibration routine
@@ -63,84 +67,93 @@ __attribute__((always_inline)) static inline void dmcdelay(uint32_t delay)
 __attribute__((always_inline)) static inline void adi_dmc_phy_calibration()
 {
 #if PHY_CALIB_METHOD2
+  uint32_t stat_value = 0x0u;
+  uint32_t drv_pu , drv_pd, odt_pu, odt_pd;
+  uint32_t ROdt, ClkDqsDrvImpedance;
 
-  /* Reset trigger */
-  *pREG_DMC0_DDR_CA_CTL = 0x0ul;
-  *pREG_DMC0_DDR_ROOT_CTL = 0x0ul;
-  dmcdelay(5000u);
+ 
+  dmcdelay(2500u);
 
-  *pREG_DMC0_DDR_SCRATCH_3 = 0x0ul;
-  *pREG_DMC0_DDR_SCRATCH_2 = 0x0ul;
-  dmcdelay(5000u);
-
-  /* Writing internal registers in calib pad to zero. Calib mode set to 1 [26], trig M1 S1 write [16],
-   * this enables usage of scratch registers instead of ZQCTL registers
-   */
-  *pREG_DMC0_DDR_ROOT_CTL = 0x04010000ul;
-  dmcdelay(5000u);
-
-  /* TRIGGER FOR M2-S2 WRITE     -> slave id 31:26  trig m2,s2 write bit 1->1
-   * slave1 address is 4
-   */
-  *pREG_DMC0_DDR_CA_CTL = 0x10000002ul;
-  dmcdelay(5000u);
-
-  /* reset Trigger */
+  dmcdelay(2500u);
   *pREG_DMC0_DDR_CA_CTL = 0x0u;
   *pREG_DMC0_DDR_ROOT_CTL = 0x0u;
-
-  /* write to slave 1, make the power down bit high */
   *pREG_DMC0_DDR_SCRATCH_3 = 0x1ul<<12;
   *pREG_DMC0_DDR_SCRATCH_2 = 0x0ul;
-   dmcdelay(5000u);
-
-  /* Calib mode set to 1 [26], trig M1 S1 write [16] */
+  dmcdelay(2500u);
   *pREG_DMC0_DDR_ROOT_CTL = 0x04010000ul;
-  dmcdelay(5000u);
-
+  dmcdelay(2500u);
   *pREG_DMC0_DDR_CA_CTL = 0x10000002ul;
-  dmcdelay(5000u);
-
+  dmcdelay(2500u);
   *pREG_DMC0_DDR_CA_CTL = 0x0ul;
   *pREG_DMC0_DDR_ROOT_CTL = 0x0ul;
-  dmcdelay(5000u);
-
-  /* for slave 0 */
+  *pREG_DMC0_DDR_SCRATCH_3 = 0x0ul;
   *pREG_DMC0_DDR_SCRATCH_2 = config.ulDDR_ZQCTL0;
-  dmcdelay(5000u);
-
-  /* Calib mode set to 1 [26], trig M1 S1 write [16] */
   *pREG_DMC0_DDR_ROOT_CTL = 0x04010000ul;
-  dmcdelay(5000u);
-
+  dmcdelay(2500u);
   *pREG_DMC0_DDR_CA_CTL = 0x0C000002ul;
-  dmcdelay(5000u);
-
+  dmcdelay(2500u);
   *pREG_DMC0_DDR_CA_CTL = 0x0ul;
   *pREG_DMC0_DDR_ROOT_CTL = 0x0ul;
-  dmcdelay(5000u);
-
-  /* writing to slave 1
-  calstrt is 0, but other programming is done */
-  *pREG_DMC0_DDR_SCRATCH_3 = 0x0ul; /* make power down LOW again, to kickstart BIAS circuit */
-  *pREG_DMC0_DDR_SCRATCH_2 = 0x70000000ul;
-  dmcdelay(5000u);
-
-  /* write to ca_ctl lane, calib mode set to 1 [26], trig M1 S1 write [16]*/
+  *pREG_DMC0_DDR_SCRATCH_3 = 0x0ul;
+  *pREG_DMC0_DDR_SCRATCH_2 = 0x30000000ul;
   *pREG_DMC0_DDR_ROOT_CTL = 0x04010000ul;
-  dmcdelay(5000u);
-
-  /*  copies data to lane controller slave
-   *  TRIGGER FOR M2-S2 WRITE     -> slave id 31:26  trig m2,s2 write bit 1->1
-   *  slave1 address is 4
-   */
+  dmcdelay(2500u);
   *pREG_DMC0_DDR_CA_CTL = 0x10000002ul;
-  dmcdelay(5000u);
-
-  /* reset Trigger */
+  dmcdelay(2500u);
   *pREG_DMC0_DDR_CA_CTL = 0x0ul;
   *pREG_DMC0_DDR_ROOT_CTL = 0x0ul;
-
+  *pREG_DMC0_DDR_SCRATCH_3 = 0x0ul;
+  *pREG_DMC0_DDR_SCRATCH_2 = 0x0ul;
+  *pREG_DMC0_DDR_SCRATCH_3 = 0x0ul;
+  *pREG_DMC0_DDR_SCRATCH_2 = 0x0ul;
+  *pREG_DMC0_DDR_ROOT_CTL = 0x04010000ul;
+  dmcdelay(2500u);
+  *pREG_DMC0_DDR_CA_CTL = 0x10000002ul;
+  dmcdelay(2500u);
+  *pREG_DMC0_DDR_CA_CTL = 0x0ul;
+  *pREG_DMC0_DDR_ROOT_CTL = 0x0ul;
+  *pREG_DMC0_DDR_SCRATCH_3 = 0x0ul;
+  *pREG_DMC0_DDR_SCRATCH_2 = 0x0ul;
+  *pREG_DMC0_DDR_SCRATCH_3 = 0x0ul;
+  *pREG_DMC0_DDR_SCRATCH_2 = 0x50000000ul;
+  *pREG_DMC0_DDR_ROOT_CTL = 0x04010000ul;
+  dmcdelay(2500u);
+  *pREG_DMC0_DDR_CA_CTL = 0x10000002ul;
+  dmcdelay(2500u);
+  *pREG_DMC0_DDR_CA_CTL = 0u;
+  *pREG_DMC0_DDR_ROOT_CTL = 0u;
+  *pREG_DMC0_DDR_CA_CTL = 0x0C000004u;
+  dmcdelay(2500u);
+  *pREG_DMC0_DDR_ROOT_CTL = BITM_DMC_DDR_ROOT_CTL_TRIG_RD_XFER_ALL;
+  dmcdelay(2500u);
+  *pREG_DMC0_DDR_CA_CTL = 0u;
+  *pREG_DMC0_DDR_ROOT_CTL = 0u;
+  /* calculate ODT PU and PD values */
+  stat_value = ((*pREG_DMC0_DDR_SCRATCH_7 & 0x0000FFFFu)<<16);
+  stat_value |= (*pREG_DMC0_DDR_SCRATCH_6 & 0xFFFF0000u)>>16;
+  ClkDqsDrvImpedance = ((config.ulDDR_ZQCTL0) & BITM_DMC_DDR_ZQ_CTL0_IMPWRDQ) >> BITP_DMC_DDR_ZQ_CTL0_IMPWRDQ;
+  ROdt = ((config.ulDDR_ZQCTL0) & BITM_DMC_DDR_ZQ_CTL0_IMPRTT) >> BITP_DMC_DDR_ZQ_CTL0_IMPRTT;
+  drv_pu = stat_value & 0x0000003Fu;
+  drv_pd = (stat_value>>12) & 0x0000003Fu;
+  odt_pu = (drv_pu * ClkDqsDrvImpedance)/ ROdt;
+  odt_pd = (drv_pd * ClkDqsDrvImpedance)/ ROdt;
+  *pREG_DMC0_DDR_SCRATCH_2 |= ((1uL<<24)                     |
+                              ((drv_pd & 0x0000003Fu))       |
+                              ((odt_pd & 0x0000003Fu)<<6)    |
+                              ((drv_pu & 0x0000003Fu)<<12)   |
+                              ((odt_pu & 0x0000003Fu)<<18));
+  *pREG_DMC0_DDR_ROOT_CTL = 0x0C010000u;
+  dmcdelay(2500u);
+  *pREG_DMC0_DDR_CA_CTL = 0x08000002u;
+  dmcdelay(2500u);
+  *pREG_DMC0_DDR_CA_CTL = 0u;
+  *pREG_DMC0_DDR_ROOT_CTL = 0u;
+  *pREG_DMC0_DDR_ROOT_CTL = 0x04010000u;
+  dmcdelay(2500u);
+  *pREG_DMC0_DDR_CA_CTL = 0x80000002u;
+  dmcdelay(2500u);
+  *pREG_DMC0_DDR_CA_CTL = 0u;
+  *pREG_DMC0_DDR_ROOT_CTL = 0u;
 #else /* PHY_CALIB_METHOD2 */
   *pREG_DMC0_DDR_ZQ_CTL0 = config.ulDDR_ZQCTL0;
   *pREG_DMC0_DDR_ZQ_CTL1 = config.ulDDR_ZQCTL1;
@@ -158,6 +171,18 @@ __attribute__((always_inline)) static inline void adi_dmc_phy_calibration()
   *pREG_DMC0_DDR_CA_CTL = 0x0ul;
   *pREG_DMC0_DDR_ROOT_CTL = 0x0ul;
 #endif /* PHY_CALIB_METHOD2 */
+
+#if DqsTrim
+  /* DQS duty trim */
+  *pREG_DMC0_DDR_LANE0_CTL0 |= ((Dqscode)<<BITP_DMC_DDR_LANE0_CTL0_BYPENB) & (BITM_DMC_DDR_LANE1_CTL0_BYPENB|BITM_DMC_DDR_LANE0_CTL0_BYPSELP|BITM_DMC_DDR_LANE0_CTL0_BYPCODE);
+  *pREG_DMC0_DDR_LANE1_CTL0 |= ((Dqscode)<<BITP_DMC_DDR_LANE1_CTL0_BYPENB) & (BITM_DMC_DDR_LANE1_CTL1_BYPCODE|BITM_DMC_DDR_LANE1_CTL0_BYPSELP|BITM_DMC_DDR_LANE1_CTL0_BYPCODE);
+#endif
+
+#if ClkTrim
+  /* Clock duty trim */
+  *pREG_DMC0_DDR_CA_CTL |= (((Clkcode <<BITP_DMC_DDR_CA_CTL_BYPCODE1)&BITM_DMC_DDR_CA_CTL_BYPCODE1)|BITM_DMC_DDR_CA_CTL_BYPENB|((CLKDIR<<BITP_DMC_DDR_CA_CTL_BYPSELP)&BITM_DMC_DDR_CA_CTL_BYPSELP));
+#endif
+
 }
 
 /* dmc_ctrl_init() configures DMC controller
@@ -258,6 +283,56 @@ __attribute__((always_inline)) static inline void adi_dmc_ctrl_init()
   rd_cnt &= BITM_DMC_DLLCTL_DLLCALRDCNT;
   *pREG_DMC0_DLLCTL = rd_cnt|data_cyc;
   *pREG_DMC0_CTL = (config.ulDDR_CTL & (~BITM_DMC_CTL_INIT) & (~BITM_DMC_CTL_RL_DQS));
+
+#if DelayTrim
+
+  /* DQS delay trim*/
+  uint32_t stat_value, WL_code_LDQS, WL_code_UDQS;
+
+  /* For LDQS */
+  *pREG_DMC0_DDR_LANE0_CTL1 = (*pREG_DMC0_DDR_LANE0_CTL1) | (0x000000D0);
+  dmcdelay(2500u);
+  *pREG_DMC0_DDR_ROOT_CTL=0x00400000;
+  dmcdelay(2500u);
+  *pREG_DMC0_DDR_ROOT_CTL =0x0;
+  stat_value = (*pREG_DMC0_DDR_SCRATCH_STAT0 & (0xFFFF0000))>>16;
+  WL_code_LDQS = (stat_value) & (0x0000001F);
+
+  *pREG_DMC0_DDR_LANE0_CTL1 &= ~(BITM_DMC_DDR_LANE0_CTL1_BYPCODE|BITM_DMC_DDR_LANE0_CTL1_BYPDELCHAINEN);
+  /* If write leveling is enabled */
+  if((config.ulDDR_MREMR1 & BITM_DMC_MR1_WL)>>BITP_DMC_MR1_WL == true)
+  {
+  *pREG_DMC0_DDR_LANE0_CTL1 |= (((WL_code_LDQS + Lane0_DQS_Delay)<<BITP_DMC_DDR_LANE0_CTL1_BYPCODE) & BITM_DMC_DDR_LANE0_CTL1_BYPCODE)|BITM_DMC_DDR_LANE0_CTL1_BYPDELCHAINEN;
+  }
+  else
+  {
+  *pREG_DMC0_DDR_LANE0_CTL1 |= (((DQS_Default_Delay + Lane0_DQS_Delay)<<BITP_DMC_DDR_LANE0_CTL1_BYPCODE) & BITM_DMC_DDR_LANE0_CTL1_BYPCODE)|BITM_DMC_DDR_LANE0_CTL1_BYPDELCHAINEN;
+  }
+  dmcdelay(2500u);
+
+  /* For UDQS */
+  *pREG_DMC0_DDR_LANE1_CTL1 = (*pREG_DMC0_DDR_LANE1_CTL1) | (0x000000D0);
+  dmcdelay(2500u);
+  *pREG_DMC0_DDR_ROOT_CTL=0x00800000;
+  dmcdelay(2500u);
+  *pREG_DMC0_DDR_ROOT_CTL =0x0;
+  stat_value = (*pREG_DMC0_DDR_SCRATCH_STAT1 & (0xFFFF0000))>>16;
+  WL_code_UDQS = (stat_value) & (0x0000001F);
+
+  *pREG_DMC0_DDR_LANE1_CTL1 &= ~(BITM_DMC_DDR_LANE0_CTL1_BYPCODE|BITM_DMC_DDR_LANE0_CTL1_BYPDELCHAINEN);
+  /* If write leveling is enabled */
+  if((config.ulDDR_MREMR1 & BITM_DMC_MR1_WL)>>BITP_DMC_MR1_WL == true)
+  {
+  *pREG_DMC0_DDR_LANE1_CTL1 |= (((WL_code_UDQS + Lane1_DQS_Delay)<<BITP_DMC_DDR_LANE0_CTL1_BYPCODE) & BITM_DMC_DDR_LANE0_CTL1_BYPCODE)|BITM_DMC_DDR_LANE0_CTL1_BYPDELCHAINEN;
+  }
+  else
+  {
+  *pREG_DMC0_DDR_LANE1_CTL1 |= (((DQS_Default_Delay + Lane1_DQS_Delay)<<BITP_DMC_DDR_LANE0_CTL1_BYPCODE) & BITM_DMC_DDR_LANE0_CTL1_BYPCODE)|BITM_DMC_DDR_LANE0_CTL1_BYPDELCHAINEN;
+  }
+  dmcdelay(2500u);
+
+#endif
+
   return ADI_DMC_SUCCESS;
 }
 
@@ -280,6 +355,34 @@ __attribute__((always_inline)) inline void adi_dmc_lane_reset(bool reset)
     *pREG_DMC0_DDR_LANE1_CTL0 &= ~BITM_DMC_DDR_LANE1_CTL0_CB_RSTDLL;
   }
   dmcdelay(9000u);
+}
+
+__attribute__((always_inline)) inline adidelay(unsigned int num1)
+{
+    while(num1--);
+}
+
+__attribute__((always_inline)) inline adi_config_third_pll(uint32_t Msel, uint32_t Dsel)
+{
+  Msel--;
+  Dsel--;
+
+  *pREG_MISC_REG10_tst &= 0xFFFE0000;
+  adidelay(4000);
+  //update MSEL [10:4]
+  *pREG_MISC_REG10_tst |= ((Msel<< BITP_REG10_MSEL3)& BITM_REG10_MSEL3); //0x500; //msel 80
+  *pREG_MISC_REG10_tst |= 0x2;
+  adidelay(100000);
+  *pREG_MISC_REG10_tst |= 0x1;
+  *pREG_MISC_REG10_tst |= 0x800;
+
+  *pREG_MISC_REG10_tst &= 0xFFFFF7F8;
+  adidelay(4000);
+  *pREG_MISC_REG10_tst |= ((Dsel<< BITP_REG10_DSEL3)& BITM_REG10_DSEL3);//0x1000; //desl-5
+  *pREG_MISC_REG10_tst |= 0x4;
+  adidelay(100000);
+  *pREG_MISC_REG10_tst |= 0x1;
+  *pREG_MISC_REG10_tst |= 0x800;
 }
 
 #endif /* CONFIG_DMC0 */

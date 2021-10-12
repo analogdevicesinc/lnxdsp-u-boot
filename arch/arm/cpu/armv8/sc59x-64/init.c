@@ -263,11 +263,7 @@ __attribute__((always_inline)) static inline void cdu_init(void)
 
 	/* DDR - Source from DCLK_1 */
 	writel((0 << 1) | 0x1, REG_CDU0_CFG3);
-
-	/* DDR (VCO/5 = 800MHz) */
-	//Enable_VCOby5(0, 1);
-	//writel((2 << 1) | 0x1, REG_CDU0_CFG3);
-	//while (readl(REG_CDU0_STAT) & (1 << 3));
+	while (readl(REG_CDU0_STAT) & (1 << 3));
 
 	writel((1 << 1) | 0x1, REG_CDU0_CFG4);
 	while (readl(REG_CDU0_STAT) & (1 << 4));
@@ -310,6 +306,7 @@ ddr_init(void)
 
 void initcode(void)
 {
+
 # ifdef MEM_DDR3
 	adi_dmc_lane_reset(true);
 # endif
@@ -318,6 +315,7 @@ void initcode(void)
 	cgu_init();
 
 # ifdef MEM_DDR3
+	adi_config_third_pll(64,2);
 	adi_dmc_lane_reset(false);
 # endif
 
