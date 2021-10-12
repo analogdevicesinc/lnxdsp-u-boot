@@ -1,7 +1,7 @@
 #
 # U-boot - Makefile
 #
-# Copyright (c) 2013 Analog Device Inc.
+# Copyright (c) 2013-2021 Analog Devices Inc.
 #
 # (C) Copyright 2000-2012
 # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -32,8 +32,8 @@ $(obj)/init-$(CONFIG_SYS_BOARD).elf: $(obj)/init_main.o $(obj)/init.o $(obj)/dmc
 	$(call if_changed,link_init)
 
 ifeq ($(CONFIG_SC59X_CHAIN_BOOT),y)
-quiet_cmd_ldr_init = 
-      cmd_ldr_init = $(LDR) -T $(CONFIG_CPU) -c $@ $^  --bcode=2 --use-vmas
+quiet_cmd_ldr_init =
+      cmd_ldr_init = $(LDR) -T $(CONFIG_CPU) -c $@ $^  --bcode=1 --use-vmas
 
 $(obj)/init-$(CONFIG_SYS_BOARD).ldr: $(obj)/init-$(CONFIG_SYS_BOARD)
 	$(call if_changed,ldr_init)
