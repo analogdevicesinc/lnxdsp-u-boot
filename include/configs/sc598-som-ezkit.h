@@ -155,7 +155,7 @@
 #define CONFIG_LINUX_MEMSIZE	"992M"
 #define CONFIG_CMD_BOOTZ
 
-#define CONFIG_BOOTCOMMAND	"run spiboot"
+#define CONFIG_BOOTCOMMAND	"run qspiboot"
 #define INITRAMADDR "0x85000000"
 
 #define ADI_ENV_SETTINGS \
@@ -165,17 +165,46 @@
 	"dtbsize=0x20000\0" \
 	"imagesize=0xF00000\0" \
 	"initramfs_file=initramfs.cpio.gz.uboot\0" \
-	"ramboot=mii info; dhcp; setenv serverip 192.168.1.239; tftp 0x90080000 Image; tftp 0x84000000 sc598-som-ezkit.dtb; tftp 0x85000000 ${initramfs_file}; run ramargs; booti 0x90080000 0x85000000 0x84000000\0" \
-	"update_qspi_sc598=sf probe 2:1; sf erase 0 0x4000000; run update_qspi_uboot; run update_qspi_dtb; run update_qspi_Image; run update_qspi_rfs; sleep 3; saveenv\0" \
+	ADI_INIT_ETHERNET \
+	ADI_RAM_BOOT \
+	ADI_QSPI_BOOT \
+	ADI_EMMC_BOOT
+
+#define ADI_INIT_ETHERNET \
+	"init_ethernet=mii info; dhcp; setenv serverip ${tftpserverip};\0"
+
+#define ADI_RAM_BOOT \
+	"ramboot=run init_ethernet; tftp ${dtbaddr} ${dtbfile}; tftp ${loadaddr} ${ramfile}; tftp ${initramaddr} ${initramfile}; run ramargs; booti ${loadaddr} ${initramaddr} ${dtbaddr}\0"
+
+#define ADI_QSPI_BOOT \
+	"update_qspi_sc598=run init_ethernet; sf probe 2:1; sf erase 0 0x4000000; run update_qspi_uboot; run update_qspi_dtb; run update_qspi_Image; run update_qspi_rfs; setenv bootcmd \'run qspiboot\'; sleep 3; saveenv\0" \
 	"update_qspi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe 2:1; sf write ${loadaddr} 0x0 ${filesize}\0" \
 	"update_qspi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 2:1; sf write ${loadaddr} 0xFC0000 ${filesize};\0" \
 	"update_qspi_Image=tftp ${loadaddr} ${ramfile}; sf probe 2:1; sf write ${loadaddr} 0xC0000 ${filesize}; setenv imagesize ${filesize};\0" \
-	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; sf write ${loadaddr} 0xA0000 ${filesize}; setenv dtbsize ${filesize};\0"\
-	"spiargs=setenv bootargs " ADI_BOOTARGS_SPI "\0" \
-	"spiboot=run qspi_boot_sc598\0" \
-	"qspi_boot_sc598=run spiargs; sf probe 2:1; sf read ${loadaddr} 0xC0000 ${imagesize}; sf read ${dtbaddr} 0xA0000 ${dtbsize}; booti ${loadaddr} - ${dtbaddr}\0"
+	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; sf write ${loadaddr} 0xA0000 ${filesize}; setenv dtbsize ${filesize};\0" \
+	"qspiargs=setenv bootargs " ADI_BOOTARGS_QSPI "\0" \
+	"qspi_boot_sc598=run spiargs; sf probe 2:1; sf read ${loadaddr} 0xC0000 ${imagesize}; sf read ${dtbaddr} 0xA0000 ${dtbsize}; booti ${loadaddr} - ${dtbaddr}\0" \
+	"qspiboot=run qspi_boot_sc598\0"
 
-#define ADI_BOOTARGS_SPI \
+#define ADI_EMMC_BOOT \
+	"update_emmc_sc598=setenv bootcmd \'run emmcboot\'; saveenv; run ramboot\0" \
+	"emmcargs=setenv bootargs " ADI_BOOTARGS_EMMC "\0" \
+	"emmcload=ext4load mmc 0:1 ${dtbaddr} /boot/sc598-som-ezkit.dtb; ext4load mmc 0:1 ${loadaddr} /boot/Image;\0" \
+	"emmc_boot=run emmcargs; booti ${loadaddr} - ${dtbaddr}\0" \
+	"emmc_boot_sc598=run emmcload; run emmc_boot\0" \
+	"emmcboot=run emmc_boot_sc598\0"
+
+#define ADI_BOOTARGS_EMMC \
+        "root=/dev/mmcblk0p1 " \
+        "rootfstype=ext4 rootwait " \
+        "clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
+        ADI_BOOTARGS_VIDEO \
+        ADI_EARLYPRINTK \
+        "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
+                        __stringify(CONFIG_BAUDRATE) " "\
+        "mem=" CONFIG_LINUX_MEMSIZE
+
+#define ADI_BOOTARGS_QSPI \
         "root=/dev/mtdblock4 " \
         "rootfstype=jffs2 " \
         "clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
