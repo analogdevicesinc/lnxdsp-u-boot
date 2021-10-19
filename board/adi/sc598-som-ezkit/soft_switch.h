@@ -10,8 +10,6 @@
 #include "soft_switch_bits.h"
 #define NUM_SWITCH      2
 
-#define ADI_USE_MACRONIX_OSPI 0
-
 #define PortA_Address22                                                       \
 		DISABLE_ADAU1979                                              | \
 		DISABLE_ADAU1962                                              | \

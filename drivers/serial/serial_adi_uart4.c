@@ -23,8 +23,11 @@ static inline int32_t uart_init(void)
 	struct uart4_reg *regs = adi_uart4_get_regs(CONSOLE_PORT);
 	uint16_t *pins = adi_uart4_get_pins(CONSOLE_PORT);
 
+//If OSPI is being used, then these pins cannot be muxed
+#if ADI_USE_MACRONIX_OSPI == 0
 	if (peripheral_request_list(pins, "adi-uart4"))
 		return -1;
+#endif
 
 	/* always enable UART to 8-bit mode */
 	writel(UEN | UMOD_UART | WLS_8, &regs->control);

@@ -37,8 +37,16 @@
 #include <spi-mem.h>
 #include <malloc.h>
 #include "cadence_qspi.h"
+
+#if defined(CONFIG_SC59X)
 #include "../../arch/arm/cpu/armv7/sc59x/adsp594.h"
 #include "../../arch/arm/cpu/armv7/sc59x/adsp594_mdma.h"
+#endif
+
+#if defined(CONFIG_SC59X_64)
+#include "../../arch/arm/cpu/armv8/sc59x-64/adsp598.h"
+#include "../../arch/arm/cpu/armv8/sc59x-64/adsp598_mdma.h"
+#endif
 
 #define CQSPI_REG_POLL_US			1 /* 1us */
 #define CQSPI_REG_RETRY				10000
@@ -815,13 +823,13 @@ void cadence_qspi_apb_enter_xip(void *reg_base, char xip_dummy)
 	writel(reg, reg_base + CQSPI_REG_RD_INSTR);
 }
 
-#ifdef CONFIG_SC59X
+#if defined(CONFIG_SC59X) || defined (CONFIG_SC59X_64)
 
 #define SCB5_SPI2_OSPI_REMAP 0x30400000
 #define OSPI0_MMAP_ADDRESS 0x60000000
 
 #define ADI_OCTAL
-#define ADI_OCTAL_USE_DMA
+//#define ADI_OCTAL_USE_DMA
 
 int cadence_qspi_direct_read(struct cadence_spi_platdata *plat,
 				   const struct spi_mem_op *op)

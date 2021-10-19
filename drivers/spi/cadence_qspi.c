@@ -25,7 +25,7 @@
 #define CQSPI_READ			2
 #define CQSPI_WRITE			3
 
-#ifdef CONFIG_SC59X
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
 #define CQSPI_DIRECT_READ		4
 #define CQSPI_DIRECT_WRITE		5
 #endif
@@ -254,7 +254,7 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 		if (!op->addr.nbytes)
 			mode = CQSPI_STIG_READ;
 		else
-			#ifdef CONFIG_SC59X
+			#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
 			mode = CQSPI_DIRECT_READ;
 			#else
 			mode = CQSPI_READ;
@@ -263,7 +263,7 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 		if (!op->addr.nbytes || !op->data.buf.out)
 			mode = CQSPI_STIG_WRITE;
 		else
-			#ifdef CONFIG_SC59X
+			#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
 			mode = CQSPI_DIRECT_WRITE;
 			#else
 			mode = CQSPI_WRITE;
@@ -276,7 +276,7 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 		break;
 	case CQSPI_STIG_WRITE:
 		{
-#ifdef CONFIG_SC59X
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
 			static int octalDDR = 0;
 			if(!octalDDR){
 				struct spi_mem_op opTemp;
@@ -303,7 +303,7 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 		if (!err)
 			err = cadence_qspi_apb_write_execute(plat, op);
 		break;
-#ifdef CONFIG_SC59X
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
 	case CQSPI_DIRECT_WRITE:
 		err = cadence_qspi_direct_write(plat, op);
 		break;

@@ -20,14 +20,14 @@
 		/*interrupt-parent = <&intc>;*/
 		ranges;
 
-		qspi: spi@31027000 {
-			compatible = "cadence,qspi";
+		ospi: spi@31027000 {
+			compatible = "cdns,qspi-nor";
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x31027000 0x1000>,
 				  <0x30400000 0x1000>;
 			interrupts = <0 151 4>;
-			/*clocks = <&qspi_clk>;*/
+			/*clocks = <&ospi_clk>;*/
 			ext-decoder = <0>;  /* external decoder */
 			num-cs = <4>;
 			fifo-depth = <128>;
@@ -71,9 +71,15 @@
 	};
 };
 
-&qspi {
-	status = "disabled";
+//Choose one (OSPI or QSPI):
+//note: UART0 console cannot be used with OSPI
+//      If you choose OSPI, then you must also set
+//      ADI_USE_MACRONIX_OSPI to 1
 
+//#include "sc598-som-ezkit-ospi.dtsi"
+#include "sc598-som-ezkit-qspi.dtsi"
+
+&ospi {
 	flash0: is25lx256@0 {
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -88,8 +94,6 @@
 };
 
 &spi2 {
-	status = "okay";
-
 	flash1: is25lp512@2 {
 		#address-cells = <1>;
 		#size-cells = <1>;

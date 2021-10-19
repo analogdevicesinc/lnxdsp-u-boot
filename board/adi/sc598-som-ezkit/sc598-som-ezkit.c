@@ -64,12 +64,14 @@ int board_early_init_f(void)
 //	hw_watchdog_init();
 //#endif
 
-//#ifdef CONFIG_CADENCE_QSPI
-	//static const unsigned short pins_ospi0[] = P_OSPI0;
-	//if (peripheral_request_list(pins_ospi0, "ospi0")){
-	////	printf("Unable to pinmux OSPI0\r\n");
-//	}
-//#endif
+#if ADI_USE_MACRONIX_OSPI
+#ifdef CONFIG_CADENCE_QSPI
+	static const unsigned short pins_ospi0[] = P_OSPI0;
+	if (peripheral_request_list(pins_ospi0, "ospi0")){
+		printf("Unable to pinmux OSPI0\r\n");
+	}
+#endif
+#endif
 
 #ifdef CONFIG_SOFT_SWITCH
 	static const unsigned short pins_i2c2[] = P_I2C2;

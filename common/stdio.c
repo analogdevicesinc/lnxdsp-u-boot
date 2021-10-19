@@ -368,8 +368,9 @@ int stdio_add_devices(void)
 #ifdef CONFIG_USB_TTY
 	drv_usbtty_init();
 #endif
-	if (IS_ENABLED(CONFIG_NETCONSOLE))
-		drv_nc_init();
+#if defined(CONFIG_NETCONSOLE)
+	drv_nc_init();
+#endif
 #ifdef CONFIG_JTAG_CONSOLE
 	drv_jtag_console_init();
 #endif

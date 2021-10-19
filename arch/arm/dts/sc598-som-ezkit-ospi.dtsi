@@ -1,0 +1,7 @@
+&ospi {
+	status = "okay";
+};
+
+&spi2 {
+	status = "disabled";
+};
