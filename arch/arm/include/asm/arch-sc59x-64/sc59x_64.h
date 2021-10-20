@@ -94,6 +94,11 @@
    ========================= */
 #define REG_SPU0_CTL                    0x3108B000         /* SPU0 Control Register */
 
+#define REG_SPU0_SECUREC0                    0x3108B980            /*  SPU0 Secure Core Registers */
+#define REG_SPU0_SECUREC1                    0x3108B984            /*  SPU0 Secure Core Registers */
+#define REG_SPU0_SECUREC2                    0x3108B988            /*  SPU0 Secure Core Registers */
+#define REG_SPU0_SECURECn(i)                 (REG_SPU0_SECUREC0 + ((i) * 4))
+#define REG_SPU0_SECURECn_COUNT              3
 
 /* =========================
         CGU0

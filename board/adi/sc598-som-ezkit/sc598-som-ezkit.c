@@ -223,6 +223,7 @@ int adi_mmc_init()
 int board_init(void)
 {
 	void __iomem *timer = 0x310ae000;
+	void __iomem *spu_securec;
 
 	gd->bd->bi_arch_number = MACH_TYPE_SC594_SOM_EZKIT;
 	/* boot param addr */
@@ -230,6 +231,14 @@ int board_init(void)
 
 	// enable coresight timestamp generator with default settings
 	writel(1, timer);
+
+	// disable secure-only access to sharc cores so we can load from EL1
+	spu_securec = REG_SPU0_SECUREC0;
+	writel(0, spu_securec);
+	spu_securec = REG_SPU0_SECUREC1;
+	writel(0, spu_securec);
+	spu_securec = REG_SPU0_SECUREC2;
+	writel(0, spu_securec);
 
 #ifdef CONFIG_MMC_SDHCI_ADI
 	adi_mmc_init();
