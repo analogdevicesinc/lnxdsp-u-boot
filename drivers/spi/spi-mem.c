@@ -23,7 +23,7 @@
 #include <dm/device_compat.h>
 #endif
 
-#ifdef CONFIG_SC59X
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
 #include <linux/mtd/spi-nor.h>
 #endif
 
@@ -401,7 +401,7 @@ int spi_mem_exec_op(struct spi_slave *slave, const struct spi_mem_op *op)
 
 	/* 2nd transfer: rx or tx data path */
 	if (tx_buf || rx_buf) {
-		#ifdef CONFIG_SC59X
+		#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
 			flag = SPI_XFER_END;
 
 			/* If current SPI command is a SPI quad read or write,
