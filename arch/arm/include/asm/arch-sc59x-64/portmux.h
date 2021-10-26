@@ -285,6 +285,34 @@
 
 #define P_I2C2 {P_I2C2_SDA, P_I2C2_SCL, 0}
 
+/* USB Controller Port Mux */
+#define P_USBC0_STOP	(P_DEFINED | P_IDENT(GPIO_PF3) | P_FUNCT(2))
+#define P_USBC0_DATA7	(P_DEFINED | P_IDENT(GPIO_PF4) | P_FUNCT(2))
+#define P_USBC0_DATA6	(P_DEFINED | P_IDENT(GPIO_PF5) | P_FUNCT(2))
+#define P_USBC0_DATA5	(P_DEFINED | P_IDENT(GPIO_PF6) | P_FUNCT(2))
+#define P_USBC0_DATA4	(P_DEFINED | P_IDENT(GPIO_PF7) | P_FUNCT(2))
+#define P_USBC0_NXT	(P_DEFINED | P_IDENT(GPIO_PF8) | P_FUNCT(2))
+#define P_USBC0_DIR	(P_DEFINED | P_IDENT(GPIO_PF9) | P_FUNCT(2))
+#define P_USBC0_DATA3	(P_DEFINED | P_IDENT(GPIO_PF10) | P_FUNCT(2))
+#define P_USBC0_DATA2	(P_DEFINED | P_IDENT(GPIO_PF11) | P_FUNCT(2))
+#define P_USBC0_DATA1	(P_DEFINED | P_IDENT(GPIO_PF12) | P_FUNCT(2))
+#define P_USBC0_DATA0	(P_DEFINED | P_IDENT(GPIO_PF13) | P_FUNCT(2))
+#define P_USBC0_CLK	(P_DEFINED | P_IDENT(GPIO_PF14) | P_FUNCT(2))
+
+#define P_USBC0 {  \
+	P_USBC0_STOP,  \
+	P_USBC0_DATA7, \
+	P_USBC0_DATA6, \
+	P_USBC0_DATA5, \
+	P_USBC0_DATA4, \
+	P_USBC0_NXT,   \
+	P_USBC0_DIR,   \
+	P_USBC0_DATA3, \
+	P_USBC0_DATA2, \
+	P_USBC0_DATA1, \
+	P_USBC0_DATA0, \
+	P_USBC0_CLK,   0 }
+
 int peripheral_request(unsigned short per, const char *label);
 void peripheral_free(unsigned short per);
 int peripheral_request_list(const unsigned short per[], const char *label);

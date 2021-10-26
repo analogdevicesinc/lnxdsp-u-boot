@@ -13,3 +13,11 @@ config OMAP_USB_PHY
 
 config ROCKCHIP_USB2_PHY
 	bool "Rockchip USB2 PHY"
+
+config ADI_NOP_USB_XCEIV
+	bool "NOP USB Transceiver Driver"
+	depends on PHY
+	help
+	  This driver is to be used by all the usb transceiver which are either
+	  built-in with usb ip or which are autonomous and doesn't require any
+	  phy programming such as ISP1x04 etc.

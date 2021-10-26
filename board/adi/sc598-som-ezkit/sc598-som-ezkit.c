@@ -64,6 +64,15 @@ int board_early_init_f(void)
 //	hw_watchdog_init();
 //#endif
 
+#ifdef CONFIG_USB_DWC2
+	static const unsigned short pins_usbc0[] = P_USBC0;
+	if (peripheral_request_list(pins_usbc0, "usbc0")){
+		printf("Unable to pinmux OSPI0\r\n");
+	}
+	gpio_request(GPIO_PG11, "usb_reset");
+	gpio_direction_output(GPIO_PG11, 1);
+#endif
+
 #if ADI_USE_MACRONIX_OSPI
 #ifdef CONFIG_CADENCE_QSPI
 	static const unsigned short pins_ospi0[] = P_OSPI0;
