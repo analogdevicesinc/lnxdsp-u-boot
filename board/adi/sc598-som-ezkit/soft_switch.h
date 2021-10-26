@@ -22,8 +22,8 @@
 
 #define PortB_Address22_EthEnable         \
 		DISABLE_GIGE_RESET      | \
-		DISABLE_ETH1_RESET      | \
-		ENABLE_ETH1_EN
+		ENABLE_ETH1_RESET       | \
+		DISABLE_ETH1_EN
 
 #define PortB_Address22_EthDisable         \
 		ENABLE_GIGE_RESET        | \
