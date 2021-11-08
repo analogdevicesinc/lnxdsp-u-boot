@@ -73,6 +73,18 @@ reset:
 	set_register 0x31012800 0x500 //SMPU12
 .endm
 
+.macro setup_spu0_wp
+	ldr w2, =0
+	ldr x3, =0x3108B400
+	ldr x4, =0
+	setup_spu0_loop_wp:
+		str w2, [x3]
+		add x4, x4, #1
+		add x3, x3, #4
+		cmp x4, #214
+		bne setup_spu0_loop_wp
+.endm
+
 .macro setup_spu0
 	ldr w2, =0
 	ldr x3, =0x3108BA00
@@ -130,6 +142,7 @@ reset:
 	msr S3_0_c15_c1_4, x0
 
 	setup_spu0
+	setup_spu0_wp
 	setup_smpu
 	disable_mmu
 #endif
