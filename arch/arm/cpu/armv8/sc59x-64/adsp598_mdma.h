@@ -27,7 +27,7 @@ typedef struct dma_regs {
   volatile u32 BWLCNT_CUR;
   volatile u32 BWMCNT;
   volatile u32 BWMCNT_CUR;
-}dma_regs;
+} dma_regs __attribute__((packed));
 
 static u8 dma_get_msize(u32 nByteCount, u32 nAddress)
 {
@@ -46,10 +46,10 @@ static u8 dma_get_msize(u32 nByteCount, u32 nAddress)
   return nMsize;
 }
 
-static u32 memcopy_dma(void *data, void * flash_source, size_t len)
+static u32 memcopy_dma(u32 * data, u32 * flash_source, size_t len)
 {
-  struct dma_regs * mdma_src= (dma_regs *)REG_DMA8_DSCPTR_NXT;
-  struct dma_regs * mdma_dest= (dma_regs *)REG_DMA9_DSCPTR_NXT;
+  struct dma_regs * mdma_src = (dma_regs *)REG_DMA8_DSCPTR_NXT;
+  struct dma_regs * mdma_dest = (dma_regs *)REG_DMA9_DSCPTR_NXT;
 
   u32 result = 0x00000001; /* Default success */
   u32 ByteCount = (u32) len;
@@ -64,6 +64,7 @@ static u32 memcopy_dma(void *data, void * flash_source, size_t len)
 
   /* guard against zero byte count */
   if (len == 0) {
+    printf("MDMA error, zero byte count\n");
     return 0x00000002;
   }
 
@@ -89,40 +90,46 @@ static u32 memcopy_dma(void *data, void * flash_source, size_t len)
   mdma_dest->XCNT = ByteCount >> nDstMsize;
   mdma_dest->XMOD = 1 << nDstMsize;
 
-  isb();
-  dsb();
-  dmb();
+//  isb();
+//  dsb();
+//  dmb();
+  flush_dcache_range(flash_source, flash_source+len);
 
   mdma_dest->CFG = DstConfig;
   mdma_src->CFG = SrcConfig;
 
-  isb();
-  dsb();
-  dmb();
+//  isb();
+//  dsb();
+//  dmb();
+  flush_dcache_range(data, data+len);
 
   /* Check for any configuration errors */
   if ((mdma_src->STAT & BITM_DMA_STAT_IRQERR) == BITM_DMA_STAT_IRQERR) {
+    printf("mdma_src BITM_DMA_STAT_IRQERR (1)\n");
     result = 0x00000003;
   }
   if ((mdma_dest->STAT & BITM_DMA_STAT_IRQERR) == BITM_DMA_STAT_IRQERR) {
+    printf("mdma_dest BITM_DMA_STAT_IRQERR (1)\n");
     result = 0x00000004;
   }
 
-      /* Wait for DMA to complete while checking for a DMA error */
-      do {
-        if ((mdma_src->STAT & BITM_DMA_STAT_IRQERR) == BITM_DMA_STAT_IRQERR) {
-          mdma_src->CFG &= ~1;
-          mdma_dest->CFG &= ~1;
-          return 0x00000005;
-        }
-        if ((mdma_dest->STAT & BITM_DMA_STAT_IRQERR) == BITM_DMA_STAT_IRQERR) {
-          mdma_src->CFG &= ~1;
-          mdma_dest->CFG &= ~1;
-          return 0x00000006;
-        }
-      }while ((mdma_dest->STAT & BITM_DMA_STAT_IRQDONE) == 0);
-
+  /* Wait for DMA to complete while checking for a DMA error */
+  do {
+    if ((mdma_src->STAT & BITM_DMA_STAT_IRQERR) == BITM_DMA_STAT_IRQERR) {
+      printf("mdma_src BITM_DMA_STAT_IRQERR (2)\n");
       mdma_src->CFG &= ~1;
       mdma_dest->CFG &= ~1;
-      return result;
+      return 0x00000005;
+    }
+    if ((mdma_dest->STAT & BITM_DMA_STAT_IRQERR) == BITM_DMA_STAT_IRQERR) {
+      printf("mdma_dest BITM_DMA_STAT_IRQERR (2)\n");
+      mdma_src->CFG &= ~1;
+      mdma_dest->CFG &= ~1;
+      return 0x00000006;
+    }
+  }while ((mdma_dest->STAT & BITM_DMA_STAT_IRQDONE) == 0);
+
+  mdma_src->CFG &= ~1;
+  mdma_dest->CFG &= ~1;
+  return result;
 }
