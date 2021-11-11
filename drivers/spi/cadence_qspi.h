@@ -15,6 +15,12 @@
 #define CQSPI_DECODER_MAX_CS		16
 #define CQSPI_READ_CAPTURE_MAX_DELAY	16
 
+typedef enum {
+	CADENCE_SPI_MODE = 0,
+	CADENCE_QSPI_MODE = 1,
+	CADENCE_OSPI_MODE = 2
+}CADENCE_MODE;
+
 struct cadence_spi_platdata {
 	unsigned int	ref_clk_hz;
 	unsigned int	max_hz;
@@ -34,6 +40,16 @@ struct cadence_spi_platdata {
 	u32		tsd2d_ns;
 	u32		tchsh_ns;
 	u32		tslch_ns;
+
+	/* Additional parameters */
+	CADENCE_MODE cadenceMode;
+	bool use_opcode2;
+	bool use_opcode2_invert;
+	u32 stig_read_dummy;
+	u32 read_dummy;
+	u32 write_dummy;
+	u32 read_opcode;
+	u32 write_opcode;
 };
 
 struct cadence_spi_priv {
@@ -83,5 +99,7 @@ void cadence_qspi_apb_delay(void *reg_base,
 void cadence_qspi_apb_enter_xip(void *reg_base, char xip_dummy);
 void cadence_qspi_apb_readdata_capture(void *reg_base,
 	unsigned int bypass, unsigned int delay);
+
+struct cadence_spi_platdata * cadence_get_plat();
 
 #endif /* __CADENCE_QSPI_H__ */

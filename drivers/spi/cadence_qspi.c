@@ -168,12 +168,20 @@ static int cadence_spi_set_speed(struct udevice *bus, uint hz)
 	return 0;
 }
 
+static struct cadence_spi_platdata * platPointer;
+struct cadence_spi_platdata * cadence_get_plat(){
+	return platPointer;
+}
+
 static int cadence_spi_probe(struct udevice *bus)
 {
 	struct cadence_spi_platdata *plat = bus->platdata;
 	struct cadence_spi_priv *priv = dev_get_priv(bus);
 	struct clk clk;
 	int ret;
+
+	platPointer = plat;
+	plat->cadenceMode = -1;
 
 	priv->regbase = plat->regbase;
 	priv->ahbbase = plat->ahbbase;
@@ -277,17 +285,8 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 	case CQSPI_STIG_WRITE:
 		{
 #if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
-			static int octalDDR = 0;
-			if(!octalDDR){
-				struct spi_mem_op opTemp;
-				char data[1];
-				octalDDR = 1;
-				printf("Set VCR to Octal DDR without DQS\r\n");
-				opTemp.cmd.opcode = 0x81;
-				data[0] = 0xC7;
-				opTemp.data.buf.out = data;
-				opTemp.data.nbytes = 1;
-				cadence_qspi_apb_command_write(base, &opTemp);
+			if(plat->cadenceMode == -1){
+				cadence_qspi_enter_octal(plat);
 			}
 #endif
 			err = cadence_qspi_apb_command_write(base, op);

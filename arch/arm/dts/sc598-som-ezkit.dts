@@ -96,12 +96,12 @@
 #include "sc598-som-ezkit-qspi.dtsi"
 
 &ospi {
-	flash0: is25lx256@0 {
+	flash0: mx66lm1g45@0 {
 		#address-cells = <1>;
 		#size-cells = <1>;
-		compatible = "is25lx256";
+		compatible = "mx66lm1g45";
 		reg = <0>;
-		spi-max-frequency = <112000000>;
+		spi-max-frequency = <133000000>;
 		tshsl-ns = <50>;
 		tsd2d-ns = <50>;
 		tchsh-ns = <4>;
