@@ -68,12 +68,16 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
 	uint32_t dNewCguDiv = ((OSEL(pCGU_Settings->div_OSEL)) |
 					(SYSSEL(pCGU_Settings->div_SYSSEL)) |
 					(CSEL(pCGU_Settings->div_CSEL)) |
-					(S0SEL(pCGU_Settings->div_S0SEL))|
-					(S1SEL(pCGU_Settings->div_S1SEL))|
 					(DSEL(pCGU_Settings->div_DSEL)));
 
 	uint32_t cgu_offset = 0x1000 * uiCguNo;
 	uint32_t extension = 0;
+
+    //Put PLL in to Bypass Mode
+	writel(BITM_CGU_PLLCTL_PLLEN | BITM_CGU_PLLCTL_PLLBPST, CGU0_PLLCTL + cgu_offset);
+	while(!(readl(CGU0_STAT + cgu_offset) & BITM_CGU_STAT_PLLBP)) {};
+
+	dmcdelay(1000);
 
 	if(useExtension0){
 		dNewCguDiv |= (readl(CGU0_DIV + cgu_offset) & (BITM_CGU_DIV_S0SEL));
@@ -89,12 +93,6 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
 	}
 
 	writel(dNewCguDiv, CGU0_DIV + cgu_offset);
-
-	dmcdelay(1000);
-
-    //Put PLL in to Bypass Mode
-	writel(BITM_CGU_PLLCTL_PLLEN | BITM_CGU_PLLCTL_PLLBPST, CGU0_PLLCTL + cgu_offset);
-	while(!(readl(CGU0_STAT + cgu_offset) & BITM_CGU_STAT_PLLBP)) {};
 
 	dmcdelay(1000);
 
