@@ -8,6 +8,10 @@
 #include <asm/arch/config.h>
 #include <linux/sizes.h>
 
+/* Do we have a carrier board attached */
+#define ADI_HAVE_CARRIER 1
+
+/* GIC */
 #define CONFIG_GICV3
 #define GICD_BASE 0x31200000
 #define GICR_BASE 0x31240000

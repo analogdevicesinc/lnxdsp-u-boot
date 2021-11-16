@@ -82,6 +82,7 @@ int board_early_init_f(void)
 #endif
 #endif
 
+#if ADI_HAVE_CARRIER == 1
 #ifdef CONFIG_SOFT_SWITCH
 	static const unsigned short pins_i2c2[] = P_I2C2;
 	peripheral_request_list(pins_i2c2, "i2c2");
@@ -89,6 +90,7 @@ int board_early_init_f(void)
 	return setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
 #else
 	return 0;
+#endif
 #endif
 
 	return 0;
@@ -144,6 +146,7 @@ int board_eth_init(struct bd_info *bis)
 {
 	int ret = 0;
 
+#if ADI_HAVE_CARRIER == 1
 	if (CONFIG_DW_PORTS >= 1) {
 		gpio_request(GPIO_PG12, "emac0_phy_pwdn");
 		gpio_direction_output(GPIO_PG12, 1);
@@ -171,6 +174,7 @@ int board_eth_init(struct bd_info *bis)
 		if (!peripheral_request_list(pins, "emac1"))
 			ret += dwmac4_initialize(REG_EMAC1_MACCFG, 0);
 	}
+#endif
 
 	return ret;
 }
