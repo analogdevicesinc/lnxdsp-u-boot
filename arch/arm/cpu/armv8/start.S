@@ -10,6 +10,10 @@
 #include <asm/macro.h>
 #include <asm/armv8/mmu.h>
 
+#ifdef CONFIG_SC59X_64
+#include "./sc59x-64/init_asm.h"
+#endif
+
 /*************************************************************************
  *
  * Startup Code (reset vector)
@@ -54,97 +58,8 @@ _bss_end_ofs:
 
 reset:
 
-#if CONFIG_SC59X_64
-.macro set_register addr val
-	ldr w2, =\val
-	ldr x3, =\addr
-	str w2, [x3]
-.endm
-
-.macro setup_smpu
-	set_register 0x31007800 0x500 //SMPU0
-	set_register 0x31083800 0x500 //SMPU2
-	set_register 0x31084800 0x500 //SMPU3
-	set_register 0x31085800 0x500 //SMPU4
-	set_register 0x31086800 0x500 //SMPU5
-	set_register 0x31087800 0x500 //SMPU6
-	set_register 0x310A0800 0x500 //SMPU9
-	set_register 0x310A1800 0x500 //SMPU11
-	set_register 0x31012800 0x500 //SMPU12
-.endm
-
-.macro setup_spu0_wp
-	ldr w2, =0
-	ldr x3, =0x3108B400
-	ldr x4, =0
-	setup_spu0_loop_wp:
-		str w2, [x3]
-		add x4, x4, #1
-		add x3, x3, #4
-		cmp x4, #214
-		bne setup_spu0_loop_wp
-.endm
-
-.macro setup_spu0
-	ldr w2, =0
-	ldr x3, =0x3108BA00
-	ldr x4, =0
-	setup_spu0_loop:
-		str w2, [x3]
-		add x4, x4, #1
-		add x3, x3, #4
-		cmp x4, #214
-		bne setup_spu0_loop
-.endm
-
-.macro disable_mmu
-	# disable M bit to turn off MMU
-	mrs x0, SCTLR_EL1
-	bic x0, x0, #1
-	msr SCTLR_EL1, x0
-	mrs x0, SCTLR_EL2
-	bic x0, x0, #1
-	msr SCTLR_EL2, x0
-	mrs x0, SCTLR_EL3
-	bic x0, x0, #1
-	msr SCTLR_EL3, x0
-.endm
-
-	/* Alter outstanding transactions property of A55*/
-	ldr x0,=0x30643108  /* SCB6 A55 M0 Ib.fn Mod */
-	mov w1, #0x1
-	str w1,[x0]
-	isb
-
-	# configure DDR prefetch behavior, per ADI
-	set_register 0x31076000 0x1
-	isb
-
-	# disable prefetching associated with L1, L2, and L3 caches
-	mrs x0, S3_0_c15_c1_4
-	# L3WSCTL, disable streaming
-	orr x0, x0, #(1 << 30)
-	orr x0, x0, #(1 << 29)
-	# L2WSCTL, disable streaming
-	orr x0, x0, #(1 << 28)
-	orr x0, x0, #(1 << 27)
-	# L1WSCTL, disable streaming
-	orr x0, x0, #(1 << 26)
-	orr x0, x0, #(1 << 25)
-	# L1PCTL, disable prefetch
-	bic x0, x0, #(1 << 15)
-	bic x0, x0, #(1 << 14)
-	bic x0, x0, #(1 << 13)
-	# L3PCTL, disable prefetch
-	orr x0, x0, #(1 << 12)
-	bic x0, x0, #(1 << 11)
-	bic x0, x0, #(1 << 10)
-	msr S3_0_c15_c1_4, x0
-
-	setup_spu0
-	setup_spu0_wp
-	setup_smpu
-	disable_mmu
+#ifdef CONFIG_SC59X_64
+	sc598_setup
 #endif
 
 	/* Allow the board to save important registers */

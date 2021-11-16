@@ -8,6 +8,8 @@
 #include <linux/linkage.h>
 #include <asm/macro.h>
 
+#include "init_asm.h"
+
 ENTRY(_start)
 	.align 3
 
@@ -17,6 +19,8 @@ ENTRY(_start)
 	str     x0, [sp, #24]
 
 	bl	initcode
+
+	sc598_ddr_fixups
 
 	/* Restore stack, return to ROM */
 	nop
