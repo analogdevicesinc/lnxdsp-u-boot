@@ -45,11 +45,14 @@ struct cadence_spi_platdata {
 	CADENCE_MODE cadenceMode;
 	bool use_opcode2;
 	bool use_opcode2_invert;
+	bool use_dtr;
 	u32 stig_read_dummy;
 	u32 read_dummy;
 	u32 write_dummy;
 	u32 read_opcode;
 	u32 write_opcode;
+	u32 dly_rd;
+	u32 ddr_dly_rd;
 };
 
 struct cadence_spi_priv {

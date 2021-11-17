@@ -29,7 +29,7 @@
 			interrupts = <0 151 4>;
 			/*clocks = <&ospi_clk>;*/
 			ext-decoder = <0>;  /* external decoder */
-			num-cs = <4>;
+			num-cs = <1>;
 			fifo-depth = <128>;
 			bus-num = <0>;
 			status = "disabled";
