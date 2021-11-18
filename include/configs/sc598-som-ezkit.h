@@ -130,6 +130,7 @@
 //This will disable UART0+SPI2 -- so you must use netconsole if you would
 //still like console access
 #define ADI_USE_MACRONIX_OSPI 0
+#define ADI_USE_MACRONIX_OSPI_DTR 0
 
 #define CONFIG_CMD_DM
 #define CONFIG_CADENCE_QSPI
@@ -153,8 +154,15 @@
 #define CONFIG_SC59X_SPI
 #define CONFIG_CMD_SPI
 #if ADI_USE_MACRONIX_OSPI
-	#define CONFIG_ENV_SPI_MAX_HZ	CONFIG_CQSPI_REF_CLK / 10 //50 MHz DTR (Double Transfer Rate)
-	#define CONFIG_SF_DEFAULT_SPEED	CONFIG_CQSPI_REF_CLK / 10 //50 MHz DTR (Double Transfer Rate)
+	#if ADI_USE_MACRONIX_OSPI_DTR
+		//Maximum DTR read speed = 128mbyte / 1.90s = 67.36 mbyte/s
+		#define CONFIG_ENV_SPI_MAX_HZ	CONFIG_CQSPI_REF_CLK / 12 //41.66 MHz DTR (Double Transfer Rate)
+		#define CONFIG_SF_DEFAULT_SPEED	CONFIG_CQSPI_REF_CLK / 12 //41.66 MHz DTR (Double Transfer Rate)
+	#else
+		//Maximum STR read speed = 128mbyte / 2.17s = 58.98 mbyte/s
+		#define CONFIG_ENV_SPI_MAX_HZ	CONFIG_CQSPI_REF_CLK / 6 //83.33 MHz STR (Single Transfer Rate)
+		#define CONFIG_SF_DEFAULT_SPEED	CONFIG_CQSPI_REF_CLK / 6 //83.33 MHz STR (Single Transfer Rate)
+	#endif
 #else
 	#define CONFIG_ENV_SPI_MAX_HZ	10000000
 	#define CONFIG_SF_DEFAULT_SPEED	10000000

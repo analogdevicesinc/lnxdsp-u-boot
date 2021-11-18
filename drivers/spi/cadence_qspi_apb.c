@@ -1149,7 +1149,11 @@ int cadence_configure_opi_mode(struct cadence_spi_platdata *plat){
 			plat->read_dummy = 20;
 			plat->write_dummy = 0;
 			plat->write_opcode = 0x12;
-			plat->use_dtr = 0;
+			#if ADI_USE_MACRONIX_OSPI_DTR
+				plat->use_dtr = 1;
+			#else
+				plat->use_dtr = 0;
+			#endif
 			plat->dly_rd = 0xC;
 			plat->ddr_dly_rd = 0x2;
 
