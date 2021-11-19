@@ -33,7 +33,7 @@
 		str w13, [x14]
 		add x15, x15, #1
 		add x14, x14, #4
-		cmp x15, #124
+		cmp x15, #214
 		bne setup_spu0_loop_wp
 .endm
 
@@ -45,7 +45,7 @@
 		str w13, [x14]
 		add x15, x15, #1
 		add x14, x14, #4
-		cmp x15, #124
+		cmp x15, #214
 		bne setup_spu0_loop
 .endm
 
