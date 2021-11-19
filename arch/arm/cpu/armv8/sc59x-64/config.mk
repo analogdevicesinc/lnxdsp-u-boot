@@ -19,6 +19,9 @@ endif
 
 INPUTS-y += u-boot.ldr u-boot-$(CONFIG_SYS_BOARD).ldr
 
+INPUTS-y += u-boot-$(CONFIG_SYS_BOARD).ldr.emmc_boot_stage1
+INPUTS-y += u-boot-$(CONFIG_SYS_BOARD).ldr.emmc_boot_stage2
+
 LDR_FLAGS-y :=
 
 LDR_FLAGS += --bcode=$(CONFIG_SC_BOOT_MODE)
@@ -37,4 +40,11 @@ LDR_FLAGS += $(LDR_FLAGS-y)
 
 # Set some default LDR flags based on boot mode.
 LDR_FLAGS += $(LDR_FLAGS-$(CONFIG_SC_BOOT_MODE))
+
+EMMC_BOOT_FLAGS-y :=
+EMMC_BOOT_FLAGS += --bcode=$(CONFIG_SC_BOOT_MODE)
+EMMC_BOOT_FLAGS += --use-vmas
+EMMC_BOOT_FLAGS += $(EMMC_BOOT_FLAGS-y)
+EMMC_BOOT_FLAGS += $(EMMC_BOOT_FLAGS-$(CONFIG_SC_BOOT_MODE))
+
 endif

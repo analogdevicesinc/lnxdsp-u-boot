@@ -302,7 +302,7 @@ ddr_init(void)
 	DMC_Config();
 }
 
-void initcode(void)
+void initcode_shared(void)
 {
 
 # ifdef MEM_DDR3
@@ -326,8 +326,3 @@ void initcode(void)
 
 }
 
-int adi_armv8_initcode(void)
-{
-    initcode();
-    return 0;
-}

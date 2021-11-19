@@ -1327,6 +1327,18 @@ u-boot.ldr:	u-boot
 		$(LDR) -T $(CONFIG_ADI_CPU) -c $@ $< $(LDR_FLAGS)
 		$(BOARD_SIZE_CHECK)
 
+ifeq ($(CONFIG_SC59X_64),y)
+u-boot-$(CONFIG_SYS_BOARD).ldr.emmc_boot_stage1: u-boot
+		$(CREATE_LDR_ENV)
+		$(LDR) -T $(CONFIG_ADI_CPU) -c $@ arch/arm/cpu/armv8/sc59x-64/init-sc598-som-ezkit.emmc_boot $(EMMC_BOOT_FLAGS)
+		$(BOARD_SIZE_CHECK)
+
+u-boot-$(CONFIG_SYS_BOARD).ldr.emmc_boot_stage2: u-boot
+		$(CREATE_LDR_ENV)
+		$(LDR) -T $(CONFIG_ADI_CPU) -c $@ $< $(EMMC_BOOT_FLAGS)
+		$(BOARD_SIZE_CHECK)
+endif
+
 # binman
 # ---------------------------------------------------------------------------
 # Use 'make BINMAN_DEBUG=1' to enable debugging
@@ -1922,7 +1934,6 @@ u-boot-$(CONFIG_SYS_BOARD).ldr: $(INPUTS-y)
 	@$(foreach file,$(RENAME_FILES),\
 		mv $(file) $(subst u-boot, u-boot-$(CONFIG_SYS_BOARD), $(file));)
 endif
-
 spl/u-boot-spl.bin: spl/u-boot-spl
 	@:
 	$(SPL_SIZE_CHECK)
