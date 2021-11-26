@@ -69,6 +69,8 @@
 	str w12,[x11]
 	isb
 
+/* Do not modify prefetch behaviors -- This appears to be introducing rare memory bit flips
+
 	# configure DDR prefetch behavior, per ADI
 	set_register 0x31076000 0x1
 	isb
@@ -93,6 +95,9 @@
 	bic x11, x11, #(1 << 11)
 	bic x11, x11, #(1 << 10)
 	msr S3_0_c15_c1_4, x11
+
+*/
+
 .endm
 
 .macro sc598_setup
