@@ -629,6 +629,14 @@ int do_bootm_states(struct cmd_tbl *cmdtp, int flag, int argc,
 		if (images->os.os == IH_OS_LINUX)
 			fixup_silent_linux();
 #endif
+
+		//When booting from U-Boot into Linux, the OSPI chip and peripheral remains configured
+		//for 1x or 8x modes.  Eventually, we may want to reset the chip+peripheral and let Linux
+		//reconfigure -- skipping for now.  Let's just append the current state into bootargs instead
+		#ifdef CONFIG_SC59X_64
+			cadence_ospi_append_chipinfo();
+		#endif
+
 		ret = boot_fn(BOOTM_STATE_OS_PREP, argc, argv, images);
 	}
 

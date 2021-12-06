@@ -299,15 +299,19 @@ void cadence_qspi_apb_config_baudrate_div(void *reg_base,
 void cadence_qspi_apb_set_clk_mode(void *reg_base, uint mode)
 {
 	unsigned int reg;
+	struct cadence_spi_platdata *plat = cadence_get_plat();
 
 	cadence_qspi_apb_controller_disable(reg_base);
 	reg = readl(reg_base + CQSPI_REG_CONFIG);
 	reg &= ~(CQSPI_REG_CONFIG_CLK_POL | CQSPI_REG_CONFIG_CLK_PHA);
 
-	if (mode & SPI_CPOL)
-		reg |= CQSPI_REG_CONFIG_CLK_POL;
-	if (mode & SPI_CPHA)
-		reg |= CQSPI_REG_CONFIG_CLK_PHA;
+	//On the MX66, DTR mode works best with CPOL=0 and CPHA=0
+	if(!plat->use_dtr){
+		if (mode & SPI_CPOL)
+			reg |= CQSPI_REG_CONFIG_CLK_POL;
+		if (mode & SPI_CPHA)
+			reg |= CQSPI_REG_CONFIG_CLK_PHA;
+	}
 
 	writel(reg, reg_base + CQSPI_REG_CONFIG);
 
@@ -455,7 +459,7 @@ int cadence_qspi_apb_command_read(void *reg_base, const struct spi_mem_op *op)
 	unsigned int rxlen = op->data.nbytes;
 	void *rxbuf = op->data.buf.in;
 	static char tempBuf[8];
-	unsigned int op1, op2;
+	unsigned int op2;
 	struct cadence_spi_platdata *plat = cadence_get_plat();
 
 	if (rxlen > CQSPI_STIG_DATA_LEN_MAX || !rxbuf) {
@@ -937,6 +941,34 @@ void cadence_qspi_apb_enter_xip(void *reg_base, char xip_dummy)
 
 #define ADI_OCTAL_USE_DMA
 
+
+void cadence_ospi_append_chipinfo(){
+	static char newArgs[2048];
+	static char currentMode[32];
+	struct cadence_spi_platdata *plat;
+	char * bootargs;
+
+	plat = cadence_get_plat();
+
+	bootargs = env_get("bootargs") & 0xFFFFFFFF;
+
+	if (bootargs && (bootargs[0] != '\0')) {
+		if(plat->cadenceMode == CADENCE_OSPI_MODE){
+			if(plat->use_dtr){
+				sprintf(currentMode, "dtr\0");
+			}else{
+				sprintf(currentMode, "str\0");
+			}
+		}else{
+			sprintf(currentMode, "spi\0");
+		}
+
+		snprintf(newArgs, sizeof(newArgs), "%s cadence-quadspi.ospi_id=%d cadence-quadspi.ospi_mode=%s\0", bootargs,
+											plat->id, currentMode);
+		env_set("bootargs", newArgs);
+	}
+}
+
 int cadence_qspi_setup_octal_read(struct cadence_spi_platdata *plat){
 	unsigned int curVal;
 
@@ -989,6 +1021,13 @@ int cadence_qspi_setup_octal_write(struct cadence_spi_platdata *plat){
 int cadence_qspi_setup_octal(struct cadence_spi_platdata *plat){
 	unsigned int reg;
 	unsigned int curVal;
+
+	//On the MX66, DTR mode works best with CPOL=0 and CPHA=0
+	if(plat->use_dtr){
+		curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
+		curVal &= ~(CQSPI_REG_CONFIG_CLK_POL | CQSPI_REG_CONFIG_CLK_PHA);
+		writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
+	}
 
 	if(plat->use_opcode2){ 
 		/* Make sure the dual op-code is enabled */
@@ -1116,7 +1155,6 @@ int cadence_enter_octal_mx66(struct cadence_spi_platdata *plat, struct spi_mem_o
 			printf("\tSuccess: In STR OPI Mode!\n");
 		}
 	}
-
 	return 0;
 }
 
@@ -1141,6 +1179,8 @@ int cadence_configure_opi_mode(struct cadence_spi_platdata *plat){
 	cadence_qspi_apb_command_read(plat->regbase, &opTemp);
 	printf("Read ID via 1x SPI: %x %x %x\n", id_spi[0], id_spi[1], id_spi[2]);
 
+	plat->id = *(uint32_t*)id_spi;
+
 	switch( *(uint32_t*)id_spi ){
 		case 0x3b85c2: //MX66LM1G45
 			plat->use_opcode2 = 1;
@@ -1154,7 +1194,7 @@ int cadence_configure_opi_mode(struct cadence_spi_platdata *plat){
 			#else
 				plat->use_dtr = 0;
 			#endif
-			plat->dly_rd = 0xC;
+			plat->dly_rd = 0xE;
 			plat->ddr_dly_rd = 0x2;
 
 			if(plat->use_dtr){

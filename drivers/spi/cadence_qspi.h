@@ -53,6 +53,7 @@ struct cadence_spi_platdata {
 	u32 write_opcode;
 	u32 dly_rd;
 	u32 ddr_dly_rd;
+	u32 id;
 };
 
 struct cadence_spi_priv {

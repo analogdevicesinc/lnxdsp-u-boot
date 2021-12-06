@@ -210,7 +210,7 @@
 
 #define ADI_OSPI_BOOT \
 	"update_ospi_sc598=run init_ethernet; sf probe 0:0; sf erase 0 0x4000000; run update_ospi_uboot; run update_ospi_dtb; run update_ospi_Image; run update_ospi_rfs; setenv bootcmd \'run ospiboot\'; sleep 3; saveenv\0" \
-	"update_ospi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe 0:0; sf write ${loadaddr} 0x0 ${filesize}\0" \
+	"update_ospi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe 0:0; sf write ${loadaddr} 0x0 ${filesize};\0" \
 	"update_ospi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 0:0; sf write ${loadaddr} 0x1000000 ${filesize};\0" \
 	"update_ospi_Image=tftp ${loadaddr} ${ramfile}; sf probe 0:0; sf write ${loadaddr} 0x100000 ${filesize}; setenv imagesize ${filesize};\0" \
 	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; sf write ${loadaddr} 0xE0000 ${filesize}; setenv dtbsize ${filesize};\0" \
@@ -220,7 +220,7 @@
 
 #define ADI_QSPI_BOOT \
 	"update_qspi_sc598=run init_ethernet; sf probe 2:1; sf erase 0 0x4000000; run update_qspi_uboot; run update_qspi_dtb; run update_qspi_Image; run update_qspi_rfs; setenv bootcmd \'run qspiboot\'; sleep 3; saveenv\0" \
-	"update_qspi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe 2:1; sf write ${loadaddr} 0x0 ${filesize}\0" \
+	"update_qspi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe 2:1; sf write ${loadaddr} 0x0 ${filesize};\0" \
 	"update_qspi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 2:1; sf write ${loadaddr} 0x1000000 ${filesize};\0" \
 	"update_qspi_Image=tftp ${loadaddr} ${ramfile}; sf probe 2:1; sf write ${loadaddr} 0x100000 ${filesize}; setenv imagesize ${filesize};\0" \
 	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; sf write ${loadaddr} 0xE0000 ${filesize}; setenv dtbsize ${filesize};\0" \
