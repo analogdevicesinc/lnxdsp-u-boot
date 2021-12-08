@@ -1344,6 +1344,19 @@ int cadence_qspi_direct_write(struct cadence_spi_platdata *plat,
 	unsigned int addr_value = op->addr.val;
 	unsigned int txlen = op->data.nbytes;
 	u8 *txbuf = op->data.buf.out;
+	u8 *txbufTemp;
+	bool needFreeBuf = false;
+
+	if(plat->use_dtr){
+		if(txlen % 2){
+			txbufTemp = txbuf;
+			txbuf = malloc(txlen+1);
+			memcpy(txbuf, txbufTemp, txlen);
+			txbuf[txlen] = 0xFF;
+			txlen++;
+			needFreeBuf = true;
+		}
+	}
 
 	*(uint32_t*)SCB5_SPI2_OSPI_REMAP = 0x1U;
 
@@ -1426,6 +1439,12 @@ int cadence_qspi_direct_write(struct cadence_spi_platdata *plat,
 	int nCount = 4U;
 	while(nCount-- > 0U){
 		while( ! ((readl(plat->regbase + CQSPI_REG_CONFIG) & BITM_OSPI_CTL_IDLE) >> BITP_OSPI_CTL_IDLE) );
+	}
+
+	if(needFreeBuf){
+		free(txbuf);
+		txbuf = txbufTemp;
+		txlen--;
 	}
 
 	return 0;
