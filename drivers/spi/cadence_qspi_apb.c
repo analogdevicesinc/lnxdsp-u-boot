@@ -1244,6 +1244,11 @@ int cadence_qspi_direct_read(struct cadence_spi_platdata *plat,
 	unsigned int rxlen = op->data.nbytes;
 	u8 *rxbuf = op->data.buf.in;
 
+	if(plat->use_dtr){
+		if(rxlen % 2)
+			rxlen++;
+	}
+
 	*(uint32_t*)SCB5_SPI2_OSPI_REMAP = 0x1U;
 
 	cadence_qspi_apb_controller_enable(plat->regbase);
