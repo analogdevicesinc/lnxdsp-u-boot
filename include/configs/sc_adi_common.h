@@ -133,7 +133,6 @@
 
 #define ADI_BOOTARGS_SDCARD	\
 	"root=" ADI_BOOTARGS_ROOT_SDCARD " " \
-	"rootfstype=ext2 " \
 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
 	ADI_BOOTARGS_VIDEO \
 	ADI_EARLYPRINTK \
