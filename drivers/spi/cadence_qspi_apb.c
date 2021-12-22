@@ -35,6 +35,7 @@
 #include <wait_bit.h>
 #include <spi.h>
 #include <spi-mem.h>
+#include <linux/mtd/spi-nor.h>
 #include <malloc.h>
 #include "cadence_qspi.h"
 
@@ -1022,6 +1023,15 @@ int cadence_qspi_setup_octal_write(struct cadence_spi_platdata *plat){
 	curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
 	curVal |= BITM_OSPI_CTL_DACEN;
 	writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
+
+	/* configure the WEL values to use non-inverted opcodes*/
+	if (plat->use_opcode2) {
+		// By default WEL inverts the WREN opcode, fix it in the non-inverted case
+		if (!plat->use_opcode2_invert) {
+			u32 wel = (SPINOR_OP_WREN << 24) | (SPINOR_OP_WREN << 16);
+			writel(0x06060000, plat->regbase + 0xe4);
+		}
+	}
 }
 
 int cadence_qspi_setup_octal(struct cadence_spi_platdata *plat){
@@ -1088,6 +1098,7 @@ int cadence_enter_octal_is25(struct cadence_spi_platdata *plat, struct spi_mem_o
 	cadence_qspi_setup_octal(plat);
 	cadence_qspi_setup_octal_read(plat);
 	cadence_qspi_setup_octal_write(plat);
+	return 0;
 }
 
 int cadence_enter_octal_mx66(struct cadence_spi_platdata *plat, struct spi_mem_op * wren,
@@ -1118,7 +1129,7 @@ int cadence_enter_octal_mx66(struct cadence_spi_platdata *plat, struct spi_mem_o
 	cadence_qspi_setup_octal_write(plat);
 
 	//RDID - OPI Mode		
-	opTemp->cmd.opcode = 0x9F;
+	opTemp->cmd.opcode = SPINOR_OP_RDID;
 	opTemp->addr.val = 0x0;
 	opTemp->addr.nbytes = 4;
 	opTemp->data.nbytes = 3;
@@ -1167,20 +1178,19 @@ int cadence_enter_octal_mx66(struct cadence_spi_platdata *plat, struct spi_mem_o
 int cadence_configure_opi_mode(struct cadence_spi_platdata *plat){
 
 	struct spi_mem_op wren;
-	struct spi_mem_op opTemp;
 	char id_spi[4] = {0xff, 0xff, 0xff, 0x00};
 	char id_opi[4] = {0xff, 0xff, 0xff, 0x00};
+	struct spi_mem_op opTemp = SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
+		SPI_MEM_OP_NO_ADDR,
+		SPI_MEM_OP_NO_DUMMY,
+		SPI_MEM_OP_DATA_IN(3, NULL, 1));
 
 	//WREN
 	wren.data.nbytes = 0;
 	wren.addr.nbytes = 0;
-	wren.cmd.opcode = 0x06;
+	wren.cmd.opcode = SPINOR_OP_WREN;
 
 	//RDID - SPI Mode
-	opTemp.cmd.opcode = 0x9F;
-	opTemp.addr.val = 0x0;
-	opTemp.addr.nbytes = 0;
-	opTemp.data.nbytes = 3;
 	opTemp.data.buf.out = id_spi;
 	cadence_qspi_apb_command_read(plat->regbase, &opTemp);
 	printf("Read ID via 1x SPI: %x %x %x\n", id_spi[0], id_spi[1], id_spi[2]);
@@ -1194,7 +1204,7 @@ int cadence_configure_opi_mode(struct cadence_spi_platdata *plat){
 			plat->stig_read_dummy = 4;
 			plat->read_dummy = 20;
 			plat->write_dummy = 0;
-			plat->write_opcode = 0x12;
+			plat->write_opcode = SPINOR_OP_PP_4B;
 			#if ADI_USE_MACRONIX_OSPI_DTR
 				plat->use_dtr = 1;
 			#else
@@ -1230,11 +1240,10 @@ int cadence_configure_opi_mode(struct cadence_spi_platdata *plat){
 			plat->stig_read_dummy = 0;
 			plat->read_dummy = 0;
 			plat->write_dummy = 0;
-			plat->read_opcode = 0x13;
-			plat->write_opcode = 0x12;
+			plat->read_opcode = SPINOR_OP_READ_4B;
+			plat->write_opcode = SPINOR_OP_PP_4B;
 			printf("Unrecognized SPI device, cannot switch into octal mode... proceeding in 1x mode\n");
 			return 0;
-			break;
 	}
 }
 
