@@ -258,6 +258,12 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 	cadence_qspi_apb_chipselect(base, spi_chip_select(spi->dev),
 				    plat->is_decoded_cs);
 
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+	if(plat->cadenceMode == -1){
+		cadence_qspi_enter_octal(plat);
+	}
+#endif
+
 	if (op->data.dir == SPI_MEM_DATA_IN && op->data.buf.in) {
 		if (!op->addr.nbytes)
 			mode = CQSPI_STIG_READ;
@@ -283,14 +289,7 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 		err = cadence_qspi_apb_command_read(base, op);
 		break;
 	case CQSPI_STIG_WRITE:
-		{
-#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
-			if(plat->cadenceMode == -1){
-				cadence_qspi_enter_octal(plat);
-			}
-#endif
-			err = cadence_qspi_apb_command_write(base, op);
-		}
+		err = cadence_qspi_apb_command_write(base, op);
 		break;
 	case CQSPI_READ:
 		err = cadence_qspi_apb_read_setup(plat, op);
