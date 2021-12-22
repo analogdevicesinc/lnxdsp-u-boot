@@ -563,9 +563,14 @@ static int write_sr(struct spi_nor *nor, u8 val)
  * Set write enable latch with Write Enable command.
  * Returns negative if error occurred.
  */
+static int spi_nor_wait_till_ready(struct spi_nor *nor);
 static int write_enable(struct spi_nor *nor)
 {
-	return nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
+	int ret = nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
+
+	if (nor->info->flags & SPI_NOR_WAIT_AFTER_WREN)
+		spi_nor_wait_till_ready(nor);
+	return ret;
 }
 
 /*
