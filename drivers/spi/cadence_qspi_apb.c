@@ -489,8 +489,8 @@ int cadence_qspi_apb_command_read(void *reg_base, const struct spi_mem_op *op)
 		// Set read instruction type to OPI
 		curVal = readl(reg_base + CQSPI_REG_RD_INSTR);
 		curVal |= (3UL << BITP_OSPI_DRICTL_INSTRTYP);
-		curVal &= ~(3UL << BITP_OSPI_DRICTL_ADDRTRNSFR);
-		curVal &= ~(3UL << BITP_OSPI_DRICTL_DATATRNSFR);
+		curVal |= (3UL << BITP_OSPI_DRICTL_ADDRTRNSFR);
+		curVal |= (3UL << BITP_OSPI_DRICTL_DATATRNSFR);
 		writel(curVal, reg_base + CQSPI_REG_RD_INSTR);
 
 		// Enable 4 address bytes
