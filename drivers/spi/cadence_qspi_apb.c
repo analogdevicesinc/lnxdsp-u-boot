@@ -460,6 +460,7 @@ int cadence_qspi_apb_command_read(void *reg_base, const struct spi_mem_op *op)
 	void *rxbuf = op->data.buf.in;
 	static char tempBuf[8];
 	unsigned int op2;
+	u8 dummy;
 	struct cadence_spi_platdata *plat = cadence_get_plat();
 
 	if (rxlen > CQSPI_STIG_DATA_LEN_MAX || !rxbuf) {
@@ -472,7 +473,12 @@ int cadence_qspi_apb_command_read(void *reg_base, const struct spi_mem_op *op)
 	reg |= (0x1 << CQSPI_REG_CMDCTRL_RD_EN_LSB);
 
 	// Set Dummy cycles as per datasheet
-	reg |= (((plat->stig_read_dummy) << BITP_OSPI_FCCTL_DMY) & BITM_OSPI_FCCTL_DMY);
+	if (op->dummy.nbytes && plat->cadenceMode != CADENCE_OSPI_MODE)
+		dummy = (op->dummy.nbytes * 8 / op->dummy.buswidth);
+	else
+		dummy = plat->stig_read_dummy;
+
+	reg |= ((dummy << BITP_OSPI_FCCTL_DMY) & BITM_OSPI_FCCTL_DMY);
 
 	//Handle reading while in OPI mode
 	//Handle reading with an address in SPI mode
