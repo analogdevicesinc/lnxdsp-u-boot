@@ -338,8 +338,8 @@
 /*
  * Env Storage Settings
  */
-#ifndef CONFIG_SC59X
-#ifndef CONFIG_SC59X_64
+//TODO: Delete this whole block
+#if !(defined(CONFIG_SC59X) || defined(CONFIG_SC58X) || defined(CONFIG_SC59X_64))
 	#define CONFIG_ENV_OFFSET       0x10000
 	#define CONFIG_ENV_SIZE         0x2000
 	#define CONFIG_ENV_SECT_SIZE    0x10000
@@ -348,7 +348,6 @@
 	# define CONFIG_BUILD_ENVCRC
 	#endif
 	#define CONFIG_ENV_ADDR         0
-#endif
 #endif
 
 /*
