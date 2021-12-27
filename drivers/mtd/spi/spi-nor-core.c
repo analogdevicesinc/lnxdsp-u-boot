@@ -2604,8 +2604,7 @@ int spi_nor_scan(struct spi_nor *nor)
 #ifndef CONFIG_SPI_FLASH_BAR
 		/* enable 4-byte addressing if the device exceeds 16MiB */
 		nor->addr_width = 4;
-		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
-		    info->flags & SPI_NOR_4B_OPCODES)
+		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION)
 			spi_nor_set_4byte_opcodes(nor, info);
 #else
 	if (info->flags & SPI_NOR_4B_MODE){
@@ -2621,6 +2620,11 @@ int spi_nor_scan(struct spi_nor *nor)
 	} else {
 		nor->addr_width = 3;
 	}
+
+#ifndef CONFIG_SPI_FLASH_BAR
+	if (info->flags & SPI_NOR_4B_OPCODES)
+		spi_nor_set_4byte_opcodes(nor, info);
+#endif
 
 	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
 		dev_dbg(nor->dev, "address width is too large: %u\n",
