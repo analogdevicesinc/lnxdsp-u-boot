@@ -12,6 +12,7 @@
 obj-y	+= soc.o timer.o gpio.o
 obj-y	+= clocks.o
 obj-y	+= init.o
+obj-y	+= dmcinit.o
 extra-y	+= init_emmc_boot.o
 extra-y	+= init_return_stack.o
 extra-y := init-$(CONFIG_SYS_BOARD)
@@ -22,7 +23,6 @@ extra-y += init-$(CONFIG_SYS_BOARD).ldr
 endif
 extra-y += init_start.o
 extra-y += init_main.o
-extra-y += dmcinit.o
 
 quiet_cmd_link_init = LD      $@
       cmd_link_init = $(LD) -Ttext=0x20080000 -nostdlib $(LDFLAGS) -o $@ $^

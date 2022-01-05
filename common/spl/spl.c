@@ -580,6 +580,12 @@ void board_init_f(ulong dummy)
 		}
 	}
 
+//Initialize DRAM earlier than board_init_r, as our clocks (UART, etc)
+//are also tied into this process
+#ifdef CONFIG_SC59X_64
+	dram_init_banksize();
+#endif
+
 	preloader_console_init();
 }
 #endif
@@ -643,9 +649,11 @@ void board_init_r(gd_t *dummy1, ulong dummy2)
 	initr_watchdog();
 #endif
 
+#ifndef CONFIG_SC59X_64
 	if (IS_ENABLED(CONFIG_SPL_OS_BOOT) || CONFIG_IS_ENABLED(HANDOFF) ||
 	    IS_ENABLED(CONFIG_SPL_ATF))
 		dram_init_banksize();
+#endif
 
 	bootcount_inc();
 

@@ -102,10 +102,12 @@
 
 .macro sc598_setup
 	sc598_ddr_fixups
+#ifndef CONFIG_SPL_BUILD
 	setup_spu0
 	setup_spu0_wp
 	setup_smpu
 	disable_mmu
+#endif
 .endm
 
 #endif

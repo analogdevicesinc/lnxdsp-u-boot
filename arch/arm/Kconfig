@@ -623,6 +623,7 @@ config SC59X
 
 config SC59X_64
 	bool "sc59x SoC"
+	select SUPPORT_SPL
 	select ARM64
 
 config TARGET_X600
