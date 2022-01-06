@@ -28,9 +28,13 @@ SECTIONS
 		*(.text*)
 #ifdef CONFIG_SC59X_64
 /* Bundle everything inside .text so that
-   it is properly included with --initcode flag */
+   it is properly included with --initcode flag
+   (This is only used in the case of BOOT_DEVICE_BOOTROM) */
 		. = ALIGN(8);
 		*(SORT_BY_ALIGNMENT(SORT_BY_NAME(.rodata*)))
+
+		. = ALIGN(8);
+		*(.dtb.init.rodata*)
 
 		. = ALIGN(8);
 		*(.data*)

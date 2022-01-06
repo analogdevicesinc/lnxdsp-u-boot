@@ -39,7 +39,7 @@
 //BSS:    0x20090000 to 0x2009FFFF (64KB)
 //MALLOC: 0x200A0000 to 0x200AFFFF (64KB)
 //STACK:  0x200B0000 to 0x200BFFFF (64KB)
-#define CONFIG_SPL_MAX_SIZE		SZ_256K //(overkill)
+#define CONFIG_SPL_MAX_SIZE		SZ_128K //(overkill)
 #ifdef CONFIG_SPL_BUILD
 #define CONFIG_SPL_BSS_START_ADDR	0x20090000
 #define CONFIG_SPL_BSS_MAX_SIZE		SZ_64K
@@ -47,6 +47,14 @@
 #define CONFIG_SYS_SPL_MALLOC_SIZE	SZ_64K
 #define CONFIG_SPL_STACK		(CONFIG_SYS_SPL_MALLOC_START + CONFIG_SYS_SPL_MALLOC_SIZE + CONFIG_SPL_STACK_SIZE)
 #define CONFIG_SPL_STACK_SIZE		SZ_64K
+
+//Placeholders for compilation -- may be used for Falcon boot later on
+#define CONFIG_SYS_SPI_KERNEL_OFFS 0
+#define CONFIG_SYS_SPI_ARGS_OFFS 0
+#define CONFIG_SYS_SPI_ARGS_SIZE 0
+#define CONFIG_SYS_SPL_ARGS_ADDR 0
+#define CONFIG_SYS_SPI_KERNEL_OFFS 0
+
 #endif
 
 /*
@@ -223,9 +231,23 @@
 #define ADI_RAM_BOOT \
 	"ramboot=run init_ethernet; tftp ${dtbaddr} ${dtbfile}; tftp ${loadaddr} ${ramfile}; tftp ${initramaddr} ${initramfile}; run ramargs; booti ${loadaddr} ${initramaddr} ${dtbaddr}\0"
 
+#ifndef CONFIG_SPL_OS_BOOT
+	#define ADI_UPDATE_OSPI_UBOOT \
+		"update_ospi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe 0:0; sf write ${loadaddr} 0x0 ${filesize};\0"
+#else
+	#define UBOOT_SPL_FILE "u-boot-" CONFIG_SYS_BOARD ".ldr"
+	#define UBOOT_PROPER_FILE "u-boot-" CONFIG_SYS_BOARD ".img"
+	#define ADI_UPDATE_OSPI_UBOOT \
+		"ubootsplfile=" UBOOT_SPL_FILE "\0" \
+		"ubootproperfile=" UBOOT_PROPER_FILE "\0" \
+		"update_ospi_uboot_spl=tftp ${loadaddr} ${ubootsplfile}; sf probe 0:0; sf write ${loadaddr} 0x0 ${filesize};\0" \
+		"update_ospi_uboot_proper=tftp ${loadaddr} ${ubootproperfile}; sf probe 0:0; sf write ${loadaddr} 0x20000 ${filesize};\0" \
+		"update_ospi_uboot=run update_ospi_uboot_spl; run update_ospi_uboot_proper;\0"
+#endif
+
 #define ADI_OSPI_BOOT \
 	"update_ospi_sc598=run init_ethernet; sf probe 0:0; sf erase 0 0x4000000; run update_ospi_uboot; run update_ospi_dtb; run update_ospi_Image; run update_ospi_rfs; setenv bootcmd \'run ospiboot\'; sleep 3; saveenv\0" \
-	"update_ospi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe 0:0; sf write ${loadaddr} 0x0 ${filesize};\0" \
+	ADI_UPDATE_OSPI_UBOOT \
 	"update_ospi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 0:0; sf write ${loadaddr} 0x1000000 ${filesize};\0" \
 	"update_ospi_Image=tftp ${loadaddr} ${ramfile}; sf probe 0:0; sf write ${loadaddr} 0x100000 ${filesize}; setenv imagesize ${filesize};\0" \
 	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; sf write ${loadaddr} 0xE0000 ${filesize}; setenv dtbsize ${filesize};\0" \
@@ -233,9 +255,23 @@
 	"ospi_boot_sc598=run ospiargs; sf probe 0:0; sf read ${loadaddr} 0x100000 ${imagesize}; sf read ${dtbaddr} 0xE0000 ${dtbsize}; booti ${loadaddr} - ${dtbaddr}\0" \
 	"ospiboot=run ospi_boot_sc598\0"
 
+#ifndef CONFIG_SPL_OS_BOOT
+	#define ADI_UPDATE_QSPI_UBOOT \
+		"update_ospi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe 2:1; sf write ${loadaddr} 0x0 ${filesize};\0"
+#else
+	#define UBOOT_SPL_FILE "u-boot-spl-" CONFIG_SYS_BOARD ".ldr"
+	#define UBOOT_PROPER_FILE "u-boot-proper-" CONFIG_SYS_BOARD ".img"
+	#define ADI_UPDATE_QSPI_UBOOT \
+		"ubootsplfile=" UBOOT_SPL_FILE "\0" \
+		"ubootproperfile=" UBOOT_PROPER_FILE "\0" \
+		"update_qspi_uboot_spl=tftp ${loadaddr} ${ubootsplfile}; sf probe 2:1; sf write ${loadaddr} 0x0 ${filesize};\0" \
+		"update_qspi_uboot_proper=tftp ${loadaddr} ${ubootproperfile}; sf probe 2:1; sf write ${loadaddr} 0x20000 ${filesize};\0" \
+		"update_qspi_uboot=run update_qspi_uboot_spl; run update_qspi_uboot_proper;\0"
+#endif
+
 #define ADI_QSPI_BOOT \
 	"update_qspi_sc598=run init_ethernet; sf probe 2:1; sf erase 0 0x4000000; run update_qspi_uboot; run update_qspi_dtb; run update_qspi_Image; run update_qspi_rfs; setenv bootcmd \'run qspiboot\'; sleep 3; saveenv\0" \
-	"update_qspi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe 2:1; sf write ${loadaddr} 0x0 ${filesize};\0" \
+	ADI_UPDATE_QSPI_UBOOT \
 	"update_qspi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 2:1; sf write ${loadaddr} 0x1000000 ${filesize};\0" \
 	"update_qspi_Image=tftp ${loadaddr} ${ramfile}; sf probe 2:1; sf write ${loadaddr} 0x100000 ${filesize}; setenv imagesize ${filesize};\0" \
 	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; sf write ${loadaddr} 0xE0000 ${filesize}; setenv dtbsize ${filesize};\0" \

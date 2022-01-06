@@ -570,6 +570,17 @@ static int boot_from_devices(struct spl_image_info *spl_image,
 #if defined(CONFIG_SPL_FRAMEWORK_BOARD_INIT_F)
 void board_init_f(ulong dummy)
 {
+//Initialize DRAM earlier than board_init_r, as our clocks (UART, etc)
+//are also tied into this process
+#ifdef CONFIG_SC59X_64
+	dram_init_banksize();
+#endif
+
+	preloader_console_init();
+
+//This requires the malloc heap to be available... which isn't available until mem_malloc_init() is called after relocation
+//We could possibly set up a simple malloc heap first to work around this... but let's just call this after relocation instead
+#ifndef CONFIG_SC59X_64
 	if (CONFIG_IS_ENABLED(OF_CONTROL)) {
 		int ret;
 
@@ -579,14 +590,8 @@ void board_init_f(ulong dummy)
 			hang();
 		}
 	}
-
-//Initialize DRAM earlier than board_init_r, as our clocks (UART, etc)
-//are also tied into this process
-#ifdef CONFIG_SC59X_64
-	dram_init_banksize();
 #endif
 
-	preloader_console_init();
 }
 #endif
 
@@ -611,6 +616,19 @@ void board_init_r(gd_t *dummy1, ulong dummy2)
 			CONFIG_SYS_SPL_MALLOC_SIZE);
 	gd->flags |= GD_FLG_FULL_MALLOC_INIT;
 #endif
+
+#ifdef CONFIG_SC59X_64
+	if (CONFIG_IS_ENABLED(OF_CONTROL)) {
+		int ret;
+
+		ret = spl_early_init();
+		if (ret) {
+			printf("spl_early_init() failed: %d\n", ret);
+			hang();
+		}
+	}
+#endif
+
 	if (!(gd->flags & GD_FLG_SPL_INIT)) {
 		if (spl_init())
 			hang();

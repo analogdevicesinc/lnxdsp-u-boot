@@ -16,9 +16,6 @@ ifeq ($(CONFIG_BUILD_LDR),y)
 
 		LDR_FLAGS += --bcode=$(CONFIG_SC_BOOT_MODE)
 		LDR_FLAGS += --use-vmas
-		ifneq ($(CONFIG_SC59X_CHAIN_BOOT),y)
-			LDR_FLAGS += --initcode spl/u-boot-spl
-		endif
 
 		LDR_FLAGS += $(LDR_FLAGS-y)
 

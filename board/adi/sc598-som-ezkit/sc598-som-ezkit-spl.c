@@ -20,10 +20,49 @@
 #include "soft_switch.h"
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
+#include "../../../arch/arm/cpu/armv8/sc59x-64/adsp598.h"
+
+#define pRCU_STAT 0x3108c004
 
 void board_boot_order(u32 *spl_boot_list)
 {
-	spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
+	static char * bmodes[] = {
+		"JTAG/BOOTROM",
+		"QSPI Master",
+		"QSPI Slave",
+		"UART",
+		"LP0 Slave",
+		"OSPI",
+		"eMMC"
+	};
+
+	char * bmodeString = "unknown";
+
+	u32 bmode = (readl(pRCU_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
+
+	if(bmode >= 0 && bmode <= sizeof(bmodes)/sizeof(bmodes[0])){
+		bmodeString = bmodes[bmode];
+	}
+
+	printf("ADI Boot Mode: %x (%s)\n", bmode, bmodeString);
+
+	switch(bmode){
+		case 0:
+			printf("SPL execution has completed.  Please load U-Boot Proper via JTAG");
+			while(1);
+			break;
+		case 1:
+			spl_boot_list[0] = BOOT_DEVICE_SPI;
+			break;
+		case 5:
+			printf("Loading U-Boot Proper from OSPI not yet supported.  This is a future task.\n");
+		case 6:
+			printf("Loading U-Boot Proper from eMMC not yet supported.  This is a future task.\n");
+		default:
+			spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
+			break;
+	}
+
 }
 
 int dram_init_banksize(void)
@@ -39,4 +78,9 @@ int board_return_to_bootrom(struct spl_image_info *spl_image,
 {
 	asm volatile ("bl back_to_bootrom;");
 	return 0;
+}
+
+int spl_start_uboot(void)
+{
+	return 1;
 }
