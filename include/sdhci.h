@@ -281,7 +281,55 @@ struct sdhci_ops {
 #define ADMA_TABLE_NO_ENTRIES (CONFIG_SYS_MMC_MAX_BLK_COUNT * \
 			       MMC_MAX_BLOCK_LEN) / ADMA_MAX_LEN
 
-#define ADMA_TABLE_SZ (ADMA_TABLE_NO_ENTRIES * ADMA_DESC_LEN)
+#ifdef CONFIG_SC59X_64
+
+/*
+	On the ADI 59X, ADMA mode currently has an unexplained boundary requirement.
+
+	It appears that crossing over 128MB boundaries in a single ADMA descriptor causes issues
+	with the underlying Designware IP core -- wherein it will terminate too soon.
+
+	For example,
+
+	=> setenv crc 'mw.b ${addr} 0 0x74538; mmc read ${addr} 0 0x3a3; crc32 ${addr} 0x74538;'
+
+	Crossing over DDR address > 128MB:
+
+	=> setenv addr 0x88000000; run crc
+	MMC read: dev # 0, block # 0, count 931 ... 931 blocks read: OK
+	CRC32 for 88000000 ... 88074537 ==> b920c56b
+
+	=> setenv addr 0x87FFFFFF; run crc
+	MMC read: dev # 0, block # 0, count 931 ... 931 blocks read: OK
+	CRC32 for 87ffffff ... 88074536 ==> b3a1f47d
+
+	b920c56b is the correct checksum
+	b3a1f47d is incorrect
+
+	Crossing over DDR address > 64MB:
+
+	=> setenv addr 0x84000000; run crc
+	MMC read: dev # 0, block # 0, count 931 ... 931 blocks read: OK
+	CRC32 for 84000000 ... 84074537 ==> b920c56b
+
+	=> setenv addr 0x83FFFFFF; run crc
+	MMC read: dev # 0, block # 0, count 931 ... 931 blocks read: OK
+	CRC32 for 83ffffff ... 84074536 ==> b920c56b
+
+	b920c56b is the correct checksum (both are correct)
+
+*/
+
+#define ADMA_BOUNDARY_SIZE SZ_1M*128
+
+//Each ADMA transaction has a max size of ADMA_MAX_LEN * MMC_MAX_BLOCK_LEN
+//So, the extra number of table entries we need is:
+#define ADMA_EXTRA_ENTRIES ((ADMA_MAX_LEN * MMC_MAX_BLOCK_LEN - 1) / ADMA_BOUNDARY_SIZE)+1
+#define ADMA_TABLE_SZ ((ADMA_TABLE_NO_ENTRIES+ADMA_EXTRA_ENTRIES) * ADMA_DESC_LEN)
+#else
+#define ADMA_BOUNDARY_SIZE 0
+#define ADMA_TABLE_SZ ((ADMA_TABLE_NO_ENTRIES) * ADMA_DESC_LEN)
+#endif
 
 /* Decriptor table defines */
 #define ADMA_DESC_ATTR_VALID		BIT(0)
