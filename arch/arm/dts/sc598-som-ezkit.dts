@@ -8,7 +8,9 @@
 	compatible = "adi,sc598-som-ezkit", "adi,sc59x";
 
 	config {
-		u-boot,spl-payload-offset = <0x20000>;
+		/* Offsets where U-Boot Proper is stored -- used by SPL */
+		u-boot,spl-payload-offset = <0x20000>;   /* QSPI byte offset -- 128KB  */
+		u-boot,spl-mmc-sector-offset = <0x200>;  /* MMC sector offset -- 256KB */
 	};
 
  	aliases {

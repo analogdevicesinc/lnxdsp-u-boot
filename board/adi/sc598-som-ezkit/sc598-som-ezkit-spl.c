@@ -21,6 +21,7 @@
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
 #include "../../../arch/arm/cpu/armv8/sc59x-64/adsp598.h"
+#include "sc598-som-ezkit-shared.h"
 
 #define pRCU_STAT 0x3108c004
 
@@ -56,8 +57,13 @@ void board_boot_order(u32 *spl_boot_list)
 			break;
 		case 5:
 			printf("Loading U-Boot Proper from OSPI not yet supported.  This is a future task.\n");
+			break;
+#ifdef CONFIG_MMC_SDHCI_ADI
 		case 6:
-			printf("Loading U-Boot Proper from eMMC not yet supported.  This is a future task.\n");
+			adi_mmc_init();
+			spl_boot_list[0] = BOOT_DEVICE_MMC1;
+			break;
+#endif
 		default:
 			spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
 			break;
@@ -83,4 +89,18 @@ int board_return_to_bootrom(struct spl_image_info *spl_image,
 int spl_start_uboot(void)
 {
 	return 1;
+}
+
+unsigned long spl_mmc_get_uboot_raw_sector(struct mmc *mmc,
+						  unsigned long raw_sect)
+{
+	unsigned int mmc_sector_offs = 0;
+
+#if CONFIG_IS_ENABLED(OF_CONTROL) && !CONFIG_IS_ENABLED(OF_PLATDATA)
+    mmc_sector_offs = fdtdec_get_config_int(gd->fdt_blob,
+                                         "u-boot,spl-mmc-sector-offset",
+                                         mmc_sector_offs);
+#endif
+
+	return mmc_sector_offs;
 }

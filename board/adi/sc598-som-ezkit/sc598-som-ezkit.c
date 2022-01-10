@@ -19,6 +19,7 @@
 #include <watchdog.h>
 #include "soft_switch.h"
 #include <asm/armv8/mmu.h>
+#include "sc598-som-ezkit-shared.h"
 
 static struct mm_region sc598_mem_map[] = {
 	{
@@ -210,19 +211,6 @@ int board_phy_config(struct phy_device *phydev)
 	return 0;
 }
 #endif
-
-int adi_mmc_init()
-{
-	int ret = 0;
-
-	static const unsigned short pins[] = P_EMSI0;
-	if (!peripheral_request_list(pins, "emsi0")){
-		return -1;
-	}
-
-	return ret;
-}
-
 
 int board_init(void)
 {
