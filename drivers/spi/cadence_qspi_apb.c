@@ -1106,22 +1106,31 @@ int cadence_enter_octal_mx66(struct cadence_spi_platdata *plat, struct spi_mem_o
 
 	char id_opi[4] = {0xff, 0xff, 0xff, 0x00};
 	char conf_reg2[1] = {0xff};
+	unsigned int curVal;
 
-	//Enter Octal Mode - Write Configuration Register 2
-	if(plat->use_dtr)
-		conf_reg2[0] = 0x02;
-	else
-		conf_reg2[0] = 0x01;
-	opTemp->cmd.opcode = 0x72;
-	opTemp->addr.val = 0x0;
-	opTemp->data.nbytes = 1;
-	opTemp->addr.nbytes = 4;
-	opTemp->data.buf.out = conf_reg2;
-	udelay(100000);
-	cadence_qspi_apb_command_write(plat->regbase, wren);
-	udelay(100000);
-	cadence_qspi_apb_command_write(plat->regbase, opTemp);
-	udelay(100000);
+	//Check if the read control register is already configured for OPI mode
+	curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+	curVal &= (3UL << BITP_OSPI_DRICTL_INSTRTYP) |
+			  (3UL << BITP_OSPI_DRICTL_ADDRTRNSFR) |
+			  (3UL << BITP_OSPI_DRICTL_DATATRNSFR);
+
+	if(!curVal){
+		//Enter Octal Mode - Write Configuration Register 2
+		if(plat->use_dtr)
+			conf_reg2[0] = 0x02;
+		else
+			conf_reg2[0] = 0x01;
+		opTemp->cmd.opcode = 0x72;
+		opTemp->addr.val = 0x0;
+		opTemp->data.nbytes = 1;
+		opTemp->addr.nbytes = 4;
+		opTemp->data.buf.out = conf_reg2;
+		udelay(100000);
+		cadence_qspi_apb_command_write(plat->regbase, wren);
+		udelay(100000);
+		cadence_qspi_apb_command_write(plat->regbase, opTemp);
+		udelay(100000);
+	}
 
 	plat->cadenceMode = CADENCE_OSPI_MODE;
 	cadence_qspi_setup_octal(plat);
@@ -1184,6 +1193,7 @@ int cadence_configure_opi_mode(struct cadence_spi_platdata *plat){
 		SPI_MEM_OP_NO_ADDR,
 		SPI_MEM_OP_NO_DUMMY,
 		SPI_MEM_OP_DATA_IN(3, NULL, 1));
+	int curVal;
 
 	//WREN
 	wren.data.nbytes = 0;
@@ -1192,8 +1202,20 @@ int cadence_configure_opi_mode(struct cadence_spi_platdata *plat){
 
 	//RDID - SPI Mode
 	opTemp.data.buf.out = id_spi;
-	cadence_qspi_apb_command_read(plat->regbase, &opTemp);
-	printf("Read ID via 1x SPI: %x %x %x\n", id_spi[0], id_spi[1], id_spi[2]);
+
+	//Check if the read control register is already configured for OPI mode
+	curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+	curVal &= (3UL << BITP_OSPI_DRICTL_INSTRTYP) |
+			  (3UL << BITP_OSPI_DRICTL_ADDRTRNSFR) |
+			  (3UL << BITP_OSPI_DRICTL_DATATRNSFR);
+
+	if(curVal){
+		memcpy(id_spi, 0x20000000, 4); //Read back the ID from SRAM
+	}else{
+		cadence_qspi_apb_command_read(plat->regbase, &opTemp);
+		printf("Read ID via 1x SPI: %x %x %x\n", id_spi[0], id_spi[1], id_spi[2]);
+		memcpy(0x20000000, id_spi, 4); //Store the ID at the beginning of SRAM
+	}
 
 	plat->id = *(uint32_t*)id_spi;
 
