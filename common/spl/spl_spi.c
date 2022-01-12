@@ -70,6 +70,16 @@ unsigned int __weak spl_spi_get_uboot_offs(struct spi_flash *flash)
 	return CONFIG_SYS_SPI_U_BOOT_OFFS;
 }
 
+unsigned int __weak spl_spi_get_default_bus()
+{
+	return CONFIG_SF_DEFAULT_BUS;
+}
+
+unsigned int __weak spl_spi_get_default_cs()
+{
+	return CONFIG_SF_DEFAULT_CS;
+}
+
 /*
  * The main entry for SPI booting. It's necessary that SDRAM is already
  * configured and available since this code loads the main U-Boot image
@@ -88,9 +98,8 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 	 * In DM mode: defaults speed and mode will be
 	 * taken from DT when available
 	 */
-
-	flash = spi_flash_probe(CONFIG_SF_DEFAULT_BUS,
-				CONFIG_SF_DEFAULT_CS,
+	flash = spi_flash_probe(spl_spi_get_default_bus(),
+				spl_spi_get_default_cs(),
 				CONFIG_SF_DEFAULT_SPEED,
 				CONFIG_SF_DEFAULT_MODE);
 	if (!flash) {

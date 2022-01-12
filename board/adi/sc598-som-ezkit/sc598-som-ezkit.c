@@ -83,17 +83,6 @@ int board_early_init_f(void)
 #endif
 #endif
 
-#if ADI_HAVE_CARRIER == 1
-#ifdef CONFIG_SOFT_SWITCH
-	static const unsigned short pins_i2c2[] = P_I2C2;
-	peripheral_request_list(pins_i2c2, "i2c2");
-
-	return setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
-#else
-	return 0;
-#endif
-#endif
-
 	return 0;
 }
 
@@ -152,11 +141,11 @@ int board_eth_init(struct bd_info *bis)
 		gpio_request(GPIO_PG12, "emac0_phy_pwdn");
 		gpio_direction_output(GPIO_PG12, 1);
 
-		setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
+		adi_enable_ethernet_softconfig();
 		mdelay(20);
-		setup_soft_switches(switch_config_array_ethernet_disabled, NUM_SWITCH);
+		adi_disable_ethernet_softconfig();
 		mdelay(90);
-		setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
+		adi_enable_ethernet_softconfig();
 		mdelay(20);
 
 		// select RGMII, little endian for both ports
@@ -234,6 +223,14 @@ int board_init(void)
 
 #ifdef CONFIG_MMC_SDHCI_ADI
 	adi_mmc_init();
+#endif
+
+#if ADI_HAVE_CARRIER == 1
+#ifdef CONFIG_SOFT_SWITCH
+	adi_initialize_soft_switches();
+#else
+	return 0;
+#endif
 #endif
 
 	return 0;

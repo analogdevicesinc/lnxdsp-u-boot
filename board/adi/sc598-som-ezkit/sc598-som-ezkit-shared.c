@@ -21,7 +21,9 @@
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
 #include "../../../arch/arm/cpu/armv8/sc59x-64/adsp598.h"
+#include "sc598-som-ezkit-shared.h"
 
+struct switch_config switch_config_array_current_state[NUM_SWITCH];
 
 int adi_mmc_init()
 {
@@ -33,4 +35,47 @@ int adi_mmc_init()
 	}
 
 	return ret;
+}
+
+int adi_initialize_soft_switches()
+{
+	memcpy((char*)&switch_config_array_current_state[0], 
+			(char*)&switch_config_array[0], sizeof(struct switch_config));
+	memcpy((char*)&switch_config_array_current_state[1],
+			(char*)&switch_config_array[1], sizeof(struct switch_config));
+
+	static const unsigned short pins_i2c2[] = P_I2C2;
+	peripheral_request_list(pins_i2c2, "i2c2");
+
+	setup_soft_switches(switch_config_array_current_state, NUM_SWITCH);
+}
+
+int adi_enable_ethernet_softconfig()
+{
+	u8 currentVal;
+
+	currentVal = switch_config_array_current_state[0].value1;
+	currentVal &= ~GIGE_RESET(1);
+	currentVal &= ~ETH1_RESET(1);
+	currentVal &= ~ETH1_EN(1);
+	currentVal |= PortB_Address22_EthEnable;
+	switch_config_array_current_state[0].value1 = currentVal;
+	switch_config_array_current_state[0].pullup1 = currentVal;
+
+	setup_soft_switches(switch_config_array_current_state, NUM_SWITCH);
+}
+
+int adi_disable_ethernet_softconfig()
+{
+	u8 currentVal;
+
+	currentVal = switch_config_array_current_state[0].value1;
+	currentVal &= ~GIGE_RESET(1);
+	currentVal &= ~ETH1_RESET(1);
+	currentVal &= ~ETH1_EN(1);
+	currentVal |= PortB_Address22_EthDisable;
+	switch_config_array_current_state[0].value1 = currentVal;
+	switch_config_array_current_state[0].pullup1 = currentVal;
+
+	setup_soft_switches(switch_config_array_current_state, NUM_SWITCH);
 }

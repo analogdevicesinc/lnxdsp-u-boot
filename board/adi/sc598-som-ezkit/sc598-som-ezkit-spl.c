@@ -25,6 +25,9 @@
 
 #define pRCU_STAT 0x3108c004
 
+static int adi_sf_default_bus = 2;
+static int adi_sf_default_cs = 1;
+
 void board_boot_order(u32 *spl_boot_list)
 {
 	static char * bmodes[] = {
@@ -45,6 +48,12 @@ void board_boot_order(u32 *spl_boot_list)
 		bmodeString = bmodes[bmode];
 	}
 
+#if ADI_HAVE_CARRIER == 1
+#ifdef CONFIG_SOFT_SWITCH
+	adi_initialize_soft_switches();
+#endif
+#endif
+
 	printf("ADI Boot Mode: %x (%s)\n", bmode, bmodeString);
 
 	switch(bmode){
@@ -53,10 +62,14 @@ void board_boot_order(u32 *spl_boot_list)
 			while(1);
 			break;
 		case 1:
+			adi_sf_default_bus = 2;
+			adi_sf_default_cs = 1;
 			spl_boot_list[0] = BOOT_DEVICE_SPI;
 			break;
 		case 5:
-			printf("Loading U-Boot Proper from OSPI not yet supported.  This is a future task.\n");
+			adi_sf_default_bus = 0;
+			adi_sf_default_cs = 0;
+			spl_boot_list[0] = BOOT_DEVICE_SPI;
 			break;
 #ifdef CONFIG_MMC_SDHCI_ADI
 		case 6:
@@ -103,4 +116,15 @@ unsigned long spl_mmc_get_uboot_raw_sector(struct mmc *mmc,
 #endif
 
 	return mmc_sector_offs;
+}
+
+
+unsigned int spl_spi_get_default_bus()
+{
+	return adi_sf_default_bus;
+}
+
+unsigned int spl_spi_get_default_cs()
+{
+	return adi_sf_default_cs;
 }
