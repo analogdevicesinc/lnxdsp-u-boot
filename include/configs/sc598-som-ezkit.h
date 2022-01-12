@@ -55,7 +55,6 @@
 #define CONFIG_SYS_SPL_ARGS_ADDR 0
 #define CONFIG_SYS_SPI_KERNEL_OFFS 0
 #define CONFIG_SYS_MMCSD_RAW_MODE_KERNEL_SECTOR 0
-
 #endif
 
 /*
@@ -150,11 +149,13 @@
  */
 #ifdef CONFIG_OF_CONTROL
 
-//Set this to 1 if you would like to use the eval kit's MX66 OSPI device
-//This will disable UART0+SPI2 -- so you must use netconsole if you would
-//still like console access
+//Set this to 1 if you would like to use the maximum SPI speeds for OSPI and will not be using QSPI
 #define ADI_USE_MACRONIX_OSPI 0
 #define ADI_USE_MACRONIX_OSPI_DTR 0
+
+//Allow U-Boot to dynamically pinmux between the three conflicting ezkit peripherals (OSPI/QSPI/UART)
+//This allows U-boot to use all three peripherals
+#define ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
 
 #define CONFIG_CMD_DM
 #define CONFIG_CADENCE_QSPI
@@ -205,8 +206,6 @@
 #define CONFIG_CMD_BOOTZ
 
 #if ADI_USE_MACRONIX_OSPI
-//If you would like to use netconsole here, you can also do something like:
-//#define CONFIG_BOOTCOMMAND	"dhcp; setenv serverip <ip address>; run nc"
 #define CONFIG_BOOTCOMMAND	"run ospiboot"
 #else
 #define CONFIG_BOOTCOMMAND	"run qspiboot"

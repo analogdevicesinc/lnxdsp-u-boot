@@ -11,3 +11,4 @@
 
 obj-y	:= $(BOARD)-shared.o $(BOARD).o
 obj-$(CONFIG_SPL_BUILD) := $(BOARD)-shared.o $(BOARD)-spl.o
+obj-y += $(BOARD)-dynamic-qspi-ospi-uart-mux.o

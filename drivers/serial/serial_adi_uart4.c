@@ -11,6 +11,12 @@
 #include <linux/compiler.h>
 #include <adi_uart4.h>
 
+#ifdef CONFIG_SC59X_64
+#ifdef ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
+#include <adi/59x-64/sc598-som-ezkit-dynamic-qspi-ospi-uart-mux.h>
+#endif
+#endif
+
 DECLARE_GLOBAL_DATA_PTR;
 
 #define CONSOLE_PORT CONFIG_UART_CONSOLE
@@ -18,16 +24,27 @@ DECLARE_GLOBAL_DATA_PTR;
 uint32_t baudrate = CONFIG_BAUDRATE;
 static void uart_setbrg(void);
 
+#ifdef ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
+
+//If we're using the dynamic muxing of OSPI/QSPI/UART due to pinmux conflicts,
+//Use a buffer to store characters which could not be transmitted while UART was disabled
+//Once UART is reenabled and attempts to send another character, transmit through anything in
+//the buffer first
+
+#define BUFFER_SIZE 4096
+bool uartEnabled = 1;
+bool uartReadyToEnable = 0;
+char uartBuffer[BUFFER_SIZE];
+int uartBufferPos = 0;
+#endif
+
 static inline int32_t uart_init(void)
 {
 	struct uart4_reg *regs = adi_uart4_get_regs(CONSOLE_PORT);
 	uint16_t *pins = adi_uart4_get_pins(CONSOLE_PORT);
 
-//If OSPI is being used, then these pins cannot be muxed
-#if ADI_USE_MACRONIX_OSPI == 0
 	if (peripheral_request_list(pins, "adi-uart4"))
 		return -1;
-#endif
 
 	/* always enable UART to 8-bit mode */
 	writel(UEN | UMOD_UART | WLS_8, &regs->control);
@@ -58,14 +75,13 @@ static void serial_set_divisor(uint16_t divisor)
 	writel(divisor, &regs->clock);
 }
 
-void uart_putc(const char c)
-{
+static void _uart_putc(const char c){
 	volatile uint32_t val;
 
 	struct uart4_reg *regs = adi_uart4_get_regs(CONSOLE_PORT);
 	/* send a \r for compatibility */
 	if (c == '\n')
-		uart_putc('\r');
+		_uart_putc('\r');
 
 	WATCHDOG_RESET();
 
@@ -77,6 +93,30 @@ void uart_putc(const char c)
 	writel(c, &regs->thr);
 
 	WATCHDOG_RESET();
+}
+
+void uart_putc(const char c)
+{
+	int i;
+
+#ifdef ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
+	if(uartReadyToEnable){
+		adi_disable_ospi(1);
+		_uart_putc('\n');
+	}
+	if(!uartEnabled){
+		if(uartBufferPos < BUFFER_SIZE)
+			uartBuffer[uartBufferPos++] = c;
+		return;
+	}else if(uartBufferPos){
+		for(i = 0; i < uartBufferPos; i++){
+			_uart_putc(uartBuffer[i]);
+		}
+		uartBufferPos = 0;
+	}
+#endif
+
+	_uart_putc(c);
 }
 
 static int32_t uart_tstc(void)

@@ -98,15 +98,10 @@
 	};
 };
 
-//Choose one (OSPI or QSPI):
-//note: UART0 console cannot be used with OSPI
-//      If you choose OSPI, then you must also set
-//      ADI_USE_MACRONIX_OSPI to 1
-
-//#include "sc598-som-ezkit-ospi.dtsi"
-#include "sc598-som-ezkit-qspi.dtsi"
-
 &ospi {
+
+	status = "okay";
+
 	flash0: mx66lm1g45@0 {
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -122,6 +117,9 @@
 };
 
 &spi2 {
+
+	status = "okay";
+
 	flash1: is25lp512@2 {
 		#address-cells = <1>;
 		#size-cells = <1>;
