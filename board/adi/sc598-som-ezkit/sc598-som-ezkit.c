@@ -74,15 +74,6 @@ int board_early_init_f(void)
 	gpio_direction_output(GPIO_PG11, 1);
 #endif
 
-#if ADI_USE_MACRONIX_OSPI
-#ifdef CONFIG_CADENCE_QSPI
-	static const unsigned short pins_ospi0[] = P_OSPI0;
-	if (peripheral_request_list(pins_ospi0, "ospi0")){
-		printf("Unable to pinmux OSPI0\r\n");
-	}
-#endif
-#endif
-
 	return 0;
 }
 

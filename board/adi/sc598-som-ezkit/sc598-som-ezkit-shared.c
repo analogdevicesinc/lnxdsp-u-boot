@@ -79,3 +79,15 @@ int adi_disable_ethernet_softconfig()
 
 	setup_soft_switches(switch_config_array_current_state, NUM_SWITCH);
 }
+
+void spi_flash_override_defaults(unsigned int * bus,
+				unsigned int * cs,
+				unsigned int * speed,
+				unsigned int * mode)
+{
+	if(*bus == 0 && *cs == 0){
+		*speed = ADI_OSPI_SF_DEFAULT_SPEED;
+	}else{
+		*speed = CONFIG_SF_DEFAULT_SPEED;
+	}
+}

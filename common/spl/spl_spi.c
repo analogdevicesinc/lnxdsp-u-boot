@@ -80,6 +80,11 @@ unsigned int __weak spl_spi_get_default_cs()
 	return CONFIG_SF_DEFAULT_CS;
 }
 
+unsigned int __weak spl_spi_get_default_speed()
+{
+	return CONFIG_SF_DEFAULT_SPEED;
+}
+
 /*
  * The main entry for SPI booting. It's necessary that SDRAM is already
  * configured and available since this code loads the main U-Boot image
@@ -100,7 +105,7 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 	 */
 	flash = spi_flash_probe(spl_spi_get_default_bus(),
 				spl_spi_get_default_cs(),
-				CONFIG_SF_DEFAULT_SPEED,
+				spl_spi_get_default_speed(),
 				CONFIG_SF_DEFAULT_MODE);
 	if (!flash) {
 		puts("SPI probe failed.\n");

@@ -178,20 +178,20 @@
 #define CONFIG_ADI_SPI3_DM
 #define CONFIG_SC59X_SPI
 #define CONFIG_CMD_SPI
-#if ADI_USE_MACRONIX_OSPI
-	#if ADI_USE_MACRONIX_OSPI_DTR
-		//Maximum DTR read speed = 128mbyte / 1.90s = 67.36 mbyte/s
-		#define CONFIG_ENV_SPI_MAX_HZ	CONFIG_CQSPI_REF_CLK / 12 //41.66 MHz DTR (Double Transfer Rate)
-		#define CONFIG_SF_DEFAULT_SPEED	CONFIG_CQSPI_REF_CLK / 12 //41.66 MHz DTR (Double Transfer Rate)
-	#else
-		//Maximum STR read speed = 128mbyte / 2.17s = 58.98 mbyte/s
-		#define CONFIG_ENV_SPI_MAX_HZ	CONFIG_CQSPI_REF_CLK / 6 //83.33 MHz STR (Single Transfer Rate)
-		#define CONFIG_SF_DEFAULT_SPEED	CONFIG_CQSPI_REF_CLK / 6 //83.33 MHz STR (Single Transfer Rate)
-	#endif
+
+#if ADI_USE_MACRONIX_OSPI_DTR
+	//Maximum DTR read speed = 128mbyte / 1.90s = 67.36 mbyte/s
+	#define ADI_OSPI_ENV_SPI_MAX_HZ		CONFIG_CQSPI_REF_CLK / 12 //41.66 MHz DTR (Double Transfer Rate)
+	#define ADI_OSPI_SF_DEFAULT_SPEED	CONFIG_CQSPI_REF_CLK / 12 //41.66 MHz DTR (Double Transfer Rate)
 #else
-	#define CONFIG_ENV_SPI_MAX_HZ	10000000
-	#define CONFIG_SF_DEFAULT_SPEED	10000000
+	//Maximum STR read speed = 128mbyte / 2.17s = 58.98 mbyte/s
+	#define ADI_OSPI_ENV_SPI_MAX_HZ		CONFIG_CQSPI_REF_CLK / 6 //83.33 MHz STR (Single Transfer Rate)
+	#define ADI_OSPI_SF_DEFAULT_SPEED	CONFIG_CQSPI_REF_CLK / 6 //83.33 MHz STR (Single Transfer Rate)
 #endif
+
+#define CONFIG_ENV_SPI_MAX_HZ	10000000
+#define CONFIG_SF_DEFAULT_SPEED	10000000
+
 #define CONFIG_SF_DEFAULT_MODE  SPI_MODE_3
 
 /*

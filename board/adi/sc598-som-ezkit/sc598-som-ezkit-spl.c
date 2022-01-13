@@ -27,6 +27,7 @@
 
 static int adi_sf_default_bus = 2;
 static int adi_sf_default_cs = 1;
+static int adi_sf_default_speed = CONFIG_SF_DEFAULT_SPEED;
 
 void board_boot_order(u32 *spl_boot_list)
 {
@@ -127,4 +128,13 @@ unsigned int spl_spi_get_default_bus()
 unsigned int spl_spi_get_default_cs()
 {
 	return adi_sf_default_cs;
+}
+
+unsigned int spl_spi_get_default_speed()
+{
+	if(adi_sf_default_bus == 0 && adi_sf_default_cs == 0){
+		adi_sf_default_speed = ADI_OSPI_SF_DEFAULT_SPEED;
+	}
+
+	return adi_sf_default_speed;
 }
