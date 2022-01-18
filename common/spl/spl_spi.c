@@ -33,8 +33,10 @@ static int spi_load_image_os(struct spl_image_info *spl_image,
 	spi_flash_read(flash, CONFIG_SYS_SPI_KERNEL_OFFS, sizeof(*header),
 		       (void *)header);
 
+#ifndef CONFIG_SYS_SPI_KERNEL_SKIP_HEADER
 	if (image_get_magic(header) != IH_MAGIC)
 		return -1;
+#endif
 
 	err = spl_parse_image_header(spl_image, header);
 	if (err)
