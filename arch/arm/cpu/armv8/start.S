@@ -11,7 +11,7 @@
 #include <asm/armv8/mmu.h>
 
 #ifdef CONFIG_SC59X_64
-#include "./sc59x-64/init_asm.h"
+#include <adi/59x-64/init_asm.h>
 #endif
 
 /*************************************************************************

@@ -47,14 +47,16 @@
 #define CONFIG_SPL_STACK		(CONFIG_SYS_SPL_MALLOC_START + CONFIG_SYS_SPL_MALLOC_SIZE + CONFIG_SPL_STACK_SIZE)
 #define CONFIG_SPL_STACK_SIZE		SZ_64K
 
-//Placeholders for compilation -- may be used for Falcon boot later on
-#define CONFIG_SYS_SPI_KERNEL_OFFS 0
-#define CONFIG_SYS_SPI_ARGS_OFFS 0
-#define CONFIG_SYS_SPI_ARGS_SIZE 0
-#define CONFIG_SYS_SPL_ARGS_ADDR 0
-#define CONFIG_SYS_SPI_KERNEL_OFFS 0
+//Parameters used for Falcon boot
+#define CONFIG_SYS_SPI_ARGS_OFFS   0xE0000    // This is where the DTB should be stored
+#define CONFIG_SYS_SPI_ARGS_SIZE   0x10000    // Max size of the DTB
+#define CONFIG_SYS_SPI_KERNEL_OFFS 0x100000   // Where the kernel Image should be stored
+#define CONFIG_SYS_SPL_ARGS_ADDR   0x84000000 // Where to load the DTB into RAM
+#define CONFIG_SYS_LOAD_ADDR       0x90000000 // Where to load the Image into RAM
+#define CONFIG_SYS_SPI_KERNEL_SKIP_HEADER
 #define CONFIG_SYS_MMCSD_RAW_MODE_KERNEL_SECTOR 0
 #endif
+
 
 /*
  * Clock Settings
@@ -85,7 +87,9 @@
 #define	CONFIG_NR_DRAM_BANKS		1
 #define CONFIG_SYS_SDRAM_BASE	0x82000000
 #define CONFIG_SYS_SDRAM_SIZE	0x1E000000
+#ifndef CONFIG_SPL_BUILD
 #define CONFIG_SYS_LOAD_ADDR	0x0
+#endif
 #define CONFIG_SYS_INIT_SP_ADDR (CONFIG_SYS_SDRAM_BASE + 0x3F000)
 
 #define CONFIG_SYS_MONITOR_LEN	0
@@ -244,12 +248,20 @@
 		"update_ospi_uboot=run update_ospi_uboot_spl; run update_ospi_uboot_proper;\0"
 #endif
 
+#ifndef CONFIG_ADI_FALCON
+	#define ADI_UPDATE_OSPI_DTB \
+	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; sf write ${loadaddr} 0xE0000 ${filesize}; setenv dtbsize ${filesize};\0"
+#else
+	#define ADI_UPDATE_OSPI_DTB \
+	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; run ospiargs; fdt addr ${loadaddr}; fdt boardsetup; fdt chosen; fdt resize 0x10000; sf write ${loadaddr} 0xE0000 0x10000; setenv dtbsize 0x10000;\0"
+#endif
+
 #define ADI_OSPI_BOOT \
 	"update_ospi_sc598=run init_ethernet; sf probe 0:0; sf erase 0 0x4000000; run update_ospi_uboot; run update_ospi_dtb; run update_ospi_Image; run update_ospi_rfs; setenv bootcmd \'run ospiboot\'; sleep 3; saveenv\0" \
 	ADI_UPDATE_OSPI_UBOOT \
 	"update_ospi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 0:0; sf write ${loadaddr} 0x1000000 ${filesize};\0" \
 	"update_ospi_Image=tftp ${loadaddr} ${ramfile}; sf probe 0:0; sf write ${loadaddr} 0x100000 ${filesize}; setenv imagesize ${filesize};\0" \
-	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; sf write ${loadaddr} 0xE0000 ${filesize}; setenv dtbsize ${filesize};\0" \
+	ADI_UPDATE_OSPI_DTB \
 	"ospiargs=setenv bootargs " ADI_BOOTARGS_OSPI "\0" \
 	"ospi_boot_sc598=run ospiargs; sf probe 0:0; sf read ${loadaddr} 0x100000 ${imagesize}; sf read ${dtbaddr} 0xE0000 ${dtbsize}; booti ${loadaddr} - ${dtbaddr}\0" \
 	"ospiboot=run ospi_boot_sc598\0"
@@ -268,12 +280,20 @@
 		"update_qspi_uboot=run update_qspi_uboot_spl; run update_qspi_uboot_proper;\0"
 #endif
 
+#ifndef CONFIG_ADI_FALCON
+	#define ADI_UPDATE_QSPI_DTB \
+	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; sf write ${loadaddr} 0xE0000 ${filesize}; setenv dtbsize ${filesize};\0"
+#else
+	#define ADI_UPDATE_QSPI_DTB \
+	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; run qspiargs; fdt addr ${loadaddr}; fdt boardsetup; fdt chosen; fdt resize 0x10000; sf write ${loadaddr} 0xE0000 0x10000; setenv dtbsize 0x10000;\0"
+#endif
+
 #define ADI_QSPI_BOOT \
 	"update_qspi_sc598=run init_ethernet; sf probe 2:1; sf erase 0 0x4000000; run update_qspi_uboot; run update_qspi_dtb; run update_qspi_Image; run update_qspi_rfs; setenv bootcmd \'run qspiboot\'; sleep 3; saveenv\0" \
 	ADI_UPDATE_QSPI_UBOOT \
 	"update_qspi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 2:1; sf write ${loadaddr} 0x1000000 ${filesize};\0" \
 	"update_qspi_Image=tftp ${loadaddr} ${ramfile}; sf probe 2:1; sf write ${loadaddr} 0x100000 ${filesize}; setenv imagesize ${filesize};\0" \
-	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; sf write ${loadaddr} 0xE0000 ${filesize}; setenv dtbsize ${filesize};\0" \
+	ADI_UPDATE_QSPI_DTB \
 	"qspiargs=setenv bootargs " ADI_BOOTARGS_QSPI "\0" \
 	"qspi_boot_sc598=run qspiargs; sf probe 2:1; sf read ${loadaddr} 0x100000 ${imagesize}; sf read ${dtbaddr} 0xE0000 ${dtbsize}; booti ${loadaddr} - ${dtbaddr}\0" \
 	"qspiboot=run qspi_boot_sc598\0"

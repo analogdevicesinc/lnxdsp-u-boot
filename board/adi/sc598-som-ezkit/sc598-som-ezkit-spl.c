@@ -102,7 +102,11 @@ int board_return_to_bootrom(struct spl_image_info *spl_image,
 
 int spl_start_uboot(void)
 {
+#ifdef CONFIG_ADI_FALCON
+	return 0;
+#else
 	return 1;
+#endif
 }
 
 unsigned long spl_mmc_get_uboot_raw_sector(struct mmc *mmc,
@@ -137,4 +141,27 @@ unsigned int spl_spi_get_default_speed()
 	}
 
 	return adi_sf_default_speed;
+}
+
+void spl_board_prepare_ethernet(void){
+	// select RGMII, little endian for both ports
+	writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
+	writel(readl(REG_PADS0_PCFG0) & ~(1 << 19), REG_PADS0_PCFG0);
+	writel(readl(REG_PADS0_PCFG0) & ~(1 << 20), REG_PADS0_PCFG0);
+}
+
+void spl_board_prepare_for_linux(void)
+{
+	adi_board_init_shared();
+	spl_board_prepare_ethernet();
+
+	//If we're jumping into Linux instead of U-Boot Proper, we need to call these, as
+	//they are skipped during the first (SPL) pass of start.S
+	asm(".include \"adi/59x-64/init_asm.h\"");
+	asm("setup_spu0");
+	asm("setup_spu0_wp");
+	asm("setup_smpu");
+	asm("disable_mmu");
+
+	adi_disable_ospi(1);
 }

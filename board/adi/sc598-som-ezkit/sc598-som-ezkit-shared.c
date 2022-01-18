@@ -91,3 +91,26 @@ void spi_flash_override_defaults(unsigned int * bus,
 		*speed = CONFIG_SF_DEFAULT_SPEED;
 	}
 }
+
+#ifdef CONFIG_OF_BOARD_SETUP
+int ft_board_setup(void *blob, struct bd_info *bd)
+{
+	return 0;
+}
+#endif
+
+void adi_board_init_shared(){
+	void __iomem *timer = 0x310ae000;
+	void __iomem *spu_securec;
+
+	// enable coresight timestamp generator with default settings
+	writel(1, timer);
+
+	// disable secure-only access to sharc cores so we can load from EL1
+	spu_securec = REG_SPU0_SECUREC0;
+	writel(0, spu_securec);
+	spu_securec = REG_SPU0_SECUREC1;
+	writel(0, spu_securec);
+	spu_securec = REG_SPU0_SECUREC2;
+	writel(0, spu_securec);
+}
