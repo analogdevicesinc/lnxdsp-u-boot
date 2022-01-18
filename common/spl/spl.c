@@ -97,6 +97,11 @@ int __weak bootz_setup(ulong image, ulong *start, ulong *end)
 {
 	 return 1;
 }
+
+int __weak booti_setup(ulong image, ulong *relocated_addr, ulong *size, bool force_reloc)
+{
+	 return 1;
+}
 #endif
 
 /* Weak default function for arch/board-specific fixups to the spl_image_info */
@@ -297,6 +302,21 @@ int spl_parse_image_header(struct spl_image_info *spl_image,
 #endif
 
 #ifdef CONFIG_SPL_OS_BOOT
+#ifdef CONFIG_SPL_OS_BOOT_UNCOMPRESSED
+		ulong start, size;
+
+		if (!booti_setup((ulong)header, &start, &size, 0)) {
+			spl_image->name = "Linux";
+			spl_image->os = IH_OS_LINUX;
+			spl_image->load_addr = start;
+			spl_image->entry_point = start;
+			spl_image->size = size;
+			printf(SPL_TPL_PROMPT
+			      "payload Image, load addr: 0x%lx size: %d\n",
+			      spl_image->load_addr, spl_image->size);
+			return 0;
+		}
+#else
 		ulong start, end;
 
 		if (!bootz_setup((ulong)header, &start, &end)) {
@@ -310,6 +330,7 @@ int spl_parse_image_header(struct spl_image_info *spl_image,
 			      spl_image->load_addr, spl_image->size);
 			return 0;
 		}
+#endif
 #endif
 
 #ifdef CONFIG_SPL_RAW_IMAGE_SUPPORT

@@ -965,6 +965,12 @@ config SYS_OS_BASE
 	  Specify the address, where the OS image is found, which
 	  gets booted.
 
+config SPL_OS_BOOT_UNCOMPRESSED
+	bool "Use uncompressed kernel image alongside Falcon Mode"
+	depends on SPL_SPI_LOAD
+	help
+	  Use an uncompressed kernel image to boot.  This is targetting
+	  architectures which use booti instead of bootz (i.e, ARM64).
 endif # SPL_OS_BOOT
 
 config SPL_PAYLOAD
