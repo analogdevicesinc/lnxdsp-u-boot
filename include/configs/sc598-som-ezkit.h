@@ -54,9 +54,10 @@
 #define CONFIG_SYS_SPL_ARGS_ADDR   0x84000000 // Where to load the DTB into RAM
 #define CONFIG_SYS_LOAD_ADDR       0x90000000 // Where to load the Image into RAM
 #define CONFIG_SYS_SPI_KERNEL_SKIP_HEADER
-#define CONFIG_SYS_MMCSD_RAW_MODE_KERNEL_SECTOR 0
+#define CONFIG_SYS_MMCSD_RAW_MODE_KERNEL_SECTOR 4096 // Position of kernel Image in sectors
+#define CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTOR   2048 // Position of DTB in sectors
+#define CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTORS  256  // Size of DTB in sectors
 #endif
-
 
 /*
  * Clock Settings
@@ -253,7 +254,7 @@
 	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; sf write ${loadaddr} 0xE0000 ${filesize}; setenv dtbsize ${filesize};\0"
 #else
 	#define ADI_UPDATE_OSPI_DTB \
-	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; run ospiargs; fdt addr ${loadaddr}; fdt boardsetup; fdt chosen; fdt resize 0x10000; sf write ${loadaddr} 0xE0000 0x10000; setenv dtbsize 0x10000;\0"
+	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; run ospiargs; fdt addr ${loadaddr}; fdt resize 0x10000; fdt boardsetup; fdt chosen; sf write ${loadaddr} 0xE0000 0x10000; setenv dtbsize 0x10000;\0"
 #endif
 
 #define ADI_OSPI_BOOT \
@@ -285,7 +286,7 @@
 	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; sf write ${loadaddr} 0xE0000 ${filesize}; setenv dtbsize ${filesize};\0"
 #else
 	#define ADI_UPDATE_QSPI_DTB \
-	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; run qspiargs; fdt addr ${loadaddr}; fdt boardsetup; fdt chosen; fdt resize 0x10000; sf write ${loadaddr} 0xE0000 0x10000; setenv dtbsize 0x10000;\0"
+	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; run qspiargs; fdt addr ${loadaddr}; fdt resize 0x10000; fdt boardsetup; fdt chosen; sf write ${loadaddr} 0xE0000 0x10000; setenv dtbsize 0x10000;\0"
 #endif
 
 #define ADI_QSPI_BOOT \
@@ -304,7 +305,8 @@
 	"emmcload=ext4load mmc 0:1 ${dtbaddr} /boot/sc598-som-ezkit.dtb; ext4load mmc 0:1 ${loadaddr} /boot/Image;\0" \
 	"emmc_boot=run emmcargs; booti ${loadaddr} - ${dtbaddr}\0" \
 	"emmc_boot_sc598=run emmcload; run emmc_boot\0" \
-	"emmcboot=run emmc_boot_sc598\0"
+	"emmcboot=run emmc_boot_sc598\0" \
+	"emmc_setup_falcon=run emmcargs; mmc read ${loadaddr} 0x800 0x100; fdt addr ${loadaddr}; fdt resize 0x10000; fdt boardsetup; fdt chosen; mmc erase 0x800 0x400; mmc write ${loadaddr} 0x800 0x100\0" \
 
 #define ADI_BOOTARGS_EMMC \
         "root=/dev/mmcblk0p1 " \
