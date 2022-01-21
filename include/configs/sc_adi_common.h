@@ -259,10 +259,13 @@
 	#define ADI_ENV_SETTINGS "\0"
 #endif
 
+#define ETH0ADDR "02:80:ad:20:31:e8"
+#define ETH1ADDR "02:80:ad:20:31:e9"
+
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	NETWORK_ENV_SETTINGS \
 	BOARD_ENV_SETTINGS \
-	"ethaddr=02:80:ad:20:31:e8\0" \
+	"ethaddr=" ETH0ADDR "\0" \
 	ADI_ENV_SETTINGS
 
 /*
