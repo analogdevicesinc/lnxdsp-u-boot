@@ -29,6 +29,12 @@ static int adi_sf_default_bus = 2;
 static int adi_sf_default_cs = 1;
 static int adi_sf_default_speed = CONFIG_SF_DEFAULT_SPEED;
 
+struct adi_boot_args {
+	u32 addr;
+	u32 flags;
+	u32 cmd;
+};
+
 void board_boot_order(u32 *spl_boot_list)
 {
 	static char * bmodes[] = {
@@ -42,8 +48,9 @@ void board_boot_order(u32 *spl_boot_list)
 	};
 
 	char * bmodeString = "unknown";
+	u32 bmode;
 
-	u32 bmode = (readl(pRCU_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
+	bmode = (readl(pRCU_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
 
 #if CONFIG_ADI_SPL_FORCE_BMODE != 0
 	//In case we want to force boot sequences such as:
@@ -63,38 +70,22 @@ void board_boot_order(u32 *spl_boot_list)
 #endif
 #endif
 
-	if(bmode >= 0 && bmode <= sizeof(bmodes)/sizeof(bmodes[0])){
+	if (bmode >= 0 && bmode <= sizeof(bmodes)/sizeof(bmodes[0]))
 		bmodeString = bmodes[bmode];
-	}
+	else
+		bmode = 0;
 
 	printf("ADI Boot Mode: %x (%s)\n", bmode, bmodeString);
 
-	switch(bmode){
-		case 0:
-			printf("SPL execution has completed.  Please load U-Boot Proper via JTAG");
-			while(1);
-			break;
-		case 1:
-			adi_sf_default_bus = 2;
-			adi_sf_default_cs = 1;
-			spl_boot_list[0] = BOOT_DEVICE_SPI;
-			break;
-		case 5:
-			adi_sf_default_bus = 0;
-			adi_sf_default_cs = 0;
-			spl_boot_list[0] = BOOT_DEVICE_SPI;
-			break;
-#ifdef CONFIG_MMC_SDHCI_ADI
-		case 6:
-			adi_mmc_init();
-			spl_boot_list[0] = BOOT_DEVICE_MMC1;
-			break;
-#endif
-		default:
-			spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
-			break;
+	if (0 == bmode) {
+		printf("SPL execution has completed.  Please load U-Boot Proper via JTAG");
+		while(1)
+			;
 	}
 
+	// Everything goes back to bootrom where we'll read table parameters and ask it
+	// to load something
+	spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
 }
 
 int dram_init_banksize(void)
@@ -105,10 +96,48 @@ int dram_init_banksize(void)
 
 u64 bootrom_stash[32] __attribute__((section(".data")));
 
+// cf. include/adi/cortex-a55/defSC59x_rom_jumptable.h
+void (*adi_rom_boot)(void *addr, uint32_t flags, int32_t blocks, void *pHook,
+uint32_t cmd) = 0x000000E4;
+
 int board_return_to_bootrom(struct spl_image_info *spl_image,
 			    struct spl_boot_device *bootdev)
 {
-	asm volatile ("bl back_to_bootrom;");
+	// Table 43-14 in SC598 hardware reference manual
+	static const struct adi_boot_args rom_boot_args[] = {
+		// JTAG/no boot
+		[0] = {0, 0, 0},
+		// SPI master, used for qspi as well
+		[1] = {0x60020000, 0x00040000, 0x00000207},
+		// SPI slave
+		[2] = {0, 0, 0x00000212},
+		// UART slave
+		[3] = {0, 0, 0x00000013},
+		// Linkport slave
+		[4] = {0, 0, 0x00000014},
+		// OSPI master
+		[5] = {0x60020000, 0, 0x00000008},
+		// eMMC
+		[6] = {0x200, 0, 0x00082009},
+		// reserved, also no boot
+		[7] = {0, 0, 0}
+	};
+	u32 bmode;
+
+	bmode = (readl(pRCU_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
+#if CONFIG_ADI_SPL_FORCE_BMODE != 0
+	// see above
+	if(bmode != 0 && bmode != 3)
+		bmode = CONFIG_ADI_SPL_FORCE_BMODE;
+#endif
+
+	if (bmode >= (sizeof(rom_boot_args) / sizeof(rom_boot_args[0])))
+		bmode = 0;
+
+	adi_rom_boot(rom_boot_args[bmode].addr,
+		rom_boot_args[bmode].flags,
+		0, NULL,
+		rom_boot_args[bmode].cmd);
 	return 0;
 }
 
