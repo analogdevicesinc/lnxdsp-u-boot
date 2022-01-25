@@ -634,7 +634,7 @@ void board_init_f(ulong dummy)
 {
 //Initialize DRAM earlier than board_init_r, as our clocks (UART, etc)
 //are also tied into this process
-#ifdef CONFIG_SC59X_64
+#if defined (CONFIG_SC59X_64) || defined(CONFIG_SC59X)
 	dram_init_banksize();
 #endif
 
@@ -647,12 +647,6 @@ void board_init_f(ulong dummy)
 			hang();
 		}
 	}
-
-//Initialize DRAM earlier than board_init_r, as our clocks (UART, etc)
-//are also tied into this process
-#if defined(CONFIG_SC59X)
-	dram_init_banksize();
-#endif
 
 	preloader_console_init();
 }
@@ -718,12 +712,10 @@ void board_init_r(gd_t *dummy1, ulong dummy2)
 	initr_watchdog();
 #endif
 
-#ifndef CONFIG_SC59X_64
-#if !defined(CONFIG_SC59X)
+#if ! (defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64))
 	if (IS_ENABLED(CONFIG_SPL_OS_BOOT) || CONFIG_IS_ENABLED(HANDOFF) ||
 	    IS_ENABLED(CONFIG_SPL_ATF))
 		dram_init_banksize();
-#endif
 #endif
 
 	bootcount_inc();

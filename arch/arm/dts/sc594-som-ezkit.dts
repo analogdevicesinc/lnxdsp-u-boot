@@ -4,10 +4,14 @@
 	model = "ADI sc594-som-ezkit";
 	compatible = "adi,sc594-som-ezkit", "adi,sc59x";
 
- 	aliases {
+	config {
+		u-boot,spl-payload-offset = <0x20000>;
+	};
+
+	aliases {
 		spi0 = "/spi@31027000";
 		spi2 = "/spi@31030000";
- 	};
+	};
 
 	soc {
 		#address-cells = <1>;
@@ -16,6 +20,7 @@
 		device_type = "soc";
 		/*interrupt-parent = <&intc>;*/
 		ranges;
+		u-boot,dm-pre-reloc;
 
 		qspi: spi@31027000 {
 			compatible = "cdns,qspi-nor";
@@ -30,6 +35,7 @@
 			fifo-depth = <128>;
 			bus-num = <0>;
 			status = "disabled";
+			u-boot,dm-pre-reloc;
 		};
 
 		spi2: spi@31030000 {
@@ -40,6 +46,7 @@
 			bus-num = <2>;
 			spi-max-frequency = <10000000>;
 			status = "disabled";
+			u-boot,dm-pre-reloc;
 		};
 
 	};
@@ -58,6 +65,7 @@
 		tsd2d-ns = <50>;
 		tchsh-ns = <4>;
 		tslch-ns = <4>;
+		u-boot,dm-pre-reloc;
 	};
 };
 
@@ -72,6 +80,7 @@
 		#size-cells = <1>;
 		compatible = "mx66lm1g45";
 		reg = <1>;
+		u-boot,dm-pre-reloc;
 	};
 */
 
@@ -80,6 +89,7 @@
 		#size-cells = <1>;
 		compatible = "is25lp512";
 		reg = <1>;
+		u-boot,dm-pre-reloc;
 	};
 
 };
