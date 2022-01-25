@@ -270,7 +270,7 @@ ddr_init(void)
 
 //static volatile int i = 0;
 
-void initcode(void)
+void initcode_shared(void)
 {
 # ifdef MEM_DDR3
 	adi_dmc_lane_reset(true);

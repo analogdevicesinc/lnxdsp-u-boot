@@ -619,6 +619,7 @@ config SC58X
 
 config SC59X
 	bool "sc59x SoC"
+	select SUPPORT_SPL
 	select CPU_V7A
 
 config SC59X_64

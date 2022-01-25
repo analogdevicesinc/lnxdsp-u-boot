@@ -3,4 +3,4 @@
  * Licensed under the GPL-2 or later.
  */
 
-void initcode(void);
+void initcode_shared(void);

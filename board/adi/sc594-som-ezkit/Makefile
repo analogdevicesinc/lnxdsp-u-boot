@@ -10,3 +10,5 @@
 #
 
 obj-y	:= $(BOARD).o
+obj-$(CONFIG_SPL_BUILD) := $(BOARD)-spl.o
+

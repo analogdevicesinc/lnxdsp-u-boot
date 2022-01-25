@@ -27,7 +27,7 @@
  * Relocate armboot to ram. Setup stack.
  *
  *************************************************************************/
-
+	.globl	back_to_bootrom
 	.globl	reset
 	.globl	save_boot_params_ret
 	.type   save_boot_params_ret,%function
@@ -36,6 +36,13 @@
 #endif
 
 reset:
+#ifdef CONFIG_SC59X
+#ifdef CONFIG_SPL_BUILD
+	push	{r0-r12,lr}
+	ldr	r0, =bootrom_stash
+	str	sp, [r0]
+#endif
+#endif
 	/* Allow the board to save important registers */
 	b	save_boot_params
 save_boot_params_ret:
@@ -339,4 +346,14 @@ ENTRY(cpu_init_crit)
 	 */
 	b	lowlevel_init		@ go setup pll,mux,memory
 ENDPROC(cpu_init_crit)
+#endif
+
+#ifdef CONFIG_SC59X
+#ifdef CONFIG_SPL_BUILD
+back_to_bootrom:
+	ldr r0, =bootrom_stash
+	ldr r0, [r0]
+	mov sp, r0
+	pop	{r0-r12,pc}
+#endif
 #endif

@@ -21,6 +21,30 @@ SECTIONS
 		CPUDIR/start.o (.text*)
 		*(.text*)
 		*(.glue*)
+
+
+#ifdef CONFIG_SC59X
+/* Bundle everything inside .text so that
+   it is properly included with --initcode flag
+   (This is only used in the case of BOOT_DEVICE_BOOTROM) */
+		. = ALIGN(4);
+		*(SORT_BY_ALIGNMENT(SORT_BY_NAME(.rodata*)))
+
+		. = ALIGN(4);
+		*(.dtb.init.rodata*)
+
+		. = ALIGN(4);
+		*(.data*)
+
+		. = ALIGN(4);
+		KEEP(*(SORT(.u_boot_list*)));
+
+		. = ALIGN(4);
+		*(.__image_copy_end)
+
+		. = ALIGN(4);
+		*(.__end)
+#endif
 	}
 
 	. = ALIGN(4);

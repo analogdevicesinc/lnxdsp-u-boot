@@ -351,6 +351,19 @@ u-boot.ldr:	$(obj)/u-boot-spl
 		$(BOARD_SIZE_CHECK)
 endif
 
+#Future support for multiple platforms:
+#ifdef "$(or CONFIG_SC58X,CONFIG_SC59X)"
+ifdef CONFIG_SC59X
+u-boot-$(CONFIG_SYS_BOARD).ldr: u-boot.ldr
+		cp u-boot.ldr u-boot-$(CONFIG_SYS_BOARD).ldr
+
+u-boot.ldr:	$(obj)/u-boot-spl
+		$(CREATE_LDR_ENV)
+		$(LDR) -T $(CONFIG_ADI_CPU) -c $@ u-boot $(LDR_FLAGS)
+		$(BOARD_SIZE_CHECK)
+endif
+
+
 quiet_cmd_objcopy = OBJCOPY $@
 cmd_objcopy = $(OBJCOPY) $(OBJCOPYFLAGS) $(OBJCOPYFLAGS_$(@F)) $< $@
 
