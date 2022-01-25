@@ -176,6 +176,7 @@
 #define INITRAMADDR "0x85000000"
 
 #define ADI_ENV_SETTINGS \
+	"initrd_high=0xFFFFFFFF\0" \
 	"fdt_high=0xFFFFFFFF\0" \
 	"rfsfile=adsp-sc5xx-minimal-adsp-sc594-som-ezkit.jffs2\0" \
 	"dtbsize=0x20000\0" \
