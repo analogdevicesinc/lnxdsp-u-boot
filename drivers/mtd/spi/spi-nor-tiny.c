@@ -668,6 +668,7 @@ static int spi_nor_setup(struct spi_nor *nor, const struct flash_info *info,
 		switch (JEDEC_MFR(info)) {
 #ifdef CONFIG_SPI_FLASH_MACRONIX
 		case SNOR_MFR_MACRONIX:
+		case SNOR_MFR_ISSI:
 			err = macronix_quad_enable(nor);
 			break;
 #endif
