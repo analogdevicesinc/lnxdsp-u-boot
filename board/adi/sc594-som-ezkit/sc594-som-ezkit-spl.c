@@ -19,9 +19,13 @@
 #include <watchdog.h>
 #include "soft_switch.h"
 #include <asm/spl.h>
-#include "../../../arch/arm/cpu/armv7/sc59x/adsp594.h"
+#include "sc594-som-ezkit-shared.h"
 
 #define pRCU_STAT 0x3108c004
+
+static int adi_sf_default_bus = 0;
+static int adi_sf_default_cs = 0;
+static int adi_sf_default_speed = CONFIG_SF_DEFAULT_SPEED;
 
 void board_boot_order(u32 *spl_boot_list)
 {
@@ -44,21 +48,47 @@ void board_boot_order(u32 *spl_boot_list)
 
 	printf("ADI Boot Mode: %x (%s)\n", bmode, bmodeString);
 
+	adi_setup_soft_switches();
+
 	switch(bmode){
 		case 0:
 			printf("SPL execution has completed.  Please load U-Boot Proper via JTAG");
 			while(1);
 			break;
 		case 1:
+			adi_sf_default_bus = 2;
+			adi_sf_default_cs = 1;
 			spl_boot_list[0] = BOOT_DEVICE_SPI;
 			break;
 		case 5:
-			printf("Loading U-Boot Proper from OSPI not yet supported.  This is a future task.\n");
+			adi_sf_default_bus = 0;
+			adi_sf_default_cs = 0;
+			adi_multiplex_ospi();
+			spl_boot_list[0] = BOOT_DEVICE_SPI;
 			break;
 		default:
 			spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
 			break;
 	}
+}
+
+unsigned int spl_spi_get_default_speed()
+{
+	if(adi_sf_default_bus == 0 && adi_sf_default_cs == 0){
+		adi_sf_default_speed = ADI_OSPI_SF_DEFAULT_SPEED;
+	}
+
+	return adi_sf_default_speed;
+}
+
+unsigned int spl_spi_get_default_bus()
+{
+	return adi_sf_default_bus;
+}
+
+unsigned int spl_spi_get_default_cs()
+{
+	return adi_sf_default_cs;
 }
 
 int dram_init_banksize(void)

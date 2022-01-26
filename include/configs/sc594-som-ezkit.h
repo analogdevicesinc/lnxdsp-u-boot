@@ -166,6 +166,7 @@
 #define CONFIG_CMD_SPI
 #define CONFIG_ENV_SPI_MAX_HZ	10000000
 #define CONFIG_SF_DEFAULT_SPEED	10000000
+#define ADI_OSPI_SF_DEFAULT_SPEED CONFIG_CQSPI_REF_CLK / 6 //83.33 MHz STR (Single Transfer Rate)
 #define CONFIG_SF_DEFAULT_MODE  SPI_MODE_3
 
 /*
@@ -179,7 +180,7 @@
 #define CONFIG_LINUX_MEMSIZE	"992M"
 #define CONFIG_CMD_BOOTZ
 
-#define CONFIG_BOOTCOMMAND	"run qspiboot"
+#define CONFIG_BOOTCOMMAND	"run ospiboot"
 #define INITRAMADDR "0x85000000"
 
 #define ADI_ENV_SETTINGS \
@@ -210,7 +211,7 @@
 #endif
 
 #define ADI_OSPI_BOOT \
-	"update_ospi_sc594=run init_ethernet; sf probe 0:0; sf erase 0 0x4000000; run update_ospi_uboot; run update_ospi_dtb; run update_ospi_zImage; run update_ospi_rfs; setenv bootcmd \'run ospiboot\'; sleep 3; saveenv\0" \
+	"update_ospi_sc594=run init_ethernet; sf probe 0:0; sf erase 0 0x2000000; run update_ospi_uboot; run update_ospi_dtb; run update_ospi_zImage; run update_ospi_rfs; setenv bootcmd \'run ospiboot\'; sleep 3; saveenv\0" \
 	ADI_UPDATE_OSPI_UBOOT \
 	"update_ospi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 0:0; sf write ${loadaddr} 0x6C0000 ${filesize};\0" \
 	"update_ospi_zImage=tftp ${loadaddr} ${ramfile}; sf probe 0:0; sf write ${loadaddr} 0xC0000 ${filesize}; setenv zimagesize ${filesize};\0" \

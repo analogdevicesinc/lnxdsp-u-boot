@@ -18,6 +18,7 @@
 #include <linux/delay.h>
 #include <watchdog.h>
 #include "soft_switch.h"
+#include "sc594-som-ezkit-shared.h"
 
 extern char __bss_start, __bss_end;
 static void bss_clear(void)
@@ -40,17 +41,11 @@ int board_early_init_f(void)
 #endif
 
 #ifdef CONFIG_CADENCE_QSPI
-	static const unsigned short pins_ospi0[] = P_OSPI0;
-	if (peripheral_request_list(pins_ospi0, "ospi0")){
-		printf("Unable to pinmux OSPI0\r\n");
-	}
+	adi_multiplex_ospi();
 #endif
 
 #ifdef CONFIG_SOFT_SWITCH
-	static const unsigned short pins_i2c2[] = P_I2C2;
-	peripheral_request_list(pins_i2c2, "i2c2");
-
-	return setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
+	adi_setup_soft_switches();
 #else
 	return 0;
 #endif
