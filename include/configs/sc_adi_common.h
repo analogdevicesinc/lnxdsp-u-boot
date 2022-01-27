@@ -109,7 +109,11 @@
 
 #ifdef CONFIG_SC59X_64
 # define ADI_EARLYPRINTK "earlycon=adi_uart,0x31003000 "
-# define IMAGEFILE "Image"
+# ifdef CONFIG_ADI_FALCON
+#  define IMAGEFILE "Image"
+# else
+#  define IMAGEFILE "fitImage"
+# endif
 #else
 # define ADI_EARLYPRINTK "earlyprintk=serial,uart0,57600 "
 # define IMAGEFILE "zImage"
