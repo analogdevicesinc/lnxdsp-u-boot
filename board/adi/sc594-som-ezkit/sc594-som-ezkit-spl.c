@@ -42,6 +42,17 @@ void board_boot_order(u32 *spl_boot_list)
 
 	u32 bmode = (readl(pRCU_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
 
+#if CONFIG_ADI_SPL_FORCE_BMODE != 0
+	//In case we want to force boot sequences such as:
+	//QSPI -> OSPI
+
+	//If this is not set, then we will always try to use the BMODE setting
+	//for both stages... i.e.
+	//QSPI -> QSPI
+	if(bmode != 0 && bmode != 3) //(Don't allow skipping JTAG/UART BMODE settings)
+		bmode = CONFIG_ADI_SPL_FORCE_BMODE;
+#endif
+
 	if(bmode >= 0 && bmode <= sizeof(bmodes)/sizeof(bmodes[0])){
 		bmodeString = bmodes[bmode];
 	}

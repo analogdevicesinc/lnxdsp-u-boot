@@ -71,6 +71,18 @@ config ADI_FALCON
 	help
 		Enable Falcon Boot Mode Support
 
+config ADI_SPL_FORCE_BMODE
+	int "Force the SPL to use this BMODE device during next boot stage"
+	default 0
+	range 0 9
+	depends on SPL
+	help
+	  Force the SPL to use this BMODE device during next boot stage.
+	  For example, if booting via QSPI, we can force the second stage
+	  Of the boot process to use other peripherals via:
+	  1 = QSPI -> QSPI
+	  5 = QSPI -> OSPI
+
 source "board/adi/sc5xx-common/Kconfig"
 source "board/adi/sc594-som-ezkit/Kconfig"
 
