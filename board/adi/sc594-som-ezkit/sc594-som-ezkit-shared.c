@@ -50,3 +50,10 @@ void adi_setup_soft_switches(){
 	setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
 #endif
 }
+
+#ifdef CONFIG_OF_BOARD_SETUP
+int ft_board_setup(void *blob, struct bd_info *bd)
+{
+	return 0;
+}
+#endif

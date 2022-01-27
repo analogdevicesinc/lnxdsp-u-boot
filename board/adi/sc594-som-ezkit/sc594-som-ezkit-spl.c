@@ -99,7 +99,11 @@ int dram_init_banksize(void)
 
 int spl_start_uboot(void)
 {
+#ifdef CONFIG_ADI_FALCON
+	return 0;
+#else
 	return 1;
+#endif
 }
 
 u32 bootrom_stash __attribute__((section(".data")));

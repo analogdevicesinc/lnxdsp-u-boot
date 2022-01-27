@@ -37,12 +37,13 @@
 #define CONFIG_SPL_STACK		(CONFIG_SYS_SPL_MALLOC_START + CONFIG_SYS_SPL_MALLOC_SIZE + CONFIG_SPL_STACK_SIZE)
 #define CONFIG_SPL_STACK_SIZE		SZ_64K
 
-//Placeholders for compilation -- may be used for Falcon boot later on
-#define CONFIG_SYS_SPI_KERNEL_OFFS 0
-#define CONFIG_SYS_SPI_ARGS_OFFS 0
-#define CONFIG_SYS_SPI_ARGS_SIZE 0
-#define CONFIG_SYS_SPL_ARGS_ADDR 0
-#define CONFIG_SYS_SPI_KERNEL_OFFS 0
+//Parameters used for Falcon boot
+#define CONFIG_SYS_SPI_ARGS_OFFS   0xA0000    // This is where the DTB should be stored
+#define CONFIG_SYS_SPI_ARGS_SIZE   0x10000    // Max size of the DTB
+#define CONFIG_SYS_SPI_KERNEL_OFFS 0xC0000   // Where the kernel Image should be stored
+#define CONFIG_SYS_SPL_ARGS_ADDR   0x84000000 // Where to load the DTB into RAM
+#define CONFIG_SYS_LOAD_ADDR       0x82000000 // Where to load the Image into RAM
+#define CONFIG_SYS_SPI_KERNEL_SKIP_HEADER
 #endif
 
 /*
@@ -93,7 +94,9 @@
 #define CONFIG_SYS_SDRAM_BASE	0x82000000
 #define CONFIG_SYS_SDRAM_SIZE	0x3E000000
 #define CONFIG_SYS_TEXT_BASE	0xB2200000
+#ifndef CONFIG_SPL_BUILD
 #define CONFIG_SYS_LOAD_ADDR	0x0
+#endif
 #define CONFIG_SYS_INIT_SP_ADDR (CONFIG_SYS_SDRAM_BASE + 0x3f000)
 
 #define CONFIG_SMC_GCTL_VAL	0x00000010
@@ -196,6 +199,14 @@
 #define ADI_INIT_ETHERNET \
 	"init_ethernet=mii info; dhcp; setenv serverip ${tftpserverip};\0"
 
+#ifndef CONFIG_ADI_FALCON
+	#define ADI_UPDATE_OSPI_DTB \
+	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; sf write ${loadaddr} 0xA0000 ${filesize}; setenv dtbsize ${filesize};\0"
+#else
+	#define ADI_UPDATE_OSPI_DTB \
+	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; run ospiargs; fdt addr ${loadaddr};  fdt resize 0x10000; fdt boardsetup; fdt chosen; sf write ${loadaddr} 0xA0000 0x10000; setenv dtbsize 0x10000;\0"
+#endif
+
 #ifndef CONFIG_SPL_OS_BOOT
 	#define ADI_UPDATE_OSPI_UBOOT \
 		"update_ospi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe 0:0; sf write ${loadaddr} 0x0 ${filesize};\0"
@@ -215,10 +226,18 @@
 	ADI_UPDATE_OSPI_UBOOT \
 	"update_ospi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 0:0; sf write ${loadaddr} 0x6C0000 ${filesize};\0" \
 	"update_ospi_zImage=tftp ${loadaddr} ${ramfile}; sf probe 0:0; sf write ${loadaddr} 0xC0000 ${filesize}; setenv zimagesize ${filesize};\0" \
-	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; sf write ${loadaddr} 0xA0000 ${filesize}; setenv dtbsize ${filesize};\0" \
+	ADI_UPDATE_OSPI_DTB \
 	"ospiargs=setenv bootargs " ADI_BOOTARGS_OSPI "\0" \
 	"ospi_boot_sc594=run ospiargs; sf probe 0:0; sf read ${loadaddr} 0xC0000 ${zimagesize}; sf read ${dtbaddr} 0xA0000 ${dtbsize}; bootz ${loadaddr} - ${dtbaddr}\0" \
 	"ospiboot=run ospi_boot_sc594\0"
+
+#ifndef CONFIG_ADI_FALCON
+	#define ADI_UPDATE_QSPI_DTB \
+	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; sf write ${loadaddr} 0xA0000 ${filesize}; setenv dtbsize ${filesize};\0"
+#else
+	#define ADI_UPDATE_QSPI_DTB \
+	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; run qspiargs; fdt addr ${loadaddr}; fdt resize 0x10000; fdt boardsetup; fdt chosen; sf write ${loadaddr} 0xA0000 0x10000; setenv dtbsize 0x10000;\0"
+#endif
 
 #ifndef CONFIG_SPL_OS_BOOT
 	#define ADI_UPDATE_QSPI_UBOOT \
@@ -239,7 +258,7 @@
 	ADI_UPDATE_QSPI_UBOOT \
 	"update_qspi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 2:1; sf write ${loadaddr} 0x6C0000 ${filesize};\0" \
 	"update_qspi_zImage=tftp ${loadaddr} ${ramfile}; sf probe 2:1; sf write ${loadaddr} 0xC0000 ${filesize}; setenv zimagesize ${filesize};\0" \
-	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; sf write ${loadaddr} 0xA0000 ${filesize}; setenv dtbsize ${filesize};\0" \
+	ADI_UPDATE_QSPI_DTB \
 	"qspiargs=setenv bootargs " ADI_BOOTARGS_QSPI "\0" \
 	"qspi_boot_sc594=run qspiargs; sf probe 2:1; sf read ${loadaddr} 0xC0000 ${zimagesize}; sf read ${dtbaddr} 0xA0000 ${dtbsize}; bootz ${loadaddr} - ${dtbaddr}\0" \
 	"qspiboot=run qspi_boot_sc594\0"

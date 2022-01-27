@@ -64,6 +64,13 @@ config SPI_UBOOT_OFF
 	help
 	  Specifiy the offset of the second stage u-boot bootstream on SPI flash
 
+config ADI_FALCON
+	bool "Enable Falcon Boot Mode Support"
+	depends on SPL_OS_BOOT
+	default n
+	help
+		Enable Falcon Boot Mode Support
+
 source "board/adi/sc5xx-common/Kconfig"
 source "board/adi/sc594-som-ezkit/Kconfig"
 
