@@ -126,3 +126,63 @@ int board_return_to_bootrom(struct spl_image_info *spl_image,
 	return 0;
 }
 
+#ifdef CONFIG_ADI_FALCON
+void adi_fdt_fixup_mac_addr(void * fdt){
+
+	int i = 0, j, prop;
+	char *tmp, *end;
+	const char *path;
+	unsigned char mac_addr[6];
+	int offset;
+
+	if (fdt_path_offset(fdt, "/aliases") < 0)
+		return;
+
+	/* Cycle through all aliases */
+	for (prop = 0; ; prop++) {
+		const char *name;
+
+		/* FDT might have been edited, recompute the offset */
+		offset = fdt_first_property_offset(fdt,
+			fdt_path_offset(fdt, "/aliases"));
+		/* Select property number 'prop' */
+		for (j = 0; j < prop; j++)
+			offset = fdt_next_property_offset(fdt, offset);
+
+		if (offset < 0)
+			break;
+
+		path = fdt_getprop_by_offset(fdt, offset, &name, NULL);
+		if (!strncmp(name, "ethernet", 8)) {
+			/* Treat plain "ethernet" same as "ethernet0". */
+			if (!strcmp(name, "ethernet"))
+				i = 0;
+			else
+				i = trailing_strtol(name);
+
+			if(i == 0)
+				tmp = ETH0ADDR;
+			else
+				tmp = ETH1ADDR;
+
+			for (j = 0; j < 6; j++) {
+				mac_addr[j] = tmp ?
+					      simple_strtoul(tmp, &end, 16) : 0;
+				if (tmp)
+					tmp = (*end) ? end + 1 : end;
+			}
+
+			do_fixup_by_path(fdt, path, "mac-address",
+					 &mac_addr, 6, 0);
+			do_fixup_by_path(fdt, path, "local-mac-address",
+					 &mac_addr, 6, 1);
+		}
+	}
+
+}
+
+int spl_board_fixup_fdt(void * fdt){
+	adi_fdt_fixup_mac_addr(fdt);
+	return 0;
+}
+#endif
