@@ -26,6 +26,7 @@
 static int adi_sf_default_bus = 0;
 static int adi_sf_default_cs = 0;
 static int adi_sf_default_speed = CONFIG_SF_DEFAULT_SPEED;
+static bool adi_start_uboot_proper = 1;
 
 void board_boot_order(u32 *spl_boot_list)
 {
@@ -41,6 +42,10 @@ void board_boot_order(u32 *spl_boot_list)
 	char * bmodeString = "unknown";
 
 	u32 bmode = (readl(pRCU_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
+
+#ifdef CONFIG_ADI_FALCON
+	adi_check_pushbuttons();
+#endif
 
 #if CONFIG_ADI_SPL_FORCE_BMODE != 0
 	//In case we want to force boot sequences such as:
@@ -114,11 +119,7 @@ int dram_init_banksize(void)
 
 int spl_start_uboot(void)
 {
-#ifdef CONFIG_ADI_FALCON
-	return 0;
-#else
-	return 1;
-#endif
+	return adi_start_uboot_proper;
 }
 
 u32 bootrom_stash __attribute__((section(".data")));
@@ -131,6 +132,27 @@ int board_return_to_bootrom(struct spl_image_info *spl_image,
 }
 
 #ifdef CONFIG_ADI_FALCON
+void adi_check_pushbuttons(){
+	gpio_request(GPIO_PD0, "pushbutton0");
+	gpio_direction_input(GPIO_PD0);
+
+	gpio_request(GPIO_PH0, "pushbutton1");
+	gpio_direction_input(GPIO_PH0);
+
+	if(gpio_get_value(GPIO_PD0) || gpio_get_value(GPIO_PH0)){
+		adi_start_uboot_proper = 1;
+
+		//Wait until they're released, in case these pins conflict with peripherals (OSPI, etc)
+		while(gpio_get_value(GPIO_PD0));
+		while(gpio_get_value(GPIO_PH0));
+	}else{
+		adi_start_uboot_proper = 0;
+	}
+
+	gpio_free(GPIO_PD0);
+	gpio_free(GPIO_PH0);
+}
+
 void adi_fdt_fixup_mac_addr(void * fdt){
 
 	int i = 0, j, prop;
