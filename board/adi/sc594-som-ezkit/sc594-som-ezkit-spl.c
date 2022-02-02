@@ -59,7 +59,11 @@ void board_boot_order(u32 *spl_boot_list)
 
 	printf("ADI Boot Mode: %x (%s)\n", bmode, bmodeString);
 
-	adi_setup_soft_switches();
+//#if ADI_HAVE_CARRIER == 1
+#ifdef CONFIG_SOFT_SWITCH
+	adi_initialize_soft_switches();
+#endif
+//#endif
 
 	switch(bmode){
 		case 0:

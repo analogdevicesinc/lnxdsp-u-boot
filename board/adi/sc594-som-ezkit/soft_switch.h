@@ -7,125 +7,63 @@
  */
 
 #include <asm/arch/soft_switch.h>
+#include "soft_switch_bits.h"
 
 #define NUM_SWITCH      2
 
-#undef MX66LM1G45 /* use IS25LP512 */
+#define PortA_Address22                                                       \
+		DISABLE_ADAU1979                                              | \
+		DISABLE_ADAU1962                                              | \
+		ENABLE_ADAU_RESET                                             | \
+		DISABLE_MICROSD_SPI                                           | \
+		DISABLE_PB                                                    | \
+		DISABLE_EEPROM
 
-static struct switch_config switch_config_array_ethernet_enabled[NUM_SWITCH] = {
+#define PortB_Address22_EthEnable         \
+		DISABLE_GIGE_RESET      | \
+		ENABLE_ETH1_RESET       | \
+		DISABLE_ETH1_EN
+
+#define PortB_Address22_EthDisable         \
+		ENABLE_GIGE_RESET        | \
+		ENABLE_ETH1_RESET        | \
+		DISABLE_ETH1_EN
+
+#define PortB_Address22                  \
+		DISABLE_MLB            | \
+		DISABLE_AUDIO_JACK_SEL | \
+		DISABLE_SPDIF_OPTICAL  | \
+		DISABLE_SPDIF_DIGITAL  | \
+		DISABLE_OCTAL_SPI_CS
+
+#define PortA_Address21                                                               \
+		DISABLE_UART0_FLOW                                                   | \
+		ENABLE_UART0                                                         | \
+		ENABLE_SPI2D2_D3                                                     | \
+		ENABLE_SPI2FLASH_CS                                                  | \
+		ENABLE_LED3                                                          | \
+		ENABLE_LED2                                                          | \
+		ENABLE_LED1
+
+#define PortB_Address21             \
+		ENABLE_EMMC_SOM   | \
+		DISABLE_EMMC
+
+static struct switch_config switch_config_array[NUM_SWITCH] = {
 	{
-/*
-	U6 Port A                      U6 Port B
-
-	7--------------- ADAU1979_EN   |  7--------------- GIGE_RESET
-	| 6------------- ADAU1962_EN   |  | 6------------- ETH1_RESET
-	| | 5----------- ADAU_RESET    |  | | 5----------- ETH1_EN
-	| | | 4---------               |  | | | 4--------- MLB_EN
-	| | | | 3-------               |  | | | | 3------- AUDIO_JACK_SEL
-	| | | | | 2----- MICROSD_SPI   |  | | | | | 2----- SPDIF_OPTICAL_EN
-	| | | | | | 1--- PB_EN         |  | | | | | | 1--- SPDIF_DIGITAL_EN
-	| | | | | | | 0- EEPROM_EN     |  | | | | | | | 0- OCTAL_SPI_CS_EN
-	| | | | | | | |                |  | | | | | | | |
-	O O O O O O O O                |  O O O O O O O O   (I/O direction)
-	0 0 0 0 0 0 0 0                |  1 1 0 0 0 0 0 1   (value being set)
-*/
 		.i2c_bus = 2,
 		.i2c_addr = 0x22,
 		.dir0 = 0x0, /* all output */
 		.dir1 = 0x0, /* all output */
-		.value0 = 0x0,
-#ifdef MX66LM1G45		
-		.value1 = 0xC1,
-#else /* IS25LP512 */
-		.value1 = 0xC0,
-#endif
+		.value0 = PortA_Address22,
+		.value1 = PortB_Address22 | PortB_Address22_EthDisable,
 	},
-
 	{
-/*
-	U16 Port A                      U16 Port B
-
-	7--------------- OSPIFLASH_CS  |  7--------------- Unused
-	| 6------------- UART0_FLOW_EN |  | 6------------- Unused
-	| | 5----------- UART0_EN      |  | | 5----------- Unused
-	| | | 4--------- SPI2D2_D3_EN  |  | | | 4--------- Unused
-	| | | | 3------- SPI2FLASH_CS  |  | | | | 3------- Unused
-	| | | | | 2----- LED           |  | | | | | 2----- Unused
-	| | | | | | 1--- LED           |  | | | | | | 1--- Unused
-	| | | | | | | 0- LED           |  | | | | | | | 0- Unused
-	| | | | | | | |                |  | | | | | | | |
-	O O O O O O O O                |  O O O O O O O O   (I/O direction)
-	0 0 0 1 1 1 1 1                |  0 0 0 0 0 0 0 0   (value being set)
-*/
 		.i2c_bus = 2,
 		.i2c_addr = 0x21,
 		.dir0 = 0x0, /* all output */
 		.dir1 = 0x0, /* all output */
-#ifdef MX66LM1G45		
-		.value0 = 0x1F,
-#else /* IS25LP512 */
-		.value0 = 0x07,
-#endif
-		.value1 = 0x0,
+		.value0 = PortA_Address21,
+		.value1 = PortB_Address21,
 	},
-
-};
-
-static struct switch_config switch_config_array_ethernet_disabled[NUM_SWITCH] = {
-	{
-/*
-	U6 Port A                      U6 Port B
-
-	7--------------- ADAU1979_EN   |  7--------------- GIGE_RESET
-	| 6------------- ADAU1962_EN   |  | 6------------- ETH1_RESET
-	| | 5----------- ADAU_RESET    |  | | 5----------- ETH1_EN
-	| | | 4---------               |  | | | 4--------- MLB_EN
-	| | | | 3-------               |  | | | | 3------- AUDIO_JACK_SEL
-	| | | | | 2----- MICROSD_SPI   |  | | | | | 2----- SPDIF_OPTICAL_EN
-	| | | | | | 1--- PB_EN         |  | | | | | | 1--- SPDIF_DIGITAL_EN
-	| | | | | | | 0- EEPROM_EN     |  | | | | | | | 0- OCTAL_SPI_CS_EN
-	| | | | | | | |                |  | | | | | | | |
-	O O O O O O O O                |  O O O O O O O O   (I/O direction)
-	0 0 0 0 0 0 0 0                |  0 0 0 0 0 0 0 1   (value being set)
-*/
-		.i2c_bus = 2,
-		.i2c_addr = 0x22,
-		.dir0 = 0x0, /* all output */
-		.dir1 = 0x0, /* all output */
-		.value0 = 0x0,
-#ifdef MX66LM1G45		
-		.value1 = 0x1,
-#else /* IS25LP512 */
-		.value1 = 0x0,
-#endif
-	},
-
-	{
-/*
-	U16 Port A                      U16 Port B
-
-	7--------------- OSPIFLASH_CS  |  7--------------- Unused
-	| 6------------- UART0_FLOW_EN |  | 6------------- Unused
-	| | 5----------- UART0_EN      |  | | 5----------- Unused
-	| | | 4--------- SPI2D2_D3_EN  |  | | | 4--------- Unused
-	| | | | 3------- SPI2FLASH_CS  |  | | | | 3------- Unused
-	| | | | | 2----- LED           |  | | | | | 2----- Unused
-	| | | | | | 1--- LED           |  | | | | | | 1--- Unused
-	| | | | | | | 0- LED           |  | | | | | | | 0- Unused
-	| | | | | | | |                |  | | | | | | | |
-	O O O O O O O O                |  O O O O O O O O   (I/O direction)
-	0 0 0 1 1 0 0 0                |  0 0 0 0 0 0 0 0   (value being set)
-*/
-		.i2c_bus = 2,
-		.i2c_addr = 0x21,
-		.dir0 = 0x0, /* all output */
-		.dir1 = 0x0, /* all output */
-#ifdef MX66LM1G45		
-		.value0 = 0x18,
-#else /* IS25LP512 */
-		.value0 = 0x00,
-#endif
-		.value1 = 0x0,
-	},
-
 };

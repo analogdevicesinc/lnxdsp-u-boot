@@ -44,12 +44,6 @@ int board_early_init_f(void)
 	adi_multiplex_ospi();
 #endif
 
-#ifdef CONFIG_SOFT_SWITCH
-	adi_setup_soft_switches();
-#else
-	return 0;
-#endif
-
 	return 0;
 }
 
@@ -107,11 +101,11 @@ int board_eth_init(struct bd_info *bis)
 		gpio_request(GPIO_PG12, "emac0_phy_pwdn");
 		gpio_direction_output(GPIO_PG12, 1);
 
-		setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
+		adi_enable_ethernet_softconfig();
 		mdelay(20);
-		setup_soft_switches(switch_config_array_ethernet_disabled, NUM_SWITCH);
+		adi_disable_ethernet_softconfig();
 		mdelay(90);
-		setup_soft_switches(switch_config_array_ethernet_enabled, NUM_SWITCH);
+		adi_enable_ethernet_softconfig();
 		mdelay(20);
 
 		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
@@ -168,6 +162,14 @@ int board_init(void)
 	gd->bd->bi_arch_number = MACH_TYPE_SC594_SOM_EZKIT;
 	/* boot param addr */
 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + (0x100);
+
+//#if ADI_HAVE_CARRIER == 1
+#ifdef CONFIG_SOFT_SWITCH
+	adi_initialize_soft_switches();
+#else
+	return 0;
+#endif
+//#endif
 
 	return 0;
 }
