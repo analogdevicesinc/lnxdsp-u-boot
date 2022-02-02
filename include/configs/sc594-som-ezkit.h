@@ -264,7 +264,7 @@
 	"qspiboot=run qspi_boot_sc594\0"
 
 #define ADI_BOOTARGS_QSPI \
-        "root=/dev/mtdblock4 " \
+        "root=/dev/mtdblock9 " \
         "rootfstype=jffs2 " \
         "clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
         ADI_BOOTARGS_VIDEO \
