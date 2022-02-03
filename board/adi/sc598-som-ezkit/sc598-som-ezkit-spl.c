@@ -77,6 +77,33 @@ void board_boot_order(u32 *spl_boot_list)
 
 	printf("ADI Boot Mode: %x (%s)\n", bmode, bmodeString);
 
+#ifdef CONFIG_ADI_FALCON
+	switch(bmode){
+		case 0:
+			printf("SPL execution has completed.  Please load U-Boot Proper via JTAG");
+			while(1);
+			break;
+		case 1:
+			adi_sf_default_bus = 2;
+			adi_sf_default_cs = 1;
+			spl_boot_list[0] = BOOT_DEVICE_SPI;
+			break;
+		case 5:
+			adi_sf_default_bus = 0;
+			adi_sf_default_cs = 0;
+			spl_boot_list[0] = BOOT_DEVICE_SPI;
+			break;
+#ifdef CONFIG_MMC_SDHCI_ADI
+		case 6:
+			adi_mmc_init();
+			spl_boot_list[0] = BOOT_DEVICE_MMC1;
+			break;
+#endif
+		default:
+			spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
+			break;
+	}
+#else
 	if (0 == bmode) {
 		printf("SPL execution has completed.  Please load U-Boot Proper via JTAG");
 		while(1)
@@ -86,6 +113,7 @@ void board_boot_order(u32 *spl_boot_list)
 	// Everything goes back to bootrom where we'll read table parameters and ask it
 	// to load something
 	spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
+#endif
 }
 
 int dram_init_banksize(void)
