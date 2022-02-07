@@ -109,7 +109,8 @@
 
 #ifdef CONFIG_SC59X_64
 # define ADI_EARLYPRINTK "earlycon=adi_uart,0x31003000 "
-# ifdef CONFIG_ADI_FALCON
+# define IMAGEFILE_RAM "Image"
+# if !CONFIG_IS_ENABLED(FIT)
 #  define IMAGEFILE "Image"
 # else
 #  define IMAGEFILE "fitImage"
@@ -117,6 +118,7 @@
 #else
 # define ADI_EARLYPRINTK "earlyprintk=serial,uart0,57600 "
 # define IMAGEFILE "zImage"
+# define IMAGEFILE_RAM "zImage"
 #endif
 
 #ifdef CONFIG_VIDEO
@@ -196,7 +198,8 @@
 		   "${hostname}:eth0:off" \
 		"\0" \
 	\
-	"ramfile=" IMAGEFILE "\0" \
+	"imagefile=" IMAGEFILE "\0" \
+	"ramfile=" IMAGEFILE_RAM "\0" \
 	"initramfile=ramdisk.cpio.xz.u-boot\0" \
 	"initramaddr=" INITRAMADDR "\0" \
 	"dtbfile=" CONFIG_DTBNAME "\0" \
