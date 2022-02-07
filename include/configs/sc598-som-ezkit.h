@@ -199,9 +199,6 @@
 #endif
 
 #define CONFIG_ENV_SPI_MAX_HZ	10000000
-#define CONFIG_SF_DEFAULT_SPEED	10000000
-
-#define CONFIG_SF_DEFAULT_MODE  SPI_MODE_3
 
 /*
  * Misc Settings
