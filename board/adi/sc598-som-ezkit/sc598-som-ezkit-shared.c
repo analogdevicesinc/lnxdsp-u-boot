@@ -28,10 +28,9 @@ struct switch_config switch_config_array_current_state[NUM_SWITCH];
 int adi_mmc_init()
 {
 	int ret = 0;
-
 	static const unsigned short pins[] = P_EMSI0;
-	if (!peripheral_request_list(pins, "emsi0")){
-		return -1;
+	if (peripheral_request_list(pins, "emsi0")){
+		printf("Error requesting P_EMSI0\r\n");
 	}
 
 	return ret;
@@ -45,7 +44,9 @@ int adi_initialize_soft_switches()
 			(char*)&switch_config_array[1], sizeof(struct switch_config));
 
 	static const unsigned short pins_i2c2[] = P_I2C2;
-	peripheral_request_list(pins_i2c2, "i2c2");
+	if (peripheral_request_list(pins_i2c2, "i2c2")){
+		printf("Error requesting P_I2C2\r\n");
+	}
 
 	setup_soft_switches(switch_config_array_current_state, NUM_SWITCH);
 }
