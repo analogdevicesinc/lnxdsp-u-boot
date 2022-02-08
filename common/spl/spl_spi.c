@@ -29,14 +29,21 @@ static int spi_load_image_os(struct spl_image_info *spl_image,
 {
 	int err;
 
+#if CONFIG_IS_ENABLED(LOAD_FIT_FULL) || CONFIG_IS_ENABLED(LOAD_FIT)
+	spi_flash_read(flash, CONFIG_SYS_SPI_KERNEL_OFFS, sizeof(struct fdt_header),
+		       (void *)header);
+
+	if (image_get_magic(header) == FDT_MAGIC)
+		spi_flash_read(flash, CONFIG_SYS_SPI_KERNEL_OFFS,
+		       roundup(fdt_totalsize(header), 4), CONFIG_SYS_LOAD_ADDR);
+
+	err = spl_parse_image_header(spl_image, CONFIG_SYS_LOAD_ADDR);
+	if (err)
+		return err;
+#else
 	/* Read for a header, parse or error out. */
 	spi_flash_read(flash, CONFIG_SYS_SPI_KERNEL_OFFS, sizeof(*header),
 		       (void *)header);
-
-#ifndef CONFIG_SYS_SPI_KERNEL_SKIP_HEADER
-	if (image_get_magic(header) != IH_MAGIC)
-		return -1;
-#endif
 
 	err = spl_parse_image_header(spl_image, header);
 	if (err)
@@ -49,6 +56,7 @@ static int spi_load_image_os(struct spl_image_info *spl_image,
 	spi_flash_read(flash, CONFIG_SYS_SPI_ARGS_OFFS,
 		       CONFIG_SYS_SPI_ARGS_SIZE,
 		       (void *)CONFIG_SYS_SPL_ARGS_ADDR);
+#endif
 
 	return 0;
 }
