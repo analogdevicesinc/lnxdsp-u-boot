@@ -74,13 +74,25 @@ int mmc_load_image_raw_sector(struct spl_image_info *spl_image,
 
 	/* read image header to find the image size & load address */
 	count = blk_dread(bd, sector, 1, header);
-	debug("hdr read sector %lx, count=%lu\n", sector, count);
+	debug( "hdr read sector %lx, count=%lu\n", sector, count);
 	if (count == 0) {
 		ret = -EIO;
 		goto end;
 	}
 
-	if (IS_ENABLED(CONFIG_SPL_LOAD_FIT) &&
+	if (IS_ENABLED(CONFIG_SPL_LOAD_FIT_FULL) &&
+	    image_get_magic(header) == FDT_MAGIC) {
+		u32 image_size_sectors;
+
+		debug("Found FIT\n");
+
+		image_size_sectors = (roundup(fdt_totalsize(header), 4) + mmc->read_bl_len - 1) /
+				     mmc->read_bl_len;
+		count = blk_dread(bd, sector, image_size_sectors, CONFIG_SYS_LOAD_ADDR);
+		debug("hdr read sector %lx, count=%lu\n", sector, count);
+
+		ret = spl_parse_image_header(spl_image, CONFIG_SYS_LOAD_ADDR);
+	} else if (IS_ENABLED(CONFIG_SPL_LOAD_FIT) &&
 	    image_get_magic(header) == FDT_MAGIC) {
 		struct spl_load_info load;
 
