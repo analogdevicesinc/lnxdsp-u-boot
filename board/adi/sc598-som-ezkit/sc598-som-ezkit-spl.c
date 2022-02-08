@@ -16,6 +16,7 @@
 #include <asm/arch/sc59x_64.h>
 #include <asm/arch-sc59x-64/dwmmc.h>
 #include <linux/delay.h>
+#include <linux/stringify.h>
 #include <watchdog.h>
 #include "soft_switch.h"
 #include <asm/armv8/mmu.h>
@@ -29,6 +30,8 @@ static int adi_sf_default_bus = 2;
 static int adi_sf_default_cs = 1;
 static int adi_sf_default_speed = CONFIG_SF_DEFAULT_SPEED;
 static bool adi_start_uboot_proper = 1;
+static char * adi_kernel_bootargs;
+static u32 bmode;
 
 struct adi_boot_args {
 	u32 addr;
@@ -49,7 +52,6 @@ void board_boot_order(u32 *spl_boot_list)
 	};
 
 	char * bmodeString = "unknown";
-	u32 bmode;
 
 	bmode = (readl(pRCU_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
 
@@ -99,16 +101,19 @@ void board_boot_order(u32 *spl_boot_list)
 		case 1:
 			adi_sf_default_bus = 2;
 			adi_sf_default_cs = 1;
+			adi_kernel_bootargs = ADI_BOOTARGS_SPI;
 			spl_boot_list[0] = BOOT_DEVICE_SPI;
 			break;
 		case 5:
 			adi_sf_default_bus = 0;
 			adi_sf_default_cs = 0;
+			adi_kernel_bootargs = ADI_BOOTARGS_SPI;
 			spl_boot_list[0] = BOOT_DEVICE_SPI;
 			break;
 #ifdef CONFIG_MMC_SDHCI_ADI
 		case 6:
 			adi_mmc_init();
+			adi_kernel_bootargs = ADI_BOOTARGS_EMMC;
 			spl_boot_list[0] = BOOT_DEVICE_MMC1;
 			break;
 #endif
@@ -163,9 +168,7 @@ int board_return_to_bootrom(struct spl_image_info *spl_image,
 		// reserved, also no boot
 		[7] = {0, 0, 0}
 	};
-	u32 bmode;
 
-	bmode = (readl(pRCU_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
 #if CONFIG_ADI_SPL_FORCE_BMODE != 0
 	// see above
 	if(bmode != 0 && bmode != 3)
@@ -320,7 +323,27 @@ void adi_fdt_fixup_mac_addr(void * fdt){
 
 }
 
+void adi_fdt_fixup_kernel_bootargs(void * fdt){
+	if(bmode == 5){ //OSPI
+		char temp_bootargs[2048];
+		memcpy(temp_bootargs, adi_kernel_bootargs, strlen(adi_kernel_bootargs)+1);
+		cadence_ospi_append_chipinfo(temp_bootargs);
+		do_fixup_by_path(fdt, "/chosen", "bootargs", temp_bootargs, strlen(temp_bootargs)+1, 0);
+	}else{
+		do_fixup_by_path(fdt, "/chosen", "bootargs", adi_kernel_bootargs, strlen(adi_kernel_bootargs)+1, 0);
+	}
+}
+
 int spl_board_fixup_fdt(void * fdt){
 	adi_fdt_fixup_mac_addr(fdt);
+	adi_fdt_fixup_kernel_bootargs(fdt);
 }
+
+#if defined(CONFIG_SPL_LOAD_FIT)
+int board_fit_config_name_match(const char *name)
+{
+	return 0;
+}
+#endif
+
 #endif

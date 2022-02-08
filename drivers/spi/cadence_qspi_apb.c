@@ -948,7 +948,28 @@ void cadence_qspi_apb_enter_xip(void *reg_base, char xip_dummy)
 
 #define ADI_OCTAL_USE_DMA
 
+#ifdef CONFIG_SPL_BUILD
+void cadence_ospi_append_chipinfo(char * bootcmd){
+	static char currentMode[32];
+	struct cadence_spi_platdata *plat;
+	char * bootargs;
 
+	plat = cadence_get_plat();
+
+	if(plat->cadenceMode == CADENCE_OSPI_MODE){
+		if(plat->use_dtr){
+			sprintf(currentMode, "dtr\0");
+		}else{
+			sprintf(currentMode, "str\0");
+		}
+	}else{
+		sprintf(currentMode, "spi\0");
+	}
+
+	sprintf(bootcmd+strlen(bootcmd), " cadence-quadspi.ospi_id=%d cadence-quadspi.ospi_mode=%s\0",
+										plat->id, currentMode);
+}
+#else
 void cadence_ospi_append_chipinfo(){
 	static char newArgs[2048];
 	static char currentMode[32];
@@ -975,6 +996,7 @@ void cadence_ospi_append_chipinfo(){
 		env_set("bootargs", newArgs);
 	}
 }
+#endif
 
 int cadence_qspi_setup_octal_read(struct cadence_spi_platdata *plat){
 	unsigned int curVal;
