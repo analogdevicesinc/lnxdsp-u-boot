@@ -325,7 +325,6 @@
 #define ADI_BOOTARGS_EMMC \
         "root=/dev/mmcblk0p1 " \
         "rootfstype=ext4 rootwait " \
-        "clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
         ADI_BOOTARGS_VIDEO \
         ADI_EARLYPRINTK \
         "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
@@ -335,7 +334,6 @@
 #define ADI_BOOTARGS_SPI \
         "root=/dev/mtdblock4 " \
         "rootfstype=jffs2 " \
-        "clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
         ADI_BOOTARGS_VIDEO \
         ADI_EARLYPRINTK \
         "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
