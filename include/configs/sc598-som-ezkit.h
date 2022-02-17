@@ -31,9 +31,9 @@
 # define CONFIG_LOADADDR	0x84000000
 # define CONFIG_RSA		/* RSA for FIT authen. */
 #else
-# define CONFIG_LOADADDR	0x88000000
+# define CONFIG_LOADADDR	0x96000000
 #endif
-#define CONFIG_DTBLOADADDR	"0x84000000"
+#define CONFIG_DTBLOADADDR	"0x99000000"
 #define CONFIG_MACH_TYPE	MACH_TYPE_SC594_SOM_EZKIT
 
 //L2 SRAM:
@@ -54,14 +54,13 @@
 #define CONFIG_SYS_SPI_ARGS_OFFS   0xE0000    // This is where the DTB should be stored
 #define CONFIG_SYS_SPI_ARGS_SIZE   0x10000    // Max size of the DTB
 #define CONFIG_SYS_SPI_KERNEL_OFFS 0x100000   // Where the kernel Image should be stored
-#define CONFIG_SYS_SPL_ARGS_ADDR   0x84000000 // Where to load the DTB into RAM
-#define CONFIG_SYS_LOAD_ADDR       0x90000000 // Where to load the Image into RAM
+#define CONFIG_SYS_SPL_ARGS_ADDR   0x99000000 // Where to load the DTB into RAM
 #define CONFIG_SYS_SPI_KERNEL_SKIP_HEADER
 #define CONFIG_SYS_MMCSD_RAW_MODE_KERNEL_SECTOR 4096 // Position of kernel Image in sectors
 #define CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTOR   2048 // Position of DTB in sectors
 #define CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTORS  256  // Size of DTB in sectors
 
-#define CONFIG_SYS_LOAD_ADDR 0x80000000 //Address used to load the FIT image into during Falcon+FIT
+#define CONFIG_SYS_LOAD_ADDR 0x96000000 //Address used to load the FIT image into during Falcon+FIT
 #endif
 
 /*
@@ -91,8 +90,8 @@
 #define MEM_DMC0
 
 #define	CONFIG_NR_DRAM_BANKS		1
-#define CONFIG_SYS_SDRAM_BASE	0x82000000
-#define CONFIG_SYS_SDRAM_SIZE	0x1E000000
+#define CONFIG_SYS_SDRAM_BASE	0x95400000
+#define CONFIG_SYS_SDRAM_SIZE	0xac00000
 #ifndef CONFIG_SPL_BUILD
 #define CONFIG_SYS_LOAD_ADDR	0x0
 #endif
@@ -208,7 +207,7 @@
 #define CONFIG_UART_CONSOLE	0
 #define CONFIG_BAUDRATE		57600
 //#define CONFIG_UART4_SERIAL
-#define CONFIG_LINUX_MEMSIZE	"496M"
+#define CONFIG_LINUX_MEMSIZE	"172M"
 #define CONFIG_CMD_BOOTZ
 
 #if ADI_USE_MACRONIX_OSPI
