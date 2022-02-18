@@ -122,11 +122,7 @@ void s_init(void)
 {
 }
 
-#ifdef CONFIG_DESIGNWARE_ETH
-int board_eth_init(struct bd_info *bis)
-{
-	int ret = 0;
-
+void adi_eth_init(void) {
 #if ADI_HAVE_CARRIER == 1
 	if (CONFIG_DW_PORTS >= 1) {
 		gpio_request(GPIO_PG12, "emac0_phy_pwdn");
@@ -145,19 +141,14 @@ int board_eth_init(struct bd_info *bis)
 		writel(readl(REG_PADS0_PCFG0) & ~(1 << 20), REG_PADS0_PCFG0);
 
 		static const unsigned short pins[] = P_RGMII0;
-		if (!peripheral_request_list(pins, "emac0"))
-			ret += dwmac4_initialize(REG_EMAC0_MACCFG,
-					PHY_INTERFACE_MODE_RGMII);
+		peripheral_request_list(pins, "emac0");
 	}
 
 	if (CONFIG_DW_PORTS >= 2) {
 		static const unsigned short pins[] = P_RMII1;
-		if (!peripheral_request_list(pins, "emac1"))
-			ret += dwmac4_initialize(REG_EMAC1_MACCFG, 0);
+		peripheral_request_list(pins, "emac1");
 	}
 #endif
-
-	return ret;
 }
 
 int board_phy_config(struct phy_device *phydev)
@@ -190,7 +181,6 @@ int board_phy_config(struct phy_device *phydev)
 
 	return 0;
 }
-#endif
 
 int board_init(void)
 {
@@ -211,6 +201,8 @@ int board_init(void)
 	return 0;
 #endif
 #endif
+
+	adi_eth_init();
 
 	return 0;
 }

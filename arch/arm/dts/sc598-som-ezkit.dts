@@ -85,6 +85,12 @@
 			};
 		};
 
+		eth0: eth@0x31040000 {
+			compatible = "snps,dwmac-5.20";
+			reg = <0x31040000 0x1000>;
+			phy-mode = "rgmii";
+		};
+
 		mmc0: mmc@310C7000 {
 			compatible = "designware,sdhci-5.1";
 			reg = <0x310C7000 0x1000>;

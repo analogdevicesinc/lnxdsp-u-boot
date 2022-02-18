@@ -1027,11 +1027,10 @@ const struct eth_ops designware_eth_ops = {
 
 static int designware_eth_ofdata_to_platdata(struct udevice *dev)
 {
-	struct dw_eth_pdata *dw_pdata = dev_get_platdata(dev);
 #if CONFIG_IS_ENABLED(DM_GPIO)
 	struct dwmac4_dev *priv = dev_get_priv(dev);
 #endif
-	struct eth_pdata *pdata = &dw_pdata->eth_pdata;
+	struct eth_pdata *pdata = dev_get_platdata(dev);
 	const char *phy_mode;
 #if CONFIG_IS_ENABLED(DM_GPIO)
 	int reset_flags = GPIOD_IS_OUT;
@@ -1082,7 +1081,7 @@ U_BOOT_DRIVER(eth_designware) = {
 	.remove	= designware_eth_remove,
 	.ops	= &designware_eth_ops,
 	.priv_auto_alloc_size = sizeof(struct dwmac4_dev),
-	.platdata_auto_alloc_size = sizeof(struct dw_eth_pdata),
+	.platdata_auto_alloc_size = sizeof(struct eth_pdata),
 	.flags = DM_FLAG_ALLOC_PRIV_DMA,
 };
 
