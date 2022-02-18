@@ -215,7 +215,7 @@
 #else
 #define CONFIG_BOOTCOMMAND	"run qspiboot"
 #endif
-#define INITRAMADDR "0x85000000"
+#define INITRAMADDR "0x9c000000"
 
 #define ADI_ENV_SETTINGS \
 	"fdt_high=0xFFFFFFFFFFFFFFFF\0" \
