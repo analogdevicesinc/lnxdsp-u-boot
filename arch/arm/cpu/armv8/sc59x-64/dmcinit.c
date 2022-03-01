@@ -71,9 +71,13 @@ __attribute__((always_inline)) static inline void adi_dmc_phy_calibration()
   uint32_t drv_pu , drv_pd, odt_pu, odt_pd;
   uint32_t ROdt, ClkDqsDrvImpedance;
 
- 
+  *pREG_DMC0_DDR_CA_CTL = 0x0ul;
+  *pREG_DMC0_DDR_ROOT_CTL = 0x0ul;
+  *pREG_DMC0_DDR_SCRATCH_3 = 0x0ul;
+  *pREG_DMC0_DDR_SCRATCH_2 = 0x0ul;
+  *pREG_DMC0_DDR_ROOT_CTL = 0x04010000ul;
   dmcdelay(2500u);
-
+  *pREG_DMC0_DDR_CA_CTL = 0x10000002ul;
   dmcdelay(2500u);
   *pREG_DMC0_DDR_CA_CTL = 0x0u;
   *pREG_DMC0_DDR_ROOT_CTL = 0x0u;
