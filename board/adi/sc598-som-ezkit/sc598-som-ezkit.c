@@ -188,8 +188,6 @@ int board_init(void)
 	/* boot param addr */
 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + (0x100);
 
-	adi_board_init_shared();
-
 #ifdef CONFIG_MMC_SDHCI_ADI
 	adi_mmc_init();
 #endif

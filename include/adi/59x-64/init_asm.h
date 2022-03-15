@@ -101,8 +101,8 @@
 .endm
 
 .macro sc598_setup
+#ifdef CONFIG_SPL_BUILD
 	sc598_ddr_fixups
-#ifndef CONFIG_SPL_BUILD
 	setup_spu0
 	setup_spu0_wp
 	setup_smpu
