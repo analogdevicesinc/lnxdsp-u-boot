@@ -49,19 +49,6 @@
 		bne setup_spu0_loop
 .endm
 
-.macro disable_mmu
-	# disable M bit to turn off MMU
-	mrs x11, SCTLR_EL1
-	bic x11, x11, #1
-	msr SCTLR_EL1, x11
-	mrs x11, SCTLR_EL2
-	bic x11, x11, #1
-	msr SCTLR_EL2, x11
-	mrs x11, SCTLR_EL3
-	bic x11, x11, #1
-	msr SCTLR_EL3, x11
-.endm
-
 .macro sc598_ddr_fixups
 	/* Alter outstanding transactions property of A55*/
 	ldr x11,=0x30643108  /* SCB6 A55 M0 Ib.fn Mod */
@@ -106,7 +93,6 @@
 	setup_spu0
 	setup_spu0_wp
 	setup_smpu
-	disable_mmu
 #endif
 .endm
 
