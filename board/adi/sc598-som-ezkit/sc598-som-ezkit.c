@@ -184,10 +184,6 @@ int board_phy_config(struct phy_device *phydev)
 
 int board_init(void)
 {
-	gd->bd->bi_arch_number = MACH_TYPE_SC594_SOM_EZKIT;
-	/* boot param addr */
-	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + (0x100);
-
 #ifdef CONFIG_MMC_SDHCI_ADI
 	adi_mmc_init();
 #endif
