@@ -259,14 +259,14 @@
 	#define ADI_UPDATE_SPI_UBOOT \
 		"update_spi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe ${sfdev}; sf write ${loadaddr} 0x0 ${filesize};\0"
 #else
-	#define UBOOT_SPL_FILE "u-boot-spl-" CONFIG_SYS_BOARD ".ldr"
-	#define UBOOT_PROPER_FILE "u-boot-proper-" CONFIG_SYS_BOARD ".ldr"
+	#define STAGE_1_FILE "stage1-boot.ldr"
+	#define STAGE_2_FILE "stage2-boot.ldr"
 	#define ADI_UPDATE_SPI_UBOOT \
-		"ubootsplfile=" UBOOT_SPL_FILE "\0" \
-		"ubootproperfile=" UBOOT_PROPER_FILE "\0" \
-		"update_spi_uboot_spl=tftp ${loadaddr} ${ubootsplfile}; sf probe ${sfdev}; sf write ${loadaddr} 0x0 ${filesize};\0" \
-		"update_spi_uboot_proper=tftp ${loadaddr} ${ubootproperfile}; sf probe ${sfdev}; sf write ${loadaddr} 0x20000 ${filesize};\0" \
-		"update_spi_uboot=run update_spi_uboot_spl; run update_spi_uboot_proper;\0"
+		"stage1file=" STAGE_1_FILE "\0" \
+		"stage2file=" STAGE_2_FILE "\0" \
+		"update_spi_uboot_stage1=tftp ${loadaddr} ${stage1file}; sf probe ${sfdev}; sf write ${loadaddr} 0x0 ${filesize};\0" \
+		"update_spi_uboot_stage2=tftp ${loadaddr} ${stage2file}; sf probe ${sfdev}; sf write ${loadaddr} 0x20000 ${filesize};\0" \
+		"update_spi_uboot=run update_spi_uboot_stage1; run update_spi_uboot_stage2;\0"
 #endif
 
 #if CONFIG_ADI_FALCON
