@@ -206,8 +206,8 @@
 #define CONFIG_UART_CONSOLE	0
 #define CONFIG_BAUDRATE		57600
 //#define CONFIG_UART4_SERIAL
-#define CONFIG_LINUX_MEMSIZE	"172M"
 #define CONFIG_CMD_BOOTZ
+#define ADI_SPI_FIT_OFFSET "0x160000"
 
 #if ADI_USE_MACRONIX_OSPI
 #define CONFIG_BOOTCOMMAND	"run ospiboot"
@@ -243,7 +243,7 @@
 	#define ADI_UPDATE_SPI_DTB_CMD ""
 	#define ADI_UPDATE_SPI_IMAGE_CMD ""
 	#define ADI_UPDATE_SPI_FIT_CMD " run update_spi_fit;"
-	#define ADI_SPI_BOOTCMD "sf read ${loadaddr} 0x100000 ${imagesize}; bootm ${loadaddr};"
+	#define ADI_SPI_BOOTCMD "sf read ${loadaddr} " ADI_SPI_FIT_OFFSET " ${imagesize}; bootm ${loadaddr};"
 	#define ADI_EMMC_LOAD "ext4load mmc 0:1 ${loadaddr} /boot/fitImage;"
 	#define ADI_EMMC_BOOTCMD "run emmcargs; bootm;"
 #else
@@ -296,7 +296,7 @@
 	ADI_UPDATE_SPI_UBOOT \
 	ADI_UPDATE_SPI_DTB \
 	"update_spi_image=tftp ${loadaddr} ${imagefile}; sf probe ${sfdev}; sf write ${loadaddr} 0x100000 ${filesize}; setenv imagesize ${filesize};\0" \
-	"update_spi_fit=tftp ${loadaddr} ${imagefile}; sf probe ${sfdev}; sf write ${loadaddr} 0x100000 ${filesize}; setenv imagesize ${filesize};\0" \
+	"update_spi_fit=tftp ${loadaddr} ${imagefile}; sf probe ${sfdev}; sf write ${loadaddr} " ADI_SPI_FIT_OFFSET " ${filesize}; setenv imagesize ${filesize};\0" \
 	"update_spi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe ${sfdev}; sf write ${loadaddr} 0x1000000 ${filesize};\0"
 
 #define ADI_OSPI_BOOT \
@@ -326,8 +326,7 @@
         ADI_BOOTARGS_VIDEO \
         ADI_EARLYPRINTK \
         "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
-                        __stringify(CONFIG_BAUDRATE) " "\
-        "mem=" CONFIG_LINUX_MEMSIZE
+                        __stringify(CONFIG_BAUDRATE) " "
 
 #define ADI_BOOTARGS_SPI \
         "root=/dev/mtdblock4 " \
@@ -335,8 +334,7 @@
         ADI_BOOTARGS_VIDEO \
         ADI_EARLYPRINTK \
         "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
-                        __stringify(CONFIG_BAUDRATE) " "\
-        "mem=" CONFIG_LINUX_MEMSIZE
+                        __stringify(CONFIG_BAUDRATE) " "
 
 #include <configs/sc_adi_common.h>
 

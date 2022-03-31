@@ -137,8 +137,7 @@
 	ADI_BOOTARGS_VIDEO \
 	ADI_EARLYPRINTK \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
-			__stringify(CONFIG_BAUDRATE) " "\
-	"mem=" CONFIG_LINUX_MEMSIZE
+			__stringify(CONFIG_BAUDRATE) " "
 
 #define ADI_BOOTARGS_NFS	\
 	"root=/dev/nfs rw " \
@@ -147,8 +146,7 @@
 	ADI_BOOTARGS_VIDEO \
 	ADI_EARLYPRINTK \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
-			__stringify(CONFIG_BAUDRATE) " "\
-	"mem=" CONFIG_LINUX_MEMSIZE
+			__stringify(CONFIG_BAUDRATE) " "
 
 #define CONFIG_BOOTARGS	\
 	"root=" ADI_BOOTARGS_ROOT_NAND " " \
@@ -157,8 +155,7 @@
 	ADI_BOOTARGS_VIDEO \
 	ADI_EARLYPRINTK \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
-			__stringify(CONFIG_BAUDRATE) " "\
-		"mem=" CONFIG_LINUX_MEMSIZE
+			__stringify(CONFIG_BAUDRATE) " "
 
 #if defined(CONFIG_CMD_NET)
 # define UBOOT_ENV_FILE "u-boot-" CONFIG_SYS_BOARD ".ldr"
