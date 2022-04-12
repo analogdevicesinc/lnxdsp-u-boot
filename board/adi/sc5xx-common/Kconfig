@@ -116,6 +116,7 @@ config UART_CONSOLE
 
 config UART4_SERIAL
 	bool
+	depends on DM_SERIAL
 	default y
 
 config ADI_WATCHDOG

@@ -81,10 +81,6 @@ config CGU1_DIV_S1SELEX
 	int
 	default 90
 
-config DEBUG_EARLY_SERIAL
-	bool
-	default y
-
 config SC59X_SPI
 	bool
 	default y

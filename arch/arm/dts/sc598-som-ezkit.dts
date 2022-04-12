@@ -13,9 +13,14 @@
 		u-boot,spl-mmc-sector-offset = <0x200>;  /* MMC sector offset -- 256KB */
 	};
 
+	chosen {
+		stdout-path = "serial0:57600";
+	};
+
  	aliases {
 		spi0 = "/spi@31027000";
 		spi2 = "/spi@31030000";
+		serial0 = &uart0;
  	};
 
 	soc {
@@ -26,6 +31,15 @@
 		/*interrupt-parent = <&intc>;*/
 		ranges;
 		u-boot,dm-pre-reloc;
+
+		uart0: serial@0x31003000 {
+			compatible = "adi,uart4";
+			reg = <0x31003000 0x1000>;
+			adi,uart-port = <0>;
+			adi,enable-edbo;
+			u-boot,dm-pre-reloc;
+			status = "okay";
+		};
 
 		ospi: spi@31027000 {
 			compatible = "cdns,qspi-nor";
