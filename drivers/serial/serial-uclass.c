@@ -337,6 +337,30 @@ int serial_getinfo(struct udevice *dev, struct serial_device_info *info)
 	return -EINVAL;
 }
 
+void serial_suspend(void)
+{
+	struct dm_serial_ops *ops;
+
+	if (!gd->cur_serial_dev)
+		return;
+
+	ops = serial_get_ops(gd->cur_serial_dev);
+	if (ops->suspend)
+		ops->suspend(gd->cur_serial_dev);
+}
+
+void serial_resume(void)
+{
+	struct dm_serial_ops *ops;
+
+	if (!gd->cur_serial_dev)
+		return;
+
+	ops = serial_get_ops(gd->cur_serial_dev);
+	if (ops->resume)
+		ops->resume(gd->cur_serial_dev);
+}
+
 void serial_stdio_init(void)
 {
 }
@@ -458,6 +482,10 @@ static int serial_post_probe(struct udevice *dev)
 #endif
 	if (ops->getinfo)
 		ops->getinfo += gd->reloc_off;
+	if (ops->suspend)
+		ops->suspend += gd->reloc_off;
+	if (ops->resume)
+		ops->resume += gd->reloc_off;
 #endif
 	/* Set the baud rate */
 	if (ops->setbrg) {
