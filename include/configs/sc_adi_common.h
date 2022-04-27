@@ -1,5 +1,7 @@
+/* SPDX-License-Identifier: GPL-2.0+ */
 /*
  * U-boot - Common configuration file for ADI SC serial board
+ * Copyright 2022 Analog Devices Inc.
  */
 
 #ifndef __CONFIG_SC_ADI_COMMON_H
@@ -114,13 +116,13 @@
 #endif
 
 #define ADI_BOOTARGS_ROOT_NAND "/dev/mtdblock2 rw"
-#define ADI_BOOTARGS_ROOT_SDCARD    "/dev/mmcblk0p1 rw"
+#define ADI_BOOTARGS_ROOT_SDCARD    "/dev/mmcblk0p1 rw rootwait"
 
 #define ADI_BOOTARGS_SDCARD	\
 	"root=" ADI_BOOTARGS_ROOT_SDCARD " " \
 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
 	ADI_BOOTARGS_VIDEO \
-	"earlyprintk=serial,uart0,57600 " \
+	"earlyprintk=serial,uart0,115200 " \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "\
 	"mem=" CONFIG_LINUX_MEMSIZE
@@ -130,7 +132,7 @@
 	"nfsroot=${serverip}:${rootpath},tcp,nfsvers=3 " \
 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
 	ADI_BOOTARGS_VIDEO \
-	"earlyprintk=serial,uart0,57600 " \
+	"earlyprintk=serial,uart0,115200 " \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "\
 	"mem=" CONFIG_LINUX_MEMSIZE
@@ -140,7 +142,7 @@
 	"rootfstype=jffs2 " \
 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
 	ADI_BOOTARGS_VIDEO \
-	"earlyprintk=serial,uart0,57600 " \
+	"earlyprintk=serial,uart0,115200 " \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "\
 		"mem=" CONFIG_LINUX_MEMSIZE
@@ -225,6 +227,7 @@
 		"ext2load mmc 0:1 ${loadaddr} /boot/${ramfile};" \
 		"ext2load mmc 0:1 ${dtbaddr} /boot/${dtbfile};" \
 		"run sdcardargs;" \
+		"run addip;" \
 		"bootz ${loadaddr} - ${dtbaddr}" \
 		"\0" \
 	\

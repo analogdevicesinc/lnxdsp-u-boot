@@ -1,5 +1,7 @@
+/* SPDX-License-Identifier: GPL-2.0+ */
 /*
  * U-boot - Configuration file for sc589 EZ-Kit board
+ * Copyright 2022 Analog Devices Inc.
  */
 
 #ifndef __CONFIG_SC589_EZKIT_H
