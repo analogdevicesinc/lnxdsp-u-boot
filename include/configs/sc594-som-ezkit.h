@@ -178,7 +178,6 @@
 //#define CONFIG_DEBUG_EARLY_SERIAL
 //#define CONFIG_SYS_NO_FLASH
 #define CONFIG_UART_CONSOLE	0
-#define CONFIG_BAUDRATE		57600
 //#define CONFIG_UART4_SERIAL
 #define CONFIG_LINUX_MEMSIZE	"992M"
 #define CONFIG_CMD_BOOTZ
@@ -278,9 +277,10 @@
         "rootfstype=jffs2 " \
         "clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
         ADI_BOOTARGS_VIDEO \
-        "earlyprintk=serial,uart0,57600 " \
+        "earlyprintk=serial,uart" __stringify(CONFIG_UART_CONSOLE) "," \
+                        __stringify(CONFIG_BAUDRATE) " " \
         "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
-                        __stringify(CONFIG_BAUDRATE) " "\
+                         __stringify(CONFIG_BAUDRATE) " "\
         "mem=" CONFIG_LINUX_MEMSIZE
 
 #include <configs/sc_adi_common.h>
