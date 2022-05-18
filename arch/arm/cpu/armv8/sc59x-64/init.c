@@ -319,6 +319,14 @@ void initcode_shared(void)
 
 	ddr_init();
 
+	// Enable coresight timer
+	writel(1, REG_TSGENWR0_CNTCR);
+
+	// Enable non-secure access to SHARC to support remoteproc in Linux
+	writel(0, REG_SPU0_SECUREC0);
+	writel(0, REG_SPU0_SECUREC1);
+	writel(0, REG_SPU0_SECUREC2);
+
     //Enable board LEDs 7, 9, and 10 (Real Board)
 	// - PORTC_01, PORTC_02, PORTC_03
     *(uint32_t*)(0x3100411C) = 0xE;
