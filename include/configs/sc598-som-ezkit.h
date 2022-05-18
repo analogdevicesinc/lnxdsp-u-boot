@@ -231,7 +231,7 @@
 	"init_ethernet=mii info; dhcp; setenv serverip ${tftpserverip};\0"
 
 #define ADI_RAM_BOOT \
-	"ramboot=run init_ethernet; tftp ${dtbaddr} ${dtbfile}; tftp ${loadaddr} ${ramfile}; tftp ${initramaddr} ${initramfile}; run ramargs; booti ${loadaddr} ${initramaddr} ${dtbaddr}\0"
+	"ramboot=run init_ethernet; tftp ${loadaddr} ${ramfile}; tftp ${initramaddr} ${initramfile}; run ramargs; bootm ${loadaddr} ${initramaddr}\0"
 
 #define ADI_UPDATE_SPI_UBOOT_CMD " run update_spi_uboot;"
 #define ADI_UPDATE_SPI_RFS_CMD " run update_spi_rfs;"

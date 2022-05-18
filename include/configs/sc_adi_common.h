@@ -109,11 +109,12 @@
 
 #ifdef CONFIG_SC59X_64
 # define ADI_EARLYPRINTK "earlycon=adi_uart,0x31003000 "
-# define IMAGEFILE_RAM "Image"
 # if !CONFIG_IS_ENABLED(FIT)
 #  define IMAGEFILE "Image"
+#  define IMAGEFILE_RAM "Image"
 # else
 #  define IMAGEFILE "fitImage"
+#  define IMAGEFILE_RAM "fitImage"
 # endif
 #else
 # define ADI_EARLYPRINTK "earlyprintk=serial,uart0,57600 "
@@ -217,11 +218,10 @@
 	\
 	"ramboot=" \
 		"tftp ${loadaddr} ${ramfile};" \
-		"tftp ${dtbaddr} ${dtbfile};" \
 		"tftp ${initramaddr} ${initramfile};" \
 		"run ramargs;" \
 		"run addip;" \
-		"bootz ${loadaddr} ${initramaddr} ${dtbaddr}" \
+		"bootm ${loadaddr} ${initramaddr}" \
 		"\0" \
 	\
 	"norboot=" \
@@ -244,10 +244,9 @@
 	"nfsfile=" IMAGEFILE "\0" \
 	"nfsboot=" \
 		"tftp ${loadaddr} ${nfsfile};" \
-		"tftp ${dtbaddr} ${dtbfile};" \
 		"run nfsargs;" \
 		"run addip;" \
-		"bootz ${loadaddr} - ${dtbaddr}" \
+		"bootm ${loadaddr}" \
 		"\0"
 #else
 # define NETWORK_ENV_SETTINGS
