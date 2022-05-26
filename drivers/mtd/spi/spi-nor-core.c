@@ -31,6 +31,8 @@
 #include <spi-mem.h>
 #include <spi.h>
 
+#include <watchdog.h>
+
 #include "sf_internal.h"
 
 /* Define max times to check status register before we give up. */
@@ -369,6 +371,10 @@ static ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
 		op.dummy.nbytes *= 2;
 
 	while (remaining) {
+		#if defined(CONFIG_HW_WATCHDOG)
+			WATCHDOG_RESET();
+		#endif
+
 		op.data.nbytes = remaining < UINT_MAX ? remaining : UINT_MAX;
 
 		if (CONFIG_IS_ENABLED(SPI_DIRMAP) && nor->dirmap.rdesc) {
@@ -918,6 +924,10 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
 
 	spi_nor_setup_op(nor, &op, nor->write_proto);
 
+	#if defined(CONFIG_HW_WATCHDOG)
+		WATCHDOG_RESET();
+	#endif
+
 	if (nor->erase)
 		return nor->erase(nor, addr);
 
@@ -1394,6 +1404,10 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
 		loff_t addr = from;
 		size_t read_len = len;
 
+		#if defined(CONFIG_HW_WATCHDOG)
+			WATCHDOG_RESET();
+		#endif
+
 #ifdef CONFIG_SPI_FLASH_BAR
 		u32 remain_len;
 
@@ -1723,6 +1737,10 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
 		ssize_t written;
 		loff_t addr = to + i;
 		schedule();
+
+		#if defined(CONFIG_HW_WATCHDOG)
+			WATCHDOG_RESET();
+		#endif
 
 		/*
 		 * If page_size is a power of two, the offset can be quickly
