@@ -56,35 +56,11 @@
 	str w12,[x11]
 	isb
 
-/* Do not modify prefetch behaviors -- This appears to be introducing rare memory bit flips
-
-	# configure DDR prefetch behavior, per ADI
+	/* configure DDR prefetch behavior, per ADI */
 	set_register 0x31076000 0x1
+	/* configure smart mode, per ADI */
+	set_register 0x31076004 0x1307
 	isb
-
-	# disable prefetching associated with L1, L2, and L3 caches
-	mrs x11, S3_0_c15_c1_4
-	# L3WSCTL, disable streaming
-	orr x11, x11, #(1 << 30)
-	orr x11, x11, #(1 << 29)
-	# L2WSCTL, disable streaming
-	orr x11, x11, #(1 << 28)
-	orr x11, x11, #(1 << 27)
-	# L1WSCTL, disable streaming
-	orr x11, x11, #(1 << 26)
-	orr x11, x11, #(1 << 25)
-	# L1PCTL, disable prefetch
-	bic x11, x11, #(1 << 15)
-	bic x11, x11, #(1 << 14)
-	bic x11, x11, #(1 << 13)
-	# L3PCTL, disable prefetch
-	orr x11, x11, #(1 << 12)
-	bic x11, x11, #(1 << 11)
-	bic x11, x11, #(1 << 10)
-	msr S3_0_c15_c1_4, x11
-
-*/
-
 .endm
 
 .macro sc598_setup
