@@ -383,7 +383,9 @@
 #endif
 
 #ifdef CONFIG_ADI_WATCHDOG
+#ifndef CONFIG_SPL_BUILD
 # define CONFIG_HW_WATCHDOG
+#endif
 #endif
 
 #define CONFIG_RSA
