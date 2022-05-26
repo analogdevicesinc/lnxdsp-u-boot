@@ -61,10 +61,6 @@ int board_early_init_f(void)
 {
 	bss_clear();
 
-//#ifdef CONFIG_HW_WATCHDOG
-//	hw_watchdog_init();
-//#endif
-
 #ifdef CONFIG_USB_DWC2
 	static const unsigned short pins_usbc0[] = P_USBC0;
 	if (peripheral_request_list(pins_usbc0, "usbc0")){
