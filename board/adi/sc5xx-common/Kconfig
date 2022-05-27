@@ -125,4 +125,4 @@ config ADI_WATCHDOG
 
 config WATCHDOG_TIMEOUT_MSECS
 	int
-	default 10000
+	default 30000

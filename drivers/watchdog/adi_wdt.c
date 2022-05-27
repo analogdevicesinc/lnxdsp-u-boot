@@ -60,7 +60,7 @@ void hw_watchdog_init(void)
 
 	/* enable watchdog0 */
 	writel(WDDIS, WDOG_CTL);
-	writel(CONFIG_WATCHDOG_TIMEOUT_MSECS / 1000 * get_sclk(), WDOG_CNT);
+	writel(CONFIG_WATCHDOG_TIMEOUT_MSECS / 1000 * get_sclk0(), WDOG_CNT);
 	hw_watchdog_reset();
 	writel(WDEN, WDOG_CTL);
 }
