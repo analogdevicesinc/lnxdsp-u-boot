@@ -327,6 +327,11 @@ void initcode_shared(void)
 	writel(0, REG_SPU0_SECUREC1);
 	writel(0, REG_SPU0_SECUREC2);
 
+	//Do not rerun preboot routine --
+	// Without this, hardware resets triggered by RCU0_CTL:SYSRST
+	// lead to a deadlock somewhere in the boot ROM
+	writel(0x200, REG_RCU0_BCODE);
+
     //Enable board LEDs 7, 9, and 10 (Real Board)
 	// - PORTC_01, PORTC_02, PORTC_03
     *(uint32_t*)(0x3100411C) = 0xE;
