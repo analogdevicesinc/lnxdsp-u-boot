@@ -194,6 +194,11 @@ static inline void cdu_init(void)
 #endif
 }
 
+
+#define REG_SPU0_SECUREC0		0x3108C980
+#define REG_SPU0_SECUREC1		0x3108C984
+#define REG_SPU0_SECUREC2		0x3108C988
+
 __attribute__((always_inline)) static inline void
 ddr_init(void)
 {
@@ -215,4 +220,9 @@ void initcode(void)
 # endif
 
 	ddr_init();
+
+	// Enable non-secure access to SHARC to support remoteproc in Linux
+	writel(0, REG_SPU0_SECUREC0);
+	writel(0, REG_SPU0_SECUREC1);
+	writel(0, REG_SPU0_SECUREC2);
 }

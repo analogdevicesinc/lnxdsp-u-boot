@@ -270,6 +270,10 @@ ddr_init(void)
 
 //static volatile int i = 0;
 
+#define REG_SPU0_SECUREC0              0x3108B980
+#define REG_SPU0_SECUREC1              0x3108B984
+#define REG_SPU0_SECUREC2              0x3108B988
+
 void initcode_shared(void)
 {
 # ifdef MEM_DDR3
@@ -284,6 +288,11 @@ void initcode_shared(void)
 # endif
 
 	ddr_init();
+
+	// Enable non-secure access to SHARC to support remoteproc in Linux
+	writel(0, REG_SPU0_SECUREC0);
+	writel(0, REG_SPU0_SECUREC1);
+	writel(0, REG_SPU0_SECUREC2);
 
         //Disable board LEDs 7, 9, and 10
 //      *(uint32_t*)(0x31004114) = 0xE;
