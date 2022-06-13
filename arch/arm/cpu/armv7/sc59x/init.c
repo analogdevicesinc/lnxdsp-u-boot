@@ -273,9 +273,13 @@ ddr_init(void)
 #define REG_SPU0_SECUREC0              0x3108B980
 #define REG_SPU0_SECUREC1              0x3108B984
 #define REG_SPU0_SECUREC2              0x3108B988
+#define REG_SPU0_SECUREP_START         0x3108BA00
+#define REG_SPU0_SECUREP_END           0x3108BD24
 
 void initcode_shared(void)
 {
+	u32 i;
+
 # ifdef MEM_DDR3
 	adi_dmc_lane_reset(true);
 # endif
@@ -293,6 +297,10 @@ void initcode_shared(void)
 	writel(0, REG_SPU0_SECUREC0);
 	writel(0, REG_SPU0_SECUREC1);
 	writel(0, REG_SPU0_SECUREC2);
+
+	for(i = REG_SPU0_SECUREP_START; i <= REG_SPU0_SECUREP_END; i+=4){
+		writel(0, i);
+	}
 
         //Disable board LEDs 7, 9, and 10
 //      *(uint32_t*)(0x31004114) = 0xE;
