@@ -207,8 +207,20 @@ void adi_fdt_fixup_mac_addr(void * fdt){
 
 }
 
+void adi_fdt_fixup_kernel_bootargs(void * fdt){
+	if(bmode == 5){ //OSPI
+		char temp_bootargs[2048];
+		memcpy(temp_bootargs, adi_kernel_bootargs, strlen(adi_kernel_bootargs)+1);
+		cadence_ospi_append_chipinfo(temp_bootargs);
+		do_fixup_by_path(fdt, "/chosen", "bootargs", temp_bootargs, strlen(temp_bootargs)+1, 0);
+	}else{
+		do_fixup_by_path(fdt, "/chosen", "bootargs", adi_kernel_bootargs, strlen(adi_kernel_bootargs)+1, 0);
+	}
+}
+
 int spl_board_fixup_fdt(void * fdt){
 	adi_fdt_fixup_mac_addr(fdt);
+	adi_fdt_fixup_kernel_bootargs(fdt);
 	return 0;
 }
 #endif
