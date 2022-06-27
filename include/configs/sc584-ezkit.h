@@ -127,9 +127,9 @@
  * Env Storage Settings
  */
 #define CONFIG_ENV_IS_IN_SPI_FLASH
-#define CONFIG_ENV_OFFSET       0x10000
+#define CONFIG_ENV_OFFSET       0x78000
 #define CONFIG_ENV_SIZE         0x2000
-#define CONFIG_ENV_SECT_SIZE    0x10000
+#define CONFIG_ENV_SECT_SIZE    0x2000
 //#define CONFIG_ENV_IS_EMBEDDED_IN_LDR
 #define CONFIG_ENV_SPI_BUS 2
 #define CONFIG_ENV_SPI_CS 1
