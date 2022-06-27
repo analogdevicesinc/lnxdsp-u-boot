@@ -60,7 +60,7 @@ config SC5XX_DWMMC
 
 config ENV_IS_EMBEDDED_IN_LDR
 	bool
-	default y
+	default n
 
 config LINUX_MEMSIZE
 	string
