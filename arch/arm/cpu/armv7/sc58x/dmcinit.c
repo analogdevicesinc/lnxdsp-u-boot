@@ -7,6 +7,8 @@ static struct dmc_param DMC_Param_List;
 void DMC_PHY_Init(struct dmc_param DMC_Param_List)
 {
 	int i;
+	uint32_t temp;
+
 	if (DMC_Param_List.dmc_no == 0) {
 		/* 1. Set DDR mode to DDR3/DDR2/LPDDR in DMCx_PHY_CTL4 register */
 		if (DMC_Param_List.ddr_mode == DDR3_MODE)
@@ -18,7 +20,8 @@ void DMC_PHY_Init(struct dmc_param DMC_Param_List)
 
 	   /* 2. Make sure that the bits 6, 7, 25, and 27 of the DMC_PHY_
 		* CTL3 register are set */
-		writel(0xA00000C0, REG_DMC0_PHY_CTL3);
+		writel(0x0A0000C0, REG_DMC0_PHY_CTL3);
+
 	   /* 3. For DDR2/DDR3 mode, make sure that the bits 0, 1, 2, 3 of
 		* the DMC_PHY_CTL0 register and the bits 26, 27, 28, 29, 30, 31
 		* of the DMC_PHY_CTL2 are set. */
@@ -27,6 +30,8 @@ void DMC_PHY_Init(struct dmc_param DMC_Param_List)
 			writel(0XFC000000, REG_DMC0_PHY_CTL2);
 			writel(0x0000000f, REG_DMC0_PHY_CTL0);
 		}
+
+		writel(0x00000000, REG_DMC0_PHY_CTL1);
 
 		/* 4. For DDR3 mode, set bit 1 and configure bits [5:2] of the
 		 * DMC_CPHY_CTL register with WL=CWL+AL in DCLK cycles. */
@@ -37,19 +42,17 @@ void DMC_PHY_Init(struct dmc_param DMC_Param_List)
 			/* Bypass processor ODT */
 			writel(0x80000, REG_DMC0_PHY_CTL1);
 		} else {
-			/*Configure ODT and drive impedance values in the
+			/* Make sure that the bits RTTCALEN, PDCALEN, PUCALEN of register*/
+			temp = BITM_DMC_CAL_PADCTL0_RTTCALEN | BITM_DMC_CAL_PADCTL0_PDCALEN | BITM_DMC_CAL_PADCTL0_PUCALEN;
+			writel(temp, REG_DMC0_CAL_PADCTL0);
+			/* Configure ODT and drive impedance values in the
 			 * DMCx_CAL_PADCTL2 register */
 			writel(DMC_Param_List.padctl2_value, REG_DMC0_CAL_PADCTL2);
-			/* Make sure that the bits RTTCALEN, PDCALEN, PUCALEN of register
-			 * DMCx_CAL_PADCTL0 are set (they are set at reset) and start
-			 * calibration */
-			writel(BITM_DMC_CAL_PADCTL0_RTTCALEN |
-			       BITM_DMC_CAL_PADCTL0_PDCALEN |
-			       BITM_DMC_CAL_PADCTL0_PUCALEN |
-			       BITM_DMC_CAL_PADCTL0_CALSTRT, REG_DMC0_CAL_PADCTL0);
-				/* Wait for PAD calibration to complete - 300 DCLK cycle.
-				 * Worst case: CCLK=450 MHz, DCLK=125 MHz
-				 */
+			/* start calibration */
+			temp |= BITM_DMC_CAL_PADCTL0_CALSTRT;
+			writel(temp, REG_DMC0_CAL_PADCTL0);
+			/* Wait for PAD calibration to complete - 300 DCLK cycle.
+			 * Worst case: CCLK=450 MHz, DCLK=125 MHz */
 			for (i = 0; i < 300 * DMC_Param_List.cclk_dclk_ratio; i++);
 		}
 	}
@@ -199,7 +202,11 @@ void DMC_Config(void)
 #ifdef MEM_DMC0
 	/* Initialize the DMC parameters list */
 	DMC_Param_List.dmc_no = 0;
+#ifdef CONFIG_TARGET_SC584_EZKIT
+	DMC_Param_List.ddr_mode = DDR2_MODE;
+#else
 	DMC_Param_List.ddr_mode = DDR3_MODE;
+#endif
 	DMC_Param_List.phy_init_required = true;
 	DMC_Param_List.cclk_dclk_ratio = 1;
 	DMC_Param_List.anomaly_20000037_applicable = true;

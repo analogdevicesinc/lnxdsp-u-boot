@@ -10,7 +10,7 @@
 /*
  * Processor Settings
  */
-#define CONFIG_CPU		"ADSP-SC584-0.1"
+#define CONFIG_ADI_CPU		"ADSP-SC584-0.1"
 #ifdef CONFIG_SC58X_CHAIN_BOOT
 # define CONFIG_LOADADDR	0x8b000000
 # define CONFIG_RSA
@@ -34,32 +34,18 @@
 /*                                                1 = CLKIN / 2		*/
 #define CONFIG_CLKIN_HALF		(0)
 
-#define CGU_ISSUE
-/* VCO_MULT controls the MSEL (multiplier) bits in PLL_CTL		*/
-/* Values can range from 0-127 (where 0 means 128)			*/
-#define CONFIG_VCO_MULT			(18)
+#define CONFIG_VCO_MULT			 (18)
+#define CONFIG_CCLK_DIV			 (1)
+#define CONFIG_SCLK_DIV			 (2)
+#define CONFIG_SCLK0_DIV		 (2)
+#define CONFIG_SCLK1_DIV		 (2)
+#define CONFIG_DCLK_DIV			 (2)
+#define CONFIG_OCLK_DIV			 (3)
 
-/* CCLK_DIV controls the core clock divider				*/
-/* Values can range from 0-31 (where 0 means 32)			*/
-#define CONFIG_CCLK_DIV			(1)
-/* SCLK_DIV controls the system clock divider				*/
-/* Values can range from 0-31 (where 0 means 32)			*/
-#define CONFIG_SCLK_DIV			(2)
-/* Values can range from 0-7 (where 0 means 8)				*/
-#define CONFIG_SCLK0_DIV		(2)
-#define CONFIG_SCLK1_DIV		(2)
-/* DCLK_DIV controls the DDR clock divider				*/
-/* Values can range from 0-31 (where 0 means 32)			*/
-#define CONFIG_DCLK_DIV			(2)
-/* OCLK_DIV controls the output clock divider				*/
-/* Values can range from 0-127 (where 0 means 128)			*/
-#define CONFIG_OCLK_DIV			(3)
+#define ADI_VCO_HZ  (CONFIG_CLKIN_HZ * CONFIG_VCO_MULT)
+#define ADI_CCLK_HZ (ADI_VCO_HZ / CONFIG_CCLK_DIV)
+#define ADI_SCLK_HZ (ADI_VCO_HZ / CONFIG_SCLK_DIV)
 
-//#define ADI_VCO_HZ (CONFIG_CLKIN_HZ * CONFIG_VCO_MULT)
-//#define ADI_CCLK_HZ (ADI_VCO_HZ / CONFIG_CCLK_DIV)
-//#define ADI_SCLK_HZ (ADI_VCO_HZ / CONFIG_SCLK_DIV)
-
-//#define CONFIG_SYS_TIMERGROUP	TIMER_GROUP
 #define CONFIG_SYS_TIMERBASE	TIMER0_CONFIG
 
 /*
@@ -144,7 +130,7 @@
 #define CONFIG_ENV_OFFSET       0x10000
 #define CONFIG_ENV_SIZE         0x2000
 #define CONFIG_ENV_SECT_SIZE    0x10000
-#define CONFIG_ENV_IS_EMBEDDED_IN_LDR
+//#define CONFIG_ENV_IS_EMBEDDED_IN_LDR
 #define CONFIG_ENV_SPI_BUS 2
 #define CONFIG_ENV_SPI_CS 1
 

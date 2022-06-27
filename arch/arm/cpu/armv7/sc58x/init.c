@@ -27,6 +27,10 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings)
 					(~BITM_CGU_DIV_LOCK);
 	uint32_t cgu_offset = 0x1000 * uiCguNo;
 
+	//Put PLL in to Bypass Mode
+	writel(BITM_CGU_PLLCTL_PLLEN | BITM_CGU_PLLCTL_PLLBPST, CGU0_PLLCTL + cgu_offset);
+	while(!(readl(CGU0_STAT + cgu_offset) & BITM_CGU_STAT_PLLBP)) {};
+
 	while (!((readl(CGU0_STAT + cgu_offset) & CGU_STAT_MASK) ==
 		 CGU_STAT_ALGN_LOCK));
 
@@ -36,6 +40,11 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings)
 	writel((MSEL(pCGU_Settings->ctl_MSEL) | DF(pCGU_Settings->ctl_DF)) &
 		(~BITM_CGU_CTL_LOCK), CGU0_CTL + cgu_offset);
 
+
+	//Take PLL out of Bypass Mode
+	writel(BITM_CGU_PLLCTL_PLLEN | BITM_CGU_PLLCTL_PLLBPCL, CGU0_PLLCTL + cgu_offset);
+	while((readl(CGU0_STAT + cgu_offset) & BITM_CGU_STAT_PLLBP)) {};
+	while((readl(CGU0_STAT + cgu_offset) & BITM_CGU_STAT_CLKSALGN)) {};
 }
 
 /* @brief       Performs a CGU write operation.
