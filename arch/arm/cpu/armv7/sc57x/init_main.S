@@ -24,6 +24,10 @@ ENTRY(_main)
 	ldr	sp, =(CONFIG_INIT_ELF_STACK_ADDR)
 
 	bl	initcode
+
+	/* wait for JTAG */
+loop:
+	b loop
 ENDPROC(_main)
 
 .thumb
