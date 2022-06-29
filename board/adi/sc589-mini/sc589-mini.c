@@ -18,9 +18,33 @@
 #include <linux/delay.h>
 #include <watchdog.h>
 
+extern char __rel_dyn_start, __rel_dyn_end;
+extern char __bss_start, __bss_end;
+
+static void bss_clear(void)
+{
+	u32 bss_start = (u32)&__bss_start;
+	u32 bss_end = (u32)&__bss_end;
+	u32 rel_dyn_end = (u32)&__rel_dyn_end;
+	u32 *to;
+
+	if (rel_dyn_end >= bss_start && rel_dyn_end <= bss_end)
+		to = (u32 *)rel_dyn_end;
+	else
+		to = (u32 *)bss_start;
+
+	int i, sz;
+
+	sz = bss_end - (u32)to;
+	for (i = 0; i < sz; i += 4)
+		*to++ = 0;
+}
+
 DECLARE_GLOBAL_DATA_PTR;
 int board_early_init_f(void)
 {
+	bss_clear();
+
 #ifdef CONFIG_HW_WATCHDOG
 	hw_watchdog_init();
 #endif

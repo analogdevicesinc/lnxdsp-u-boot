@@ -204,9 +204,11 @@ static inline void cdu_init(void)
 }
 
 
-#define REG_SPU0_SECUREC0		0x3108C980
-#define REG_SPU0_SECUREC1		0x3108C984
-#define REG_SPU0_SECUREC2		0x3108C988
+#define REG_SPU0_SECUREC0              0x3108C980
+#define REG_SPU0_SECUREC1              0x3108C984
+#define REG_SPU0_SECUREC2              0x3108C988
+#define REG_SPU0_SECUREP_START         0x3108CA00
+#define REG_SPU0_SECUREP_END           0x3108CD24
 
 __attribute__((always_inline)) static inline void
 ddr_init(void)
@@ -216,6 +218,8 @@ ddr_init(void)
 
 void initcode(void)
 {
+	u32 i;
+
 # ifdef MEM_DDR3
 	writel(0x800, REG_DMC0_PHY_CTL0);
 	writel(0x800, REG_DMC1_PHY_CTL0);
@@ -234,4 +238,9 @@ void initcode(void)
 	writel(0, REG_SPU0_SECUREC0);
 	writel(0, REG_SPU0_SECUREC1);
 	writel(0, REG_SPU0_SECUREC2);
+
+	for(i = REG_SPU0_SECUREP_START; i <= REG_SPU0_SECUREP_END; i+=4){
+		writel(0, i);
+	}
+
 }
