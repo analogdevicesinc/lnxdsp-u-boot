@@ -76,9 +76,6 @@
 
 #define pREG_CDU0_CLKINSEL          ((volatile uint32_t*)0x3108F044)
 
-#define DMC_DATACYC                        12
-#define DMC_DLLCALRDCNT                    240
-
 #ifdef MEM_DDR2
 # error "DDR2 Not yet implemented"
 #endif
@@ -113,7 +110,7 @@
    ENUM_DMC_CFG_EXTBANK1)     /* External Banks - always 1 bank */
 /*****************************************DMC_DLLCTL*******************************************/
 /*! DLL Calibration RD Count */
-#define ADI_DMC_PARAM_DLLCOUNT                    247ul
+#define ADI_DMC_PARAM_DLLCOUNT                    240ul
 
 /*! Data Cycles - ceil( 15ns/DDRclock in Hz) */
 #define CFG0_REG_DMC_DATACYC                        12ul
