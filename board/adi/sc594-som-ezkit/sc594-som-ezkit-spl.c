@@ -27,6 +27,8 @@ static int adi_sf_default_bus = 0;
 static int adi_sf_default_cs = 0;
 static int adi_sf_default_speed = CONFIG_SF_DEFAULT_SPEED;
 static bool adi_start_uboot_proper = 1;
+static char * adi_kernel_bootargs;
+static u32 bmode;
 
 void board_boot_order(u32 *spl_boot_list)
 {
@@ -41,7 +43,7 @@ void board_boot_order(u32 *spl_boot_list)
 
 	char * bmodeString = "unknown";
 
-	u32 bmode = (readl(pRCU_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
+	bmode = (readl(pRCU_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
 
 #ifdef CONFIG_ADI_FALCON
 	adi_check_pushbuttons();
