@@ -66,7 +66,7 @@ config LINUX_MEMSIZE
 	string
 	default "224M"
 
-config SC57X_SPI
+config SC5XX_SPI
 	bool
 	default y
 

@@ -987,8 +987,12 @@ dtb-$(CONFIG_TARGET_DURIAN) += phytium-durian.dtb
 
 dtb-$(CONFIG_TARGET_PRESIDIO_ASIC) += ca-presidio-engboard.dtb
 
-dtb-$(CONFIG_SC59X) += sc594-som-ezkit.dtb
-dtb-$(CONFIG_SC59X_64) += sc598-som-ezkit.dtb
+dtb-$(CONFIG_TARGET_SC573_EZKIT) += sc573-ezkit.dtb
+dtb-$(CONFIG_TARGET_SC584_EZKIT) += sc584-ezkit.dtb
+dtb-$(CONFIG_TARGET_SC589_MINI) += sc589-mini.dtb
+dtb-$(CONFIG_TARGET_SC589_EZKIT) += sc589-ezkit.dtb
+dtb-$(CONFIG_TARGET_SC594_SOM_EZKIT) += sc594-som-ezkit.dtb
+dtb-$(CONFIG_TARGET_SC598_SOM_EZKIT) += sc598-som-ezkit.dtb
 
 targets += $(dtb-y)
 

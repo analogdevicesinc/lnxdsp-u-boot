@@ -183,7 +183,7 @@
  * SPI - Via Device Tree Support
  */
 #define CONFIG_ADI_SPI3_DM
-#define CONFIG_SC59X_SPI
+#define CONFIG_SC5XX_SPI
 #define CONFIG_CMD_SPI
 
 #if ADI_USE_MACRONIX_OSPI_DTR

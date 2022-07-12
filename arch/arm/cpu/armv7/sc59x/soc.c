@@ -4,10 +4,10 @@
  */
 
 #include <common.h>
+#include <asm/arch-sc59x/sc59x.h>
 #include <asm/io.h>
 #include <asm/system.h>
 #include <asm/arch/portmux.h>
-#include <adi_uart4.h>
 #include <cpu_func.h>
 
 void reset_cpu(ulong addr)
@@ -17,11 +17,7 @@ void reset_cpu(ulong addr)
 
 int arch_cpu_init(void)
 {
-#ifdef CONFIG_DEBUG_EARLY_SERIAL
-	return serial_early_init();
-#else
 	return 0;
-#endif
 }
 
 u32 get_cpu_id(void)

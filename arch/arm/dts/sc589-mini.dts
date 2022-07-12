@@ -1,0 +1,48 @@
+/dts-v1/;
+
+/ {
+	model = "ADI sc589-mini";
+	compatible = "adi,sc589-mini", "adi,sc58x";
+
+	aliases {
+		spi2 = "/spi@31030000";
+		serial0 = &uart0;
+	};
+
+	soc {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "simple-bus";
+		device_type = "soc";
+		ranges;
+
+		uart0: serial@0x31003000 {
+			compatible = "adi,uart4";
+			reg = <0x31003000 0x1000>;
+			adi,uart-port = <0>;
+			status = "okay";
+		};
+
+		spi2: spi@31030000 {
+			compatible = "adi,spi3";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x31030000 0x1000>;
+			bus-num = <2>;
+			spi-max-frequency = <10000000>;
+			status = "disabled";
+		};
+	};
+};
+
+&spi2 {
+	status = "okay";
+
+	flash1: is25lp512@2 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "is25lp512";
+		reg = <1>;
+	};
+};
+

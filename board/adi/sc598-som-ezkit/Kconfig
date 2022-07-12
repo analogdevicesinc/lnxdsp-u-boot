@@ -81,7 +81,7 @@ config CGU1_DIV_S1SELEX
 	int
 	default 90
 
-config SC59X_SPI
+config SC5XX_SPI
 	bool
 	default y
 

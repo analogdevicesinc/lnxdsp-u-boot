@@ -462,6 +462,7 @@ int cadence_qspi_apb_command_read(void *reg_base, const struct spi_mem_op *op)
 	static char tempBuf[8];
 	unsigned int op2;
 	u8 dummy;
+	int i;
 	struct cadence_spi_platdata *plat = cadence_get_plat();
 
 	if (rxlen > CQSPI_STIG_DATA_LEN_MAX || !rxbuf) {
@@ -549,7 +550,7 @@ int cadence_qspi_apb_command_read(void *reg_base, const struct spi_mem_op *op)
 	}
 
 	if(plat->cadenceMode == CADENCE_OSPI_MODE && plat->use_dtr){
-		for(int i = 0; i < rxlen/2; i++){
+		for(i = 0; i < rxlen/2; i++){
 			((char*)op->data.buf.in)[i] = ((char*)tempBuf)[i*2];
 		}
 	}

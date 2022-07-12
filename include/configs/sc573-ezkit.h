@@ -121,8 +121,8 @@
 /*
  * SPI Settings
  */
-//#define CONFIG_ADI_SPI3
-//#define CONFIG_SC57X_SPI
+//#define CONFIG_ADI_SPI3_DM
+//#define CONFIG_SC5XX_SPI
 //#define CONFIG_CMD_SPI
 //#define CONFIG_SPI_MEM
 #define CONFIG_ENV_SPI_MAX_HZ	5000000
@@ -160,11 +160,10 @@
 /*
  * Misc Settings
  */
-//#define CONFIG_SYS_NO_FLASH
-//#define CONFIG_UART_CONSOLE	0
-//#define CONFIG_BAUDRATE		115200
-//#define CONFIG_UART4_SERIAL
-//#define CONFIG_LINUX_MEMSIZE	"224M"
+#define CONFIG_SYS_NO_FLASH
+#define CONFIG_UART_CONSOLE	0
+#define CONFIG_BAUDRATE		115200
+#define CONFIG_LINUX_MEMSIZE	"224M"
 #define CONFIG_CMD_BOOTZ
 
 /*

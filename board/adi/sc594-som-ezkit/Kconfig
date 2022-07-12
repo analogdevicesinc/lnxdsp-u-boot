@@ -49,15 +49,11 @@ config CGU1_VCO_MULT
 	int
 	default 8
 
-config DEBUG_EARLY_SERIAL
-	bool
-	default y
-
 config DIV_S1SELEX
 	int
 	default 6
 
-config SC59X_SPI
+config SC5XX_SPI
 	bool
 	default y
 

@@ -127,7 +127,6 @@ serial_initfunc(pl01x_serial_initialize);
 serial_initfunc(pxa_serial_initialize);
 serial_initfunc(sh_serial_initialize);
 serial_initfunc(mtk_serial_initialize);
-serial_initfunc(adi_uart4_serial_initialize);
 
 /**
  * serial_register() - Register serial driver with serial driver core
@@ -182,7 +181,6 @@ int serial_initialize(void)
 	pxa_serial_initialize();
 	sh_serial_initialize();
 	mtk_serial_initialize();
-	adi_uart4_serial_initialize();
 
 	serial_assign(default_serial_console()->name);
 

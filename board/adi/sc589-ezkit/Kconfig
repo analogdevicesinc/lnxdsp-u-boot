@@ -17,7 +17,11 @@ config MMC_DW
 	bool
 	default y
 
-config SC58X_SPI
+config SC5XX_SPI
+	bool
+	default y
+
+config ADI_SPI3_DM
 	bool
 	default y
 

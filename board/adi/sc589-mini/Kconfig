@@ -3,10 +3,30 @@ if TARGET_SC589_MINI
 config SYS_VENDOR
 	default "adi"
 
+config ADI_CPU
+	string
+	default	"ADSP-SC589-0.1"
+
 config SYS_BOARD
 	default "sc589-mini"
 
 config SYS_CONFIG_NAME
 	default "sc589-mini"
+
+config MMC_DW
+	bool
+	default y
+
+config SC5XX_SPI
+	bool
+	default y
+
+config ADI_SPI3_DM
+	bool
+	default y
+
+config USB_SC58X
+	bool
+	default y
 
 endif
