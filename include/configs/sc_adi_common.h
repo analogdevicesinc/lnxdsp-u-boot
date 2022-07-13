@@ -118,8 +118,13 @@
 # endif
 #else
 # define ADI_EARLYPRINTK "earlyprintk=serial,uart0,57600 "
-# define IMAGEFILE "zImage"
-# define IMAGEFILE_RAM "zImage"
+# if !CONFIG_IS_ENABLED(FIT)
+#  define IMAGEFILE "zImage"
+#  define IMAGEFILE_RAM "zImage"
+# else
+#  define IMAGEFILE "fitImage"
+#  define IMAGEFILE_RAM "fitImage"
+# endif
 #endif
 
 #ifdef CONFIG_VIDEO
