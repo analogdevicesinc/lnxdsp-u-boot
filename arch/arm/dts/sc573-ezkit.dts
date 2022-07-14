@@ -4,8 +4,12 @@
 	model = "ADI sc573-ezkit";
 	compatible = "adi,sc573-ezkit", "adi,sc57x";
 
+	chosen {
+		stdout-path = "serial0:115200";
+	};
+
 	aliases {
-		spi2 = "/spi@31030000";
+		spi2 = "/spi@31044000";
 		serial0 = &uart0;
 	};
 
@@ -23,11 +27,11 @@
 			status = "okay";
 		};
 
-		spi2: spi@31030000 {
+		spi2: spi@31044000 {
 			compatible = "adi,spi3";
 			#address-cells = <1>;
 			#size-cells = <0>;
-			reg = <0x31030000 0x1000>;
+			reg = <0x31044000 0x1000>;
 			bus-num = <2>;
 			spi-max-frequency = <10000000>;
 			status = "disabled";
