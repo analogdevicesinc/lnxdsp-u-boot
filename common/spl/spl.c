@@ -223,7 +223,7 @@ static int spl_load_fit_image(struct spl_image_info *spl_image,
 #ifdef CONFIG_SPL_FIT_SIGNATURE
 	images.verify = 1;
 #endif
-#ifndef CONFIG_SC59X_64
+#if ! (defined(CONFIG_SC59X_64) || defined(CONFIG_SC59X))
 	ret = fit_image_load(&images, (ulong)header,
 			     NULL, &fit_uname_config,
 			     IH_ARCH_DEFAULT, IH_TYPE_STANDALONE, -1,
@@ -244,7 +244,7 @@ static int spl_load_fit_image(struct spl_image_info *spl_image,
 				     &fit_uname_config, IH_ARCH_DEFAULT,
 				     IH_TYPE_KERNEL, -1, FIT_LOAD_OPTIONAL,
 				     &fw_data, &fw_len);
-#ifndef CONFIG_SC59X_64
+#if ! (defined(CONFIG_SC59X_64) || defined(CONFIG_SC59X))
 	}
 #endif
 

@@ -494,17 +494,20 @@ int cadence_qspi_apb_command_read(void *reg_base, const struct spi_mem_op *op)
 			rxbuf = tempBuf;
 		}
 
-		// Set read instruction type to OPI
-		curVal = readl(reg_base + CQSPI_REG_RD_INSTR);
-		curVal |= (3UL << BITP_OSPI_DRICTL_INSTRTYP);
-		curVal |= (3UL << BITP_OSPI_DRICTL_ADDRTRNSFR);
-		curVal |= (3UL << BITP_OSPI_DRICTL_DATATRNSFR);
-		writel(curVal, reg_base + CQSPI_REG_RD_INSTR);
+		if(plat->id != 0x195a9d){ //SC594, IS25LX256
 
-		// Enable 4 address bytes
-		reg |= (0x1 << CQSPI_REG_CMDCTRL_ADDR_EN_LSB);
-		reg |= ((3) << CQSPI_REG_CMDCTRL_ADD_BYTES_LSB);
-		writel(op->addr.val, reg_base + CQSPI_REG_CMDADDRESS);
+			// Set read instruction type to OPI
+			curVal = readl(reg_base + CQSPI_REG_RD_INSTR);
+			curVal |= (3UL << BITP_OSPI_DRICTL_INSTRTYP);
+			curVal |= (3UL << BITP_OSPI_DRICTL_ADDRTRNSFR);
+			curVal |= (3UL << BITP_OSPI_DRICTL_DATATRNSFR);
+			writel(curVal, reg_base + CQSPI_REG_RD_INSTR);
+
+			// Enable 4 address bytes
+			reg |= (0x1 << CQSPI_REG_CMDCTRL_ADDR_EN_LSB);
+			reg |= ((3) << CQSPI_REG_CMDCTRL_ADD_BYTES_LSB);
+			//writel(op->addr.val, reg_base + CQSPI_REG_CMDADDRESS);
+		}
 
 		// Configure the dual opcode
 		curVal = readl(reg_base + CQSPI_REG_OE_LOWER);
@@ -586,18 +589,20 @@ int cadence_qspi_apb_command_write(void *reg_base, const struct spi_mem_op *op)
 
 	if(plat->cadenceMode == CADENCE_OSPI_MODE){
 
-		// Set read instruction type to OPI
-		curVal = readl(reg_base + CQSPI_REG_RD_INSTR);
-		curVal |= (3UL << BITP_OSPI_DRICTL_INSTRTYP);
-		curVal &= ~(3UL << BITP_OSPI_DRICTL_ADDRTRNSFR);
-		curVal &= ~(3UL << BITP_OSPI_DRICTL_DATATRNSFR);
-		writel(curVal, reg_base + CQSPI_REG_RD_INSTR);
+		if(plat->id != 0x195a9d){ //SC594, IS25LX256
+			// Set read instruction type to OPI
+			curVal = readl(reg_base + CQSPI_REG_RD_INSTR);
+			curVal |= (3UL << BITP_OSPI_DRICTL_INSTRTYP);
+			curVal &= ~(3UL << BITP_OSPI_DRICTL_ADDRTRNSFR);
+			curVal &= ~(3UL << BITP_OSPI_DRICTL_DATATRNSFR);
+			writel(curVal, reg_base + CQSPI_REG_RD_INSTR);
 
-		// Set write instruction type to OPI
-		curVal = readl(reg_base + CQSPI_REG_WR_INSTR);
-		curVal |= (3UL << BITP_OSPI_DWICTL_ADDRTRNSFR) |
-				  (3UL << BITP_OSPI_DWICTL_DATATRNSFR);
-		writel(curVal, reg_base + CQSPI_REG_WR_INSTR);
+			// Set write instruction type to OPI
+			curVal = readl(reg_base + CQSPI_REG_WR_INSTR);
+			curVal |= (3UL << BITP_OSPI_DWICTL_ADDRTRNSFR) |
+					  (3UL << BITP_OSPI_DWICTL_DATATRNSFR);
+			writel(curVal, reg_base + CQSPI_REG_WR_INSTR);
+		}
 
 		// Configure the dual opcode
 		curVal = readl(reg_base + CQSPI_REG_OE_LOWER);
@@ -1353,12 +1358,12 @@ int cadence_qspi_direct_read(struct cadence_spi_platdata *plat,
 	}
 	writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
 
-	if(plat->cadenceMode == CADENCE_OSPI_MODE){ 
-		/* Update the DRIR register here to support Octal IO Read mode - Not supported by existing driver */
-		//curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
-		//curVal &= ~(3UL << BITP_OSPI_DRICTL_INSTRTYP);
-		//curVal &= ~(3UL << BITP_OSPI_DRICTL_ADDRTRNSFR);
-		//writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
+	if(plat->cadenceMode == CADENCE_OSPI_MODE && plat->id == 0x195a9d){ //SC594, IS25LX256
+		//Octal address and instruction are broken on IS25LX256 at the moment
+		curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+		curVal &= ~(3UL << BITP_OSPI_DRICTL_INSTRTYP);
+		curVal &= ~(3UL << BITP_OSPI_DRICTL_ADDRTRNSFR);
+		writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
 	}
 
 #ifdef ADI_OCTAL_USE_DMA
@@ -1462,11 +1467,11 @@ int cadence_qspi_direct_write(struct cadence_spi_platdata *plat,
 	}
 	writel(curVal, plat->regbase + CQSPI_REG_WR_INSTR);
 
-	if(plat->cadenceMode == CADENCE_OSPI_MODE){ 
-		/* Update the DRIR register here to support Octal IO Read mode - Not supported by existing driver */
-		//curVal = readl(plat->regbase + CQSPI_REG_WR_INSTR);
-		//curVal &= ~((3UL << BITP_OSPI_DRICTL_ADDRTRNSFR));
-		//writel(curVal, plat->regbase + CQSPI_REG_WR_INSTR);
+	if(plat->cadenceMode == CADENCE_OSPI_MODE && plat->id == 0x195a9d){ //SC594, IS25LX256
+		//Octal address is broken on IS25LX256 at the moment
+		curVal = readl(plat->regbase + CQSPI_REG_WR_INSTR);
+		curVal &= ~((3UL << BITP_OSPI_DRICTL_ADDRTRNSFR));
+		writel(curVal, plat->regbase + CQSPI_REG_WR_INSTR);
 	}
 
 #ifdef ADI_OCTAL_USE_DMA

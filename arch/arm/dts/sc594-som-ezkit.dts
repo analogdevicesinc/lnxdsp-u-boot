@@ -8,6 +8,10 @@
 		u-boot,spl-payload-offset = <0x20000>;
 	};
 
+	chosen {
+		stdout-path = "serial0:115200";
+	};
+
 	aliases {
 		spi0 = "/spi@31027000";
 		spi2 = "/spi@31030000";
@@ -31,16 +35,16 @@
 			u-boot,dm-pre-reloc;
 		};
 
-		qspi: spi@31027000 {
+		ospi: spi@31027000 {
 			compatible = "cdns,qspi-nor";
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x31027000 0x1000>,
 				  <0x30400000 0x1000>;
 			interrupts = <0 151 4>;
-			/*clocks = <&qspi_clk>;*/
+			/*clocks = <&ospi_clk>;*/
 			ext-decoder = <0>;  /* external decoder */
-			num-cs = <4>;
+			num-cs = <1>;
 			fifo-depth = <128>;
 			bus-num = <0>;
 			status = "disabled";
@@ -61,7 +65,7 @@
 	};
 };
 
-&qspi {
+&ospi {
 	status = "okay";
 
 	flash0: is25lx256@0 {

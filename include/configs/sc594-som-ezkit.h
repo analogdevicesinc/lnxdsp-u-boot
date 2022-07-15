@@ -191,13 +191,47 @@
 	"fdt_high=0xFFFFFFFF\0" \
 	"rfsfile=adsp-sc5xx-minimal-adsp-sc594-som-ezkit.jffs2\0" \
 	"dtbsize=0x20000\0" \
-	"zimagesize=0x600000\0" \
+	"imagesize=0x600000\0" \
 	ADI_INIT_ETHERNET \
+	ADI_RAM_BOOT \
+	ADI_UPDATE_SPI \
 	ADI_OSPI_BOOT \
 	ADI_QSPI_BOOT
 
 #define ADI_INIT_ETHERNET \
 	"init_ethernet=mii info; dhcp; setenv serverip ${tftpserverip};\0"
+
+#define ADI_RAM_BOOT \
+	"ramboot=run init_ethernet; tftp ${loadaddr} ${ramfile}; tftp ${initramaddr} ${initramfile}; run ramargs; bootm ${loadaddr} ${initramaddr}\0"
+
+#define ADI_UPDATE_SPI_UBOOT_CMD " run update_spi_uboot;"
+#define ADI_UPDATE_SPI_RFS_CMD " run update_spi_rfs;"
+
+#if CONFIG_IS_ENABLED(FIT)
+	#define ADI_UPDATE_SPI_DTB_CMD ""
+	#define ADI_UPDATE_SPI_IMAGE_CMD ""
+	#define ADI_UPDATE_SPI_FIT_CMD " run update_spi_fit;"
+	#define ADI_SPI_BOOTCMD "sf read ${loadaddr} 0xC0000 ${imagesize}; bootm ${loadaddr};"
+#else
+	#define ADI_UPDATE_SPI_DTB_CMD " run update_spi_dtb;"
+	#define ADI_UPDATE_SPI_IMAGE_CMD " run update_spi_image;"
+	#define ADI_UPDATE_SPI_FIT_CMD ""
+	#define ADI_SPI_BOOTCMD "sf read ${loadaddr} 0xC0000 ${imagesize}; sf read ${dtbaddr} 0xA0000 ${dtbsize}; bootz ${loadaddr} - ${dtbaddr}"
+#endif
+
+#ifndef CONFIG_SPL_OS_BOOT
+	#define ADI_UPDATE_SPI_UBOOT \
+		"update_spi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe ${sfdev}; sf write ${loadaddr} 0x0 ${filesize};\0"
+#else
+	#define STAGE_1_FILE "stage1-boot.ldr"
+	#define STAGE_2_FILE "stage2-boot.ldr"
+	#define ADI_UPDATE_SPI_UBOOT \
+		"stage1file=" STAGE_1_FILE "\0" \
+		"stage2file=" STAGE_2_FILE "\0" \
+		"update_spi_uboot_stage1=tftp ${loadaddr} ${stage1file}; sf probe ${sfdev}; sf write ${loadaddr} 0x0 ${filesize};\0" \
+		"update_spi_uboot_stage2=tftp ${loadaddr} ${stage2file}; sf probe ${sfdev}; sf write ${loadaddr} 0x20000 ${filesize};\0" \
+		"update_spi_uboot=run update_spi_uboot_stage1; run update_spi_uboot_stage2;\0"
+#endif
 
 #ifndef CONFIG_ADI_FALCON
 	#define ADI_UPDATE_OSPI_DTB \
@@ -208,72 +242,48 @@
 #endif
 
 #ifndef CONFIG_SPL_OS_BOOT
-	#define ADI_UPDATE_OSPI_UBOOT \
-		"update_ospi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe 0:0; sf write ${loadaddr} 0x0 ${filesize};\0"
+	#define ADI_UPDATE_SPI_UBOOT \
+		"update_spi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe ${sfdev}; sf write ${loadaddr} 0x0 ${filesize};\0"
 #else
-	#define UBOOT_SPL_FILE "u-boot-" CONFIG_SYS_BOARD ".ldr"
-	#define UBOOT_PROPER_FILE "u-boot-" CONFIG_SYS_BOARD ".img"
-	#define ADI_UPDATE_OSPI_UBOOT \
-		"ubootsplfile=" UBOOT_SPL_FILE "\0" \
-		"ubootproperfile=" UBOOT_PROPER_FILE "\0" \
-		"update_ospi_uboot_spl=tftp ${loadaddr} ${ubootsplfile}; sf probe 0:0; sf write ${loadaddr} 0x0 ${filesize};\0" \
-		"update_ospi_uboot_proper=tftp ${loadaddr} ${ubootproperfile}; sf probe 0:0; sf write ${loadaddr} 0x20000 ${filesize};\0" \
-		"update_ospi_uboot=run update_ospi_uboot_spl; run update_ospi_uboot_proper;\0"
+	#define STAGE_1_FILE "stage1-boot.ldr"
+	#define STAGE_2_FILE "stage2-boot.img"
+	#define ADI_UPDATE_SPI_UBOOT \
+		"stage1file=" STAGE_1_FILE "\0" \
+		"stage2file=" STAGE_2_FILE "\0" \
+		"update_spi_uboot_stage1=tftp ${loadaddr} ${stage1file}; sf probe ${sfdev}; sf write ${loadaddr} 0x0 ${filesize};\0" \
+		"update_spi_uboot_stage2=tftp ${loadaddr} ${stage2file}; sf probe ${sfdev}; sf write ${loadaddr} 0x20000 ${filesize};\0" \
+		"update_spi_uboot=run update_spi_uboot_stage1; run update_spi_uboot_stage2;\0"
+#endif
+
+#if CONFIG_ADI_FALCON
+	#if CONFIG_IS_ENABLED(FIT)
+		#define ADI_UPDATE_SPI_DTB ""
+	#else
+		#define ADI_UPDATE_SPI_DTB \
+		"update_spi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe ${sfdev}; run ${argscmd}; fdt addr ${loadaddr}; fdt resize 0x10000; fdt boardsetup; fdt chosen; sf write ${loadaddr} 0xA0000 0x10000; setenv dtbsize 0x10000;\0"
+	#endif
+#else
+	#if CONFIG_IS_ENABLED(FIT)
+		#define ADI_UPDATE_SPI_DTB ""
+	#else
+		#define ADI_UPDATE_SPI_DTB \
+		"update_spi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe ${sfdev}; sf write ${loadaddr} 0xA0000 0x10000; setenv dtbsize 0x10000;\0"
+	#endif
 #endif
 
 #define ADI_OSPI_BOOT \
-	"update_ospi_sc594=run init_ethernet; sf probe 0:0; sf erase 0 0x2000000; run update_ospi_uboot; run update_ospi_dtb; run update_ospi_zImage; run update_ospi_rfs; setenv bootcmd \'run ospiboot\'; sleep 3; saveenv\0" \
-	ADI_UPDATE_OSPI_UBOOT \
-	"update_ospi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 0:0; sf write ${loadaddr} 0x6C0000 ${filesize};\0" \
-	"update_ospi_zImage=tftp ${loadaddr} ${ramfile}; sf probe 0:0; sf write ${loadaddr} 0xC0000 ${filesize}; setenv zimagesize ${filesize};\0" \
-	ADI_UPDATE_OSPI_DTB \
-	"ospiargs=setenv bootargs " ADI_BOOTARGS_OSPI "\0" \
-	"ospi_boot_sc594=run ospiargs; sf probe 0:0; sf read ${loadaddr} 0xC0000 ${zimagesize}; sf read ${dtbaddr} 0xA0000 ${dtbsize}; bootz ${loadaddr} - ${dtbaddr}\0" \
+	"update_ospi_sc594=setenv sfdev 0:0; setenv sfsize 0x2000000; setenv bootcmd \'run ospiboot\'; setenv argscmd ospiargs; run update_spi_sc594;\0" \
+	"ospiargs=setenv bootargs " ADI_BOOTARGS_SPI "\0" \
+	"ospi_boot_sc594=run ospiargs; sf probe ${sfdev};" ADI_SPI_BOOTCMD "\0" \
 	"ospiboot=run ospi_boot_sc594\0"
 
-#ifndef CONFIG_ADI_FALCON
-	#define ADI_UPDATE_QSPI_DTB \
-	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; sf write ${loadaddr} 0xA0000 ${filesize}; setenv dtbsize ${filesize};\0"
-#else
-	#define ADI_UPDATE_QSPI_DTB \
-	"update_qspi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 2:1; run qspiargs; fdt addr ${loadaddr}; fdt resize 0x10000; fdt boardsetup; fdt chosen; sf write ${loadaddr} 0xA0000 0x10000; setenv dtbsize 0x10000;\0"
-#endif
-
-#ifndef CONFIG_SPL_OS_BOOT
-	#define ADI_UPDATE_QSPI_UBOOT \
-		"update_qspi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe 2:1; sf write ${loadaddr} 0x0 ${filesize};\0"
-#else
-	#define UBOOT_SPL_FILE "u-boot-" CONFIG_SYS_BOARD ".ldr"
-	#define UBOOT_PROPER_FILE "u-boot-" CONFIG_SYS_BOARD ".img"
-	#define ADI_UPDATE_QSPI_UBOOT \
-		"ubootsplfile=" UBOOT_SPL_FILE "\0" \
-		"ubootproperfile=" UBOOT_PROPER_FILE "\0" \
-		"update_qspi_uboot_spl=tftp ${loadaddr} ${ubootsplfile}; sf probe 2:1; sf write ${loadaddr} 0x0 ${filesize};\0" \
-		"update_qspi_uboot_proper=tftp ${loadaddr} ${ubootproperfile}; sf probe 2:1; sf write ${loadaddr} 0x20000 ${filesize};\0" \
-		"update_qspi_uboot=run update_qspi_uboot_spl; run update_qspi_uboot_proper;\0"
-#endif
-
 #define ADI_QSPI_BOOT \
-	"update_qspi_sc594=run init_ethernet; sf probe 2:1; sf erase 0 0x4000000; run update_qspi_uboot; run update_qspi_dtb; run update_qspi_zImage; run update_qspi_rfs; setenv bootcmd \'run qspiboot\'; sleep 3; saveenv\0" \
-	ADI_UPDATE_QSPI_UBOOT \
-	"update_qspi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe 2:1; sf write ${loadaddr} 0x6C0000 ${filesize};\0" \
-	"update_qspi_zImage=tftp ${loadaddr} ${ramfile}; sf probe 2:1; sf write ${loadaddr} 0xC0000 ${filesize}; setenv zimagesize ${filesize};\0" \
-	ADI_UPDATE_QSPI_DTB \
-	"qspiargs=setenv bootargs " ADI_BOOTARGS_QSPI "\0" \
-	"qspi_boot_sc594=run qspiargs; sf probe 2:1; sf read ${loadaddr} 0xC0000 ${zimagesize}; sf read ${dtbaddr} 0xA0000 ${dtbsize}; bootz ${loadaddr} - ${dtbaddr}\0" \
+	"update_qspi_sc594=setenv sfdev 2:1; setenv sfsize 0x4000000; setenv bootcmd \'run qspiboot\'; setenv argscmd qspiargs; run update_spi_sc594;\0" \
+	"qspiargs=setenv bootargs " ADI_BOOTARGS_SPI "\0" \
+	"qspi_boot_sc594=run qspiargs; sf probe ${sfdev};" ADI_SPI_BOOTCMD "\0" \
 	"qspiboot=run qspi_boot_sc594\0"
 
-#define ADI_BOOTARGS_QSPI \
-        "root=/dev/mtdblock9 " \
-        "rootfstype=jffs2 " \
-        "clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
-        ADI_BOOTARGS_VIDEO \
-        "earlyprintk=serial,uart0,57600 " \
-        "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
-                        __stringify(CONFIG_BAUDRATE) " "\
-        "mem=" CONFIG_LINUX_MEMSIZE
-
-#define ADI_BOOTARGS_OSPI \
+#define ADI_BOOTARGS_SPI \
         "root=/dev/mtdblock4 " \
         "rootfstype=jffs2 " \
         "clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
@@ -282,7 +292,23 @@
                         __stringify(CONFIG_BAUDRATE) " " \
         "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
                          __stringify(CONFIG_BAUDRATE) " "\
-        "mem=" CONFIG_LINUX_MEMSIZE
+        "mem=" CONFIG_LINUX_MEMSIZE " " \
+        "vmalloc=512M"
+
+#define ADI_UPDATE_SPI \
+	"update_spi_sc594=run init_ethernet; sf probe ${sfdev}; sf erase 0 ${sfsize};" \
+	ADI_UPDATE_SPI_UBOOT_CMD \
+	ADI_UPDATE_SPI_DTB_CMD \
+	ADI_UPDATE_SPI_IMAGE_CMD \
+	ADI_UPDATE_SPI_FIT_CMD \
+	ADI_UPDATE_SPI_RFS_CMD \
+	" sleep 3; saveenv\0" \
+	ADI_UPDATE_SPI_UBOOT \
+	ADI_UPDATE_SPI_DTB \
+	"update_spi_image=tftp ${loadaddr} ${imagefile}; sf probe ${sfdev}; sf write ${loadaddr} 0xC0000 ${filesize}; setenv imagesize ${filesize};\0" \
+	"update_spi_fit=tftp ${loadaddr} ${imagefile}; sf probe ${sfdev}; sf write ${loadaddr} 0xC0000 ${filesize}; setenv imagesize ${filesize};\0" \
+	"update_spi_rfs=tftp ${loadaddr} ${rfsfile}; sf probe ${sfdev}; sf write ${loadaddr} 0x6C0000 ${filesize};\0"
+
 
 #include <configs/sc_adi_common.h>
 
