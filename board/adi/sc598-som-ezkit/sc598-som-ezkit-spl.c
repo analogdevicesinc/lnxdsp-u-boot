@@ -234,17 +234,7 @@ void spl_board_prepare_ethernet(void){
 
 void spl_board_prepare_for_linux(void)
 {
-	adi_board_init_shared();
 	spl_board_prepare_ethernet();
-
-	//If we're jumping into Linux instead of U-Boot Proper, we need to call these, as
-	//they are skipped during the first (SPL) pass of start.S
-	asm(".include \"adi/59x-64/init_asm.h\"");
-	asm("setup_spu0");
-	asm("setup_spu0_wp");
-	asm("setup_smpu");
-	asm("disable_mmu");
-
 	adi_disable_ospi(1);
 }
 
