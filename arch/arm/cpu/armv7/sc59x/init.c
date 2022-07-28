@@ -276,6 +276,10 @@ ddr_init(void)
 #define REG_SPU0_SECUREP_START         0x3108BA00
 #define REG_SPU0_SECUREP_END           0x3108BD24
 
+#define REG_ARMPMU0_PMCR               0x31121E04
+#define REG_ARMPMU0_PMUSERENR          0x31121E08
+#define REG_ARMPMU0_PMLAR              0x31121FB0
+
 void initcode_shared(void)
 {
 	u32 i;
@@ -297,6 +301,11 @@ void initcode_shared(void)
 	writel(0, REG_SPU0_SECUREC0);
 	writel(0, REG_SPU0_SECUREC1);
 	writel(0, REG_SPU0_SECUREC2);
+
+	// Configure PMU for non-secure operation
+	writel(readl(REG_ARMPMU0_PMUSERENR) | 0x01, REG_ARMPMU0_PMUSERENR);
+	writel(0xc5acce55, REG_ARMPMU0_PMLAR);
+	writel(readl(REG_ARMPMU0_PMCR) | (1 << 1), REG_ARMPMU0_PMCR);
 
 	for(i = REG_SPU0_SECUREP_START; i <= REG_SPU0_SECUREP_END; i+=4){
 		writel(0, i);

@@ -316,6 +316,10 @@ ddr_init(void)
 #define REG_SPU0_SECUREC1              0x3108B984
 #define REG_SPU0_SECUREC2              0x3108B988
 
+#define REG_ARMPMU0_PMCR               0x31121E04
+#define REG_ARMPMU0_PMUSERENR          0x31121E08
+#define REG_ARMPMU0_PMLAR              0x31121FB0
+
 void initcode(void)
 {
 # ifdef MEM_DDR3
@@ -340,4 +344,9 @@ void initcode(void)
 	writel(0, REG_SPU0_SECUREC0);
 	writel(0, REG_SPU0_SECUREC1);
 	writel(0, REG_SPU0_SECUREC2);
+
+	// Configure PMU for non-secure operation
+	writel(readl(REG_ARMPMU0_PMUSERENR) | 0x01, REG_ARMPMU0_PMUSERENR);
+	writel(0xc5acce55, REG_ARMPMU0_PMLAR);
+	writel(readl(REG_ARMPMU0_PMCR) | (1 << 1), REG_ARMPMU0_PMCR);
 }
