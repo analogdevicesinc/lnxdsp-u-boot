@@ -248,52 +248,26 @@ __attribute__((always_inline)) static inline void Enable_VCOby5(uint32_t CGUn, b
 	}
 }
 
+#define CONFIGURE_CDU0(a,b,c) \
+	writel(a, b); \
+	while (readl(REG_CDU0_STAT) & (1 << c));
+
 __attribute__((always_inline)) static inline void cdu_init(void)
 {
-	writel((0 << 1) | 0x1, REG_CDU0_CFG0);
-	while (readl(REG_CDU0_STAT) & (1 << 0));
-
-	writel((0 << 1) | 0x1, REG_CDU0_CFG1);
-	while (readl(REG_CDU0_STAT) & (1 << 1));
-
-	writel((3 << 1) | 0x1, REG_CDU0_CFG2);
-	while (readl(REG_CDU0_STAT) & (1 << 2));
-
-	/* DDR - Source from DCLK_1 */
-	writel((0 << 1) | 0x1, REG_CDU0_CFG3);
-	while (readl(REG_CDU0_STAT) & (1 << 3));
-
-	writel((1 << 1) | 0x1, REG_CDU0_CFG4);
-	while (readl(REG_CDU0_STAT) & (1 << 4));
-
-	writel((0 << 1) | 0x1, REG_CDU0_CFG5);
-	while (readl(REG_CDU0_STAT) & (1 << 5));
-
-	/* SPI - Source from SCLK0_0 */
-	writel((0 << 1) | 0x1, REG_CDU0_CFG6);
-	while (readl(REG_CDU0_STAT) & (1 << 6));
-
-	/* Gigabit Ethernet - Source from SCLK0_0 */
-	writel((0 << 1) | 0x1, REG_CDU0_CFG7);
-	while (readl(REG_CDU0_STAT) & (1 << 7));
-
-	writel((1 << 1) | 0x1, REG_CDU0_CFG8);
-	while (readl(REG_CDU0_STAT) & (1 << 8));
-
-	writel((0 << 1) | 0x1, REG_CDU0_CFG9);
-	while (readl(REG_CDU0_STAT) & (1 << 9));
-
-	writel((0 << 1) | 0x1, REG_CDU0_CFG10);
-	while (readl(REG_CDU0_STAT) & (1 << 10));
-
-	writel((0 << 1) | 0x1, REG_CDU0_CFG12);
-	while (readl(REG_CDU0_STAT) & (1 << 12));
-
-	writel((1 << 1) | 0x1, REG_CDU0_CFG13);
-	while (readl(REG_CDU0_STAT) & (1 << 13));
-
-	writel((1 << 1) | 0x1, REG_CDU0_CFG14);
-	while (readl(REG_CDU0_STAT) & (1 << 14));
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO0, REG_CDU0_CFG0, 0);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO1, REG_CDU0_CFG1, 1);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO2, REG_CDU0_CFG2, 2);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO3, REG_CDU0_CFG3, 3);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO4, REG_CDU0_CFG4, 4);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO5, REG_CDU0_CFG5, 5);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO6, REG_CDU0_CFG6, 6);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO7, REG_CDU0_CFG7, 7);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO8, REG_CDU0_CFG8, 8);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO9, REG_CDU0_CFG9, 9);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO10, REG_CDU0_CFG10, 10);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO12, REG_CDU0_CFG12, 12);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO13, REG_CDU0_CFG13, 13);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO14, REG_CDU0_CFG14, 14);
 }
 
 __attribute__((always_inline)) static inline void

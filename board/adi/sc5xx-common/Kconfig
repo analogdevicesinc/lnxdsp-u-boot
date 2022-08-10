@@ -206,3 +206,52 @@ config CGU1_DIV_S1SELEX
 	int "CGU1_DIV_S1SELEX"
 endif
 
+config CDU0_CLKO0
+	int "CDU0_CLKO0"
+
+config CDU0_CLKO1
+	int "CDU0_CLKO1"
+
+config CDU0_CLKO2
+	int "CDU0_CLKO2"
+
+config CDU0_CLKO3
+	int "CDU0_CLKO3"
+
+config CDU0_CLKO4
+	int "CDU0_CLKO4"
+
+config CDU0_CLKO5
+	int "CDU0_CLKO5"
+
+config CDU0_CLKO6
+	int "CDU0_CLKO6"
+
+config CDU0_CLKO7
+	int "CDU0_CLKO7"
+
+config CDU0_CLKO8
+	int "CDU0_CLKO8"
+
+config CDU0_CLKO9
+	int "CDU0_CLKO9"
+
+if SC59X || SC59X_64
+config CDU0_CLKO10
+	int "CDU0_CLK10"
+endif
+
+if SC59X || SC59X_64
+config CDU0_CLKO12
+	int "CDU0_CLKO12"
+endif
+
+if SC59X_64
+config CDU0_CLKO13
+	int "CDU0_CLKO13"
+endif
+
+if SC59X_64
+config CDU0_CLKO14
+	int "CDU0_CLKO14"
+endif

@@ -183,22 +183,23 @@ static inline void cgu_init(void)
 	CGU_Init(1,0,&Clock_Diverders1, 0);
 }
 
-static inline void cdu_init(void)
-{
-#ifdef CONFIG_CLOCK_SPEED_500MHZ
-	/* Configure GigEth/RGMII clock source from SCLK1_0 (125MHz) */
-	writel((0 << 1) | 0x1, REG_CDU0_CFG7);
-	while (readl(REG_CDU0_STAT) & (1 << 7));
-	/* Configure DMC clock source from DCLK1: 450MHz(max frequence) */
-	writel((1 << 1) | 0x1, REG_CDU0_CFG3);
-	while (readl(REG_CDU0_STAT) & (1 << 3));
-#else
-	/* Configure GigEth/RGMII clock source from CCLK0_1 (125MHz) */
-	writel((2 << 1) | 0x1, REG_CDU0_CFG7);
-	while (readl(REG_CDU0_STAT) & (1 << 7));
-#endif
-}
+#define CONFIGURE_CDU0(a,b,c) \
+	writel(a, b); \
+	while (readl(REG_CDU0_STAT) & (1 << c));
 
+__attribute__((always_inline)) static inline void cdu_init(void)
+{
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO0, REG_CDU0_CFG0, 0);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO1, REG_CDU0_CFG1, 1);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO2, REG_CDU0_CFG2, 2);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO3, REG_CDU0_CFG3, 3);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO4, REG_CDU0_CFG4, 4);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO5, REG_CDU0_CFG5, 5);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO6, REG_CDU0_CFG6, 6);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO7, REG_CDU0_CFG7, 7);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO8, REG_CDU0_CFG8, 8);
+	CONFIGURE_CDU0(CONFIG_CDU0_CLKO9, REG_CDU0_CFG9, 9);
+}
 
 #define REG_SPU0_SECUREC0              0x3108C980
 #define REG_SPU0_SECUREC1              0x3108C984
