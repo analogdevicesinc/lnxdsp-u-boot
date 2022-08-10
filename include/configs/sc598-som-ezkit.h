@@ -63,24 +63,6 @@
 #define CONFIG_SYS_LOAD_ADDR 0x96000000 //Address used to load the FIT image into during Falcon+FIT
 #endif
 
-/*
- * Clock Settings
- *	CCLK = (CLKIN * VCO_MULT) / CCLK_DIV
- *	SCLK = (CLKIN * VCO_MULT) / SYSCLK_DIV
- *	SCLK0 = SCLK / SCLK0_DIV
- *	SCLK1 = SCLK / SCLK1_DIV
- */
-/* CONFIG_CLKIN_HZ is any value in Hz					*/
-//#define CONFIG_CLKIN_HZ			(25000000)
-/* CLKIN_HALF controls the DF bit in PLL_CTL      0 = CLKIN		*/
-/*                                                1 = CLKIN / 2		*/
-#define CONFIG_CLKIN_HALF		(0)
-
-//#define ADI_VCO_HZ  (CONFIG_CLKIN_HZ * CONFIG_VCO_MULT)
-//#define ADI_CCLK_HZ (ADI_VCO_HZ / CONFIG_CCLK_DIV)
-//#define ADI_SCLK_HZ (ADI_VCO_HZ / CONFIG_SCLK_DIV)
-
-//#define CONFIG_SYS_TIMERGROUP	TIMER_GROUP
 #define CONFIG_SYS_TIMERBASE	TIMER0_CONFIG
 
 /*

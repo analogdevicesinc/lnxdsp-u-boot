@@ -153,15 +153,22 @@ uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel,
 
 static inline void cgu_init(void)
 {
-	struct CGU_Settings Clock_Diverders0 = { CONFIG_VCO_MULT,
-						0,
-						CONFIG_CCLK_DIV,
-						CONFIG_SCLK_DIV,
-						CONFIG_SCLK0_DIV,
-						CONFIG_SCLK1_DIV,
-						CONFIG_DCLK_DIV,
-						CONFIG_OCLK_DIV };
-	struct CGU_Settings Clock_Diverders1 = {5,0,1,2,2,2,2,3};
+	struct CGU_Settings Clock_Diverders0 = { CONFIG_CGU0_VCO_MULT,
+						CONFIG_CGU0_DF_DIV,
+						CONFIG_CGU0_CCLK_DIV,
+						CONFIG_CGU0_SCLK_DIV,
+						CONFIG_CGU0_SCLK0_DIV,
+						CONFIG_CGU0_SCLK1_DIV,
+						CONFIG_CGU0_DCLK_DIV,
+						CONFIG_CGU0_OCLK_DIV };
+	struct CGU_Settings Clock_Diverders1 = { CONFIG_CGU1_VCO_MULT,
+						CONFIG_CGU1_DF_DIV,
+						CONFIG_CGU1_CCLK_DIV,
+						CONFIG_CGU1_SCLK_DIV,
+						CONFIG_CGU1_SCLK0_DIV,
+						CONFIG_CGU1_SCLK1_DIV,
+						CONFIG_CGU1_DCLK_DIV,
+						CONFIG_CGU1_OCLK_DIV };
 
 	CGU_Init(0,0,&Clock_Diverders0, CLKO7);
 	CGU_Init(1,0,&Clock_Diverders1, 0);

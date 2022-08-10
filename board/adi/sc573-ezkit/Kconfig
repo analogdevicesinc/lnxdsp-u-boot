@@ -18,30 +18,6 @@ config DTBLOADADDR
 	string
 	default "0x84000000"
 
-config VCO_MULT
-	int
-	default 18
-
-config CCLK_DIV
-	int
-	default 1
-
-config SCLK_DIV
-	int
-	default 2
-
-config SCLK0_DIV
-	int
-	default 2
-
-config DCLK_DIV
-	int
-	default 2
-
-config OCLK_DIV
-	int
-	default 3
-
 config DTBNAME
 	string
 	default "sc573-ezkit.dtb"

@@ -48,42 +48,6 @@
 #define CONFIG_SYS_SPI_KERNEL_SKIP_HEADER
 #endif
 
-/*
- * Clock Settings
- *	CCLK = (CLKIN * VCO_MULT) / CCLK_DIV
- *	SCLK = (CLKIN * VCO_MULT) / SYSCLK_DIV
- *	SCLK0 = SCLK / SCLK0_DIV
- *	SCLK1 = SCLK / SCLK1_DIV
- */
-/* CONFIG_CLKIN_HZ is any value in Hz					*/
-//#define CONFIG_CLKIN_HZ			(25000000)
-/* CLKIN_HALF controls the DF bit in PLL_CTL      0 = CLKIN		*/
-/*                                                1 = CLKIN / 2		*/
-#define CONFIG_CLKIN_HALF		(0)
-
-#define CONFIG_CGU1_VCO_MULT	 (64)
-#define CONFIG_CGU1_CCLK_DIV	 (2)
-#define CONFIG_CGU1_SCLK_DIV	 (4)
-#define CONFIG_CGU1_SCLK0_DIV	 (4)
-#define CONFIG_CGU1_SCLK1_DIV	 (2)
-#define CONFIG_CGU1_DCLK_DIV	 (2)
-#define CONFIG_CGU1_OCLK_DIV	 (16)
-#define CONFIG_CGU1_DIV_S1SELEX  (8)
-
-#define CONFIG_VCO_MULT			 (80)
-#define CONFIG_CCLK_DIV			 (2)
-#define CONFIG_SCLK_DIV			 (4)
-#define CONFIG_SCLK0_DIV		 (4)
-#define CONFIG_SCLK1_DIV		 (2)
-#define CONFIG_DCLK_DIV			 (2)
-#define CONFIG_OCLK_DIV			 (8)
-#define CONFIG_DIV_S1SELEX       (6)
-
-#define ADI_VCO_HZ  (CONFIG_CLKIN_HZ * CONFIG_VCO_MULT)
-#define ADI_CCLK_HZ (ADI_VCO_HZ / CONFIG_CCLK_DIV)
-#define ADI_SCLK_HZ (ADI_VCO_HZ / CONFIG_SCLK_DIV)
-
-//#define CONFIG_SYS_TIMERGROUP	TIMER_GROUP
 #define CONFIG_SYS_TIMERBASE	TIMER0_CONFIG
 
 /*

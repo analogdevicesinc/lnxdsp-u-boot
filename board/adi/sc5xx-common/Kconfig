@@ -6,6 +6,7 @@ config ADI_SPI3
 config ADI_GPIO2
 	bool "ADI GPIO2 driver"
 	default y
+
 config CMD_SC57X_OTP
 	bool
 	default y
@@ -57,18 +58,6 @@ config BUILD_LDR
 config SC5XX_BUS_WIDTH
 	int
 	default 4
-
-config CLKIN_HZ
-	int
-	default 25000000
-
-config CLKIN_HALF
-	int
-	default 0
-
-config SCLK1_DIV
-	int
-	default 2
 
 config SMC_GCTL_VAL
 	hex
@@ -126,3 +115,94 @@ config ADI_WATCHDOG
 config WATCHDOG_TIMEOUT_MSECS
 	int
 	default 30000
+
+config CLKIN_HZ
+	int "CLKIN_HZ"
+	default 25000000
+
+config CGU0_DF_DIV
+	int "CGU0_DF_DIV"
+
+config CGU0_VCO_MULT
+	int "CGU0_VCO_MULT"
+	help
+		VCO_MULT controls the MSEL (multiplier) bits in PLL_CTL
+		Values can range from 0-127 (where 0 means 128)
+
+config CGU0_CCLK_DIV
+	int "CGU0_CCLK_DIV"
+	help
+		CCLK_DIV controls the core clock divider
+		Values can range from 0-31 (where 0 means 32)
+		CCLK = (CLKIN * VCO_MULT) / CCLK_DIV
+
+config CGU0_SCLK_DIV
+	int "CGU0_SCLK_DIV"
+	help
+		SCLK_DIV controls the system clock divider
+		Values can range from 0-31 (where 0 means 32)
+		SCLK = (CLKIN * VCO_MULT) / SYSCLK_DIV
+
+config CGU0_SCLK0_DIV
+	int "CGU0_SCLK0_DIV"
+	help
+		Values can range from 0-7 (where 0 means 8)
+		SCLK0 = SCLK / SCLK0_DIV
+
+config CGU0_SCLK1_DIV
+	int "CGU0_SCLK1_DIV"
+	help
+		Values can range from 0-7 (where 0 means 8)
+		SCLK1 = SCLK / SCLK1_DIV
+
+config CGU0_DCLK_DIV
+	int "CGU0_DCLK_DIV"
+	help
+		DCLK_DIV controls the DDR clock divider
+		Values can range from 0-31 (where 0 means 32)
+
+config CGU0_OCLK_DIV
+	int "CGU0_OCLK_DIV"
+	help
+		OCLK_DIV controls the output clock divider
+		Values can range from 0-127 (where 0 means 128)
+
+if SC59X || SC59X_64
+config CGU0_DIV_S1SELEX
+	int "CGU0_DIV_S1SELEX"
+endif
+
+config CGU1_VCO_MULT
+	int "CGU1_VCO_MULT"
+
+config CGU1_DF_DIV
+	int "CGU1_DF_DIV"
+
+config CGU1_CCLK_DIV
+	int "CGU1_CCLK_DIV"
+
+config CGU1_SCLK_DIV
+	int "CGU1_SCLK_DIV"
+
+config CGU1_SCLK0_DIV
+	int "CGU1_SCLK0_DIV"
+
+config CGU1_SCLK1_DIV
+	int "CGU1_SCLK1_DIV"
+
+config CGU1_DCLK_DIV
+	int "CGU1_DCLK_DIV"
+
+config CGU1_OCLK_DIV
+	int "CGU1_OCLK_DIV"
+
+if SC59X_64
+config CGU1_DIV_S0SELEX
+	int "CGU1_DIV_S0SELEX"
+endif
+
+if SC59X || SC59X_64
+config CGU1_DIV_S1SELEX
+	int "CGU1_DIV_S1SELEX"
+endif
+

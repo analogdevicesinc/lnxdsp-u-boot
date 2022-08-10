@@ -102,24 +102,24 @@ unsigned long get_sclk(void)
 
 unsigned long get_sclk0(void)
 {
-	return get_sclk() / CONFIG_SCLK0_DIV;
+	return get_sclk() / CONFIG_CGU0_SCLK0_DIV;
 /*	return _get_sclk(&cached_sclk0);*/
 }
 
 unsigned long get_sclk1(void)
 {
-	return get_sclk() / CONFIG_SCLK1_DIV;
+	return get_sclk() / CONFIG_CGU0_SCLK1_DIV;
 /*	return _get_sclk(&cached_sclk1);*/
 }
 
 unsigned long get_oclk(void)
 {
-	return ADI_VCO_HZ / CONFIG_OCLK_DIV;
+	return ADI_VCO_HZ / CONFIG_CGU0_OCLK_DIV;
 /*	return _get_sclk(&cached_oclk);*/
 }
 
 unsigned long get_dclk(void)
 {
-	return ADI_VCO_HZ / CONFIG_DCLK_DIV;
+	return ADI_VCO_HZ / CONFIG_CGU0_DCLK_DIV;
 /*	return _get_sclk(&cached_dclk);*/
 }
