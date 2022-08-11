@@ -112,19 +112,35 @@
 # if !CONFIG_IS_ENABLED(FIT)
 #  define IMAGEFILE "Image"
 #  define IMAGEFILE_RAM "Image"
+#  define ADI_BOOT_INITRD "booti ${loadaddr} ${initramaddr} ${dtbaddr};"
+#  define ADI_BOOT "booti ${loadaddr} - ${dtbaddr};"
 # else
 #  define IMAGEFILE "fitImage"
 #  define IMAGEFILE_RAM "fitImage"
+#  define ADI_BOOT_INITRD "bootm ${loadaddr} ${initramaddr};"
+#  define ADI_BOOT "bootm ${loadaddr};"
 # endif
 #else
 # define ADI_EARLYPRINTK "earlyprintk=serial,uart0,57600 "
 # if !CONFIG_IS_ENABLED(FIT)
 #  define IMAGEFILE "zImage"
 #  define IMAGEFILE_RAM "zImage"
+#  define ADI_BOOT_INITRD "bootz ${loadaddr} ${initramaddr} ${dtbaddr};"
+#  define ADI_BOOT "bootz ${loadaddr} - ${dtbaddr};"
 # else
 #  define IMAGEFILE "fitImage"
 #  define IMAGEFILE_RAM "fitImage"
+#  define ADI_BOOT_INITRD "bootm ${loadaddr} ${initramaddr};"
+#  define ADI_BOOT "bootm ${loadaddr};"
 # endif
+#endif
+
+#if !CONFIG_IS_ENABLED(FIT)
+	#define ADI_MMC_DTB "ext2load mmc 0:1 ${dtbaddr} /boot/${dtbfile};"
+	#define ADI_TFTP_DTB "tftp ${dtbaddr} ${dtbfile};"
+#else
+	#define ADI_MMC_DTB ""
+	#define ADI_TFTP_DTB ""
 #endif
 
 #ifdef CONFIG_VIDEO
@@ -213,44 +229,46 @@
 		"mmc rescan;" \
 		"mmc dev 0 0;" \
 		"ext2load mmc 0:1 ${loadaddr} /boot/${ramfile};" \
-		"ext2load mmc 0:1 ${dtbaddr} /boot/${dtbfile};" \
+		ADI_MMC_DTB \
 		"ext2load mmc 0:1 ${initramaddr} /boot/${initramfile};" \
 		"run sdcardargs;" \
 		"run addip;" \
-		"bootz ${loadaddr} ${initramaddr} ${dtbaddr}" \
+		ADI_BOOT_INITRD \
 		"\0" \
 	\
 	"ramboot=" \
 		"tftp ${loadaddr} ${ramfile};" \
+		ADI_TFTP_DTB \
 		"tftp ${initramaddr} ${initramfile};" \
 		"run ramargs;" \
 		"run addip;" \
-		"bootm ${loadaddr} ${initramaddr}" \
+		ADI_BOOT_INITRD \
 		"\0" \
 	\
 	"norboot=" \
 		"tftp ${loadaddr} ${ramfile};" \
-		"tftp ${dtbaddr} ${dtbfile};" \
+		ADI_TFTP_DTB \
 		"run ramargs;" \
 		"run addip;" \
-		"bootz ${loadaddr} - ${dtbaddr}" \
+		ADI_BOOT \
 		"\0" \
 	\
 	"sdcardboot=" \
 		"mmc rescan;" \
 		"mmc dev 0 0;" \
 		"ext2load mmc 0:1 ${loadaddr} /boot/${ramfile};" \
-		"ext2load mmc 0:1 ${dtbaddr} /boot/${dtbfile};" \
+		ADI_MMC_DTB \
 		"run sdcardargs;" \
-		"bootz ${loadaddr} - ${dtbaddr}" \
+		ADI_BOOT \
 		"\0" \
 	\
 	"nfsfile=" IMAGEFILE "\0" \
 	"nfsboot=" \
 		"tftp ${loadaddr} ${nfsfile};" \
+		ADI_TFTP_DTB \
 		"run nfsargs;" \
 		"run addip;" \
-		"bootm ${loadaddr}" \
+		ADI_BOOT \
 		"\0"
 #else
 # define NETWORK_ENV_SETTINGS
