@@ -121,7 +121,7 @@
 #  define ADI_BOOT "bootm ${loadaddr};"
 # endif
 #else
-# define ADI_EARLYPRINTK "earlyprintk=serial,uart0,57600 "
+# define ADI_EARLYPRINTK "earlyprintk=serial,uart0," __stringify(CONFIG_BAUDRATE) " "
 # if !CONFIG_IS_ENABLED(FIT)
 #  define IMAGEFILE "zImage"
 #  define IMAGEFILE_RAM "zImage"
@@ -154,7 +154,6 @@
 
 #define ADI_BOOTARGS_SDCARD	\
 	"root=" ADI_BOOTARGS_ROOT_SDCARD " " \
-	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
 	ADI_BOOTARGS_VIDEO \
 	ADI_EARLYPRINTK \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
@@ -163,7 +162,6 @@
 #define ADI_BOOTARGS_NFS	\
 	"root=/dev/nfs rw " \
 	"nfsroot=${serverip}:${rootpath},tcp,nfsvers=3 " \
-	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
 	ADI_BOOTARGS_VIDEO \
 	ADI_EARLYPRINTK \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
@@ -172,7 +170,6 @@
 #define CONFIG_BOOTARGS	\
 	"root=" ADI_BOOTARGS_ROOT_NAND " " \
 	"rootfstype=jffs2 " \
-	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
 	ADI_BOOTARGS_VIDEO \
 	ADI_EARLYPRINTK \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
