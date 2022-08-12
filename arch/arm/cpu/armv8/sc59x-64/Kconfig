@@ -84,7 +84,7 @@ config ADI_SPL_FORCE_BMODE
 	  5 = QSPI -> OSPI
 	  6 = QSPI -> eMMC
 
-source "board/adi/sc5xx-common/Kconfig"
+source "board/adi/common/Kconfig"
 source "board/adi/sc598-som-ezkit/Kconfig"
 
 endif

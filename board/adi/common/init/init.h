@@ -1,0 +1,26 @@
+/*
+ * Copyright (C) 2013 Analog Devices Inc.
+ * Licensed under the GPL-2 or later.
+ */
+
+#if defined(CONFIG_SC57X) || defined(CONFIG_SC59X)
+#define REG_SPU0_SECUREC0              0x3108B980
+#define REG_SPU0_SECUREC1              0x3108B984
+#define REG_SPU0_SECUREC2              0x3108B988
+#define REG_SPU0_SECUREP_START         0x3108BA00
+#define REG_SPU0_SECUREP_END           0x3108BD24
+#endif
+
+#ifdef CONFIG_SC58X
+#define REG_SPU0_SECUREC0              0x3108C980
+#define REG_SPU0_SECUREC1              0x3108C984
+#define REG_SPU0_SECUREC2              0x3108C988
+#define REG_SPU0_SECUREP_START         0x3108CA00
+#define REG_SPU0_SECUREP_END           0x3108CD24
+#endif
+
+#define REG_ARMPMU0_PMCR               0x31121E04
+#define REG_ARMPMU0_PMUSERENR          0x31121E08
+#define REG_ARMPMU0_PMLAR              0x31121FB0
+
+void initcode(void);

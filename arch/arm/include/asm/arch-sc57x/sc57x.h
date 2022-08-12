@@ -132,7 +132,9 @@
    DMC0
    ========================= */
 #define REG_DMC0_PHY_CTL0               0x31071000         /* DMC0 PHY Control 0 Register */
+#define REG_DMC0_PHY_CTL1               0x31071004         /* DMC0 PHY Control 1 Register */
 #define REG_DMC0_PHY_CTL2               0x31071008         /* DMC0 PHY Control 2 Register */
+#define REG_DMC0_PHY_CTL3               0x3107100c         /* DMC0 PHY Control 3 Register */
 #define REG_DMC0_PHY_CTL4               0x31071010         /* DMC0 PHY Control 4 Register */
 #define REG_DMC0_CAL_PADCTL0            0x31071034         /* DMC0 CALIBRATION PAD CTL 0 Register */
 #define REG_DMC0_CAL_PADCTL2            0x3107103C         /* DMC0 CALIBRATION PAD CTL2 Register */
@@ -147,6 +149,44 @@
 #define REG_DMC0_EMR1                   0x31070064         /* DMC0 Shadow EMR1 Register */
 #define REG_DMC0_EMR2                   0x31070068         /* DMC0 Shadow EMR2 Register */
 #define REG_DMC0_DLLCTL                 0x31070080         /* DMC0 DLL Control Register */
+#define REG_DMC0_DT_CALIB_ADDR          0x31070090         /* DMC0 Data Calibration Address Register */
+#define REG_DMC0_CPHY_CTL               0x310701C0         /* DMC0 Controller to PHY Interface Register */
+/* =========================
+   DMC1
+   ========================= */
+#define REG_DMC1_PHY_CTL0               0x31074000         /* DMC1 PHY Control 0 Register */
+#define REG_DMC1_PHY_CTL1               0x31074004         /* DMC1 PHY Control 1 Register */
+#define REG_DMC1_PHY_CTL2               0x31074008         /* DMC1 PHY Control 2 Register */
+#define REG_DMC1_PHY_CTL3               0x3107400C         /* DMC1 PHY Control 3 Register */
+#define REG_DMC1_PHY_CTL4               0x31074010         /* DMC1 PHY Control 4 Register */
+#define REG_DMC1_CAL_PADCTL0            0x31074034         /* DMC1 CALIBRATION PAD CTL 0 Register */
+#define REG_DMC1_CAL_PADCTL2            0x3107403C         /* DMC1 CALIBRATION PAD CTL2 Register */
+
+#define REG_DMC1_CTL                    0x31073004         /* DMC1 Control Register */
+#define REG_DMC1_STAT                   0x31073008         /* DMC1 Status Register */
+#define REG_DMC1_CFG                    0x31073040         /* DMC1 Configuration Register */
+#define REG_DMC1_TR0                    0x31073044         /* DMC1 Timing 0 Register */
+#define REG_DMC1_TR1                    0x31073048         /* DMC1 Timing 1 Register */
+#define REG_DMC1_TR2                    0x3107304C         /* DMC1 Timing 2 Register */
+#define REG_DMC1_MR                     0x31073060         /* DMC1 Shadow MR Register (DDR3) */
+#define REG_DMC1_EMR1                   0x31073064         /* DMC1 Shadow EMR1 Register */
+#define REG_DMC1_EMR2                   0x31073068         /* DMC1 Shadow EMR2 Register */
+#define REG_DMC1_DLLCTL                 0x31073080         /* DMC1 DLL Control Register */
+#define REG_DMC1_DT_CALIB_ADDR          0x31073090         /* DMC1 Data Calibration Address Register */
+#define REG_DMC1_CPHY_CTL               0x310731C0         /* DMC1 Controller to PHY Interface Register */
+
+
+#define BITP_DMC_CAL_PADCTL0_RTTCALEN        31            /*  RTT Calibration Enable */
+#define BITP_DMC_CAL_PADCTL0_PDCALEN         30            /*  PULLDOWN Calibration Enable */
+#define BITP_DMC_CAL_PADCTL0_PUCALEN         29            /*  PULLUP Calibration Enable */
+#define BITP_DMC_CAL_PADCTL0_CALSTRT         28            /*  Start New Calibration ( Hardware Cleared) */
+#define BITM_DMC_CAL_PADCTL0_RTTCALEN        0x80000000    /*  RTT Calibration Enable */
+#define BITM_DMC_CAL_PADCTL0_PDCALEN         0x40000000    /*  PULLDOWN Calibration Enable */
+#define BITM_DMC_CAL_PADCTL0_PUCALEN         0x20000000    /*  PULLUP Calibration Enable */
+#define BITM_DMC_CAL_PADCTL0_CALSTRT         0x10000000    /*  Start New Calibration ( Hardware Cleared) */
+#define ENUM_DMC_PHY_CTL4_DDR3               0x00000000    /*  DDRMODE: DDR3 Mode */
+#define ENUM_DMC_PHY_CTL4_DDR2               0x00000001    /*  DDRMODE: DDR2 Mode */
+#define ENUM_DMC_PHY_CTL4_LPDDR              0x00000003    /*  DDRMODE: LPDDR Mode */
 
 /* =========================
         USB0

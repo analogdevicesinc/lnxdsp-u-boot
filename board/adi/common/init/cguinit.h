@@ -6,7 +6,6 @@
 #ifndef CGUINIT_H_
 #define CGUINIT_H_
 
-// Macros for CLKOUT options for SC589
 #define CLKIN0              0
 #define CLKIN1              1
 #define CGU2_0_SYSCLK       2
@@ -26,8 +25,6 @@
 #define	PCIPHYCLK           16
 #define	TMU_CLK             17
 #define	FROCLK              18
-
-#define CLKIN_SC589     25000000          /* CLKIN to processor in Hz */
 
 /*  PLL Multiplier and Divisor Selections (Required Value, Bit Position) */
 #define MSEL(X)   		((X << BITP_CGU_CTL_MSEL) 				& BITM_CGU_CTL_MSEL) 						/* PLL Multiplier Select */
@@ -64,6 +61,46 @@ struct CGU_Settings
 	uint32_t divex_S1SELEX:8;
 };
 
+
+struct _CDU_MAPPINGS
+{
+	uint32_t cfg0_SEL:2;
+	uint32_t cfg0_EN:1;
+	uint32_t cfg1_SEL:2;
+	uint32_t cfg1_EN:1;
+	uint32_t cfg2_SEL:2;
+	uint32_t cfg2_EN:1;
+	uint32_t cfg3_SEL:2;
+	uint32_t cfg3_EN:1;
+	uint32_t cfg4_SEL:2;
+	uint32_t cfg4_EN:1;
+	uint32_t cfg5_SEL:2;
+	uint32_t cfg5_EN:1;
+	uint32_t cfg6_SEL:2;
+	uint32_t cfg6_EN:1;
+	uint32_t cfg7_SEL:2;
+	uint32_t cfg7_EN:1;
+	uint32_t cfg8_SEL:2;
+	uint32_t cfg8_EN:1;
+	uint32_t cfg9_SEL:2;
+	uint32_t cfg9_EN:1;
+	uint32_t reserved0:5; /* 32 bits */
+};
+
+
+struct _CGU_CLOCKDIVIDERS
+{
+	uint32_t ctl_MSEL:7;
+	uint32_t ctl_DF:1;
+	uint32_t div_CSEL:5;
+	uint32_t div_SYSSEL:5;
+	uint32_t div_S0SEL:3;
+	uint32_t div_S1SEL:3;
+	uint32_t div_DSEL:5;
+	uint32_t div_OSEL:7;
+	uint32_t reserved0:28; /* 64 bits */
+};
+
 /* =========================
         CGU
    ========================= */
@@ -75,6 +112,8 @@ struct CGU_Settings
 #define BITM_CGU_CTL_MSEL                    (_ADI_MSK(0x00007F00,uint32_t))  /* Multiplier Select */
 #define ENUM_CGU_CTL_MSEL1TO127              (_ADI_MSK(0x00000000,uint32_t))  /* MSEL: MSEL = 1 to 127 */
 #define BITM_CGU_CTL_DF                      (_ADI_MSK(0x00000001,uint32_t))  /* Divide Frequency */
+#define BITM_CGU_CTL_S1SELEXEN               (_ADI_MSK(0x00020000,uint32_t))  /*  SCLK1 Extension Divider Enable */
+
 
 #define BITM_CGU_DIV_LOCK                    (_ADI_MSK(0x80000000,uint32_t))  /* Lock */
 #define BITM_CGU_DIV_UPDT                    (_ADI_MSK(0x40000000,uint32_t))  /* Update Clock Divisors */
@@ -218,19 +257,21 @@ struct CGU_Settings
 /* =========================
         CDU0
    ========================= */
-#define REG_CDU0_CFG0                   0x3108F000         /* CDU0 CDU Configuration */
-#define REG_CDU0_CFG1                   0x3108F004         /* CDU0 CDU Configuration */
-#define REG_CDU0_CFG2                   0x3108F008         /* CDU0 CDU Configuration */
-#define REG_CDU0_CFG3                   0x3108F00C         /* CDU0 CDU Configuration */
-#define REG_CDU0_CFG4                   0x3108F010         /* CDU0 CDU Configuration */
-#define REG_CDU0_CFG5                   0x3108F014         /* CDU0 CDU Configuration */
-#define REG_CDU0_CFG6                   0x3108F018         /* CDU0 CDU Configuration */
-#define REG_CDU0_CFG7                   0x3108F01C         /* CDU0 CDU Configuration */
-#define REG_CDU0_CFG8                   0x3108F020         /* CDU0 CDU Configuration */
-#define REG_CDU0_CFG9                   0x3108F024         /* CDU0 CDU Configuration */
+#define REG_CDU0_CFG0                   0x3108F000         /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG1                   0x3108F004         /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG2                   0x3108F008         /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG3                   0x3108F00C         /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG4                   0x3108F010         /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG5                   0x3108F014         /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG6                   0x3108F018         /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG7                   0x3108F01C         /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG8                   0x3108F020         /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG9                   0x3108F024         /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG10                  0x3108F028         /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG11                  0x3108F02C         /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG12                  0x3108F030         /*  CDU0 CDU Configuration */
 #define REG_CDU0_STAT                   0x3108F040         /* CDU0 CDU Status */
 #define REG_CDU0_CLKINSEL               0x3108F044         /* CDU0 Reg 4 Description */
 #define REG_CDU0_REVID                  0x3108F048         /* CDU0 CDU Revision ID */
-
 
 #endif /* CGUINIT_H_ */

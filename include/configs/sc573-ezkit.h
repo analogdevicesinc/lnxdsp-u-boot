@@ -28,6 +28,7 @@
  * Memory Settings
  */
 #define MEM_MT41K128M16JT
+#define MEM_DMC0
 
 #define	CONFIG_NR_DRAM_BANKS		1
 #define CONFIG_SYS_SDRAM_BASE	0x82000000

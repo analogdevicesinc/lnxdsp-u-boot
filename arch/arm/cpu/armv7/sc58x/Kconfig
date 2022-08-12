@@ -70,7 +70,7 @@ config SPI_UBOOT_OFF
 	help
 	  Specifiy the offset of the second stage u-boot bootstream on SPI flash
 
-source "board/adi/sc5xx-common/Kconfig"
+source "board/adi/common/Kconfig"
 source "board/adi/sc589-ezkit/Kconfig"
 source "board/adi/sc584-ezkit/Kconfig"
 source "board/adi/sc589-mini/Kconfig"
