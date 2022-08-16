@@ -11,6 +11,11 @@
 #define REG_SPU0_SECUREP_END           0x3108BD24
 #endif
 
+#ifdef CONFIG_SC59X_64
+#define REG_RCU0_BCODE                 0x3108C028
+#define REG_TSGENWR0_CNTCR             0x310AE000            /*  TSGENWR0 Counter Control Register */
+#endif
+
 #ifdef CONFIG_SC58X
 #define REG_SPU0_SECUREC0              0x3108C980
 #define REG_SPU0_SECUREC1              0x3108C984

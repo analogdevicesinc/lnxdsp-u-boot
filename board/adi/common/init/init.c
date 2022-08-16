@@ -23,19 +23,19 @@
             BITM_CGU_STAT_CLKSALGN)
 #define CGU_STAT_ALGN_LOCK (BITM_CGU_STAT_PLLEN | BITM_CGU_STAT_PLOCK)
 
+//fixme
 #define cclk_dclk_ratio 1250
 
 static inline
-void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useExtension)
+void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useExtension0, bool useExtension1)
 {
     uint32_t dNewCguDiv;
     uint32_t cgu_offset = 0x1000 * uiCguNo;
+    uint32_t extension = 0;
 
     dNewCguDiv =  OSEL(pCGU_Settings->div_OSEL);
     dNewCguDiv |= SYSSEL(pCGU_Settings->div_SYSSEL);
     dNewCguDiv |= CSEL(pCGU_Settings->div_CSEL);
-    dNewCguDiv |= S0SEL(pCGU_Settings->div_S0SEL);
-    dNewCguDiv |= S1SEL(pCGU_Settings->div_S1SEL);
     dNewCguDiv |= DSEL(pCGU_Settings->div_DSEL);
     dNewCguDiv &= ~BITM_CGU_DIV_LOCK;
 
@@ -43,13 +43,27 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
     writel(BITM_CGU_PLLCTL_PLLEN | BITM_CGU_PLLCTL_PLLBPST, CGU0_PLLCTL + cgu_offset);
     while(!(readl(CGU0_STAT + cgu_offset) & BITM_CGU_STAT_PLLBP)) {};
 
+    if(useExtension0){
+        dNewCguDiv |= (readl(CGU0_DIV + cgu_offset) & (BITM_CGU_DIV_S0SEL));
+    }
+    else{
+        dNewCguDiv |= (S0SEL(pCGU_Settings->div_S0SEL));
+    }
+
+    if(useExtension1){
+        dNewCguDiv |= (readl(CGU0_DIV + cgu_offset) & (BITM_CGU_DIV_S1SEL));
+    }else{
+        dNewCguDiv |= (S1SEL(pCGU_Settings->div_S1SEL));
+    }
+
     while (!((readl(CGU0_STAT + cgu_offset) & CGU_STAT_MASK) ==
          CGU_STAT_ALGN_LOCK));
 
     dmcdelay(1000, cclk_dclk_ratio);
 
-#ifdef CONFIG_SC59X
-    if(!useExtension){
+#if defined(CONFIG_SC59X)
+//fixme
+    if(!useExtension0){
         dNewCguDiv = 0x4024482;
     }
 #endif
@@ -59,17 +73,17 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
 
     dmcdelay(1000, cclk_dclk_ratio);
 
-    if(useExtension){
-        writel((BITM_CGU_CTL_S1SELEXEN | MSEL(pCGU_Settings->ctl_MSEL) | DF(pCGU_Settings->ctl_DF)) &
+    if(useExtension1)
+        extension |= BITM_CGU_CTL_S1SELEXEN;
+
+    if(useExtension0)
+        extension |= BITM_CGU_CTL_S0SELEXEN;
+
+    writel(( extension | MSEL(pCGU_Settings->ctl_MSEL) | DF(pCGU_Settings->ctl_DF)) &
             (~BITM_CGU_CTL_LOCK), CGU0_CTL + cgu_offset);
 
-        while(!(readl(CGU0_CTL + cgu_offset) & BITM_CGU_CTL_S1SELEXEN)) {};
-
-    }else{
-        /* Clear the Align and Update bit, since CTL is also written */
-        writel((MSEL(pCGU_Settings->ctl_MSEL) | DF(pCGU_Settings->ctl_DF)) &
-            (~BITM_CGU_CTL_LOCK), CGU0_CTL + cgu_offset);
-    }
+    if(useExtension0 | useExtension1)
+        while(!(readl(CGU0_CTL + cgu_offset) & (BITM_CGU_CTL_S1SELEXEN|BITM_CGU_CTL_S0SELEXEN))) {};
 
     dmcdelay(1000, cclk_dclk_ratio);
 
@@ -80,7 +94,7 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
 
     dmcdelay(1000, cclk_dclk_ratio);
 
-    if(useExtension){
+    if(useExtension1 || useExtension0){
 
         //Put PLL in to Bypass Mode
         writel(BITM_CGU_PLLCTL_PLLEN | BITM_CGU_PLLCTL_PLLBPST, CGU0_PLLCTL + cgu_offset);
@@ -88,15 +102,20 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
 
         dmcdelay(1000, cclk_dclk_ratio);
 
-#ifdef CONFIG_SC59X
+#if defined(CONFIG_SC59X)
+//fixme
         writel(0x60030, CGU0_DIVEX + cgu_offset);
 #endif
+
+#if defined(CONFIG_SC59X_64)
+        writel( S0SELEX(pCGU_Settings->divex_S0SELEX) | S1SELEX(pCGU_Settings->divex_S1SELEX), CGU0_DIVEX + cgu_offset);
+#endif
+
         dmcdelay(1000, cclk_dclk_ratio);
 
-#ifdef CONFIG_SC59X
-#define pREG_CDU0_CLKINSEL          ((volatile uint32_t*)0x3108F044)
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
         if(cgu_offset == 0)
-            *pREG_CDU0_CLKINSEL = 0;
+            writel(0, REG_CDU0_CLKINSEL);
 #endif
 
         dmcdelay(1000, cclk_dclk_ratio);
@@ -119,10 +138,10 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
  * @return       Status
  */
 static inline
-uint32_t CGU0_write(struct CGU_Settings *pCGU_Settings, uint32_t uiClkOutSel, bool useExtension)
+uint32_t CGU0_write(struct CGU_Settings *pCGU_Settings, uint32_t uiClkOutSel, bool useExtension0, bool useExtension1)
 {
 
-    Program_Cgu(0, pCGU_Settings, useExtension);
+    Program_Cgu(0, pCGU_Settings, useExtension0, useExtension1);
 
 #ifndef CONFIG_SC59X
     writel(uiClkOutSel, CGU0_CLKOUTSEL);
@@ -132,10 +151,10 @@ uint32_t CGU0_write(struct CGU_Settings *pCGU_Settings, uint32_t uiClkOutSel, bo
 }
 
 static inline
-uint32_t CGU1_write(struct CGU_Settings *pCGU_Settings, uint32_t uiClkOutSel, bool useExtension)
+uint32_t CGU1_write(struct CGU_Settings *pCGU_Settings, uint32_t uiClkOutSel, bool useExtension0, bool useExtension1)
 {
 
-    Program_Cgu(1, pCGU_Settings, useExtension);
+    Program_Cgu(1, pCGU_Settings, useExtension0, useExtension1);
 
     return 0;
 }
@@ -205,13 +224,13 @@ void Active_To_Fullon(unsigned int uiCGU_ID)
  */
 static inline
 uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel,
-            struct CGU_Settings *pClocks, uint32_t uiClkoutsel, bool useExtension)
+            struct CGU_Settings *pClocks, uint32_t uiClkoutsel, bool useExtension0, bool useExtension1)
 {
     uint32_t result = 0;
 
     if (uiCguNo == 0) {
 
-#ifdef CONFIG_SC59X
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
         if (readl(CGU0_STAT) & BITM_CGU_STAT_PLLEN)
             writel(BITM_CGU_PLLCTL_PLLEN, CGU0_PLLCTL);
 
@@ -222,14 +241,14 @@ uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel,
         if (readl(CGU0_STAT) & BITM_CGU_STAT_PLLBP)
             Active_To_Fullon(0);
 
-#ifdef CONFIG_SC59X
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
         dmcdelay(1000, cclk_dclk_ratio);
 #endif
 
-        CGU0_write(pClocks, uiClkoutsel, useExtension);
+        CGU0_write(pClocks, uiClkoutsel, useExtension0, useExtension1);
     } else if (uiCguNo == 1) {
 
-#ifdef CONFIG_SC59X
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
         if (readl(CGU1_STAT) & BITM_CGU_STAT_PLLEN)
             writel(BITM_CGU_PLLCTL_PLLEN, CGU1_PLLCTL);
 
@@ -240,11 +259,11 @@ uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel,
         if(readl(CGU1_STAT) & BITM_CGU_STAT_PLLBP)
             Active_To_Fullon(1);
 
-#ifdef CONFIG_SC59X
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
         dmcdelay(1000, cclk_dclk_ratio);
 #endif
 
-        CGU1_write(pClocks, uiClkoutsel, useExtension);
+        CGU1_write(pClocks, uiClkoutsel, useExtension0, useExtension1);
     }
     return result;
 }
@@ -268,18 +287,26 @@ static inline void cgu_init(void)
                         CONFIG_CGU1_DCLK_DIV,
                         CONFIG_CGU1_OCLK_DIV };
 
-    #ifdef CONFIG_SC59X
-        Clock_Dividers0.divex_S1SELEX = CONFIG_CGU0_DIV_S1SELEX;
-        Clock_Dividers1.divex_S1SELEX = CONFIG_CGU1_DIV_S1SELEX;
-    #endif
-
-
-#ifdef CONFIG_SC59X
-    CGU_Init(0,0,&Clock_Dividers0, 0, 1);
-#else
-    CGU_Init(0,0,&Clock_Dividers0, CLKO7, 0);
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+    Clock_Dividers0.divex_S1SELEX = CONFIG_CGU0_DIV_S1SELEX;
+    Clock_Dividers1.divex_S1SELEX = CONFIG_CGU1_DIV_S1SELEX;
 #endif
-    CGU_Init(1,0,&Clock_Dividers1, 0, 0);
+
+#if defined(CONFIG_SC59X_64)
+    Clock_Dividers0.divex_S0SELEX = 0x30;
+    Clock_Dividers1.divex_S0SELEX = CONFIG_CGU1_DIV_S0SELEX;
+#endif
+
+#if defined(CONFIG_SC59X_64)
+    CGU_Init(0, 0, &Clock_Dividers0, 0, 0, 1);
+    CGU_Init(1, 0, &Clock_Dividers1, 0, 1, 1);
+#elif defined(CONFIG_SC59X)
+    CGU_Init(0, 0, &Clock_Dividers0, 0, 0, 1);
+    CGU_Init(1, 0, &Clock_Dividers1, 0, 0, 0);
+#else
+    CGU_Init(0, 0, &Clock_Dividers0, CLKO7, 0, 0);
+    CGU_Init(1, 0, &Clock_Dividers1, 0, 0, 0);
+#endif
 }
 
 #define CONFIGURE_CDU0(a,b,c) \
@@ -298,9 +325,13 @@ __attribute__((always_inline)) static inline void cdu_init(void)
     CONFIGURE_CDU0(CONFIG_CDU0_CLKO7, REG_CDU0_CFG7, 7);
     CONFIGURE_CDU0(CONFIG_CDU0_CLKO8, REG_CDU0_CFG8, 8);
     CONFIGURE_CDU0(CONFIG_CDU0_CLKO9, REG_CDU0_CFG9, 9);
-#ifdef CONFIG_SC59X
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
     CONFIGURE_CDU0(CONFIG_CDU0_CLKO10, REG_CDU0_CFG10, 10);
     CONFIGURE_CDU0(CONFIG_CDU0_CLKO12, REG_CDU0_CFG12, 12);
+#endif
+#ifdef CONFIG_SC59X_64
+    CONFIGURE_CDU0(CONFIG_CDU0_CLKO13, REG_CDU0_CFG13, 13);
+    CONFIGURE_CDU0(CONFIG_CDU0_CLKO14, REG_CDU0_CFG14, 14);
 #endif
 }
 
@@ -310,65 +341,78 @@ ddr_init(void)
     DMC_Config();
 }
 
-void initcode(void)
+void initcode_shared(void)
 {
     u32 i;
 
 #ifdef MEM_DDR3
-#ifdef CONFIG_SC59X
-    adi_dmc_lane_reset(true, 0);
-#else
-#ifdef MEM_DMC0
-    writel(0x800, REG_DMC0_PHY_CTL0);
+    #if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+        adi_dmc_lane_reset(true, 0);
+    #else
+        #ifdef MEM_DMC0
+            writel(0x800, REG_DMC0_PHY_CTL0);
+        #endif
+        #ifdef MEM_DMC1
+            writel(0x800, REG_DMC1_PHY_CTL0);
+        #endif
+    #endif
 #endif
-#ifdef MEM_DMC1
-    writel(0x800, REG_DMC1_PHY_CTL0);
-#endif
-#endif
-#endif
+
     cdu_init();
     cgu_init();
 
 #ifdef MEM_DDR3
-#ifdef CONFIG_SC59X
-    adi_dmc_lane_reset(false, 0);
-#else
-#ifdef MEM_DMC0
-    writel(0x0, REG_DMC0_PHY_CTL0);
-#endif
-#ifdef MEM_DMC1
-    writel(0x0, REG_DMC1_PHY_CTL0);
-#endif
-#endif
+    #if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+        #ifdef CONFIG_SC59X_64
+            adi_config_third_pll(64,2);
+        #endif
+        adi_dmc_lane_reset(false, 0);
+    #else
+        #ifdef MEM_DMC0
+            writel(0x0, REG_DMC0_PHY_CTL0);
+        #endif
+        #ifdef MEM_DMC1
+            writel(0x0, REG_DMC1_PHY_CTL0);
+        #endif
+    #endif
 #endif
 
     ddr_init();
+
+#ifdef CONFIG_SC59X_64
+    // Enable coresight timer
+    writel(1, REG_TSGENWR0_CNTCR);
+#endif
 
     // Enable non-secure access to SHARC to support remoteproc in Linux
     writel(0, REG_SPU0_SECUREC0);
     writel(0, REG_SPU0_SECUREC1);
     writel(0, REG_SPU0_SECUREC2);
 
+#ifdef CONFIG_SC59X_64
+    //Do not rerun preboot routine --
+    // Without this, hardware resets triggered by RCU0_CTL:SYSRST
+    // lead to a deadlock somewhere in the boot ROM
+    writel(0x200, REG_RCU0_BCODE);
+#endif
+
+#ifndef CONFIG_SC59X_64
     // Configure PMU for non-secure operation
     writel(readl(REG_ARMPMU0_PMUSERENR) | 0x01, REG_ARMPMU0_PMUSERENR);
     writel(0xc5acce55, REG_ARMPMU0_PMLAR);
     writel(readl(REG_ARMPMU0_PMCR) | (1 << 1), REG_ARMPMU0_PMCR);
-
-#ifdef CONFIG_SC59X
-        //Enable board LEDs 7, 9, and 10
-        *(uint32_t*)(0x3100411C) = 0xE;
-        *(uint32_t*)(0x3100410C) = 0xE;
 #endif
 
-#ifndef CONFIG_SC57X
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+    //Enable board LEDs 7, 9, and 10
+    *(uint32_t*)(0x3100411C) = 0xE;
+    *(uint32_t*)(0x3100410C) = 0xE;
+#endif
+
+#if ! (defined(CONFIG_SC57X) || defined(CONFIG_SC59X_64))
     for(i = REG_SPU0_SECUREP_START; i <= REG_SPU0_SECUREP_END; i+=4){
         writel(0, i);
     }
 #endif
 
-}
-
-void initcode_shared(void)
-{
-    initcode();
 }

@@ -175,19 +175,6 @@
 #define REG_DMC1_DT_CALIB_ADDR          0x31073090         /* DMC1 Data Calibration Address Register */
 #define REG_DMC1_CPHY_CTL               0x310731C0         /* DMC1 Controller to PHY Interface Register */
 
-
-#define BITP_DMC_CAL_PADCTL0_RTTCALEN        31            /*  RTT Calibration Enable */
-#define BITP_DMC_CAL_PADCTL0_PDCALEN         30            /*  PULLDOWN Calibration Enable */
-#define BITP_DMC_CAL_PADCTL0_PUCALEN         29            /*  PULLUP Calibration Enable */
-#define BITP_DMC_CAL_PADCTL0_CALSTRT         28            /*  Start New Calibration ( Hardware Cleared) */
-#define BITM_DMC_CAL_PADCTL0_RTTCALEN        0x80000000    /*  RTT Calibration Enable */
-#define BITM_DMC_CAL_PADCTL0_PDCALEN         0x40000000    /*  PULLDOWN Calibration Enable */
-#define BITM_DMC_CAL_PADCTL0_PUCALEN         0x20000000    /*  PULLUP Calibration Enable */
-#define BITM_DMC_CAL_PADCTL0_CALSTRT         0x10000000    /*  Start New Calibration ( Hardware Cleared) */
-#define ENUM_DMC_PHY_CTL4_DDR3               0x00000000    /*  DDRMODE: DDR3 Mode */
-#define ENUM_DMC_PHY_CTL4_DDR2               0x00000001    /*  DDRMODE: DDR2 Mode */
-#define ENUM_DMC_PHY_CTL4_LPDDR              0x00000003    /*  DDRMODE: LPDDR Mode */
-
 /* =========================
         USB0
    ========================= */

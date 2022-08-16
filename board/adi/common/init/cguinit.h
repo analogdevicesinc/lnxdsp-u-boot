@@ -37,6 +37,7 @@
 #define OSEL(X)   		((X  << BITP_CGU_DIV_OSEL)				& BITM_CGU_DIV_OSEL) 						/* OUTCLK Divisor Select */
 #define CLKOUTSEL(X)    ((X  << BITP_CGU_CLKOUTSEL_CLKOUTSEL)	& BITM_CGU_CLKOUTSEL_CLKOUTSEL) 			/* CLKOUT select	*/
 #define USBCLKSEL(X)    ((X  << BITP_CGU_CLKOUTSEL_USBCLKSEL)	& BITM_CGU_CLKOUTSEL_USBCLKSEL) 			/* USBCLKSEL select */
+#define S0SELEX(X)      ((X  << BITP_CGU_DIVEX_S0SELEX)         & BITM_CGU_DIVEX_S0SELEX)
 #define S1SELEX(X)      ((X  << BITP_CGU_DIVEX_S1SELEX)         & BITM_CGU_DIVEX_S1SELEX)
 
 #define DIV_MASK		(BITM_CGU_DIV_CSEL | BITM_CGU_DIV_S0SEL | BITM_CGU_DIV_SYSSEL |BITM_CGU_DIV_S1SEL | BITM_CGU_DIV_DSEL | BITM_CGU_DIV_OSEL)
@@ -58,6 +59,7 @@ struct CGU_Settings
 	uint32_t div_S1SEL:3;
 	uint32_t div_DSEL:5;
 	uint32_t div_OSEL:7;
+	uint32_t divex_S0SELEX:8;
 	uint32_t divex_S1SELEX:8;
 };
 
@@ -113,7 +115,7 @@ struct _CGU_CLOCKDIVIDERS
 #define ENUM_CGU_CTL_MSEL1TO127              (_ADI_MSK(0x00000000,uint32_t))  /* MSEL: MSEL = 1 to 127 */
 #define BITM_CGU_CTL_DF                      (_ADI_MSK(0x00000001,uint32_t))  /* Divide Frequency */
 #define BITM_CGU_CTL_S1SELEXEN               (_ADI_MSK(0x00020000,uint32_t))  /*  SCLK1 Extension Divider Enable */
-
+#define BITM_CGU_CTL_S0SELEXEN               (_ADI_MSK(0x00010000,uint32_t))    /* SCLK0 Extension Divider Enable */
 
 #define BITM_CGU_DIV_LOCK                    (_ADI_MSK(0x80000000,uint32_t))  /* Lock */
 #define BITM_CGU_DIV_UPDT                    (_ADI_MSK(0x40000000,uint32_t))  /* Update Clock Divisors */
@@ -136,6 +138,9 @@ struct _CGU_CLOCKDIVIDERS
 
 #define BITM_CGU_DIV_CSEL                    (_ADI_MSK(0x0000001F,uint32_t))  /* CCLK Divisor */
 #define ENUM_CGU_DIV_CSEL1TO31               (_ADI_MSK(0x00000000,uint32_t))  /* CSEL: CSEL= 1 to 31 */
+
+#define BITP_CGU_DIVEX_S0SELEX               0
+#define BITM_CGU_DIVEX_S0SELEX               (_ADI_MSK(0x000000FF, uint32_t))    /*  SCLK 0 Extension Divisor */
 
 #define BITP_CGU_DIVEX_S1SELEX               16
 #define BITM_CGU_DIVEX_S1SELEX               (_ADI_MSK(0x00FF0000, uint32_t))    /*  SCLK 1 Extension Divisor */
@@ -270,6 +275,8 @@ struct _CGU_CLOCKDIVIDERS
 #define REG_CDU0_CFG10                  0x3108F028         /*  CDU0 CDU Configuration */
 #define REG_CDU0_CFG11                  0x3108F02C         /*  CDU0 CDU Configuration */
 #define REG_CDU0_CFG12                  0x3108F030         /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG13                  0x3108F034            /*  CDU0 CDU Configuration */
+#define REG_CDU0_CFG14                  0x3108F038            /*  CDU0 CDU Configuration */
 #define REG_CDU0_STAT                   0x3108F040         /* CDU0 CDU Status */
 #define REG_CDU0_CLKINSEL               0x3108F044         /* CDU0 Reg 4 Description */
 #define REG_CDU0_REVID                  0x3108F048         /* CDU0 CDU Revision ID */

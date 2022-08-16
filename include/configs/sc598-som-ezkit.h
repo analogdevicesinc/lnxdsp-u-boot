@@ -68,6 +68,7 @@
 /*
  * Memory Settings
  */
+#define MEM_IS43TR16512BL
 #define MEM_ISSI_4Gb_DDR3_800MHZ
 #define MEM_DMC0
 

@@ -151,12 +151,44 @@
 #define BITM_DMC_MR1_WL                       0x00000080    /*  Write Leveling Enable. */
 #define BITM_DMC_STAT_PHYRDPHASE              0x00F00000    /*  PHY Read Phase */
 
+#define BITP_DMC_DDR_LANE0_CTL1_BYPCODE       10
+#define BITM_DMC_DDR_LANE0_CTL1_BYPCODE       0x00007C00
+#define BITP_DMC_DDR_LANE0_CTL1_BYPDELCHAINEN 15 
+#define BITM_DMC_DDR_LANE0_CTL1_BYPDELCHAINEN 0x00008000
+
 #define DMC_ZQCTL0_VALUE                      0x00785A64
 #define DMC_ZQCTL1_VALUE                      0
 #define DMC_ZQCTL2_VALUE                      0x70000000
 
 #define DMC_TRIG_CALIB                        0
 #define DMC_OFSTDCYCLE                        2
+
+#define BITP_DMC_CAL_PADCTL0_RTTCALEN        31            /*  RTT Calibration Enable */
+#define BITP_DMC_CAL_PADCTL0_PDCALEN         30            /*  PULLDOWN Calibration Enable */
+#define BITP_DMC_CAL_PADCTL0_PUCALEN         29            /*  PULLUP Calibration Enable */
+#define BITP_DMC_CAL_PADCTL0_CALSTRT         28            /*  Start New Calibration ( Hardware Cleared) */
+#define BITM_DMC_CAL_PADCTL0_RTTCALEN        0x80000000    /*  RTT Calibration Enable */
+#define BITM_DMC_CAL_PADCTL0_PDCALEN         0x40000000    /*  PULLDOWN Calibration Enable */
+#define BITM_DMC_CAL_PADCTL0_PUCALEN         0x20000000    /*  PULLUP Calibration Enable */
+#define BITM_DMC_CAL_PADCTL0_CALSTRT         0x10000000    /*  Start New Calibration ( Hardware Cleared) */
+#define ENUM_DMC_PHY_CTL4_DDR3               0x00000000    /*  DDRMODE: DDR3 Mode */
+#define ENUM_DMC_PHY_CTL4_DDR2               0x00000001    /*  DDRMODE: DDR2 Mode */
+#define ENUM_DMC_PHY_CTL4_LPDDR              0x00000003    /*  DDRMODE: LPDDR Mode */
+
+#define BITP_DMC_DDR_ZQ_CTL0_IMPRTT          16            /*  Data/DQS ODT */
+#define BITP_DMC_DDR_ZQ_CTL0_IMPWRDQ          8            /*  Data/DQS/DM/CLK Drive Strength */
+#define BITP_DMC_DDR_ZQ_CTL0_IMPWRADD         0            /*  Address/Command Drive Strength */
+#define BITM_DMC_DDR_ZQ_CTL0_IMPRTT          0x00FF0000    /* Data/DQS ODT */
+#define BITM_DMC_DDR_ZQ_CTL0_IMPWRDQ         0x0000FF00    /* Data/DQS/DM/CLK Drive Strength */
+#define BITM_DMC_DDR_ZQ_CTL0_IMPWRADD        0x000000FF    /* Address/Command Drive Strength */
+
+#define BITM_DMC_DDR_ROOT_CTL_TRIG_RD_XFER_ALL   0x00200000    /* All Lane Read Status */
+
+#define BITM_REG10_MSEL3            0x000007F0
+#define BITP_REG10_MSEL3            4
+
+#define BITM_REG10_DSEL3            0x0001F000
+#define BITP_REG10_DSEL3            12
 
 #ifdef MEM_DDR2
     #define DMC_MR0_VALUE \
@@ -274,7 +306,7 @@ typedef struct{
     uint32_t REG_DMC_STAT;
     uint32_t VAL_DMC_DATA_CALIB_ADD;
     uint32_t REG_DMC_DT_CALIB_ADDR;
-#ifdef CONFIG_SC59X
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
     uint32_t REG_DMC_EMR3;
     uint32_t REG_DMC_DDR_CA_CTL;
     uint32_t REG_DMC_DDR_ROOT_CTL;
@@ -288,11 +320,17 @@ typedef struct{
     uint32_t REG_DMC_DDR_ZQ_CTL1;
     uint32_t REG_DMC_DDR_ZQ_CTL2;
 #endif
+#if defined(CONFIG_SC59X_64)
+    uint32_t REG_DMC_DDR_SCRATCH_6;
+    uint32_t REG_DMC_DDR_SCRATCH_7;
+    uint32_t REG_DMC_DDR_SCRATCH_STAT0;
+    uint32_t REG_DMC_DDR_SCRATCH_STAT1;
+#endif
 }DMC_REGISTERS;
 
 struct dmc_param {
     uint32_t dmc_no;
-    DMC_REGISTERS * registers;
+    DMC_REGISTERS * reg;
     uint32_t ddr_mode;
     uint32_t cclk_dclk_ratio;
     uint32_t padctl2_value;
@@ -342,77 +380,65 @@ __attribute__((always_inline)) static inline void dmcdelay(uint32_t delay, uint3
   }
 }
 
-#ifdef CONFIG_SC59X
-
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
     #define REG_DMC_DDR_LANE0_CTL0(x) x == 0 ? REG_DMC0_DDR_LANE0_CTL0 : REG_DMC1_DDR_LANE0_CTL0
     #define REG_DMC_DDR_LANE1_CTL0(x) x == 0 ? REG_DMC0_DDR_LANE1_CTL0 : REG_DMC1_DDR_LANE1_CTL0
-
-    #define DECLARE_DMC_REGISTERS(x) \
-        static DMC_REGISTERS dmc_registers##x = { \
-            .REG_DMC_PHY_CTL4 = REG_DMC##x##_PHY_CTL4, \
-            .REG_DMC_PHY_CTL3 = REG_DMC##x##_PHY_CTL3, \
-            .REG_DMC_PHY_CTL2 = REG_DMC##x##_PHY_CTL2, \
-            .REG_DMC_PHY_CTL1 = REG_DMC##x##_PHY_CTL1, \
-            .REG_DMC_PHY_CTL0 = REG_DMC##x##_PHY_CTL0, \
-            .REG_DMC_CPHY_CTL = REG_DMC##x##_CPHY_CTL, \
-            .REG_DMC_CAL_PADCTL2 = REG_DMC##x##_CAL_PADCTL2, \
-            .REG_DMC_CAL_PADCTL0 = REG_DMC##x##_CAL_PADCTL0, \
-            .REG_DMC_CFG = REG_DMC##x##_CFG, \
-            .REG_DMC_TR0 = REG_DMC##x##_TR0, \
-            .REG_DMC_TR1 = REG_DMC##x##_TR1, \
-            .REG_DMC_TR2 = REG_DMC##x##_TR2, \
-            .REG_DMC_MR = REG_DMC##x##_MR, \
-            .REG_DMC_EMR1 = REG_DMC##x##_EMR1, \
-            .REG_DMC_EMR2 = REG_DMC##x##_EMR2, \
-            .REG_DMC_DLLCTL = REG_DMC##x##_DLLCTL, \
-            .REG_DMC_CTL = REG_DMC##x##_CTL, \
-            .REG_DMC_STAT = REG_DMC##x##_STAT, \
-            .VAL_DMC_DATA_CALIB_ADD = DMC##x##_DATA_CALIB_ADD, \
-            .REG_DMC_DT_CALIB_ADDR = REG_DMC##x##_DT_CALIB_ADDR, \
-            .REG_DMC_EMR3 = REG_DMC##x##_EMR3, \
-            .REG_DMC_DDR_CA_CTL = REG_DMC##x##_DDR_CA_CTL, \
-            .REG_DMC_DDR_ROOT_CTL = REG_DMC##x##_DDR_ROOT_CTL, \
-            .REG_DMC_DDR_LANE0_CTL0 = REG_DMC##x##_DDR_LANE0_CTL0, \
-            .REG_DMC_DDR_LANE0_CTL1 = REG_DMC##x##_DDR_LANE0_CTL1, \
-            .REG_DMC_DDR_LANE1_CTL0 = REG_DMC##x##_DDR_LANE1_CTL0, \
-            .REG_DMC_DDR_LANE1_CTL1 = REG_DMC##x##_DDR_LANE1_CTL1, \
-            .REG_DMC_DDR_SCRATCH_2 = REG_DMC##x##_DDR_SCRATCH_2, \
-            .REG_DMC_DDR_SCRATCH_3 = REG_DMC##x##_DDR_SCRATCH_3, \
-            .REG_DMC_DDR_ZQ_CTL0 = REG_DMC##x##_DDR_ZQ_CTL0, \
-            .REG_DMC_DDR_ZQ_CTL1 = REG_DMC##x##_DDR_ZQ_CTL1, \
-            .REG_DMC_DDR_ZQ_CTL2 = REG_DMC##x##_DDR_ZQ_CTL2, \
-        };
+    #define REGISTERS_59X(x) \
+        .REG_DMC_EMR3 = REG_DMC##x##_EMR3, \
+        .REG_DMC_DDR_CA_CTL = REG_DMC##x##_DDR_CA_CTL, \
+        .REG_DMC_DDR_ROOT_CTL = REG_DMC##x##_DDR_ROOT_CTL, \
+        .REG_DMC_DDR_LANE0_CTL0 = REG_DMC##x##_DDR_LANE0_CTL0, \
+        .REG_DMC_DDR_LANE0_CTL1 = REG_DMC##x##_DDR_LANE0_CTL1, \
+        .REG_DMC_DDR_LANE1_CTL0 = REG_DMC##x##_DDR_LANE1_CTL0, \
+        .REG_DMC_DDR_LANE1_CTL1 = REG_DMC##x##_DDR_LANE1_CTL1, \
+        .REG_DMC_DDR_SCRATCH_2 = REG_DMC##x##_DDR_SCRATCH_2, \
+        .REG_DMC_DDR_SCRATCH_3 = REG_DMC##x##_DDR_SCRATCH_3, \
+        .REG_DMC_DDR_ZQ_CTL0 = REG_DMC##x##_DDR_ZQ_CTL0, \
+        .REG_DMC_DDR_ZQ_CTL1 = REG_DMC##x##_DDR_ZQ_CTL1, \
+        .REG_DMC_DDR_ZQ_CTL2 = REG_DMC##x##_DDR_ZQ_CTL2,
 #else
-    #define DECLARE_DMC_REGISTERS(x) \
-        static DMC_REGISTERS dmc_registers##x = { \
-            .REG_DMC_PHY_CTL4 = REG_DMC##x##_PHY_CTL4, \
-            .REG_DMC_PHY_CTL3 = REG_DMC##x##_PHY_CTL3, \
-            .REG_DMC_PHY_CTL2 = REG_DMC##x##_PHY_CTL2, \
-            .REG_DMC_PHY_CTL1 = REG_DMC##x##_PHY_CTL1, \
-            .REG_DMC_PHY_CTL0 = REG_DMC##x##_PHY_CTL0, \
-            .REG_DMC_CPHY_CTL = REG_DMC##x##_CPHY_CTL, \
-            .REG_DMC_CAL_PADCTL2 = REG_DMC##x##_CAL_PADCTL2, \
-            .REG_DMC_CAL_PADCTL0 = REG_DMC##x##_CAL_PADCTL0, \
-            .REG_DMC_CFG = REG_DMC##x##_CFG, \
-            .REG_DMC_TR0 = REG_DMC##x##_TR0, \
-            .REG_DMC_TR1 = REG_DMC##x##_TR1, \
-            .REG_DMC_TR2 = REG_DMC##x##_TR2, \
-            .REG_DMC_MR = REG_DMC##x##_MR, \
-            .REG_DMC_EMR1 = REG_DMC##x##_EMR1, \
-            .REG_DMC_EMR2 = REG_DMC##x##_EMR2, \
-            .REG_DMC_DLLCTL = REG_DMC##x##_DLLCTL, \
-            .REG_DMC_CTL = REG_DMC##x##_CTL, \
-            .REG_DMC_STAT = REG_DMC##x##_STAT, \
-            .VAL_DMC_DATA_CALIB_ADD = DMC##x##_DATA_CALIB_ADD, \
-            .REG_DMC_DT_CALIB_ADDR = REG_DMC##x##_DT_CALIB_ADDR, \
-        };
+    #define REGISTERS_59X(x)
 #endif
+
+#if defined(CONFIG_SC59X_64)
+    #define REGISTERS_59X_64(x) \
+        .REG_DMC_DDR_SCRATCH_6 = REG_DMC##x##_DDR_SCRATCH_6, \
+        .REG_DMC_DDR_SCRATCH_7 = REG_DMC##x##_DDR_SCRATCH_7, \
+        .REG_DMC_DDR_SCRATCH_STAT0 = REG_DMC##x##_DDR_SCRATCH_STAT0, \
+        .REG_DMC_DDR_SCRATCH_STAT1 = REG_DMC##x##_DDR_SCRATCH_STAT1,
+#else
+    #define REGISTERS_59X_64(x)
+#endif
+
+#define DECLARE_DMC_REGISTERS(x) \
+    static DMC_REGISTERS dmc_registers##x __attribute__ ((section (".text"))) = { \
+        .REG_DMC_PHY_CTL4 = REG_DMC##x##_PHY_CTL4, \
+        .REG_DMC_PHY_CTL3 = REG_DMC##x##_PHY_CTL3, \
+        .REG_DMC_PHY_CTL2 = REG_DMC##x##_PHY_CTL2, \
+        .REG_DMC_PHY_CTL1 = REG_DMC##x##_PHY_CTL1, \
+        .REG_DMC_PHY_CTL0 = REG_DMC##x##_PHY_CTL0, \
+        .REG_DMC_CPHY_CTL = REG_DMC##x##_CPHY_CTL, \
+        .REG_DMC_CAL_PADCTL2 = REG_DMC##x##_CAL_PADCTL2, \
+        .REG_DMC_CAL_PADCTL0 = REG_DMC##x##_CAL_PADCTL0, \
+        .REG_DMC_CFG = REG_DMC##x##_CFG, \
+        .REG_DMC_TR0 = REG_DMC##x##_TR0, \
+        .REG_DMC_TR1 = REG_DMC##x##_TR1, \
+        .REG_DMC_TR2 = REG_DMC##x##_TR2, \
+        .REG_DMC_MR = REG_DMC##x##_MR, \
+        .REG_DMC_EMR1 = REG_DMC##x##_EMR1, \
+        .REG_DMC_EMR2 = REG_DMC##x##_EMR2, \
+        .REG_DMC_DLLCTL = REG_DMC##x##_DLLCTL, \
+        .REG_DMC_CTL = REG_DMC##x##_CTL, \
+        .REG_DMC_STAT = REG_DMC##x##_STAT, \
+        .VAL_DMC_DATA_CALIB_ADD = DMC##x##_DATA_CALIB_ADD, \
+        .REG_DMC_DT_CALIB_ADDR = REG_DMC##x##_DT_CALIB_ADDR, \
+        REGISTERS_59X(x) \
+        REGISTERS_59X_64(x) \
+    };
 
 DECLARE_DMC_REGISTERS(0)
 DECLARE_DMC_REGISTERS(1)
 
 #endif
-
-
 
 
