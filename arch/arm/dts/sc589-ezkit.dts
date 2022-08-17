@@ -4,6 +4,10 @@
 	model = "ADI sc589-ezkit";
 	compatible = "adi,sc589-ezkit", "adi,sc58x";
 
+	chosen {
+		stdout-path = "serial0:115200";
+	};
+
 	aliases {
 		spi2 = "/spi@31030000";
 		serial0 = &uart0;
