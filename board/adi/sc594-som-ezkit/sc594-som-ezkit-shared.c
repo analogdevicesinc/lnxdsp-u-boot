@@ -12,7 +12,6 @@
 #include <asm/io.h>
 #include <asm/gpio.h>
 #include <asm/mach-types.h>
-#include <asm/arch/portmux.h>
 #include <asm/mach-adi/common/sc5xx.h>
 #include <asm/mach-adi/common/dwmmc.h>
 #include <linux/delay.h>
@@ -36,10 +35,6 @@ void spi_flash_override_defaults(unsigned int * bus,
 
 void adi_multiplex_ospi(){
 #ifdef CONFIG_CADENCE_QSPI
-	static const unsigned short pins_ospi0[] = P_OSPI0;
-	if (peripheral_request_list(pins_ospi0, "ospi0")){
-		printf("Unable to pinmux OSPI0\r\n");
-	}
 #endif
 }
 
@@ -50,9 +45,6 @@ int adi_initialize_soft_switches()
 			(char*)&switch_config_array[0], sizeof(struct switch_config));
 	memcpy((char*)&switch_config_array_current_state[1],
 			(char*)&switch_config_array[1], sizeof(struct switch_config));
-
-	static const unsigned short pins_i2c2[] = P_I2C2;
-	peripheral_request_list(pins_i2c2, "i2c2");
 
 	setup_soft_switches(switch_config_array_current_state, NUM_SWITCH);
 #endif

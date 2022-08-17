@@ -3,7 +3,6 @@
  * Licensed under the GPL-2 or later.
  */
 
-#include <asm/arch/portmux.h>
 #include <asm/mach-adi/common/sc5xx.h>
 #include <asm/io.h>
 #include <config.h>

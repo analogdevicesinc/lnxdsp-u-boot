@@ -23,7 +23,6 @@
 		uart0: serial@0x31003000 {
 			compatible = "adi,uart4";
 			reg = <0x31003000 0x1000>;
-			adi,uart-port = <0>;
 			status = "okay";
 		};
 

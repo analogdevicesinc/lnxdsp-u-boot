@@ -12,7 +12,6 @@
 #include <asm/io.h>
 #include <asm/gpio.h>
 #include <asm/mach-types.h>
-#include <asm/arch/portmux.h>
 #include <asm/mach-adi/common/sc5xx.h>
 #include <asm/mach-adi/common/dwmmc.h>
 #include <linux/delay.h>
@@ -62,10 +61,6 @@ int board_early_init_f(void)
 	bss_clear();
 
 #ifdef CONFIG_USB_DWC2
-	static const unsigned short pins_usbc0[] = P_USBC0;
-	if (peripheral_request_list(pins_usbc0, "usbc0")){
-		printf("Unable to pinmux OSPI0\r\n");
-	}
 	gpio_request(GPIO_PG11, "usb_reset");
 	gpio_direction_output(GPIO_PG11, 1);
 #endif
@@ -135,14 +130,6 @@ void adi_eth_init(void) {
 		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
 		writel(readl(REG_PADS0_PCFG0) & ~(1 << 19), REG_PADS0_PCFG0);
 		writel(readl(REG_PADS0_PCFG0) & ~(1 << 20), REG_PADS0_PCFG0);
-
-		static const unsigned short pins[] = P_RGMII0;
-		peripheral_request_list(pins, "emac0");
-	}
-
-	if (CONFIG_DW_PORTS >= 2) {
-		static const unsigned short pins[] = P_RMII1;
-		peripheral_request_list(pins, "emac1");
 	}
 #endif
 }

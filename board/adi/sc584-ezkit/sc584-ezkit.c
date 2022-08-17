@@ -12,7 +12,6 @@
 #include <asm/io.h>
 #include <asm/gpio.h>
 #include <asm/mach-types.h>
-#include <asm/arch/portmux.h>
 #include <asm/mach-adi/common/sc5xx.h>
 #include <asm/mach-adi/common/dwmmc.h>
 #include <linux/delay.h>
@@ -117,10 +116,8 @@ int board_eth_init(struct bd_info *bis)
 
 		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
 
-		static const unsigned short pins[] = P_RGMII0;
-		if (!peripheral_request_list(pins, "emac0"))
-			ret += designware_initialize(REG_EMAC0_MACCFG,
-					PHY_INTERFACE_MODE_RGMII);
+		ret += designware_initialize(REG_EMAC0_MACCFG,
+				PHY_INTERFACE_MODE_RGMII);
 	}
 
 	return ret;

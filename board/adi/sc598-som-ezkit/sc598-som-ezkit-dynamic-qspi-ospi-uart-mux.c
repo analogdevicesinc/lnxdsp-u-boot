@@ -16,7 +16,6 @@
 #include <asm/io.h>
 #include <asm/gpio.h>
 #include <asm/mach-types.h>
-#include <asm/arch/portmux.h>
 #include <asm/mach-adi/common/sc5xx.h>
 #include <asm/mach-adi/common/dwmmc.h>
 #include <linux/delay.h>
@@ -27,12 +26,10 @@
 #include "sc598-som-ezkit-shared.h"
 #include <asm/mach-adi/59x-64/sc598-som-ezkit-dynamic-qspi-ospi-uart-mux.h>
 
-static const unsigned short pins_ospi0[] = P_OSPI0;
-static const unsigned short pins_qspi2[] = QSPI_PINS_SWITCH(2);
-static const uint16_t *uart_pins = { P_UART0_TX, P_UART0_RX, 0 };
-
 extern bool uartEnabled;
 extern bool uartReadyToEnable;
+
+// @todo this is left broken at the moment; in the future change pinctrl states
 
 int adi_enable_ospi()
 {
@@ -73,11 +70,7 @@ int adi_enable_ospi()
 
 		setup_soft_switches(switch_config_array_current_state, NUM_SWITCH);
 
-		//If OSPI is being used, then these pins cannot be muxed
-		peripheral_free_list(uart_pins);
-		peripheral_free_list(pins_qspi2);
-		peripheral_free_list(pins_ospi0);
-		peripheral_request_list(pins_ospi0, "ospi0");
+		// @todo change pinctrl state
 	}
 
 	return 0;
@@ -95,12 +88,7 @@ int adi_disable_ospi(bool changeMuxImmediately)
 
 		uartReadyToEnable = 0;
 
-		//If OSPI is being used, then these pins cannot be muxed
-		peripheral_free_list(uart_pins);
-		peripheral_free_list(pins_qspi2);
-		peripheral_free_list(pins_ospi0);
-		peripheral_request_list(uart_pins, "adi-uart4");
-		peripheral_request_list(pins_qspi2, "adi-qspi2");
+		// @todo change pinctrl state
 
 		serial_resume();
 

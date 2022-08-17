@@ -6,7 +6,6 @@
 #ifndef _MACH_GPIO_H_
 #define _MACH_GPIO_H_
 #include <asm-generic/gpio.h>
-#include <asm/arch/portmux.h>
 
 #define MAX_GPIOS		96
 #define GPIO_BANKSIZE   16

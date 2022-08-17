@@ -27,6 +27,7 @@
 #include <linux/kernel.h>
 #include <asm/io.h>
 #include <power/regulator.h>
+#include <asm-generic/gpio.h>
 
 #include "dwmac4.h"
 #include "dwmac4_dma.h"

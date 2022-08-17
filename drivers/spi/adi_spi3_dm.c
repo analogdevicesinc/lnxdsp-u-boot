@@ -88,9 +88,7 @@ static int adi_spi_probe(struct udevice *bus)
 		cs = gpio_cs(priv->cs_num);
 		gpio_request(cs, "adi-spi3");
 		gpio_direction_output(cs, !priv->cs_pol);
-		priv->pins[0] = P_DONTCARE;
 	}
-	peripheral_request_list(priv->pins, "adi-spi3");
 
 #ifdef CONFIG_SPI_FLASH_MMAP
 	priv->memory_map = (void *)CONFIG_SPI_MM_BASE;

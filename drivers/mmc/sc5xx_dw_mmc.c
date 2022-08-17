@@ -1,13 +1,6 @@
 #include <common.h>
 #include <dwmmc.h>
 
-#if defined(CONFIG_SC59X)
-#include <asm/arch-sc59x/portmux.h>
-#elif defined(CONFIG_SC58X)
-#include <asm/arch-sc58x/portmux.h>
-#elif defined(CONFIG_SC57X)
-#include <asm/arch-sc57x/portmux.h>
-#endif
 #include <asm/mach-adi/common/clock.h>
 #include <asm/mach-adi/common/sc5xx.h>
 
@@ -15,20 +8,12 @@
 #define DWMMC_MIN_FREQ 400000
 #define DWMMC_REG_BASE REG_MSI0_CTL
 
-#define PORTMUX_PINS \
-	{ P_MSI0_D0, P_MSI0_D1, P_MSI0_D2, P_MSI0_D3, \
-	  P_MSI0_CMD, P_MSI0_CLK, P_MSI0_CDb, 0 }
-
 static struct dwmci_host dwmci_host;
 
 int sc5xx_dwmmc_init(struct bd_info *bis)
 {
 	int ret;
-	const unsigned short pins[] = PORTMUX_PINS;
 	struct dwmci_host *host;
-
-	/*initialize pin mux in sc58x*/
-	ret = peripheral_request_list(pins, "sc5xx_sdh");
 
 	host = &dwmci_host;
 	host->name = "SC5XX SDH";

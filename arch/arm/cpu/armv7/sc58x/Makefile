@@ -10,5 +10,5 @@
 #
 
 obj-y	:= lowlevel_init.o
-obj-y	+= timer.o gpio.o
+obj-y	+= timer.o
 obj-y	+= clocks.o

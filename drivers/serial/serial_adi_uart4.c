@@ -9,10 +9,10 @@
 #include <post.h>
 #include <watchdog.h>
 #include <serial.h>
-#include <asm/arch/portmux.h>
 #include <asm/mach-adi/common/clock.h>
 #include <asm/io.h>
 #include <linux/compiler.h>
+#include <linux/bitops.h>
 
 #ifdef CONFIG_SC59X_64
 #ifdef ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
@@ -105,9 +105,6 @@ struct uart4_reg {
 struct adi_uart4_platdata {
 	// Hardware registers
 	struct uart4_reg *regs;
-
-	// console number, needs to be passed to things like adi_uart4_get_pins
-	int port;
 
 	// Enable divide-by-one baud rate setting
 	bool edbo;
@@ -240,38 +237,14 @@ static int adi_uart4_ofdata_to_platdata(struct udevice *dev) {
 
 	plat->regs = (struct uart4_reg *) addr;
 	plat->edbo = fdtdec_get_bool(gd->fdt_blob, node, "adi,enable-edbo");
-	plat->port = fdtdec_get_int(gd->fdt_blob, node, "adi,uart-port", 0);
 
 	return 0;
 }
 
-static const uint16_t pins0[] = { P_UART0_TX, P_UART0_RX, 0 };
-static const uint16_t pins1[] = { P_UART1_TX, P_UART1_RX, 0 };
-static const uint16_t pins2[] = { P_UART2_TX, P_UART2_RX, 0 };
-
 static int adi_uart4_probe(struct udevice *dev) {
 	struct adi_uart4_platdata *plat = dev->platdata;
 	struct uart4_reg *regs = plat->regs;
-	const uint16_t *pins = NULL;
 	int ret;
-
-	switch (plat->port) {
-	case 0:
-		pins = pins0;
-		break;
-	case 1:
-		pins = pins1;
-		break;
-	case 2:
-		pins = pins2;
-		break;
-	default:
-		return -EINVAL;
-	}
-
-	ret = peripheral_request_list(pins, "adi-uart4");
-	if (ret)
-		return ret;
 
 	/* always enable UART to 8-bit mode */
 	writel(UEN | UMOD_UART | WLS_8, &regs->control);

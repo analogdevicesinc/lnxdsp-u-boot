@@ -7,7 +7,6 @@
 #include <asm/mach-adi/common/sc5xx.h>
 #include <asm/io.h>
 #include <asm/system.h>
-#include <asm/arch/portmux.h>
 #include <cpu_func.h>
 
 void reset_cpu(ulong addr)

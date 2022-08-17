@@ -16,7 +16,6 @@
 #include <common.h>
 #include <spi.h>
 #include <asm/mach-adi/common/cpu.h>
-#include <asm/arch/portmux.h>
 #include "adi_spi3.h"
 
 #define MAX_SPI_NUM 2
