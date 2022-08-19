@@ -23,9 +23,6 @@
             BITM_CGU_STAT_CLKSALGN)
 #define CGU_STAT_ALGN_LOCK (BITM_CGU_STAT_PLLEN | BITM_CGU_STAT_PLOCK)
 
-//fixme
-#define cclk_dclk_ratio 1250
-
 static inline
 void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useExtension0, bool useExtension1)
 {
@@ -59,19 +56,12 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
     while (!((readl(CGU0_STAT + cgu_offset) & CGU_STAT_MASK) ==
          CGU_STAT_ALGN_LOCK));
 
-    dmcdelay(1000, cclk_dclk_ratio);
-
-#if defined(CONFIG_SC59X)
-//fixme
-    if(!useExtension0){
-        dNewCguDiv = 0x4024482;
-    }
-#endif
+    dmcdelay(1000);
 
     writel(dNewCguDiv & (~BITM_CGU_DIV_ALGN) & (~BITM_CGU_DIV_UPDT),
         CGU0_DIV + cgu_offset);
 
-    dmcdelay(1000, cclk_dclk_ratio);
+    dmcdelay(1000);
 
     if(useExtension1)
         extension |= BITM_CGU_CTL_S1SELEXEN;
@@ -85,14 +75,14 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
     if(useExtension0 | useExtension1)
         while(!(readl(CGU0_CTL + cgu_offset) & (BITM_CGU_CTL_S1SELEXEN|BITM_CGU_CTL_S0SELEXEN))) {};
 
-    dmcdelay(1000, cclk_dclk_ratio);
+    dmcdelay(1000);
 
     //Take PLL out of Bypass Mode
     writel(BITM_CGU_PLLCTL_PLLEN | BITM_CGU_PLLCTL_PLLBPCL, CGU0_PLLCTL + cgu_offset);
     while((readl(CGU0_STAT + cgu_offset) & BITM_CGU_STAT_PLLBP)) {};
     while((readl(CGU0_STAT + cgu_offset) & BITM_CGU_STAT_CLKSALGN)) {};
 
-    dmcdelay(1000, cclk_dclk_ratio);
+    dmcdelay(1000);
 
     if(useExtension1 || useExtension0){
 
@@ -100,31 +90,30 @@ void Program_Cgu(uint32_t uiCguNo, struct CGU_Settings *pCGU_Settings, bool useE
         writel(BITM_CGU_PLLCTL_PLLEN | BITM_CGU_PLLCTL_PLLBPST, CGU0_PLLCTL + cgu_offset);
         while(!(readl(CGU0_STAT + cgu_offset) & BITM_CGU_STAT_PLLBP)) {};
 
-        dmcdelay(1000, cclk_dclk_ratio);
+        dmcdelay(1000);
 
 #if defined(CONFIG_SC59X)
-//fixme
-        writel(0x60030, CGU0_DIVEX + cgu_offset);
+        writel( S1SELEX(pCGU_Settings->divex_S1SELEX) | 0x30, CGU0_DIVEX + cgu_offset);
 #endif
 
 #if defined(CONFIG_SC59X_64)
         writel( S0SELEX(pCGU_Settings->divex_S0SELEX) | S1SELEX(pCGU_Settings->divex_S1SELEX), CGU0_DIVEX + cgu_offset);
 #endif
 
-        dmcdelay(1000, cclk_dclk_ratio);
+        dmcdelay(1000);
 
 #if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
         if(cgu_offset == 0)
             writel(0, REG_CDU0_CLKINSEL);
 #endif
 
-        dmcdelay(1000, cclk_dclk_ratio);
+        dmcdelay(1000);
 
         writel(BITM_CGU_PLLCTL_PLLEN | BITM_CGU_PLLCTL_PLLBPCL, CGU0_PLLCTL + cgu_offset);
         while((readl(CGU0_STAT + cgu_offset) & BITM_CGU_STAT_PLLBP)) {};
         while((readl(CGU0_STAT + cgu_offset) & BITM_CGU_STAT_CLKSALGN)) {};
 
-        dmcdelay(1000, cclk_dclk_ratio);
+        dmcdelay(1000);
 
     }
 }
@@ -234,7 +223,7 @@ uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel,
         if (readl(CGU0_STAT) & BITM_CGU_STAT_PLLEN)
             writel(BITM_CGU_PLLCTL_PLLEN, CGU0_PLLCTL);
 
-        dmcdelay(1000, cclk_dclk_ratio);
+        dmcdelay(1000);
 #endif
 
         /* Check if processor is in Active mode */
@@ -242,7 +231,7 @@ uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel,
             Active_To_Fullon(0);
 
 #if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
-        dmcdelay(1000, cclk_dclk_ratio);
+        dmcdelay(1000);
 #endif
 
         CGU0_write(pClocks, uiClkoutsel, useExtension0, useExtension1);
@@ -252,7 +241,7 @@ uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel,
         if (readl(CGU1_STAT) & BITM_CGU_STAT_PLLEN)
             writel(BITM_CGU_PLLCTL_PLLEN, CGU1_PLLCTL);
 
-        dmcdelay(1000, cclk_dclk_ratio);
+        dmcdelay(1000);
 #endif
 
         /* Check if processor is in Active mode */
@@ -260,7 +249,7 @@ uint32_t CGU_Init(uint32_t uiCguNo, uint32_t uiClkinsel,
             Active_To_Fullon(1);
 
 #if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
-        dmcdelay(1000, cclk_dclk_ratio);
+        dmcdelay(1000);
 #endif
 
         CGU1_write(pClocks, uiClkoutsel, useExtension0, useExtension1);

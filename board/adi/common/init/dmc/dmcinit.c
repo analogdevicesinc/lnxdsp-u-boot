@@ -85,7 +85,7 @@ __attribute__((always_inline)) static inline void calibration_legacy(){
         writel(temp, dmc.reg->REG_DMC_CAL_PADCTL0);
         /* Wait for PAD calibration to complete - 300 DCLK cycle.
          * Worst case: CCLK=450 MHz, DCLK=125 MHz */
-        for (i = 0; i < 300 * dmc.cclk_dclk_ratio; i++);
+        for (i = 0; i < 300 * cclk_dclk_ratio; i++);
     }
 }
 
@@ -100,11 +100,11 @@ __attribute__((always_inline)) static inline void calibration_method1(){
     writel(0x0ul, dmc.reg->REG_DMC_DDR_CA_CTL);
     writel(0x0ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
     writel(0x00010000ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-    dmcdelay(8000u, dmc.cclk_dclk_ratio);
+    dmcdelay(8000u);
 
     /* The [31:26] bits may change if pad ring changes */
     writel(0x0C000001ul|DMC_TRIG_CALIB,  dmc.reg->REG_DMC_DDR_CA_CTL);
-    dmcdelay(8000u, dmc.cclk_dclk_ratio);
+    dmcdelay(8000u);
     writel(0x0ul, dmc.reg->REG_DMC_DDR_CA_CTL);
     writel(0x0ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
 #endif
@@ -124,23 +124,23 @@ __attribute__((always_inline)) static inline void calibration_method2(){
   /* Reset trigger */
   writel(0x0ul, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_3);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_2);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
   /* Writing internal registers in calib pad to zero. Calib mode set to 1 [26], trig M1 S1 write [16],
    * this enables usage of scratch registers instead of ZQCTL registers
    */
   writel(0x04010000ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
   /* TRIGGER FOR M2-S2 WRITE     -> slave id 31:26  trig m2,s2 write bit 1->1
    * slave1 address is 4
    */
   writel(0x10000002ul, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
   /* reset Trigger */
   writel(0x0u, dmc.reg->REG_DMC_DDR_CA_CTL);
@@ -149,18 +149,18 @@ __attribute__((always_inline)) static inline void calibration_method2(){
   /* write to slave 1, make the power down bit high */
   writel(0x1ul<<12, dmc.reg->REG_DMC_DDR_SCRATCH_3);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_2);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
   /* Calib mode set to 1 [26], trig M1 S1 write [16] */
   writel(0x04010000ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
   writel(0x10000002ul, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
   writel(0x0ul, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
 #ifdef CONFIG_SC59X_64
   writel(0x0, dmc.reg->REG_DMC_DDR_SCRATCH_3);
@@ -168,18 +168,18 @@ __attribute__((always_inline)) static inline void calibration_method2(){
 
   /* for slave 0 */
   writel(dmc.dmc_zqctl0_value, dmc.reg->REG_DMC_DDR_SCRATCH_2);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
   /* Calib mode set to 1 [26], trig M1 S1 write [16] */
   writel(0x04010000ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
   writel(0x0C000002ul, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
   writel(0x0ul, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
   /* writing to slave 1
   calstrt is 0, but other programming is done */
@@ -192,18 +192,18 @@ __attribute__((always_inline)) static inline void calibration_method2(){
   writel(0x70000000ul, dmc.reg->REG_DMC_DDR_SCRATCH_2);
 #endif
 
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
   /* write to ca_ctl lane, calib mode set to 1 [26], trig M1 S1 write [16]*/
   writel(0x04010000ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
   /*  copies data to lane controller slave
    *  TRIGGER FOR M2-S2 WRITE     -> slave id 31:26  trig m2,s2 write bit 1->1
    *  slave1 address is 4
    */
   writel(0x10000002ul, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
 
   /* reset Trigger */
   writel(0x0ul, dmc.reg->REG_DMC_DDR_CA_CTL);
@@ -215,9 +215,9 @@ __attribute__((always_inline)) static inline void calibration_method2(){
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_3);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_2);
   writel(0x04010000ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
   writel(0x10000002ul, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_3);
@@ -225,15 +225,15 @@ __attribute__((always_inline)) static inline void calibration_method2(){
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_3);
   writel(0x50000000ul, dmc.reg->REG_DMC_DDR_SCRATCH_2);
   writel(0x04010000ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
   writel(0x10000002ul, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
   writel(0u, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0u, dmc.reg->REG_DMC_DDR_ROOT_CTL);
   writel(0x0C000004u, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
   writel(BITM_DMC_DDR_ROOT_CTL_TRIG_RD_XFER_ALL, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
   writel(0u, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0u, dmc.reg->REG_DMC_DDR_ROOT_CTL);
   // calculate ODT PU and PD values
@@ -253,15 +253,15 @@ __attribute__((always_inline)) static inline void calibration_method2(){
   temp |= readl(dmc.reg->REG_DMC_DDR_SCRATCH_2);
   writel(temp, dmc.reg->REG_DMC_DDR_SCRATCH_2);
   writel(0x0C010000u, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
   writel(0x08000002u, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
   writel(0u, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0u, dmc.reg->REG_DMC_DDR_ROOT_CTL);
   writel(0x04010000u, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
   writel(0x80000002u, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u, dmc.cclk_dclk_ratio);
+  dmcdelay(5000u);
   writel(0u, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0u, dmc.reg->REG_DMC_DDR_ROOT_CTL);
 #endif
@@ -292,7 +292,7 @@ __attribute__((always_inline)) inline void adi_dmc_lane_reset(bool reset, uint32
         temp &= ~BITM_DMC_DDR_LANE1_CTL0_CB_RSTDLL;
         writel(temp, REG_DMC_DDR_LANE1_CTL0(dmc_no));
     }
-    dmcdelay(9000u, dmc.cclk_dclk_ratio);
+    dmcdelay(9000u);
 #endif
 
 }
@@ -348,23 +348,23 @@ __attribute__((always_inline)) static inline void dmc_controller_init(){
      * DMCx_STAT.INITDONE bit. */
 
 #if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
-    dmcdelay(722000u, dmc.cclk_dclk_ratio);
+    dmcdelay(722000u);
 
     /* Add necessary delay depending on the configuration */
     t_EMR1 = (dmc.dmc_mr1_value & BITM_DMC_MR1_WL)>>BITP_DMC_MR1_WL;
 
-    dmcdelay(600u, dmc.cclk_dclk_ratio);
+    dmcdelay(600u);
     if(t_EMR1 != 0u)
         while ((readl(dmc.reg->REG_DMC_EMR1) & BITM_DMC_MR1_WL) != 0);
 
     t_EMR3 = (dmc.dmc_mr3_value & BITM_DMC_EMR3_MPR)>>BITP_DMC_EMR3_MPR;
-    dmcdelay(2000u, dmc.cclk_dclk_ratio);
+    dmcdelay(2000u);
     if(t_EMR3 != 0u)
         while ((readl(dmc.reg->REG_DMC_EMR3) & BITM_DMC_EMR3_MPR) != 0);
 
 
     t_CTL = (dmc.dmc_ctl_value & BITM_DMC_CTL_RL_DQS)>>BITP_DMC_CTL_RL_DQS;
-    dmcdelay(600u, dmc.cclk_dclk_ratio);
+    dmcdelay(600u);
     if(t_CTL != 0u)
         while ((readl(dmc.reg->REG_DMC_CTL) & BITM_DMC_CTL_RL_DQS) != 0);
 #endif
@@ -382,7 +382,7 @@ __attribute__((always_inline)) static inline void dmc_controller_init(){
     temp |= BITM_DMC_DDR_LANE1_CTL1_COMP_DCYCLE;
     writel(temp, dmc.reg->REG_DMC_DDR_LANE1_CTL1);
 
-    dmcdelay(10u, dmc.cclk_dclk_ratio);
+    dmcdelay(10u);
 
     temp = readl(dmc.reg->REG_DMC_DDR_LANE0_CTL1);
     temp &= (~BITM_DMC_DDR_LANE0_CTL1_COMP_DCYCLE);
@@ -409,7 +409,7 @@ __attribute__((always_inline)) static inline void dmc_controller_init(){
     temp &= (~BITM_DMC_DDR_LANE1_CTL0_CB_RSTDAT);
     writel(temp, dmc.reg->REG_DMC_DDR_LANE1_CTL0);
 
-    dmcdelay(2500u, dmc.cclk_dclk_ratio);
+    dmcdelay(2500u);
 
     /* Program phyphase*/
     phyphase = (readl(dmc.reg->REG_DMC_STAT) & BITM_DMC_STAT_PHYRDPHASE)>>BITP_DMC_STAT_PHYRDPHASE;
@@ -427,9 +427,9 @@ __attribute__((always_inline)) static inline void dmc_controller_init(){
         /* For LDQS */
         temp = readl(dmc.reg->REG_DMC_DDR_LANE0_CTL1) | (0x000000D0);
         writel(temp, dmc.reg->REG_DMC_DDR_LANE0_CTL1);
-        dmcdelay(2500u, dmc.cclk_dclk_ratio);
+        dmcdelay(2500u);
         writel(0x00400000, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-        dmcdelay(2500u, dmc.cclk_dclk_ratio);
+        dmcdelay(2500u);
         writel(0x0, dmc.reg->REG_DMC_DDR_ROOT_CTL);
         stat_value = (readl(dmc.reg->REG_DMC_DDR_SCRATCH_STAT0) & (0xFFFF0000))>>16;
         WL_code_LDQS = (stat_value) & (0x0000001F);
@@ -448,14 +448,14 @@ __attribute__((always_inline)) static inline void dmc_controller_init(){
           temp |= (((DQS_Default_Delay + Lane0_DQS_Delay)<<BITP_DMC_DDR_LANE0_CTL1_BYPCODE) & BITM_DMC_DDR_LANE0_CTL1_BYPCODE)|BITM_DMC_DDR_LANE0_CTL1_BYPDELCHAINEN;
           writel(temp, dmc.reg->REG_DMC_DDR_LANE0_CTL1);
         }
-        dmcdelay(2500u, dmc.cclk_dclk_ratio);
+        dmcdelay(2500u);
 
         /* For UDQS */
         temp = readl(dmc.reg->REG_DMC_DDR_LANE1_CTL1) | (0x000000D0);
         writel(temp, dmc.reg->REG_DMC_DDR_LANE1_CTL1);
-        dmcdelay(2500u, dmc.cclk_dclk_ratio);
+        dmcdelay(2500u);
         writel(0x00800000, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-        dmcdelay(2500u, dmc.cclk_dclk_ratio);
+        dmcdelay(2500u);
         writel(0x0, dmc.reg->REG_DMC_DDR_ROOT_CTL);
         stat_value = (readl(dmc.reg->REG_DMC_DDR_SCRATCH_STAT1) & (0xFFFF0000))>>16;
         WL_code_UDQS = (stat_value) & (0x0000001F);
@@ -474,7 +474,7 @@ __attribute__((always_inline)) static inline void dmc_controller_init(){
           temp |= (((DQS_Default_Delay + Lane1_DQS_Delay)<<BITP_DMC_DDR_LANE0_CTL1_BYPCODE) & BITM_DMC_DDR_LANE0_CTL1_BYPCODE)|BITM_DMC_DDR_LANE0_CTL1_BYPDELCHAINEN;
           writel(temp, dmc.reg->REG_DMC_DDR_LANE1_CTL1);
         }
-        dmcdelay(2500u, dmc.cclk_dclk_ratio);
+        dmcdelay(2500u);
     #endif
 
 #else
@@ -547,7 +547,7 @@ __attribute__((always_inline)) inline adi_config_third_pll(uint32_t Msel, uint32
   temp &= 0xFFFE0000;
   writel(temp, REG_MISC_REG10_tst_addr);
   
-  dmcdelay(4000u, dmc.cclk_dclk_ratio);
+  dmcdelay(4000u);
 
   //update MSEL [10:4]
   temp = readl(REG_MISC_REG10_tst_addr);
@@ -558,7 +558,7 @@ __attribute__((always_inline)) inline adi_config_third_pll(uint32_t Msel, uint32
   temp |= 0x2;
   writel(temp, REG_MISC_REG10_tst_addr);
   
-  dmcdelay(100000u, dmc.cclk_dclk_ratio);
+  dmcdelay(100000u);
   
   temp = readl(REG_MISC_REG10_tst_addr);
   temp |= 0x1;
@@ -572,7 +572,7 @@ __attribute__((always_inline)) inline adi_config_third_pll(uint32_t Msel, uint32
   temp &= 0xFFFFF7F8;
   writel(temp, REG_MISC_REG10_tst_addr);
 
-  dmcdelay(4000u, dmc.cclk_dclk_ratio);
+  dmcdelay(4000u);
 
   temp = readl(REG_MISC_REG10_tst_addr);
   temp |= ((Dsel<< BITP_REG10_DSEL3)& BITM_REG10_DSEL3);//0x1000; //desl-5
@@ -582,7 +582,7 @@ __attribute__((always_inline)) inline adi_config_third_pll(uint32_t Msel, uint32
   temp |= 0x4;
   writel(temp, REG_MISC_REG10_tst_addr);
 
-  dmcdelay(100000u, dmc.cclk_dclk_ratio);
+  dmcdelay(100000u);
 
   temp = readl(REG_MISC_REG10_tst_addr);
   temp |= 0x1;
@@ -613,18 +613,10 @@ __attribute__((always_inline)) static inline void __dmc_config(uint32_t dmc_no){
     dmc.phy_init_required = true;
 
 #if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
-
-    #ifdef CONFIG_SC59X_64
-        dmc.cclk_dclk_ratio = 1500; //1.5 * 1000
-    #else
-        dmc.cclk_dclk_ratio = 1250; //1.25 * 1000
-    #endif
-
     dmc.anomaly_20000037_applicable = false;
     dmc.dmc_dllctl_value = DMC_DLLCTL_VALUE;
     dmc.calib_mode = CALIBRATION_METHOD2;
 #else
-    dmc.cclk_dclk_ratio = 1000; //1 * 1000
     dmc.anomaly_20000037_applicable = true;
     dmc.calib_mode = CALIBRATION_LEGACY;
 #endif

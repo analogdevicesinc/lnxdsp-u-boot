@@ -332,7 +332,6 @@ struct dmc_param {
     uint32_t dmc_no;
     DMC_REGISTERS * reg;
     uint32_t ddr_mode;
-    uint32_t cclk_dclk_ratio;
     uint32_t padctl2_value;
     uint32_t dmc_cphyctl_value;
     uint32_t dmc_cfg_value;
@@ -357,7 +356,15 @@ struct dmc_param {
 void DMC_Config(void);
 void adi_dmc_lane_reset(bool reset, uint32_t dmc_no);
 
-__attribute__((always_inline)) static inline void dmcdelay(uint32_t delay, uint32_t ratio)
+#if defined(CONFIG_SC59X_64)
+#define cclk_dclk_ratio 1500
+#elif defined(CONFIG_SC59X)
+#define cclk_dclk_ratio 1250
+#else
+#define cclk_dclk_ratio 1000
+#endif
+
+__attribute__((always_inline)) static inline void dmcdelay(uint32_t delay)
 {
   /* There is no zero-overhead loop on ARM, so assume each iteration takes
    * 4 processor cycles (based on examination of -O3 and -Ofast output).
@@ -365,7 +372,7 @@ __attribute__((always_inline)) static inline void dmcdelay(uint32_t delay, uint3
   uint32_t i, remainder;
 
   /* Convert DDR cycles to core clock cycles */
-  uint32_t f = delay * ratio;
+  uint32_t f = delay * cclk_dclk_ratio;
   delay = f+500;
   delay /= 1000;
 
