@@ -359,7 +359,6 @@ u-boot-$(CONFIG_SYS_BOARD).ldr: u-boot.ldr
 		cp u-boot.img u-boot-proper-$(CONFIG_SYS_BOARD).img
 		cp spl/u-boot-spl u-boot-spl-$(CONFIG_SYS_BOARD).elf
 		cp u-boot u-boot-proper-$(CONFIG_SYS_BOARD).elf
-		$(LDR) -T $(CONFIG_ADI_CPU) -c u-boot-uart-$(CONFIG_SYS_BOARD).ldr u-boot-proper-$(CONFIG_SYS_BOARD).elf --initcode u-boot-spl-$(CONFIG_SYS_BOARD).elf
 u-boot.ldr:	$(obj)/u-boot-spl
 		$(CREATE_LDR_ENV)
 		$(LDR) -T $(CONFIG_ADI_CPU) -c $@ spl/u-boot-spl $(LDR_FLAGS)

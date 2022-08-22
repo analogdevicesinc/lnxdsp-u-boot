@@ -15,10 +15,12 @@ LDR_FLAGS += --bcode=$(CONFIG_SC_BOOT_MODE)
 LDR_FLAGS += --use-vmas
 
 ifndef CONFIG_SC59X_64
-LDR_FLAGS += --initcode board/adi/common/init/init-$(CONFIG_SYS_BOARD)
+	ifneq ($(CONFIG_SPL_BUILD),y)
+		LDR_FLAGS += --initcode board/adi/common/init/init-$(CONFIG_SYS_BOARD)
+	endif
 
-# Select the Analog Devices processor.
-PLATFORM_RELFLAGS += -fno-stack-protector -std=gnu89 -mfpu=neon-vfpv4 -march=armv7-a
+	# Select the Analog Devices processor.
+	PLATFORM_RELFLAGS += -fno-stack-protector -std=gnu89 -mfpu=neon-vfpv4 -march=armv7-a
 endif
 
 ifdef CONFIG_SC59X_64
