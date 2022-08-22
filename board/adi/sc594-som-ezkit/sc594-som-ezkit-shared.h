@@ -17,7 +17,6 @@
 #include <asm/arch-sc59x/dwmmc.h>
 #include <linux/delay.h>
 #include <watchdog.h>
-#include "../../../arch/arm/cpu/armv7/sc59x/adsp594.h"
 
 void spi_flash_override_defaults(unsigned int * bus,
 				unsigned int * cs,

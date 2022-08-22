@@ -19,6 +19,7 @@
 #include <watchdog.h>
 #include "soft_switch.h"
 #include <asm/spl.h>
+#include <adi/common/rcu.h>
 #include "sc594-som-ezkit-shared.h"
 
 #define pRCU_STAT 0x3108c004

@@ -40,7 +40,7 @@
 #include "cadence_qspi.h"
 
 #if defined(CONFIG_SC59X)
-#include "../../arch/arm/cpu/armv7/sc59x/adsp594.h"
+#include <adi/common/ospi.h>
 #include "../../arch/arm/cpu/armv7/sc59x/adsp594_mdma.h"
 #endif
 
