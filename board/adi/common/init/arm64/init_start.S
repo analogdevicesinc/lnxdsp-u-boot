@@ -18,7 +18,7 @@ ENTRY(_start)
 	mov     x29, sp
 	str     x0, [sp, #24]
 
-	bl	initcode
+	bl	adi_initcode
 
 	sc598_ddr_fixups
 

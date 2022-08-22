@@ -36,7 +36,7 @@ void emmc_boot_trampoline(){
 	adi_rom_Boot(512+1, 0, 0, 0, BootCmd1);
 }
 
-void initcode(void){
-	initcode_shared();
+void adi_initcode(void){
+	adi_initcode_shared();
 	emmc_boot_trampoline();
 }

@@ -330,7 +330,7 @@ ddr_init(void)
     DMC_Config();
 }
 
-void initcode_shared(void)
+void adi_initcode_shared(void)
 {
     u32 i;
 

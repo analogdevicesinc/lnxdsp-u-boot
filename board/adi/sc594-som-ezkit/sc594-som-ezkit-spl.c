@@ -115,7 +115,7 @@ unsigned int spl_spi_get_default_cs()
 
 int dram_init_banksize(void)
 {
-	initcode_shared();
+	adi_initcode_shared();
 	return 0;
 }
 

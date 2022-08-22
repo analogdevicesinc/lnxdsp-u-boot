@@ -14,7 +14,7 @@
 ENTRY(_main)
 	ldr	x0, =(CONFIG_INIT_ELF_STACK_ADDR)
 	bic	sp, x0, #0xf	/* 16-byte alignment for ABI compliance */
-	bl	initcode
+	bl	adi_initcode
 
 	sc598_ddr_fixups
 

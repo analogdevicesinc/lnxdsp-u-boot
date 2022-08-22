@@ -28,4 +28,4 @@
 #define REG_ARMPMU0_PMUSERENR          0x31121E08
 #define REG_ARMPMU0_PMLAR              0x31121FB0
 
-void initcode(void);
+void adi_initcode(void);

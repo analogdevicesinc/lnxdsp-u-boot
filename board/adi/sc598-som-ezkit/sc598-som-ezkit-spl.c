@@ -136,7 +136,7 @@ void board_boot_order(u32 *spl_boot_list)
 
 int dram_init_banksize(void)
 {
-	initcode_shared();
+	adi_initcode_shared();
 	return 0;
 }
 

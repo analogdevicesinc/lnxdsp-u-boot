@@ -4,7 +4,7 @@
 #include <config.h>
 #include "init.h"
 
-void initcode(void){
-	initcode_shared();
+void adi_initcode(void){
+	adi_initcode_shared();
 }
 

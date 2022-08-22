@@ -10,7 +10,7 @@
 ENTRY(_start)
 	push	{r0, r1, lr}
 
-	bl	initcode
+	bl	adi_initcode
 
 	mov	r0, #0
 	pop	{r0, r1, pc}

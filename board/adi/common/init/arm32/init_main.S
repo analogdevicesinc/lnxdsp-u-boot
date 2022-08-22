@@ -23,7 +23,7 @@ ENTRY(_main)
 	/* Set up stack pointer */
 	ldr	sp, =(CONFIG_INIT_ELF_STACK_ADDR)
 
-	bl	initcode
+	bl	adi_initcode
 
 	/* wait for JTAG */
 loop:
