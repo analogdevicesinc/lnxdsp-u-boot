@@ -24,7 +24,6 @@
 #include "soft_switch.h"
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
-#include "../../../arch/arm/cpu/armv8/sc59x-64/adsp598.h"
 #include "sc598-som-ezkit-shared.h"
 #include <adi/59x-64/sc598-som-ezkit-dynamic-qspi-ospi-uart-mux.h>
 

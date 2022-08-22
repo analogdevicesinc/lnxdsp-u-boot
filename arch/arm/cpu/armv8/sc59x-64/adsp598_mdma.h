@@ -1,3 +1,5 @@
+#include <adi/common/adi_dma.h>
+
 #define DMA_MIN(a,b) (((a)<(b))?(a):(b))
 #define DMA_MAX(a,b) (((a)>(b))?(a):(b))
 

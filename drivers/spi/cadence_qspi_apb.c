@@ -45,7 +45,7 @@
 #endif
 
 #if defined(CONFIG_SC59X_64)
-#include "../../arch/arm/cpu/armv8/sc59x-64/adsp598.h"
+#include <adi/common/ospi.h>
 #include "../../arch/arm/cpu/armv8/sc59x-64/adsp598_mdma.h"
 #endif
 

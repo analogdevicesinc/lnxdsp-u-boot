@@ -21,7 +21,7 @@
 #include "soft_switch.h"
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
-#include "../../../arch/arm/cpu/armv8/sc59x-64/adsp598.h"
+#include <adi/common/rcu.h>
 #include "sc598-som-ezkit-shared.h"
 
 #define pRCU_STAT 0x3108c004
