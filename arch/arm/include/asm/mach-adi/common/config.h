@@ -1,13 +1,13 @@
 /*
- * config.h - common defines for SC58x boards
+ * config.h - common defines for SC57x boards
  *
  * Copyright (c) 2013 Analog Devices Inc.
  *
  * Licensed under the GPL-2 or later.
  */
 
-#ifndef __ASM_SC58X_CONFIG_H__
-#define __ASM_SC58X_CONFIG_H__
+#ifndef __ASM_SC5XX_CONFIG_H__
+#define __ASM_SC5XX_CONFIG_H__
 
 /* Bootmode defines -- your config needs to select this via CONFIG_SC_BOOT_MODE.
  * Depending on your cpu, some of these may not be valid, check your HRM.

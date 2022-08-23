@@ -5,7 +5,7 @@
 #ifndef __CONFIG_SC589_MINI_H
 #define __CONFIG_SC589_MINI_H
 
-#include <asm/arch/config.h>
+#include <asm/mach-adi/common/config.h>
 
 /*
  * Processor Settings

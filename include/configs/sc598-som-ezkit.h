@@ -5,7 +5,7 @@
 #ifndef __CONFIG_SC598_EZKIT_H
 #define __CONFIG_SC598_EZKIT_H
 
-#include <asm/arch/config.h>
+#include <asm/mach-adi/common/config.h>
 #include <linux/sizes.h>
 #include <linux/kconfig.h>
 
