@@ -12,7 +12,7 @@
 #include <asm/mach-adi/common/sc5xx.h>
 #include <asm/arch/gpio.h>
 #include <asm/arch/ports.h>
-#include <asm/arch/clock.h>
+#include <asm/mach-adi/common/clock.h>
 
 static const void *const adi_uart4_ports[3] = {
 	(void *)UART0_REVID,

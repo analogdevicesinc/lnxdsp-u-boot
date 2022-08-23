@@ -8,7 +8,7 @@
 
 #include <common.h>
 #include <asm/mach-adi/common/sc5xx.h>
-#include <asm/arch/clock.h>
+#include <asm/mach-adi/common/clock.h>
 
 /* Get the voltage input multiplier */
 unsigned long get_vco(void)

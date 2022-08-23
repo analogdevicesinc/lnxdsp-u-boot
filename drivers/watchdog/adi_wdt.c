@@ -9,7 +9,7 @@
 #include <common.h>
 #include <watchdog.h>
 #include <asm/mach-adi/common/sc5xx.h>
-#include <asm/arch/clock.h>
+#include <asm/mach-adi/common/clock.h>
 #include <asm/mach-adi/common/watchdog.h>
 #include <asm/io.h>
 

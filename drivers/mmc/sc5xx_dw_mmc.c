@@ -2,15 +2,13 @@
 #include <dwmmc.h>
 
 #if defined(CONFIG_SC59X)
-#include <asm/arch-sc59x/clock.h>
 #include <asm/arch-sc59x/portmux.h>
 #elif defined(CONFIG_SC58X)
-#include <asm/arch-sc58x/clock.h>
 #include <asm/arch-sc58x/portmux.h>
 #elif defined(CONFIG_SC57X)
-#include <asm/arch-sc57x/clock.h>
 #include <asm/arch-sc57x/portmux.h>
 #endif
+#include <asm/mach-adi/common/clock.h>
 #include <asm/mach-adi/common/sc5xx.h>
 
 #define DWMMC_MAX_FREQ 52000000

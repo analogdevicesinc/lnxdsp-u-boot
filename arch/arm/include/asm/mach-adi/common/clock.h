@@ -19,6 +19,9 @@ extern unsigned long get_oclk(void);
 
 # define get_uart_clk get_sclk0
 # define get_i2c_clk get_sclk0
+#if defined(CONFIG_SC58X) || defined(CONFIG_SC57X)
 # define get_spi_clk get_sclk1
-
+#else
+# define get_spi_clk get_sclk0
+#endif
 #endif

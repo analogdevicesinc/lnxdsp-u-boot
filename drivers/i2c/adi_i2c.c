@@ -8,7 +8,7 @@
 
 #include <common.h>
 #include <i2c.h>
-#include <asm/arch/clock.h>
+#include <asm/mach-adi/common/clock.h>
 #include <asm/mach-adi/common/twi.h>
 #include <asm/io.h>
 #include <console.h>
