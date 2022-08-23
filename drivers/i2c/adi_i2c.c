@@ -8,14 +8,8 @@
 
 #include <common.h>
 #include <i2c.h>
-
-#ifndef CONFIG_ARCH_HEADER_IN_MACH
-#include <asm/clock.h>
-#include <asm/twi.h>
-#else
 #include <asm/arch/clock.h>
-#include <asm/arch/twi.h>
-#endif
+#include <asm/mach-adi/common/twi.h>
 #include <asm/io.h>
 #include <console.h>
 
