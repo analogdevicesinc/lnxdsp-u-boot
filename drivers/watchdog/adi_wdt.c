@@ -10,7 +10,7 @@
 #include <watchdog.h>
 #include <asm/mach-adi/common/sc5xx.h>
 #include <asm/arch/clock.h>
-#include <asm/arch/watchdog.h>
+#include <asm/mach-adi/common/watchdog.h>
 #include <asm/io.h>
 
 void hw_watchdog_reset(void)

@@ -2,12 +2,13 @@
  * Watchdog Masks
  */
 
-#ifndef __SC59X_WATCHDOG__
-#define __SC59X_WATCHDOG__
+#ifndef __SC5XX_WATCHDOG__
+#define __SC5XX_WATCHDOG__
 
 #define WDOG_CTL WDOG0_CTL
 #define WDOG_CNT WDOG0_CNT
 #define WDOG_STAT WDOG0_STAT
+#define WDOG_WIN WDOG0_WIN
 
 /* Watchdog Timer WDOG_CTL Register Masks */
 #define WDEN			0x0010	/* enable watchdog */
