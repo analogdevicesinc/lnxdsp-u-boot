@@ -1,5 +1,6 @@
 /dts-v1/;
 
+#include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/pinctrl/adi-adsp.h>
 
 / {
@@ -84,6 +85,20 @@
 			adi,ngpios = <92>;
 			status = "okay";
 			u-boot,dm-pre-reloc;
+
+			emac0_phy_pwdn {
+				gpio-hog;
+				output-high;
+				gpios = <ADI_ADSP_PIN('A', 4) GPIO_ACTIVE_HIGH>;
+				u-boot,dm-pre-reloc;
+			};
+
+			emac0_phy_reset {
+				gpio-hog;
+				output-low;
+				gpios = <ADI_ADSP_PIN('A', 5) GPIO_ACTIVE_LOW>;
+				u-boot,dm-pre-reloc;
+			};
 		};
 
 		uart0: serial@0x31003000 {

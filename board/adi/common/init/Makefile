@@ -29,7 +29,7 @@ extra-y := init-$(CONFIG_SYS_BOARD)
 extra-y += init-$(CONFIG_SYS_BOARD).elf
 extra-y += $(ADI_ARCH)/init_start.o
 extra-y += $(ADI_ARCH)/init_main.o
-extra-y += dmc/dmcinit.o
+obj-y += dmc/dmcinit.o
 extra-y += init_return_stack.o
 
 ifdef CONFIG_SC57X

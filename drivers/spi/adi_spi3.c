@@ -29,10 +29,11 @@
 
 #define to_adi_spi_slave(s) container_of(s, struct adi_spi_slave, slave)
 
+// @todo gpio cs technically not supported/used at the moment
 int spi_cs_is_valid(unsigned int bus, unsigned int cs)
 {
 	if (is_gpio_cs(cs))
-		return gpio_is_valid(gpio_cs(cs));
+		return 1;
 	else
 		return adi_spi_cs_valid(bus, cs);
 }

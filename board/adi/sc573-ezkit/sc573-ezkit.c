@@ -10,11 +10,10 @@
 #include <netdev.h>
 #include <phy.h>
 #include <asm/io.h>
-#include <asm/gpio.h>
 #include <asm/mach-types.h>
 #include <asm/mach-adi/common/sc5xx.h>
 #include <asm/mach-adi/common/dwmmc.h>
-#include <asm/mach-adi/common/gpio.h>
+#include <asm-generic/gpio.h>
 #include <linux/delay.h>
 #include <watchdog.h>
 #include <spi_flash.h>
@@ -111,14 +110,15 @@ int board_eth_init(struct bd_info *bis)
 	int ret = 0;
 
 	if (CONFIG_DW_PORTS & 1) {
-		gpio_request(GPIO_PA5, "emac0_phy_reset");
-		gpio_request(GPIO_PA4, "emac0_phy_pwdn");
-		gpio_direction_output(GPIO_PA4, 1);
-		gpio_direction_output(GPIO_PA5, 1);
+		struct gpio_desc *gpio_phy_reset;
+
+		ret = gpio_hog_lookup_name("emac0_phy_reset", &gpio_phy_reset);
+		if (ret)
+			return ret;
+
+		dm_gpio_set_value(gpio_phy_reset, 1);
 		mdelay(1);
-		gpio_direction_output(GPIO_PA5, 0);
-		mdelay(1);
-		gpio_direction_output(GPIO_PA5, 1);
+		dm_gpio_set_value(gpio_phy_reset, 0);
 		mdelay(1);
 
 		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);

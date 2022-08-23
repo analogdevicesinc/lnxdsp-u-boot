@@ -89,6 +89,7 @@ static int adsp_gpio_output(struct udevice *udev, unsigned pin, int value) {
 
 		iowrite16(BIT(offset), portbase + ADSP_PORT_REG_DIR_SET);
 		iowrite16(BIT(offset), portbase + ADSP_PORT_REG_INEN_CLEAR);
+		return 0;
 	}
 
 	return -EINVAL;

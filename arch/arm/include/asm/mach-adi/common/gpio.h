@@ -7,22 +7,6 @@
 #define _MACH_GPIO_H_
 #include <asm-generic/gpio.h>
 
-#if defined(CONFIG_SC57X)
-#define MAX_GPIOS 96
-#elif defined(CONFIG_SC58X)
-#define MAX_GPIOS 110
-#else
-#define MAX_GPIOS 144
-#endif
-#define GPIO_BANKSIZE  16
-#define GPIO_BANK_NUM  DIV_ROUND_UP(MAX_GPIOS, GPIO_BANKSIZE)
-#define GPIO_USAGE 0
-#define PERIPHERAL_USAGE 1
-
-#define gpio_bank(x)    ((x) >> 4)
-#define gpio_bit(x)     (1<<((x) & 0xF))
-#define gpio_sub_n(x)   ((x) & 0xF)
-
 #define GPIO_PA0	0
 #define GPIO_PA1	1
 #define GPIO_PA2	2
@@ -167,36 +151,5 @@
 #define GPIO_PI13	141
 #define GPIO_PI14	142
 #define GPIO_PI15	143
-
-struct gpio_port_t {
-	uint32_t port_fer;
-	uint32_t port_fer_set;
-	uint32_t port_fer_clear;
-	uint32_t data;
-	uint32_t data_set;
-	uint32_t data_clear;
-	uint32_t dir;
-	uint32_t dir_set;
-	uint32_t dir_clear;
-	uint32_t inen;
-	uint32_t inen_set;
-	uint32_t inen_clear;
-	uint32_t port_mux;
-	uint32_t toggle;
-	uint32_t polar;
-	uint32_t polar_set;
-	uint32_t polar_clear;
-	uint32_t lock;
-	uint32_t spare;
-	uint32_t padding[12];
-	uint32_t revid;
-};
-
-static inline uint32_t gpio_is_valid(uint32_t number)
-{
-	return number >= 0 && number < MAX_GPIOS;
-}
-
-extern struct gpio_port_t * const gpio_array[];
 
 #endif /* _MACH_GPIO_H_ */

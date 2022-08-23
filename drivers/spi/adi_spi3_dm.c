@@ -37,10 +37,11 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define DEBUG
 
+// @todo gpio cs is not currently supported
 int cs_is_valid(unsigned int bus, unsigned int cs)
 {
 	if (is_gpio_cs(cs))
-		return gpio_is_valid(gpio_cs(cs));
+		return 1;
 	else
 		return adi_spi_cs_valid(bus, cs);
 }
