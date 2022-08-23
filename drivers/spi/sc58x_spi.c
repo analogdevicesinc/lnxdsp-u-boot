@@ -15,7 +15,7 @@
 
 #include <common.h>
 #include <spi.h>
-#include <asm/arch/cpu.h>
+#include <asm/mach-adi/common/cpu.h>
 #include <asm/arch/portmux.h>
 #include "adi_spi3.h"
 

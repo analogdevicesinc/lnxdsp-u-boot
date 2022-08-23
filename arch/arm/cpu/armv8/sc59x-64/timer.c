@@ -6,7 +6,7 @@
 #include <common.h>
 #include <config.h>
 #include <asm/io.h>
-#include <asm/arch/cpu.h>
+#include <asm/mach-adi/common/cpu.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 static struct gptimer3_group_regs *timer_group = (struct gptimer3_group_regs *)
