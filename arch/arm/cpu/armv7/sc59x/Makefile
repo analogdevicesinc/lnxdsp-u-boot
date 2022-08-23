@@ -12,6 +12,6 @@
 ifeq ($(CONFIG_SPL),n)
 obj-y	:= lowlevel_init.o
 endif
-obj-y	+= soc.o timer.o gpio.o
+obj-y	+= timer.o gpio.o
 obj-y	+= clocks.o
 

@@ -10,6 +10,6 @@
 #
 
 obj-y	:= lowlevel_init.o
-obj-y	+= soc.o timer.o gpio.o
+obj-y	+= timer.o gpio.o
 obj-y	+= clocks.o
 

@@ -4,7 +4,15 @@
  */
 
 #include <common.h>
-#include <asm/arch-sc59x/sc59x.h>
+
+#if defined(CONFIG_SC59X)
+#include <asm/arch/sc59x.h>
+#elif defined(CONFIG_SC58X)
+#include <asm/arch/sc58x.h>
+#elif defined(CONFIG_SC57X)
+#include <asm/arch/sc57x.h>
+#endif
+
 #include <asm/io.h>
 #include <asm/system.h>
 #include <asm/arch/portmux.h>
@@ -14,6 +22,23 @@ void reset_cpu(ulong addr)
 {
 	writel(1, RCU0_CTL);
 }
+
+#ifndef CONFIG_SYS_DCACHE_OFF
+void enable_caches(void)
+{
+	/* Enable D-cache. I-cache is already enabled in start.S */
+	dcache_enable();
+}
+#endif
+
+#ifndef CONFIG_SYS_L2CACHE_OFF
+/*
+ * Sets L2 cache related parameters before enabling data cache
+ */
+void v7_outer_cache_enable(void)
+{
+}
+#endif
 
 int arch_cpu_init(void)
 {
