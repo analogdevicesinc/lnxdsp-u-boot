@@ -14,7 +14,7 @@
 #include <asm/mach-types.h>
 #include <asm/arch/portmux.h>
 #include <asm/mach-adi/common/sc5xx.h>
-#include <asm/arch-sc58x/dwmmc.h>
+#include <asm/mach-adi/common/dwmmc.h>
 #include <linux/delay.h>
 #include <watchdog.h>
 #include "soft_switch.h"
