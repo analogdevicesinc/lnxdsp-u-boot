@@ -6,7 +6,7 @@
  * Licensed under the GPL-2 or later.
  */
 
-#include <asm/arch/soft_switch.h>
+#include <asm/mach-adi/common/soft_switch.h>
 
 #define NUM_SWITCH      2
 
@@ -37,6 +37,7 @@ static struct switch_config switch_config_array[NUM_SWITCH] = {
 		.value0 = 0x10,
 #endif
 		.value1 = 0x4,
+		.is23018 = 0x0,
 	},
 	{
 /*
@@ -60,5 +61,6 @@ static struct switch_config switch_config_array[NUM_SWITCH] = {
 		.dir1 = 0x0, /* all output */
 		.value0 = 0x0,
 		.value1 = 0x10,
+		.is23018 = 0x0,
 	},
 };

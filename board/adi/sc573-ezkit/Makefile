@@ -10,4 +10,3 @@
 #
 
 obj-y	:= $(BOARD).o
-obj-$(CONFIG_SOFT_SWITCH)   += soft_switch.o

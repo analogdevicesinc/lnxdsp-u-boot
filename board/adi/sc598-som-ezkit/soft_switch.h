@@ -6,7 +6,7 @@
  * Licensed under the GPL-2 or later.
  */
 
-#include <asm/arch/soft_switch.h>
+#include <asm/mach-adi/common/soft_switch.h>
 #include "soft_switch_bits.h"
 #define NUM_SWITCH      2
 

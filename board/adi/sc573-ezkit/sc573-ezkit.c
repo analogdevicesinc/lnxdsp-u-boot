@@ -76,7 +76,11 @@ int misc_init_r(void)
 	set_spu_securep_msec(41, 1);
 	set_spu_securep_msec(45, 1);
 	set_spu_securep_msec(140, 1);
-	return setup_board_switches();
+#ifdef CONFIG_SOFT_SWITCH
+	return setup_soft_switches(switch_config_array, NUM_SWITCH);
+#else
+	return 0;
+#endif
 }
 
 unsigned long flash_init(void)

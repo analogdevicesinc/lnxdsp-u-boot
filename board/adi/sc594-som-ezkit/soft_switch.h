@@ -6,7 +6,7 @@
  * Licensed under the GPL-2 or later.
  */
 
-#include <asm/arch/soft_switch.h>
+#include <asm/mach-adi/common/soft_switch.h>
 #include "soft_switch_bits.h"
 
 #define NUM_SWITCH      2
@@ -57,6 +57,7 @@ static struct switch_config switch_config_array[NUM_SWITCH] = {
 		.dir1 = 0x0, /* all output */
 		.value0 = PortA_Address22,
 		.value1 = PortB_Address22 | PortB_Address22_EthDisable,
+		.is23018 = 0x0,
 	},
 	{
 		.i2c_bus = 2,
@@ -65,5 +66,6 @@ static struct switch_config switch_config_array[NUM_SWITCH] = {
 		.dir1 = 0x0, /* all output */
 		.value0 = PortA_Address21,
 		.value1 = PortB_Address21,
+		.is23018 = 0x0,
 	},
 };
