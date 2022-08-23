@@ -39,14 +39,9 @@
 #include <malloc.h>
 #include "cadence_qspi.h"
 
-#if defined(CONFIG_SC59X)
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
 #include <adi/common/ospi.h>
-#include "../../arch/arm/cpu/armv7/sc59x/adsp594_mdma.h"
-#endif
-
-#if defined(CONFIG_SC59X_64)
-#include <adi/common/ospi.h>
-#include "../../arch/arm/cpu/armv8/sc59x-64/adsp598_mdma.h"
+#include <adi/common/adi_mdma.h>
 #endif
 
 #define CQSPI_REG_POLL_US			1 /* 1us */

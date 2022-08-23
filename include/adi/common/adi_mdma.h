@@ -1,4 +1,11 @@
+#ifndef ADI_MDMA
+#define ADI_MDMA
+
 #include <adi/common/adi_dma.h>
+
+#ifdef CONFIG_SC59X
+#include <asm/armv7.h>
+#endif
 
 #define DMA_MIN(a,b) (((a)<(b))?(a):(b))
 #define DMA_MAX(a,b) (((a)>(b))?(a):(b))
@@ -92,18 +99,25 @@ static u32 memcopy_dma(u32 * data, u32 * flash_source, size_t len)
   mdma_dest->XCNT = ByteCount >> nDstMsize;
   mdma_dest->XMOD = 1 << nDstMsize;
 
-//  isb();
-//  dsb();
-//  dmb();
+#ifdef CONFIG_SC59X
+  CP15ISB;
+  CP15DSB;
+  CP15DMB;
+#else
   flush_dcache_range(flash_source, flash_source+len);
+#endif
 
   mdma_dest->CFG = DstConfig;
   mdma_src->CFG = SrcConfig;
 
-//  isb();
-//  dsb();
-//  dmb();
+#ifdef CONFIG_SC59X
+  CP15ISB;
+  CP15DSB;
+  CP15DMB;
+#else
   flush_dcache_range(data, data+len);
+#endif
+
 
   /* Check for any configuration errors */
   if ((mdma_src->STAT & BITM_DMA_STAT_IRQERR) == BITM_DMA_STAT_IRQERR) {
@@ -135,3 +149,5 @@ static u32 memcopy_dma(u32 * data, u32 * flash_source, size_t len)
   mdma_dest->CFG &= ~1;
   return result;
 }
+
+#endif

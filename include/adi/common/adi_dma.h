@@ -1,8 +1,6 @@
 #ifndef ADI_DMA
 #define ADI_DMA
 
-#ifdef CONFIG_SC59X_64
-
 /* ============================================================================================================================
         DMA8
    ============================================================================================================================ */
@@ -44,9 +42,6 @@
 #define REG_DMA9_BWLCNT_CUR                  0x310A70C4            /*  DMA9 Bandwidth Limit Count Current Register */
 #define REG_DMA9_BWMCNT                      0x310A70C8            /*  DMA9 Bandwidth Monitor Count Register */
 #define REG_DMA9_BWMCNT_CUR                  0x310A70CC            /*  DMA9 Bandwidth Monitor Count Current Register */
-
-#endif
-
 
 /* -------------------------------------------------------------------------------------------------------------------------
           DMA_DSCPTR_NXT                       Pos/Masks         Description
