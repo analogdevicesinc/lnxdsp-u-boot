@@ -7,7 +7,13 @@
 #define _MACH_GPIO_H_
 #include <asm-generic/gpio.h>
 
+#if defined(CONFIG_SC57X)
+#define MAX_GPIOS 96
+#elif defined(CONFIG_SC58X)
+#define MAX_GPIOS 110
+#else
 #define MAX_GPIOS 144
+#endif
 #define GPIO_BANKSIZE  16
 #define GPIO_BANK_NUM  DIV_ROUND_UP(MAX_GPIOS, GPIO_BANKSIZE)
 #define GPIO_USAGE 0

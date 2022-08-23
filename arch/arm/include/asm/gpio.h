@@ -3,7 +3,9 @@
 	!defined(CONFIG_ARCH_BCM6858) && !defined(CONFIG_ARCH_BCM63158) && \
 	!defined(CONFIG_ARCH_ROCKCHIP) && !defined(CONFIG_ARCH_ASPEED) && \
 	!defined(CONFIG_ARCH_U8500) && !defined(CONFIG_CORTINA_PLATFORM) && \
-	!defined(CONFIG_TARGET_BCMNS3) && !defined(CONFIG_TARGET_TOTAL_COMPUTE)
+	!defined(CONFIG_TARGET_BCMNS3) && !defined(CONFIG_TARGET_TOTAL_COMPUTE) && \
+	!defined(CONFIG_SC57X) && !defined(CONFIG_SC58X) && \
+	!defined(CONFIG_SC59X) && !defined(CONFIG_SC59X_64)
 #include <asm/arch/gpio.h>
 #endif
 #include <asm-generic/gpio.h>

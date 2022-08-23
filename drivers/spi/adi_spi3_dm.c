@@ -30,6 +30,7 @@
 #else
 #include <asm/mach-adi/common/clock.h>
 #endif
+#include <asm/mach-adi/common/gpio.h>
 #include "adi_spi3_dm.h"
 
 DECLARE_GLOBAL_DATA_PTR;

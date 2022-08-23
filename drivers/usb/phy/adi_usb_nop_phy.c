@@ -23,6 +23,7 @@
 #include <dm/device_compat.h>
 #include <linux/delay.h>
 #include <power/regulator.h>
+#include <asm/mach-adi/common/gpio.h>
 
 struct usb_nop_phy_priv {
 	struct clk_bulk bulk;

@@ -14,6 +14,7 @@
 #include <asm/mach-types.h>
 #include <asm/mach-adi/common/sc5xx.h>
 #include <asm/mach-adi/common/dwmmc.h>
+#include <asm/mach-adi/common/gpio.h>
 #include <linux/delay.h>
 #include <watchdog.h>
 
