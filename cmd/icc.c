@@ -9,7 +9,7 @@
 #include <config.h>
 #include <common.h>
 #include <command.h>
-#include <adi/common/sc5xx.h>
+#include <asm/mach-adi/common/sc5xx.h>
 #include <asm/io.h>
 #include <linux/delay.h>
 

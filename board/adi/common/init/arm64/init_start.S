@@ -8,7 +8,7 @@
 #include <linux/linkage.h>
 #include <asm/macro.h>
 
-#include <adi/59x-64/init_asm.h>
+#include <asm/mach-adi/59x-64/init_asm.h>
 
 ENTRY(_start)
 	.align 3

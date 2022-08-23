@@ -6,7 +6,7 @@
 
 #include <config.h>
 #include <common.h>
-#include <adi/common/sc5xx.h>
+#include <asm/mach-adi/common/sc5xx.h>
 #include "dmcinit.h"
 #include <stdbool.h>
 

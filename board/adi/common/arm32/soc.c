@@ -4,7 +4,7 @@
  */
 
 #include <common.h>
-#include <adi/common/sc5xx.h>
+#include <asm/mach-adi/common/sc5xx.h>
 #include <asm/io.h>
 #include <asm/system.h>
 #include <asm/arch/portmux.h>

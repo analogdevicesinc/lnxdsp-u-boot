@@ -17,7 +17,7 @@
 #include <asm/gpio.h>
 #include <asm/mach-types.h>
 #include <asm/arch/portmux.h>
-#include <adi/common/sc5xx.h>
+#include <asm/mach-adi/common/sc5xx.h>
 #include <asm/arch-sc59x-64/dwmmc.h>
 #include <linux/delay.h>
 #include <watchdog.h>
@@ -25,7 +25,7 @@
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
 #include "sc598-som-ezkit-shared.h"
-#include <adi/59x-64/sc598-som-ezkit-dynamic-qspi-ospi-uart-mux.h>
+#include <asm/mach-adi/59x-64/sc598-som-ezkit-dynamic-qspi-ospi-uart-mux.h>
 
 static const unsigned short pins_ospi0[] = P_OSPI0;
 static const unsigned short pins_qspi2[] = QSPI_PINS_SWITCH(2);

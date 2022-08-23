@@ -9,7 +9,7 @@
 #ifndef __SC59X_SERIAL_H__
 #define __SC59X_SERIAL_H__
 
-#include <adi/common/sc5xx.h>
+#include <asm/mach-adi/common/sc5xx.h>
 #include <asm/arch/gpio.h>
 #include <asm/arch/ports.h>
 #include <asm/arch/clock.h>

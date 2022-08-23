@@ -1,7 +1,7 @@
 #ifndef ADI_MDMA
 #define ADI_MDMA
 
-#include <adi/common/adi_dma.h>
+#include <asm/mach-adi/common/adi_dma.h>
 
 #ifdef CONFIG_SC59X
 #include <asm/armv7.h>

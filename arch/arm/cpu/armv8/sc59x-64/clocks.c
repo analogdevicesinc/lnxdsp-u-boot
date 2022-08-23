@@ -7,7 +7,7 @@
  */
 
 #include <common.h>
-#include <adi/common/sc5xx.h>
+#include <asm/mach-adi/common/sc5xx.h>
 #include <asm/arch/clock.h>
 
 /* Get the voltage input multiplier */

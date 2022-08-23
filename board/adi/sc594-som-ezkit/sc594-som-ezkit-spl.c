@@ -13,13 +13,13 @@
 #include <asm/gpio.h>
 #include <asm/mach-types.h>
 #include <asm/arch/portmux.h>
-#include <adi/common/sc5xx.h>
+#include <asm/mach-adi/common/sc5xx.h>
 #include <asm/arch-sc59x/dwmmc.h>
 #include <linux/delay.h>
 #include <watchdog.h>
 #include "soft_switch.h"
 #include <asm/spl.h>
-#include <adi/common/rcu.h>
+#include <asm/mach-adi/common/rcu.h>
 #include "sc594-som-ezkit-shared.h"
 
 #define pRCU_STAT 0x3108c004

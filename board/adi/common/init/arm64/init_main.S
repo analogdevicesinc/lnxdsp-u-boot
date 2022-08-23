@@ -7,7 +7,7 @@
 
 #include <linux/linkage.h>
 #include <asm/macro.h>
-#include <adi/59x-64/init_asm.h>
+#include <asm/mach-adi/59x-64/init_asm.h>
 
 #define CONFIG_INIT_ELF_STACK_ADDR	0x200a0000
 
