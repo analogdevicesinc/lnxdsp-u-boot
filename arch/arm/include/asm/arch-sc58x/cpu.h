@@ -3,7 +3,7 @@
  * Licensed under the GPL-2 or later.
  */
 
-#include <asm/arch/sc58x.h>
+#include <adi/common/sc5xx.h>
 
 /*
  * Timer Configuration Register Bits

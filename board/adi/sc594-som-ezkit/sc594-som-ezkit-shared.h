@@ -13,7 +13,7 @@
 #include <asm/gpio.h>
 #include <asm/mach-types.h>
 #include <asm/arch/portmux.h>
-#include <asm/arch/sc59x.h>
+#include <adi/common/sc5xx.h>
 #include <asm/arch-sc59x/dwmmc.h>
 #include <linux/delay.h>
 #include <watchdog.h>

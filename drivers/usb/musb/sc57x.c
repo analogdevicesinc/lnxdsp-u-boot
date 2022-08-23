@@ -15,8 +15,7 @@
 
 #include <common.h>
 #include <usb.h>
-#include <asm/arch/sc57x.h>
-
+#include <adi/common/sc5xx.h>
 #include "musb_core.h"
 
 /* MUSB platform configuration */

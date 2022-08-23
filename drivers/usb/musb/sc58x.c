@@ -15,14 +15,7 @@
 
 #include <common.h>
 #include <usb.h>
-
-
-#if defined(CONFIG_SC59X)
-#include <asm/arch/sc59x.h>
-#else
-#include <asm/arch/sc58x.h>
-#endif
-
+#include <adi/common/sc5xx.h>
 #include "musb_core.h"
 
 /* MUSB platform configuration */

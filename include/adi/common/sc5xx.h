@@ -6,14 +6,23 @@
 /* =========================
         TIMER
    ========================= */
+
+#ifdef CONFIG_SC58X
+#define TIMER_GROUP                 0x31001004
+#define TIMER0_CONFIG               0x31001060
+#else
 #define TIMER_GROUP                 0x31018004
 #define TIMER0_CONFIG               0x31018060
+#endif
 
 /* =========================
 	L2 SRAM
    ========================= */
+#ifdef CONFIG_SC57X
+#define L2_SRAM_BASE                0x20000000
+#else
 #define L2_SRAM_BASE                0x20080000
-
+#endif
 
 /* =========================
         TWI MMR base
@@ -56,14 +65,19 @@
 #define WDOG0_CTL                   0x31008000         /* Control Register */
 #define WDOG0_CNT                   0x31008004         /* Count Register */
 #define WDOG0_STAT                  0x31008008         /* Status Register */
+#define WDOG0_WIN                   0x3100800C         /* Window Register */
 
 
 /* =========================
         EMAC MMR base
    ========================= */
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
 #define REG_EMAC0_MACCFG                0x31040000         /* EMAC0 MAC Configuration Register */
 #define REG_EMAC1_MACCFG                0x31042000         /* EMAC1 MAC Configuration Register */
-
+#else
+#define REG_EMAC0_MACCFG                0x3100C000         /* EMAC0 MAC Configuration Register */
+#define REG_EMAC1_MACCFG                0x3100E000         /* EMAC1 MAC Configuration Register */
+#endif
 
 /* =========================
 	MSI MMR base
@@ -73,27 +87,52 @@
 /* ==================================================
         Serial Peripheral Interface MMR base
    ================================================== */
+#ifdef CONFIG_SC58X
+#define SPI0_REGBASE                  0x31042000
+#define SPI1_REGBASE                  0x31043000
+#define SPI2_REGBASE                  0x31044000
+#else
 #define SPI0_REGBASE                  0x3102E000
 #define SPI1_REGBASE                  0x3102F000
+#ifdef CONFIG_SC59X_64
 #define SPI2_REGBASE                  0x31030000
-
+#else
+#define SPI2_REGBASE                  0x31044000
+#endif
+#endif
 
 /* =========================
         RCU0
    ========================= */
+#ifdef CONFIG_SC58X
+#define RCU0_CTL                    0x3108B000         /* RCU0 Control Register */
+#define RCU0_STAT                   0x3108B004         /* RCU0 Status Register */
+#define RCU0_CRCTL                  0x3108B008         /* RCU0 Core Reset Control Register */
+#define RCU0_CRSTAT                 0x3108B00C         /* RCU0 Core Reset Status Register */
+#define RCU0_SIDIS                  0x3108B010         /* RCU0 System Interface Disable Register */
+#define RCU0_MSG_SET                0x3108B064         /* RCU0 Message Set Bits Register */
+#else
 #define RCU0_CTL                    0x3108C000         /* RCU0 Control Register */
 #define RCU0_STAT                   0x3108C004         /* RCU0 Status Register */
 #define RCU0_CRCTL                  0x3108C008         /* RCU0 Core Reset Control Register */
 #define RCU0_CRSTAT                 0x3108C00C         /* RCU0 Core Reset Status Register */
 #define RCU0_SIDIS                  0x3108C01C         /* RCU0 System Interface Disable Register */
 #define RCU0_MSG_SET                0x3108C070         /* RCU0 Message Set Bits Register */
-
+#endif
 
 /* =========================
         SPU MMR base
    ========================= */
+#ifdef CONFIG_SC58X
+#define REG_SPU0_CTL                    0x3108C000         /* SPU0 Control Register */
+#else
 #define REG_SPU0_CTL                    0x3108B000         /* SPU0 Control Register */
-
+#define REG_SPU0_SECUREC0               0x3108B980            /*  SPU0 Secure Core Registers */
+#define REG_SPU0_SECUREC1               0x3108B984            /*  SPU0 Secure Core Registers */
+#define REG_SPU0_SECUREC2               0x3108B988            /*  SPU0 Secure Core Registers */
+#define REG_SPU0_SECURECn(i)            (REG_SPU0_SECUREC0 + ((i) * 4))
+#define REG_SPU0_SECURECn_COUNT         3
+#endif
 
 /* =========================
         CGU0
@@ -167,6 +206,9 @@
 
 #define REG_DMC0_DDR_SCRATCH_2          0x31071074
 #define REG_DMC0_DDR_SCRATCH_3          0x31071078
+#define REG_DMC0_DDR_SCRATCH_6          0x31071084
+#define REG_DMC0_DDR_SCRATCH_7          0x31071088
+
 #define REG_DMC0_DDR_SCRATCH_STAT0      0x3107107C
 #define REG_DMC0_DDR_SCRATCH_STAT1      0x31071080
 
@@ -207,8 +249,13 @@
 
 #define REG_DMC1_DDR_SCRATCH_2          0x31074074
 #define REG_DMC1_DDR_SCRATCH_3          0x31074078
+#define REG_DMC1_DDR_SCRATCH_6          0x31074084
+#define REG_DMC1_DDR_SCRATCH_7          0x31074088
+
 #define REG_DMC1_DDR_SCRATCH_STAT0      0x3107407C
 #define REG_DMC1_DDR_SCRATCH_STAT1      0x31074080
+
+#define REG_MISC_REG10_tst_addr         0x310A902C
 
 /* =========================
         USB0
@@ -231,4 +278,8 @@
 /* =========================
         PADS0
    ========================= */
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
 #define REG_PADS0_PCFG0                 0x31004604        /* PADS0 Peripheral Configuration0 Register */
+#else
+#define REG_PADS0_PCFG0                 0x31004404         /* PADS0 Peripheral Configuration0 Register */
+#endif

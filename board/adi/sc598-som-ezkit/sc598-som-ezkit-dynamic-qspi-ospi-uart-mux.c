@@ -17,7 +17,7 @@
 #include <asm/gpio.h>
 #include <asm/mach-types.h>
 #include <asm/arch/portmux.h>
-#include <asm/arch/sc59x_64.h>
+#include <adi/common/sc5xx.h>
 #include <asm/arch-sc59x-64/dwmmc.h>
 #include <linux/delay.h>
 #include <watchdog.h>

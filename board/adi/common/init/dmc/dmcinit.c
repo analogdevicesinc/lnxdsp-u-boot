@@ -6,15 +6,7 @@
 
 #include <config.h>
 #include <common.h>
-#if defined(CONFIG_SC59X_64)
-#include <asm/arch/sc59x_64.h>
-#elif defined(CONFIG_SC59X)
-#include <asm/arch/sc59x.h>
-#elif defined(CONFIG_SC58X)
-#include <asm/arch/sc58x.h>
-#elif defined(CONFIG_SC57X)
-#include <asm/arch/sc57x.h>
-#endif
+#include <adi/common/sc5xx.h>
 #include "dmcinit.h"
 #include <stdbool.h>
 

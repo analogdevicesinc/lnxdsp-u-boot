@@ -5,7 +5,7 @@
 #ifndef __ADI_PERIPHERAL_TWI__
 #define __ADI_PERIPHERAL_TWI__
 
-#include <asm/arch/sc57x.h>
+#include <adi/common/sc5xx.h>
 
 /* TWI_CLKDIV Macros (Use: *pTWI_CLKDIV = CLKLOW(x)|CLKHI(y); ) */
 #define	CLKLOW(x)	((x) & 0xFF)		/* Periods Clock Is Held Low */
