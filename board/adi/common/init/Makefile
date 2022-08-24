@@ -17,17 +17,16 @@ endif
 
 ifdef CONFIG_SC59X
 obj-y += dmc/dmcinit.o
-obj-y += init.o
 endif
 
 ifdef CONFIG_SC59X_64
 obj-y += dmc/dmcinit.o
-obj-y += init.o
 endif
+
+obj-y += init.o
 
 extra-y := init-$(CONFIG_SYS_BOARD)
 extra-y += init-$(CONFIG_SYS_BOARD).elf
-extra-y += init.o
 extra-y += $(ADI_ARCH)/init_start.o
 extra-y += $(ADI_ARCH)/init_main.o
 extra-y += dmc/dmcinit.o
@@ -55,7 +54,6 @@ quiet_cmd_link_init = LD      $@
       cmd_link_init = $(LD) -Ttext=$(INIT_TEXT_BASE) -nostdlib $(LDFLAGS) -o $@ $^
 
 $(obj)/init-$(CONFIG_SYS_BOARD): $(obj)/$(ADI_ARCH)/init_start.o $(obj)/init.o $(obj)/init_return_stack.o $(obj)/dmc/dmcinit.o
-	touch $(obj)/built-in.o
 	$(call if_changed,link_init)
 
 $(obj)/init-$(CONFIG_SYS_BOARD).elf: $(obj)/$(ADI_ARCH)/init_main.o $(obj)/init.o $(obj)/init_return_stack.o $(obj)/dmc/dmcinit.o
