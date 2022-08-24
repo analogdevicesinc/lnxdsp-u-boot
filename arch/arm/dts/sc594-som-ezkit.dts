@@ -1,5 +1,6 @@
 /dts-v1/;
 
+#include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/pinctrl/adi-adsp.h>
 
 / {
@@ -42,7 +43,21 @@
 				u-boot,dm-pre-reloc;
 				adi,pins = <ADI_ADSP_PIN('A', 14) ADI_ADSP_PINFUNC_ALT0>, /* i2c */
 			               <ADI_ADSP_PIN('A', 15) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('H', 3) ADI_ADSP_PINFUNC_ALT0>, /* eth0 */
+			               <ADI_ADSP_PIN('F', 2) ADI_ADSP_PINFUNC_ALT0>, /* emmc */
+			               <ADI_ADSP_PIN('F', 3) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('F', 4) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('F', 5) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('F', 6) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('F', 7) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('F', 8) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('F', 9) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('F', 10) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('F', 11) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('F', 12) ADI_ADSP_PINFUNC_ALT0>;
+			};
+
+			eth0_default: eth0_pins {
+				adi,pins = <ADI_ADSP_PIN('H', 3) ADI_ADSP_PINFUNC_ALT0>, /* eth0 */
 			               <ADI_ADSP_PIN('H', 4) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('H', 5) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('H', 6) ADI_ADSP_PINFUNC_ALT0>,
@@ -55,8 +70,11 @@
 			               <ADI_ADSP_PIN('H', 13) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('H', 14) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('H', 15) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('I', 0) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('E', 11) ADI_ADSP_PINFUNC_ALT0>, /* eth1 */
+			               <ADI_ADSP_PIN('I', 0) ADI_ADSP_PINFUNC_ALT0>;
+			};
+
+			eth1_default: eth1_pins {
+				adi,pins = <ADI_ADSP_PIN('E', 11) ADI_ADSP_PINFUNC_ALT0>, /* eth1 */
 			               <ADI_ADSP_PIN('E', 12) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('E', 13) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('E', 14) ADI_ADSP_PINFUNC_ALT0>,
@@ -64,18 +82,7 @@
 			               <ADI_ADSP_PIN('F', 0) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('F', 1) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('F', 2) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('F', 3) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('F', 2) ADI_ADSP_PINFUNC_ALT0>, /* emmc */
-			               <ADI_ADSP_PIN('F', 3) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('F', 4) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('F', 5) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('F', 6) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('F', 7) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('F', 8) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('F', 9) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('F', 10) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('F', 11) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('F', 12) ADI_ADSP_PINFUNC_ALT0>;
+			               <ADI_ADSP_PIN('F', 3) ADI_ADSP_PINFUNC_ALT0>;
 			};
 
 			uart0_default: uart0_pins {
@@ -118,6 +125,12 @@
 			adi,ngpios = <135>;
 			status = "okay";
 			u-boot,dm-pre-reloc;
+
+			emac0_phy_pwdn {
+				gpio-hog;
+				output-high;
+				gpios = <ADI_ADSP_PIN('G', 12) GPIO_ACTIVE_HIGH>;
+			};
 		};
 
 		uart0: serial@0x31003000 {
@@ -160,6 +173,22 @@
 			u-boot,dm-pre-reloc;
 		};
 
+		eth0: eth@0x31040000 {
+			compatible = "snps,arc-dwmac-3.70a";
+			reg = <0x31040000 0x1000>;
+			phy-mode = "rgmii";
+			pinctrl-names = "default";
+			pinctrl-0 = <&eth0_default>;
+			/* resets are handled via non-dm softconfigs for now */
+		};
+
+		eth1: eth@0x3104200 {
+			compatible = "snps,arc-dwmac-3.70a";
+			reg = <0x31042000 0x1000>;
+			phy-mode = "mii";
+			pinctrl-names = "default";
+			pinctrl-0 = <&eth1_default>;
+		};
 	};
 };
 

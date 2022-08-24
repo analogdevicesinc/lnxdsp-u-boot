@@ -97,26 +97,6 @@ void s_init(void)
 }
 
 #ifdef CONFIG_DESIGNWARE_ETH
-int board_eth_init(struct bd_info *bis)
-{
-	int ret = 0;
-
-	gpio_request(GPIO_PB7, "ethphy_reset");
-	gpio_request(GPIO_PF6, "ethphy_pwdn");
-	gpio_direction_output(GPIO_PF6, 1);
-	gpio_direction_output(GPIO_PB7, 1);
-	mdelay(20);
-	gpio_direction_output(GPIO_PB7, 0);
-	mdelay(90);
-	gpio_direction_output(GPIO_PB7, 1);
-	mdelay(20);
-
-	writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
-	ret += designware_initialize(REG_EMAC0_MACCFG,
-			PHY_INTERFACE_MODE_RGMII);
-	return ret;
-}
-
 int board_phy_config(struct phy_device *phydev)
 {
 	int  phy_data = 0;
@@ -163,6 +143,9 @@ int board_init(void)
 	gd->bd->bi_arch_number = MACH_TYPE_SC589_MINI;
 	/* boot param addr */
 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + (0x100);
+
+	// Configure eth0 for rgmii
+	writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
 
 	return 0;
 }

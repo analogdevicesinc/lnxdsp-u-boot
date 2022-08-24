@@ -75,6 +75,12 @@ int misc_init_r(void)
 	set_spu_securep_msec(41, 1);
 	set_spu_securep_msec(45, 1);
 	set_spu_securep_msec(140, 1);
+
+	// configure eth0 for RGMII
+	if (CONFIG_DW_PORTS & 1) {
+		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
+	}
+
 #ifdef CONFIG_SOFT_SWITCH
 	return setup_soft_switches(switch_config_array, NUM_SWITCH);
 #else
@@ -105,31 +111,6 @@ void s_init(void)
 }
 
 #ifdef CONFIG_DESIGNWARE_ETH
-int board_eth_init(struct bd_info *bis)
-{
-	int ret = 0;
-
-	if (CONFIG_DW_PORTS & 1) {
-		struct gpio_desc *gpio_phy_reset;
-
-		ret = gpio_hog_lookup_name("emac0_phy_reset", &gpio_phy_reset);
-		if (ret)
-			return ret;
-
-		dm_gpio_set_value(gpio_phy_reset, 1);
-		mdelay(1);
-		dm_gpio_set_value(gpio_phy_reset, 0);
-		mdelay(1);
-
-		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
-
-		ret += designware_initialize(REG_EMAC0_MACCFG,
-				PHY_INTERFACE_MODE_RGMII);
-	}
-
-	return ret;
-}
-
 int board_phy_config(struct phy_device *phydev)
 {
 	int  phy_data = 0;

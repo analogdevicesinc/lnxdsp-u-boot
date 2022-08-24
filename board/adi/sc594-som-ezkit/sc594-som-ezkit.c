@@ -10,11 +10,9 @@
 #include <netdev.h>
 #include <phy.h>
 #include <asm/io.h>
-#include <asm/gpio.h>
 #include <asm/mach-types.h>
 #include <asm/mach-adi/common/sc5xx.h>
 #include <asm/mach-adi/common/dwmmc.h>
-#include <asm/mach-adi/common/gpio.h>
 #include <linux/delay.h>
 #include <watchdog.h>
 #include "soft_switch.h"
@@ -92,15 +90,9 @@ void s_init(void)
 {
 }
 
-#ifdef CONFIG_DESIGNWARE_ETH
-int board_eth_init(struct bd_info *bis)
+void adi_eth_init()
 {
-	int ret = 0;
-
 	if (CONFIG_DW_PORTS >= 1) {
-		gpio_request(GPIO_PG12, "emac0_phy_pwdn");
-		gpio_direction_output(GPIO_PG12, 1);
-
 		adi_enable_ethernet_softconfig();
 		mdelay(20);
 		adi_disable_ethernet_softconfig();
@@ -109,16 +101,7 @@ int board_eth_init(struct bd_info *bis)
 		mdelay(20);
 
 		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
-		
-		ret += designware_initialize(REG_EMAC0_MACCFG,
-				PHY_INTERFACE_MODE_RGMII);
 	}
-
-	if (CONFIG_DW_PORTS >= 2) {
-		ret += designware_initialize(REG_EMAC1_MACCFG, 0);
-	}
-
-	return ret;
 }
 
 int board_phy_config(struct phy_device *phydev)
@@ -151,7 +134,6 @@ int board_phy_config(struct phy_device *phydev)
 
 	return 0;
 }
-#endif
 
 int board_init(void)
 {
@@ -166,6 +148,8 @@ int board_init(void)
 	return 0;
 #endif
 //#endif
+
+	adi_eth_init();
 
 	return 0;
 }

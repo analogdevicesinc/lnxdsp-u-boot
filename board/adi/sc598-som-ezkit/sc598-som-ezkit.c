@@ -10,11 +10,9 @@
 #include <netdev.h>
 #include <phy.h>
 #include <asm/io.h>
-#include <asm/gpio.h>
 #include <asm/mach-types.h>
 #include <asm/mach-adi/common/sc5xx.h>
 #include <asm/mach-adi/common/dwmmc.h>
-#include <asm/mach-adi/common/gpio.h>
 #include <linux/delay.h>
 #include <watchdog.h>
 #include "soft_switch.h"
@@ -60,12 +58,6 @@ DECLARE_GLOBAL_DATA_PTR;
 int board_early_init_f(void)
 {
 	bss_clear();
-
-#ifdef CONFIG_USB_DWC2
-	gpio_request(GPIO_PG11, "usb_reset");
-	gpio_direction_output(GPIO_PG11, 1);
-#endif
-
 	return 0;
 }
 
@@ -117,9 +109,7 @@ void s_init(void)
 void adi_eth_init(void) {
 #if ADI_HAVE_CARRIER == 1
 	if (CONFIG_DW_PORTS >= 1) {
-		gpio_request(GPIO_PG12, "emac0_phy_pwdn");
-		gpio_direction_output(GPIO_PG12, 1);
-
+		// Reset PHYs handled through non-dm softconfigs for now
 		adi_enable_ethernet_softconfig();
 		mdelay(20);
 		adi_disable_ethernet_softconfig();

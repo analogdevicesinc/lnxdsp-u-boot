@@ -1,5 +1,6 @@
 /dts-v1/;
 
+#include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include <dt-bindings/interrupt-controller/irq.h>
 #include <dt-bindings/pinctrl/adi-adsp.h>
@@ -63,7 +64,6 @@
 			};
 
 			eth0_default: eth0_pins {
-				u-boot,dm-pre-reloc;
 				adi,pins = <ADI_ADSP_PIN('H', 3) ADI_ADSP_PINFUNC_ALT0>, /* eth0 */
 			               <ADI_ADSP_PIN('H', 4) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('H', 5) ADI_ADSP_PINFUNC_ALT0>,
@@ -121,6 +121,18 @@
 			adi,ngpios = <135>;
 			status = "okay";
 			u-boot,dm-pre-reloc;
+
+			emac0_phy_pwdn {
+				gpio-hog;
+				output-high;
+				gpios = <ADI_ADSP_PIN('G', 12) GPIO_ACTIVE_HIGH>;
+			};
+
+			usb_reset {
+				gpio-hog;
+				output-high;
+				gpios = <ADI_ADSP_PIN('G', 11) GPIO_ACTIVE_HIGH>;
+			};
 		};
 
 		uart0: serial@0x31003000 {
@@ -201,6 +213,7 @@
 			phy-mode = "rgmii";
 			pinctrl-names = "default";
 			pinctrl-0 = <&eth0_default>;
+			/* reset is handled through softconfigs */
 		};
 
 		mmc0: mmc@310C7000 {
