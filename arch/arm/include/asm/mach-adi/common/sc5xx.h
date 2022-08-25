@@ -55,23 +55,6 @@
    ========================= */
 #define REG_MSI0_CTL                    0x31010000         /* MSI0 Contorl register */
 
-/* ==================================================
-        Serial Peripheral Interface MMR base
-   ================================================== */
-#ifdef CONFIG_SC58X
-#define SPI0_REGBASE                  0x31042000
-#define SPI1_REGBASE                  0x31043000
-#define SPI2_REGBASE                  0x31044000
-#else
-#define SPI0_REGBASE                  0x3102E000
-#define SPI1_REGBASE                  0x3102F000
-#ifdef CONFIG_SC59X_64
-#define SPI2_REGBASE                  0x31030000
-#else
-#define SPI2_REGBASE                  0x31044000
-#endif
-#endif
-
 /* =========================
         RCU0
    ========================= */

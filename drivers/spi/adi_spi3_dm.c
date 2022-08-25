@@ -41,7 +41,7 @@ DECLARE_GLOBAL_DATA_PTR;
 int cs_is_valid(unsigned int bus, unsigned int cs)
 {
 	if (is_gpio_cs(cs))
-		return 1;
+		return 0;
 	else
 		return adi_spi_cs_valid(bus, cs);
 }
@@ -53,9 +53,16 @@ static int adi_spi_ofdata_to_platdata(struct udevice *bus)
 	const void *blob = gd->fdt_blob;
 	int node = dev_of_offset(bus);
 	int subnode;
+	fdt_addr_t addr;
 
 	plat->max_hz = fdtdec_get_int(blob, node, "spi-max-frequency", 500000);
 	plat->bus_num = fdtdec_get_int(blob, node, "bus-num", 0);
+	addr = dev_read_addr(bus);
+
+	if (FDT_ADDR_T_NONE == addr)
+		return -EINVAL;
+
+	plat->regs = (struct adi_spi_regs *) addr;
 
 	/* All other paramters are embedded in the child node */
 	subnode = fdt_first_subnode(blob, node);
@@ -77,7 +84,6 @@ static int adi_spi_probe(struct udevice *bus)
 	int cs;
 
 	priv->bus_num = plat->bus_num;
-	adi_spi_setup_reg(plat, priv->bus_num);
 	priv->regs = plat->regs;
 	priv->cs_num = plat->cs_num;
 
@@ -85,7 +91,6 @@ static int adi_spi_probe(struct udevice *bus)
 		printf("Invalid chip select\r\n");
 		return -ENODEV;
 	}
-	adi_spi_setup_cs(priv, priv->bus_num, priv->cs_num);
 	if (is_gpio_cs(priv->cs_num)) {
 		cs = gpio_cs(priv->cs_num);
 		gpio_request(cs, "adi-spi3");
