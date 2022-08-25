@@ -612,15 +612,18 @@ config TARGET_STV0991
 config SC57X
 	bool "sc57x SoC"
 	select CPU_V7A
+	select COMMON_CLK_ADI_SC57X
 
 config SC58X
 	bool "sc58x SoC"
 	select CPU_V7A
+	select COMMON_CLK_ADI_SC58X
 
 config SC59X
 	bool "sc59x SoC"
 	select SUPPORT_SPL
 	select CPU_V7A
+	select COMMON_CLK_ADI_SC594
 
 config SC59X_64
 	bool "sc59x SoC"
@@ -628,6 +631,7 @@ config SC59X_64
 	select ARM64
 	select DM
 	select DM_SERIAL
+	select COMMON_CLK_ADI_SC598
 
 config TARGET_X600
 	bool "Support x600"

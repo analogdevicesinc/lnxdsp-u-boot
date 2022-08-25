@@ -159,6 +159,7 @@ config CLK_CDCE9XX
 	   Enable the clock synthesizer driver for CDCE913/925/937/949
 	   series of chips.
 
+source "drivers/clk/adi/Kconfig"
 source "drivers/clk/analogbits/Kconfig"
 source "drivers/clk/at91/Kconfig"
 source "drivers/clk/exynos/Kconfig"
