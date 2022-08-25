@@ -65,6 +65,15 @@ config WDT
 	  What exactly happens when the timer expires is up to a particular
 	  device/driver.
 
+config WDT_ADI
+	bool "Analog Devices watchdog timer support"
+	select WDT
+	select SPL_WDT if SPL
+	depends on (SC57X || SC58X || SC59X || SC59X_64)
+	help
+	  Enable this to support Watchdog Timer on ADI SC57X, SC58X, SC59X,
+	  and SC59X_64 processors
+
 config WDT_ARMADA_37XX
 	bool "Marvell Armada 37xx watchdog timer support"
 	depends on WDT && ARMADA_3700

@@ -108,9 +108,9 @@ config UART4_SERIAL
 	depends on DM_SERIAL
 	default y
 
-config ADI_WATCHDOG
+config WDT_ADI
 	bool
-	default n
+	default y
 
 config WATCHDOG_TIMEOUT_MSECS
 	int

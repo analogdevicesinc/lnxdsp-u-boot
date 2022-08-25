@@ -40,35 +40,6 @@
 #define UART2_REVID                 0x31003800         /* UART2 Revision ID Register */
 
 /* =========================
-        SEC
-   ========================= */
-
-/* ----------------------------------------------------
-       SEC Global Register Definitions
-   ---------------------------------------------------- */
-#define SEC0_GCTL                   0x31089000         /* SEC0 Global Control Register */
-
-/* ----------------------------------------------------
-       SEC Source Interface (SSI) Register Definitions
-   ---------------------------------------------------- */
-#define SEC0_SCTL0                  0x31089800         /* SEC0 Source Control Register n */
-
-/* ----------------------------------------------------
-       SEC Fault Management Interface (SFI) Register Definitions
-   ---------------------------------------------------- */
-#define SEC0_FCTL                   0x31089010         /* SEC0 Fault Control Register */
-
-
-/* =========================
-        WDOG0
-   ========================= */
-#define WDOG0_CTL                   0x31008000         /* Control Register */
-#define WDOG0_CNT                   0x31008004         /* Count Register */
-#define WDOG0_STAT                  0x31008008         /* Status Register */
-#define WDOG0_WIN                   0x3100800C         /* Window Register */
-
-
-/* =========================
         EMAC MMR base
    ========================= */
 #if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
