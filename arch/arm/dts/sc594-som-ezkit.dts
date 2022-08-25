@@ -131,6 +131,20 @@
 				output-high;
 				gpios = <ADI_ADSP_PIN('G', 12) GPIO_ACTIVE_HIGH>;
 			};
+
+			pushbutton0 {
+				gpio-hog;
+				input;
+				gpios = <ADI_ADSP_PIN('D', 0) GPIO_ACTIVE_HIGH>;
+				u-boot,dm-pre-reloc;
+			};
+
+			pushbutton1 {
+				gpio-hog;
+				input;
+				gpios = <ADI_ADSP_PIN('H', 0) GPIO_ACTIVE_HIGH>;
+				u-boot,dm-pre-reloc;
+			};
 		};
 
 		uart0: serial@0x31003000 {

@@ -10,7 +10,6 @@
 #include <netdev.h>
 #include <phy.h>
 #include <asm/io.h>
-#include <asm/gpio.h>
 #include <asm/mach-types.h>
 #include <asm/mach-adi/common/sc5xx.h>
 #include <asm/mach-adi/common/dwmmc.h>
@@ -23,10 +22,11 @@
 
 #define pRCU_STAT 0x3108c004
 
+extern void adi_check_pushbuttons(void);
+
 static int adi_sf_default_bus = 0;
 static int adi_sf_default_cs = 0;
 static int adi_sf_default_speed = CONFIG_SF_DEFAULT_SPEED;
-static bool adi_start_uboot_proper = 1;
 static char * adi_kernel_bootargs;
 static u32 bmode;
 
@@ -119,11 +119,6 @@ int dram_init_banksize(void)
 	return 0;
 }
 
-int spl_start_uboot(void)
-{
-	return adi_start_uboot_proper;
-}
-
 u32 bootrom_stash __attribute__((section(".data")));
 
 int board_return_to_bootrom(struct spl_image_info *spl_image,
@@ -134,27 +129,6 @@ int board_return_to_bootrom(struct spl_image_info *spl_image,
 }
 
 #ifdef CONFIG_ADI_FALCON
-void adi_check_pushbuttons(){
-	gpio_request(GPIO_PD0, "pushbutton0");
-	gpio_direction_input(GPIO_PD0);
-
-	gpio_request(GPIO_PH0, "pushbutton1");
-	gpio_direction_input(GPIO_PH0);
-
-	if(gpio_get_value(GPIO_PD0) || gpio_get_value(GPIO_PH0)){
-		adi_start_uboot_proper = 1;
-
-		//Wait until they're released, in case these pins conflict with peripherals (OSPI, etc)
-		while(gpio_get_value(GPIO_PD0));
-		while(gpio_get_value(GPIO_PH0));
-	}else{
-		adi_start_uboot_proper = 0;
-	}
-
-	gpio_free(GPIO_PD0);
-	gpio_free(GPIO_PH0);
-}
-
 void adi_fdt_fixup_mac_addr(void * fdt){
 
 	int i = 0, j, prop;

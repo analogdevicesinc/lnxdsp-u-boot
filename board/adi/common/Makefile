@@ -14,3 +14,5 @@ obj-y += init/
 ifndef CONFIG_SC59X_64
 obj-y += arm32/soc.o
 endif
+
+obj-$(CONFIG_SPL_BUILD) += spl.o
