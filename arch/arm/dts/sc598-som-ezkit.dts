@@ -211,6 +211,8 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&ospi_default>;
 			bus-num = <0>;
+			clocks = <&clk ADSP_SC598_CLK_OSPI>;
+			clock-names = "ospi";
 			status = "disabled";
 			u-boot,dm-pre-reloc;
 		};
