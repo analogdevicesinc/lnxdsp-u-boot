@@ -222,6 +222,8 @@
 			pinctrl-0 = <&spi2_default>;
 			bus-num = <2>;
 			spi-max-frequency = <10000000>;
+			clocks = <&clk ADSP_SC594_CLK_SPI>;
+			clock-names = "spi";
 			status = "disabled";
 			u-boot,dm-pre-reloc;
 		};

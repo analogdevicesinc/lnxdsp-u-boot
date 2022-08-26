@@ -32,6 +32,7 @@
 #endif
 #include <asm/mach-adi/common/gpio.h>
 #include "adi_spi3_dm.h"
+#include <clk.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -362,21 +363,29 @@ static int adi_spi_set_speed(struct udevice *bus, uint speed)
 	struct adi_spi_platdata *plat = bus->platdata;
 	struct adi_spi_priv *priv = dev_get_priv(bus);
 	int ret;
-	u32 clock;
+	u32 clock, spi_base_clk;
+	struct clk spi_clk;
+
+	ret = clk_get_by_name(bus, "spi", &spi_clk);
+	if (ret < 0) {
+		printf("Can't get SPI clk: %d\n", ret);
+		return ret;
+	}
+	spi_base_clk = clk_get_rate(&spi_clk);
 
 	if(speed > plat->max_hz)
 		speed = plat->max_hz;
 
-	if (speed > get_spi_clk())
+	if (speed > spi_base_clk)
 		return -ENODEV;
 
-	clock = get_spi_clk() / speed;
+	clock = spi_base_clk / speed;
 	if (clock)
 		clock--;
 
 	priv->clock = clock;
 
-	debug("%s: priv->clock: %x, speed: %x, get_spi_clk(): %x\n", __func__, clock, speed, get_spi_clk());
+	debug("%s: priv->clock: %x, speed: %x, get_spi_clk(): %x\n", __func__, clock, speed, spi_base_clk);
 
 	return 0;
 }
