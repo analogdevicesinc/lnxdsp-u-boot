@@ -2,6 +2,7 @@
 
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/pinctrl/adi-adsp.h>
+#include <dt-bindings/clock/adi-sc5xx-clock.h>
 
 / {
 	model = "ADI sc584-ezkit";
@@ -14,6 +15,29 @@
 	aliases {
 		spi2 = "/spi@31044000";
 		serial0 = &uart0;
+	};
+
+	clocks {
+		dummy: dummy {
+			compatible = "fixed-clock";
+			#clock-cells = <0>;
+			clock-frequency = <0>;
+			u-boot,dm-pre-reloc;
+		};
+
+		sys_clkin0: sys_clkin0 {
+			compatible = "fixed-clock";
+			#clock-cells = <0>;
+			clock-frequency = <25000000>;
+			u-boot,dm-pre-reloc;
+		};
+
+		sys_clkin1: sys_clkin1 {
+			compatible = "fixed-clock";
+			#clock-cells = <0>;
+			clock-frequency = <25000000>;
+			u-boot,dm-pre-reloc;
+		};
 	};
 
 	soc {
@@ -77,6 +101,19 @@
 				output-high;
 				gpios = <ADI_ADSP_PIN('C', 15) GPIO_ACTIVE_HIGH>;
 			};
+		};
+
+		clk: clocks@0x3108d000 {
+			compatible = "adi,sc58x-clocks";
+			reg = <0x3108d000 0x1000>,
+				<0x3108e000 0x1000>,
+				<0x3108f000 0x1000>;
+			reg-names = "cgu0", "cgu1", "cdu";
+			#clock-cells = <1>;
+			clocks = <&sys_clkin0>, <&sys_clkin1>;
+			clock-names = "sys_clkin0", "sys_clkin1";
+			status = "okay";
+			u-boot,dm-pre-reloc;
 		};
 
 		uart0: serial@0x31003000 {
