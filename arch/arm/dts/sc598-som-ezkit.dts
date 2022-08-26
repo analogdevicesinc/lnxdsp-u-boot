@@ -181,8 +181,8 @@
 				<0x310a9000 0x1000>;
 			reg-names = "cgu0", "cgu1", "cdu", "pll3";
 			#clock-cells = <1>;
-			clocks = <&sys_clkin0>, <&sys_clkin1>;
-			clock-names = "sys_clkin0", "sys_clkin1";
+			clocks = <&dummy>, <&sys_clkin0>, <&sys_clkin1>;
+			clock-names = "dummy", "sys_clkin0", "sys_clkin1";
 			status = "okay";
 			u-boot,dm-pre-reloc;
 		};
@@ -194,6 +194,8 @@
 			u-boot,dm-pre-reloc;
 			pinctrl-names = "default";
 			pinctrl-0 = <&uart0_default>;
+			clocks = <&clk ADSP_SC598_CLK_CGU0_SCLK0>;
+			clock-names = "sclk0";
 			status = "okay";
 		};
 

@@ -13,6 +13,7 @@
 #include <asm/io.h>
 #include <linux/compiler.h>
 #include <linux/bitops.h>
+#include <clk.h>
 
 #ifdef CONFIG_SC59X_64
 #ifdef ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
@@ -127,15 +128,23 @@ int uartBufferPos = 0;
 static int adi_uart4_set_brg(struct udevice *dev, int baudrate) {
 	struct adi_uart4_platdata *plat = dev->platdata;
 	struct uart4_reg *regs = plat->regs;
-	uint32_t divisor;
+	uint32_t divisor, uart_base_clk_rate;
+	struct clk uart_base_clk;
+
+	if (clk_get_by_index(dev, 0, &uart_base_clk)) {
+		printf("%s: Could not get UART base clock\n", dev->name);
+		return -1;
+	}
+
+	uart_base_clk_rate = clk_get_rate(&uart_base_clk);
 
 	if (plat->edbo) {
-		uint16_t divisor16 = (get_uart_clk() + (baudrate / 2)) / baudrate;
+		uint16_t divisor16 = (uart_base_clk_rate + (baudrate / 2)) / baudrate;
 		divisor = divisor16 | BIT(31);
 	}
 	else {
 		// Divisor is only 16 bits
-		divisor = 0x0000ffff & ((get_uart_clk() + (baudrate * 8)) / (baudrate * 16));
+		divisor = 0x0000ffff & ((uart_base_clk_rate + (baudrate * 8)) / (baudrate * 16));
 	}
 
 	writel(divisor, &regs->clock);
