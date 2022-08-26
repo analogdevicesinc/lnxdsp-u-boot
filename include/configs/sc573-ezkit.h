@@ -123,15 +123,6 @@
 #define CONFIG_LINUX_MEMSIZE	"224M"
 #define CONFIG_CMD_BOOTZ
 
-/*
- * SDH Settings
- */
-//#define CONFIG_GENERIC_MMC
-//#define CONFIG_MMC
-//#define CONFIG_SC5XX_DWMMC
-//#define CONFIG_MMC_DW
-//#define CONFIG_BOUNCE_BUFFER
-
 #define CONFIG_BOOTCOMMAND	"run ramboot"
 #define INITRAMADDR "0x85000000"
 

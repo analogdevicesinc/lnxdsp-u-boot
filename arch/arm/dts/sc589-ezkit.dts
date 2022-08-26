@@ -184,6 +184,17 @@
 			pinctrl-0 = <&eth1_default>;
 		};
 		*/
+
+		mmc: mmc0@31010000 {
+			compatible = "snps,dw-mshc";
+			reg = <0x31010000 0x400>;
+			bus-width = <4>;
+			fifo-depth = <128>;
+			clocks = <&dummy>, <&clk ADSP_SC58X_CLK_CGU0_SCLK0>;
+			clock-names = "biu", "ciu";
+			max-frequency = <52000000>;
+		};
+
 	};
 };
 

@@ -86,12 +86,6 @@
 #define CONFIG_USB_STORAGE
 
 /*
- * SDH Settings
- */
-#define CONFIG_GENERIC_MMC
-#define CONFIG_SC5XX_DWMMC
-
-/*
  * Env Storage Settings
  */
 #define CONFIG_ENV_IS_IN_SPI_FLASH
