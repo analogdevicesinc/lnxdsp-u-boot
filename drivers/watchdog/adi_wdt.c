@@ -83,9 +83,9 @@ static int adi_wdt_start(struct udevice *dev, u64 timeout_ms, ulong flags)
 	writel(WDDIS, priv->wdt_base + WDOG_CTL);
 
 #ifdef CONFIG_SC58X
-	writel(timeout_ms / 1000 * (clk_get_rate(&priv->clock)/2), WDOG_CNT);
+	writel(timeout_ms / 1000 * (clk_get_rate(&priv->clock)/2), priv->wdt_base + WDOG_CNT);
 #else
-	writel(timeout_ms / 1000 * clk_get_rate(&priv->clock), WDOG_CNT);
+	writel(timeout_ms / 1000 * clk_get_rate(&priv->clock), priv->wdt_base + WDOG_CNT);
 #endif
 
 	writel(0, priv->wdt_base + WDOG_STAT);

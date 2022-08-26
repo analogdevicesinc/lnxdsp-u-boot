@@ -263,6 +263,18 @@
 			};
 		};
 
+		wdog: watchdog@31008000 {
+			compatible = "adi,wdt";
+			reg = <0x3108c000 0x1000>,
+			      <0x31089000 0x1000>,
+			      <0x31008000 0x1000>;
+			reg-names = "rcu", "sec", "wdt";
+			clocks = <&clk ADSP_SC598_CLK_CGU0_SCLK0>;
+			clock-names = "sclk0";
+			status = "disabled";
+			u-boot,dm-pre-reloc;
+		};
+
 		eth0: eth@0x31040000 {
 			compatible = "snps,dwmac-5.20";
 			reg = <0x31040000 0x1000>;

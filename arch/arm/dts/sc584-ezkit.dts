@@ -139,6 +139,18 @@
 			status = "disabled";
 		};
 
+		wdog: watchdog@31008000 {
+			compatible = "adi,wdt";
+			reg = <0x3108b000 0x1000>,
+			      <0x31089000 0x1000>,
+			      <0x31008000 0x1000>;
+			reg-names = "rcu", "sec", "wdt";
+			clocks = <&clk ADSP_SC58X_CLK_CGU0_SCLK0>;
+			clock-names = "sclk0";
+			status = "disabled";
+			u-boot,dm-pre-reloc;
+		};
+
 		eth0: eth@0x3100C000 {
 			compatible = "snps,arc-dwmac-3.70a";
 			reg = <0x3100C000 0x1000>;
