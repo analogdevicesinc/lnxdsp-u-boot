@@ -12,7 +12,7 @@
 	};
 
 	aliases {
-		spi2 = "/spi@31030000";
+		spi2 = "/spi@31044000";
 		serial0 = &uart0;
 	};
 
@@ -101,11 +101,11 @@
 			u-boot,dm-pre-reloc;
 		};
 
-		spi2: spi@31030000 {
+		spi2: spi@31044000 {
 			compatible = "adi,spi3";
 			#address-cells = <1>;
 			#size-cells = <0>;
-			reg = <0x31030000 0x1000>;
+			reg = <0x31044000 0x1000>;
 			pinctrl-names = "default";
 			pinctrl-0 = <&spi2_default>;
 			bus-num = <2>;
