@@ -5,6 +5,7 @@ config COMMON_CLK_ADI_SC598
 	select CLK
 	select CLK_CCF
 	select OF_CONTROL
+	select CMD_CLK
 	select SPL_DM if SPL
 	select SPL_CLK if SPL
 	select SPL_CLK_CCF if SPL
@@ -22,6 +23,7 @@ config COMMON_CLK_ADI_SC594
 	select CLK
 	select CLK_CCF
 	select OF_CONTROL
+	select CMD_CLK
 	select SPL_DM if SPL
 	select SPL_CLK if SPL
 	select SPL_CLK_CCF if SPL
@@ -39,6 +41,7 @@ config COMMON_CLK_ADI_SC58X
 	select CLK
 	select CLK_CCF
 	select OF_CONTROL
+	select CMD_CLK
 	depends on SC58X
 	help
 	  This driver supports the system clocks on Analog Devices SC58x-series
@@ -52,6 +55,7 @@ config COMMON_CLK_ADI_SC57X
 	select CLK
 	select CLK_CCF
 	select OF_CONTROL
+	select CMD_CLK
 	depends on SC57X
 	help
 	  This driver supports the system clocks on Analog Devices SC57x-series
