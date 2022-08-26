@@ -102,28 +102,6 @@ void s_init(void)
 }
 
 #ifdef CONFIG_DESIGNWARE_ETH
-int board_eth_init(struct bd_info *bis)
-{
-	int ret = 0;
-
-	if (CONFIG_DW_PORTS & 1) {
-		gpio_request(GPIO_PB14, "emac0_phy_reset");
-		gpio_request(GPIO_PC15, "emac0_phy_pwdn");
-		gpio_direction_output(GPIO_PC15, 1);
-		gpio_direction_output(GPIO_PB14, 0);
-		mdelay(1);
-		gpio_direction_output(GPIO_PB14, 1);
-		mdelay(1);
-
-		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
-
-		ret += designware_initialize(REG_EMAC0_MACCFG,
-				PHY_INTERFACE_MODE_RGMII);
-	}
-
-	return ret;
-}
-
 int board_phy_config(struct phy_device *phydev)
 {
 	int  phy_data = 0;
@@ -187,6 +165,8 @@ int board_init(void)
 	gd->bd->bi_arch_number = MACH_TYPE_SC584_EZKIT;
 	/* boot param addr */
 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + (0x100);
+
+	writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
 
 	return 0;
 }

@@ -1,5 +1,8 @@
 /dts-v1/;
 
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/pinctrl/adi-adsp.h>
+
 / {
 	model = "ADI sc584-ezkit";
 	compatible = "adi,sc584-ezkit", "adi,sc58x";
@@ -20,10 +23,69 @@
 		device_type = "soc";
 		ranges;
 
+		pinctrl0: pinctrl@0x31004000 {
+			compatible = "adi,adsp-pinctrl";
+			reg = <0x31004000 0x500>;
+			adi,npins = <102>;
+			status = "okay";
+			u-boot,dm-pre-reloc;
+
+			eth0_default: eth0_pins {
+				adi,pins = <ADI_ADSP_PIN('A', 0) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('A', 1) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('A', 2) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('A', 3) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('A', 4) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('A', 5) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('A', 6) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('A', 7) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('A', 8) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('A', 9) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('A', 10) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('A', 11) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('A', 12) ADI_ADSP_PINFUNC_ALT0>,
+			               <ADI_ADSP_PIN('A', 13) ADI_ADSP_PINFUNC_ALT0>;
+			};
+
+			uart0_default: uart0_pins {
+				u-boot,dm-pre-reloc;
+				adi,pins = <ADI_ADSP_PIN('C', 13) ADI_ADSP_PINFUNC_ALT0>,
+				           <ADI_ADSP_PIN('C', 14) ADI_ADSP_PINFUNC_ALT0>;
+			};
+
+			spi2_default: spi2_pins {
+				adi,pins = <ADI_ADSP_PIN('C', 1) ADI_ADSP_PINFUNC_ALT0>,
+						   <ADI_ADSP_PIN('C', 2) ADI_ADSP_PINFUNC_ALT0>,
+						   <ADI_ADSP_PIN('C', 3) ADI_ADSP_PINFUNC_ALT0>,
+						   <ADI_ADSP_PIN('C', 4) ADI_ADSP_PINFUNC_ALT0>,
+						   <ADI_ADSP_PIN('C', 5) ADI_ADSP_PINFUNC_ALT0>,
+						   <ADI_ADSP_PIN('C', 6) ADI_ADSP_PINFUNC_ALT0>;
+			};
+		};
+
+		gpio0: gpio@0x31004000 {
+			compatible = "adi,adsp-gpio";
+			reg = <0x31004000 0x500>;
+			gpio-controller;
+			#gpio-cells = <2>;
+			adi,ngpios = <102>;
+			status = "okay";
+			u-boot,dm-pre-reloc;
+
+			emac0_phy_pwdn {
+				gpio-hog;
+				output-high;
+				gpios = <ADI_ADSP_PIN('C', 15) GPIO_ACTIVE_HIGH>;
+			};
+		};
+
 		uart0: serial@0x31003000 {
 			compatible = "adi,uart4";
 			reg = <0x31003000 0x1000>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&uart0_default>;
 			status = "okay";
+			u-boot,dm-pre-reloc;
 		};
 
 		spi2: spi@31030000 {
@@ -31,10 +93,24 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x31030000 0x1000>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&spi2_default>;
 			bus-num = <2>;
 			spi-max-frequency = <10000000>;
 			status = "disabled";
 		};
+
+		eth0: eth@0x3100C000 {
+			compatible = "snps,arc-dwmac-3.70a";
+			reg = <0x3100C000 0x1000>;
+			phy-mode = "rgmii";
+			pinctrl-names = "default";
+			pinctrl-0 = <&eth0_default>;
+			snps,reset-active-low;
+			snps,reset-delays-us = <1000 1000 1000>;
+			snps,reset-gpio = <&gpio0 ADI_ADSP_PIN('B', 14) GPIO_ACTIVE_LOW>;
+		};
+
 	};
 };
 
