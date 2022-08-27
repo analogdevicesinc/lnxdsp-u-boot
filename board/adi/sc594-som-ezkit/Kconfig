@@ -53,15 +53,7 @@ config DIV_S1SELEX
 	int
 	default 6
 
-config SC5XX_SPI
-	bool
-	default y
-
 config USB_SC59X
-	bool
-	default y
-
-config ADI_SPI3_DM
 	bool
 	default y
 

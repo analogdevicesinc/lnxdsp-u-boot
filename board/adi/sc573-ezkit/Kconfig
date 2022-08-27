@@ -42,10 +42,6 @@ config LINUX_MEMSIZE
 	string
 	default "224M"
 
-config SC5XX_SPI
-	bool
-	default y
-
 config USB_SC57X
 	bool
 	default y

@@ -82,8 +82,6 @@
 /*
  * SPI Settings
  */
-//#define CONFIG_ADI_SPI3_DM
-//#define CONFIG_SC5XX_SPI
 //#define CONFIG_CMD_SPI
 //#define CONFIG_SPI_MEM
 #define CONFIG_ENV_SPI_MAX_HZ	5000000

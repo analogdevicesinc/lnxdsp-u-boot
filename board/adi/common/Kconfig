@@ -1,8 +1,4 @@
 
-config ADI_SPI3
-	bool "ADI SPI3 driver"
-	default y if (CONFIG_SC58X || CONFIG_SC57X)
-
 config ADI_GPIO2
 	bool "ADI GPIO2 driver"
 	default y

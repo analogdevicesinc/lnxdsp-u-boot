@@ -13,19 +13,7 @@ config SYS_BOARD
 config SYS_CONFIG_NAME
 	default "sc598-som-ezkit"
 
-config SC5XX_SPI
-	bool
-	default y
-
 config USB_SC59X
-	bool
-	default n
-
-config ADI_SPI3_DM
-	bool
-	default y
-
-config ADI_SPI3
 	bool
 	default n
 

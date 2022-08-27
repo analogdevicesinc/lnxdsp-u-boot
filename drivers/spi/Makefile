@@ -16,9 +16,7 @@ obj-y += spi.o
 obj-$(CONFIG_SPI_MEM) += spi-mem-nodm.o
 endif
 
-obj-$(CONFIG_ADI_SPI3) += adi_spi3.o
 obj-$(CONFIG_ADI_SPI3_DM) += adi_spi3_dm.o
-obj-$(CONFIG_SC5XX_SPI) += sc5xx_spi.o
 obj-$(CONFIG_ALTERA_SPI) += altera_spi.o
 obj-$(CONFIG_ATH79_SPI) += ath79_spi.o
 obj-$(CONFIG_ATMEL_QSPI) += atmel-quadspi.o

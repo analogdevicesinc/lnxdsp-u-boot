@@ -131,8 +131,6 @@
 /*
  * SPI - Via Device Tree Support
  */
-#define CONFIG_ADI_SPI3_DM
-#define CONFIG_SC5XX_SPI
 #define CONFIG_CMD_SPI
 #define CONFIG_ENV_SPI_MAX_HZ	10000000
 #define CONFIG_SF_DEFAULT_SPEED	10000000

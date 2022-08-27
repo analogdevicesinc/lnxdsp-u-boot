@@ -38,6 +38,14 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define DEBUG
 
+#define MAX_SPI_NUM 2
+
+int adi_spi_cs_valid(unsigned int bus, unsigned int cs)
+{
+	if (bus > MAX_SPI_NUM)
+		return 0;
+	return cs >= 1 && cs <= (MAX_CTRL_CS - 5);
+}
 // @todo gpio cs is not currently supported
 int cs_is_valid(unsigned int bus, unsigned int cs)
 {
