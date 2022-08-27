@@ -181,7 +181,7 @@
 			compatible = "adi,sc598-clocks";
 			reg = <0x3108d000 0x1000>,
 				<0x3108e000 0x1000>,
-				<0x3108f000 0x1000>;
+				<0x3108f000 0x1000>,
 				<0x310a9000 0x1000>;
 			reg-names = "cgu0", "cgu1", "cdu", "pll3";
 			#clock-cells = <1>;
@@ -217,7 +217,7 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&ospi_default>;
 			bus-num = <0>;
-			clocks = <&clk ADSP_SC598_CLK_OSPI>;
+			clocks = <&clk ADSP_SC598_CLK_OSPI_REFCLK>;
 			clock-names = "ospi";
 			status = "disabled";
 			u-boot,dm-pre-reloc;
