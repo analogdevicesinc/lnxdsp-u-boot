@@ -31,25 +31,6 @@
 #define TWI1_CLKDIV                 0x31001500         /* TWI1 SCL Clock Divider Register */
 #define TWI2_CLKDIV                 0x31001600         /* TWI2 SCL Clock Divider Register */
 
-
-/* =========================
-        UART MMR base
-   ========================= */
-#define UART0_REVID                 0x31003000         /* UART0 Revision ID Register */
-#define UART1_REVID                 0x31003400         /* UART1 Revision ID Register */
-#define UART2_REVID                 0x31003800         /* UART2 Revision ID Register */
-
-/* =========================
-        EMAC MMR base
-   ========================= */
-#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
-#define REG_EMAC0_MACCFG                0x31040000         /* EMAC0 MAC Configuration Register */
-#define REG_EMAC1_MACCFG                0x31042000         /* EMAC1 MAC Configuration Register */
-#else
-#define REG_EMAC0_MACCFG                0x3100C000         /* EMAC0 MAC Configuration Register */
-#define REG_EMAC1_MACCFG                0x3100E000         /* EMAC1 MAC Configuration Register */
-#endif
-
 /* =========================
         RCU0
    ========================= */
