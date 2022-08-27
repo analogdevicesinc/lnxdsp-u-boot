@@ -246,7 +246,7 @@ config MMC_DW_ROCKCHIP
 config MMC_SDHCI_ADI
 	bool "ADI SD/MMC controller support"
 	depends on DM_MMC && OF_CONTROL
-	depends on MMC_DW
+	depends on MMC_SDHCI
 	help
 	  ADI SD/MMC controller support
 
