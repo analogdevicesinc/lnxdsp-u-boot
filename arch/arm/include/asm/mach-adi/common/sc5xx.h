@@ -51,11 +51,6 @@
 #endif
 
 /* =========================
-	MSI MMR base
-   ========================= */
-#define REG_MSI0_CTL                    0x31010000         /* MSI0 Contorl register */
-
-/* =========================
         RCU0
    ========================= */
 #ifdef CONFIG_SC58X

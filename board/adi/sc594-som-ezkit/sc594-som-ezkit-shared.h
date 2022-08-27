@@ -13,7 +13,6 @@
 #include <asm/gpio.h>
 #include <asm/mach-types.h>
 #include <asm/mach-adi/common/sc5xx.h>
-#include <asm/mach-adi/common/dwmmc.h>
 #include <linux/delay.h>
 #include <watchdog.h>
 

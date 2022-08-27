@@ -70,8 +70,12 @@
 			soc_defaults: soc_pins {
 				u-boot,dm-pre-reloc;
 				adi,pins = <ADI_ADSP_PIN('A', 14) ADI_ADSP_PINFUNC_ALT0>, /* i2c */
-			               <ADI_ADSP_PIN('A', 15) ADI_ADSP_PINFUNC_ALT0>,
-			               <ADI_ADSP_PIN('D', 15) ADI_ADSP_PINFUNC_ALT1>, /* emmc */
+			               <ADI_ADSP_PIN('A', 15) ADI_ADSP_PINFUNC_ALT0>;
+			};
+
+			mmc_defaults: mmc_pins {
+				u-boot,dm-pre-reloc;
+				adi,pins = <ADI_ADSP_PIN('D', 15) ADI_ADSP_PINFUNC_ALT1>,
 			               <ADI_ADSP_PIN('B', 15) ADI_ADSP_PINFUNC_ALT2>,
 			               <ADI_ADSP_PIN('C', 4) ADI_ADSP_PINFUNC_ALT2>,
 			               <ADI_ADSP_PIN('C', 6) ADI_ADSP_PINFUNC_ALT2>,
@@ -290,6 +294,8 @@
 			compatible = "designware,sdhci-5.1";
 			reg = <0x310C7000 0x1000>;
 			interrupts = <GIC_SPI 237 IRQ_TYPE_LEVEL_HIGH>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&mmc_defaults>;
 			clocks = <&emmcclk>;
 			clock-names = "core";
 			max-frequency = <50000000>;

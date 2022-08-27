@@ -12,7 +12,6 @@
 #include <asm/io.h>
 #include <asm/mach-types.h>
 #include <asm/mach-adi/common/sc5xx.h>
-#include <asm/mach-adi/common/dwmmc.h>
 #include <linux/delay.h>
 #include <linux/stringify.h>
 #include <watchdog.h>
@@ -111,7 +110,6 @@ void board_boot_order(u32 *spl_boot_list)
 			break;
 #ifdef CONFIG_MMC_SDHCI_ADI
 		case 6:
-			adi_mmc_init();
 			adi_kernel_bootargs = ADI_BOOTARGS_EMMC;
 			spl_boot_list[0] = BOOT_DEVICE_MMC1;
 			break;

@@ -9,7 +9,6 @@
 #ifndef SC598_SOM_EZKIT_SHARED
 #define SC598_SOM_EZKIT_SHARED
 
-int adi_mmc_init();
 int adi_initialize_soft_switches();
 int adi_enable_ethernet_softconfig();
 int adi_disable_ethernet_softconfig();

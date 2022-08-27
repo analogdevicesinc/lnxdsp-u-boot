@@ -52,19 +52,17 @@
 			reg = <0x31004000 0x500>;
 			adi,npins = <102>;
 			status = "okay";
-			pinctrl-names = "default";
-			pinctrl-0 = <&soc_defaults>;
 			u-boot,dm-pre-reloc;
 
-			soc_defaults: soc_pins {
+			mmc_default: mmc_pins {
 				u-boot,dm-pre-reloc;
-			    adi,pins = <ADI_ADSP_PIN('F', 2) ADI_ADSP_PINFUNC_ALT0>, /* start of emmc */
+			    adi,pins = <ADI_ADSP_PIN('F', 2) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('F', 3) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('F', 4) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('F', 5) ADI_ADSP_PINFUNC_ALT0>,
 					       <ADI_ADSP_PIN('F', 10) ADI_ADSP_PINFUNC_ALT0>,
 					       <ADI_ADSP_PIN('F', 11) ADI_ADSP_PINFUNC_ALT0>,
-					       <ADI_ADSP_PIN('F', 12) ADI_ADSP_PINFUNC_ALT0>; /* end of emmc */
+					       <ADI_ADSP_PIN('F', 12) ADI_ADSP_PINFUNC_ALT0>;
 			};
 
 			eth0_default: eth0_pins {
@@ -190,6 +188,8 @@
 		mmc: mmc0@31010000 {
 			compatible = "snps,dw-mshc";
 			reg = <0x31010000 0x400>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&mmc_default>;
 			bus-width = <4>;
 			fifo-depth = <128>;
 			clocks = <&dummy>, <&clk ADSP_SC58X_CLK_CGU0_SCLK0>;

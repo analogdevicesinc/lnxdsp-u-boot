@@ -52,13 +52,10 @@
 			reg = <0x31004000 0x500>;
 			adi,npins = <92>;
 			status = "okay";
-			pinctrl-names = "default";
-			pinctrl-0 = <&soc_defaults>;
 			u-boot,dm-pre-reloc;
 
-			soc_defaults: soc_pins {
-				u-boot,dm-pre-reloc;
-			    adi,pins = <ADI_ADSP_PIN('E', 12) ADI_ADSP_PINFUNC_ALT0>, /* start of emmc pins */
+			mmc_default: mmc_pins {
+			    adi,pins = <ADI_ADSP_PIN('E', 12) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('E', 13) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('E', 14) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('E', 15) ADI_ADSP_PINFUNC_ALT0>,
@@ -68,7 +65,7 @@
 			               <ADI_ADSP_PIN('F', 3) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('F', 4) ADI_ADSP_PINFUNC_ALT0>,
 			               <ADI_ADSP_PIN('F', 7) ADI_ADSP_PINFUNC_ALT2>,
-			               <ADI_ADSP_PIN('C', 12) ADI_ADSP_PINFUNC_ALT1>; /* end of emmc pins */
+			               <ADI_ADSP_PIN('C', 12) ADI_ADSP_PINFUNC_ALT1>;
 			};
 
 			eth0_default: eth0_pins {
@@ -180,6 +177,19 @@
 			snps,reset-delays-us = <1000 1000 1000>;
 			snps,reset-gpio = <&gpio0 ADI_ADSP_PIN('A', 5) GPIO_ACTIVE_LOW>;
 		};
+
+		mmc: mmc0@31010000 {
+			compatible = "snps,dw-mshc";
+			reg = <0x31010000 0x400>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&mmc_default>;
+			bus-width = <4>;
+			fifo-depth = <128>;
+			clocks = <&dummy>, <&clk ADSP_SC57X_CLK_CGU0_SCLK0>;
+			clock-names = "biu", "ciu";
+			max-frequency = <52000000>;
+		};
+
 	};
 };
 

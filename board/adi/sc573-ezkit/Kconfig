@@ -26,14 +26,6 @@ config DW_PORTS
 	int
 	default 1
 
-config GENERIC_MMC
-	bool
-	default y
-
-config SC5XX_DWMMC
-	bool
-	default y
-
 config ENV_IS_EMBEDDED_IN_LDR
 	bool
 	default n
@@ -43,9 +35,5 @@ config LINUX_MEMSIZE
 	default "224M"
 
 config USB_SC57X
-	bool
-	default y
-
-config MMC_DW
 	bool
 	default y

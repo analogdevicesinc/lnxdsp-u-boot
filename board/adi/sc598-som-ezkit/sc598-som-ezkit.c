@@ -12,7 +12,6 @@
 #include <asm/io.h>
 #include <asm/mach-types.h>
 #include <asm/mach-adi/common/sc5xx.h>
-#include <asm/mach-adi/common/dwmmc.h>
 #include <linux/delay.h>
 #include <watchdog.h>
 #include "soft_switch.h"
@@ -158,10 +157,6 @@ int board_phy_config(struct phy_device *phydev)
 
 int board_init(void)
 {
-#ifdef CONFIG_MMC_SDHCI_ADI
-	adi_mmc_init();
-#endif
-
 #if ADI_HAVE_CARRIER == 1
 #ifdef CONFIG_SOFT_SWITCH
 	adi_initialize_soft_switches();

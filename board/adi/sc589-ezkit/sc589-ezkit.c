@@ -13,7 +13,6 @@
 #include <asm/gpio.h>
 #include <asm/mach-types.h>
 #include <asm/mach-adi/common/sc5xx.h>
-#include <asm/mach-adi/common/dwmmc.h>
 #include <asm/mach-adi/common/gpio.h>
 #include <linux/delay.h>
 #include <watchdog.h>
@@ -132,20 +131,6 @@ int board_phy_config(struct phy_device *phydev)
 		phydev->drv->config(phydev);
 
 	return 0;
-}
-#endif
-
-#ifdef CONFIG_GENERIC_MMC
-int board_mmc_init(struct bd_info *bis)
-{
-#ifdef CONFIG_MMC_DW
-	int ret = sc5xx_dwmmc_init(bis);
-	if (ret)
-		printf("dwmmc init failed\n");
-	return ret;
-#else
-	return 0;
-#endif
 }
 #endif
 

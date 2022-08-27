@@ -13,7 +13,6 @@
 #include <asm/gpio.h>
 #include <asm/mach-types.h>
 #include <asm/mach-adi/common/sc5xx.h>
-#include <asm/mach-adi/common/dwmmc.h>
 #include <linux/delay.h>
 #include <watchdog.h>
 #include "soft_switch.h"
@@ -22,11 +21,6 @@
 #include "sc598-som-ezkit-shared.h"
 
 struct switch_config switch_config_array_current_state[NUM_SWITCH];
-
-int adi_mmc_init()
-{
-	return 0;
-}
 
 int adi_initialize_soft_switches()
 {
