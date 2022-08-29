@@ -29,7 +29,6 @@
 //#define CONFIG_ADI_CPU		"ADSP-SC589-0.1"
 #ifdef CONFIG_SC59X_CHAIN_BOOT
 # define CONFIG_LOADADDR	0x84000000
-# define CONFIG_RSA		/* RSA for FIT authen. */
 #else
 # define CONFIG_LOADADDR	0x96000000
 #endif
@@ -93,9 +92,6 @@
 /*
  * Network Settings
  */
-#define ADI_CMDS_NETWORK
-#define CONFIG_NETCONSOLE
-#define CONFIG_NET_MULTI
 #define CONFIG_DTBNAME		"sc598-som-ezkit.dtb"
 #define CONFIG_HOSTNAME		"sc59x"
 #define CONFIG_DW_PORTS		1
@@ -120,8 +116,6 @@
 /* OSPI - Via Device Tree Support
  *
  */
-#ifdef CONFIG_OF_CONTROL
-
 //Set this to 1 if you would like to use the maximum SPI speeds for OSPI and will not be using QSPI
 #define ADI_USE_MACRONIX_OSPI 0
 #define ADI_USE_MACRONIX_OSPI_DTR 0
@@ -130,26 +124,11 @@
 //This allows U-boot to use all three peripherals
 #define ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
 
-#define CONFIG_CMD_DM
-#define CONFIG_CADENCE_QSPI
-
-#define CONFIG_SPI_FLASH
-#define CONFIG_SPI_FLASH_MACRONIX
-#define CONFIG_SPI_FLASH_ISSI
-#define CONFIG_SPI_FLASH_BAR
-#define CONFIG_SPI_FLASH_MTD
-
-#define CONFIG_CMD_SF
-
 #define CONFIG_CQSPI_REF_CLK		500000000 // = 500 MHz
-
-#endif
 
 /*
  * SPI - Via Device Tree Support
  */
-#define CONFIG_CMD_SPI
-
 #if ADI_USE_MACRONIX_OSPI_DTR
 	//Maximum DTR read speed = 128mbyte / 1.90s = 67.36 mbyte/s
 	#define ADI_OSPI_ENV_SPI_MAX_HZ		CONFIG_CQSPI_REF_CLK / 12 //41.66 MHz DTR (Double Transfer Rate)
@@ -167,7 +146,6 @@
  */
 //#define CONFIG_SYS_NO_FLASH
 #define CONFIG_UART_CONSOLE	0
-#define CONFIG_CMD_BOOTZ
 #define ADI_SPI_FIT_OFFSET "0x160000"
 
 #if ADI_USE_MACRONIX_OSPI

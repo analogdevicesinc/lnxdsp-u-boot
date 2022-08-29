@@ -14,24 +14,6 @@
 
 //# include <config_cmd_default.h>
 
-# ifdef ADI_CMDS_NETWORK
-#  define CONFIG_CMD_DHCP
-//#  define CONFIG_BOOTP_SUBNETMASK
-//#  define CONFIG_BOOTP_GATEWAY
-//#  define CONFIG_BOOTP_DNS
-#  define CONFIG_BOOTP_NTPSERVER
-#  define CONFIG_KEEP_SERVERADDR
-#  define CONFIG_CMD_DNS
-#  define CONFIG_CMD_PING
-//#  define CONFIG_CMD_NET
-#  ifdef CONFIG_MII
-#   define CONFIG_CMD_MII
-#  endif
-# else
-#  undef CONFIG_CMD_BOOTD
-#  undef CONFIG_CMD_NET
-#  undef CONFIG_CMD_NFS
-# endif
 /*
 # ifdef CONFIG_MMC
 #  define CONFIG_CMD_MMC
@@ -53,11 +35,6 @@
 # ifdef CONFIG_MMC_SPI
 #  define CONFIG_CMD_MMC_SPI
 # endif
-/*
-# ifdef CONFIG_SPI_FLASH
-#  define CONFIG_CMD_SF
-# endif
-*/
 # ifdef CONFIG_SYS_NO_FLASH
 #  undef CONFIG_CMD_FLASH
 #  undef CONFIG_CMD_IMLS
@@ -382,7 +359,5 @@
 # define CONFIG_HW_WATCHDOG
 #endif
 #endif
-
-#define CONFIG_RSA
 
 #endif
