@@ -65,8 +65,10 @@ struct clk *sc5xx_cgu_pll(const char *name, const char *parent_name,
 	char *drv_name = ADI_CLK_PLL_GENERIC;
 
 	pll = kzalloc(sizeof(*pll), GFP_KERNEL);
-	if (!pll)
+	if (!pll){
+		pr_err("Allocation failed in sc5xx_cgu_pll: -ENOMEM\n");
 		return ERR_PTR(-ENOMEM);
+	}
 
 	pll->base = base;
 	pll->shift = shift;
@@ -77,8 +79,9 @@ struct clk *sc5xx_cgu_pll(const char *name, const char *parent_name,
 
 	clk = &pll->clk;
 
-	clk = clk_register(clk, drv_name, name, parent_name);
+	ret = clk_register(clk, drv_name, name, parent_name);
 	if (ret) {
+		pr_err("Failed to register %s in sc5xx_cgu_pll: %ld\n", name, ERR_PTR(ret));
 		kfree(pll);
 		return ERR_PTR(ret);
 	}

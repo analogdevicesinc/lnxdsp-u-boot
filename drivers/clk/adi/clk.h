@@ -102,11 +102,15 @@ static inline int cdu_check_clocks(struct clk *clks[], size_t count) {
 	size_t i;
 
 	for (i = 0; i < count; ++i) {
-		if (IS_ERR(clks[i])) {
-			pr_err("Clock %zu failed to register: %ld\n", i, PTR_ERR(clks[i]));
-			return PTR_ERR(clks[i]);
+		if(clks[i]){
+			if (IS_ERR(clks[i])) {
+				pr_err("Clock %zu failed to register: %ld\n", i, PTR_ERR(clks[i]));
+				return PTR_ERR(clks[i]);
+			}else{
+				clks[i]->id = i;
+			}
 		}else{
-			clks[i]->id = i;
+			pr_err("ADI Clock framework: Null pointer detected on clock %d\n", i);
 		}
 	}
 
