@@ -56,36 +56,11 @@
 /*
  * Network Settings
  */
-#define ADI_CMDS_NETWORK
-#define CONFIG_NETCONSOLE
-#define CONFIG_NET_MULTI
-//#define CONFIG_DTBNAME		"sc573-ezkit.dtb"
 #define CONFIG_HOSTNAME		"sc57x"
-#define CONFIG_DESIGNWARE_ETH
-//#define CONFIG_DW_PORTS		1
 #define CONFIG_DW_ALTDESCRIPTOR
 #define CONFIG_DW_AXI_BURST_LEN 16
-#define CONFIG_MII
-//#define CONFIG_PHYLIB
 #define CONFIG_PHY_TI
 #define CONFIG_ETHADDR	02:80:ad:20:31:e8
-
-/*
- * SPI Settings
- */
-//#define CONFIG_CMD_SPI
-//#define CONFIG_SPI_MEM
-#define CONFIG_ENV_SPI_MAX_HZ	5000000
-//#define CONFIG_SF_DEFAULT_SPEED	5000000
-//#define CONFIG_SPI_FLASH
-#define CONFIG_SPI_FLASH_WINBOND
-/*#define CONFIG_SPI_FLASH_MMAP*/
-//#define CONFIG_DEFAULT_SPI_MODE 3
-//#define CONFIG_DEFAULT_SPI_BUS  2
-
-//#define CONFIG_SF_DEFAULT_MODE  3
-#define CONFIG_SF_DEFAULT_BUS   2
-#define CONFIG_SF_DEFAULT_CS    1
 
 /*
  * USB Settings
@@ -97,20 +72,10 @@
 #define CONFIG_USB_STORAGE
 
 /*
- * Env Storage Settings
- */
-#define CONFIG_ENV_IS_IN_SPI_FLASH
-#define CONFIG_ENV_SPI_BUS 2
-#define CONFIG_ENV_SPI_CS 1
-
-/*
  * Misc Settings
  */
-#define CONFIG_SYS_NO_FLASH
 #define CONFIG_UART_CONSOLE	0
-#define CONFIG_BAUDRATE		115200
 #define CONFIG_LINUX_MEMSIZE	"224M"
-#define CONFIG_CMD_BOOTZ
 
 #define CONFIG_BOOTCOMMAND	"run ramboot"
 #define INITRAMADDR "0x85000000"

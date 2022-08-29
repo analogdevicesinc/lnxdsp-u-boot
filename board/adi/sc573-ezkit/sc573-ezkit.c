@@ -70,11 +70,6 @@ int misc_init_r(void)
 	set_spu_securep_msec(45, 1);
 	set_spu_securep_msec(140, 1);
 
-	// configure eth0 for RGMII
-	if (CONFIG_DW_PORTS & 1) {
-		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
-	}
-
 #ifdef CONFIG_SOFT_SWITCH
 	return setup_soft_switches(switch_config_array, NUM_SWITCH);
 #else
@@ -142,6 +137,9 @@ int board_init(void)
 	gd->bd->bi_arch_number = MACH_TYPE_SC573_EZKIT;
 	/* boot param addr */
 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + (0x100);
+
+	// configure eth0 for RGMII
+	writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
 
 	return 0;
 }

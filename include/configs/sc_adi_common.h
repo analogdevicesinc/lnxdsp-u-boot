@@ -41,7 +41,6 @@
 # endif
 # define CONFIG_CMD_CACHE
 //# define CONFIG_CMD_ELF
-# define CONFIG_CMD_GPIO
 # define CONFIG_CMD_REGINFO
 # define CONFIG_CMD_STRINGS
 # define CONFIG_CMD_MEMTEST
@@ -240,8 +239,6 @@
 # define NETWORK_ENV_SETTINGS
 #endif
 
-#define CONFIG_ENV_OVERWRITE    1
-
 #ifndef BOARD_ENV_SETTINGS
 # define BOARD_ENV_SETTINGS
 #endif
@@ -307,22 +304,6 @@
 #endif
 #ifndef CONFIG_SPI_MM_SIZE
 //# define CONFIG_SPI_MM_SIZE      0x20000000
-#endif
-
-
-/*
- * Env Storage Settings
- */
-//TODO: Delete this whole block
-#if !(defined(CONFIG_SC59X) || defined(CONFIG_SC58X) || defined(CONFIG_SC59X_64))
-	#define CONFIG_ENV_OFFSET       0x10000
-	#define CONFIG_ENV_SIZE         0x2000
-	#define CONFIG_ENV_SECT_SIZE    0x10000
-	/* We need envcrc to embed the env into LDRs */
-	#ifdef CONFIG_ENV_IS_EMBEDDED_IN_LDR
-	# define CONFIG_BUILD_ENVCRC
-	#endif
-	#define CONFIG_ENV_ADDR         0
 #endif
 
 /*
