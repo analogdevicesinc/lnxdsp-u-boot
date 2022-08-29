@@ -3,6 +3,9 @@
  *
  * Copyright (c) 2013-2014 Analog Devices Inc.
  *
+ * 2022 - Converted to driver model by Timesys Corporation
+ *        Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+ *
  * Licensed under the GPL-2 or later.
  */
 
@@ -11,6 +14,7 @@
 
 #include <common.h>
 #include <i2c.h>
+#include <dm.h>
 
 #define IODIRA          0x0
 #define IODIRB          0x1
@@ -33,32 +37,36 @@ struct switch_config {
 
 static inline int setup_soft_switch(struct switch_config *config)
 {
-	int ret = 0;
 
-	ret = i2c_set_bus_num(config->i2c_bus);
-	if (ret)
+	u32 ret;
+	struct udevice *dev = NULL;
+
+	ret = i2c_get_chip_for_busnum(config->i2c_bus, config->i2c_addr, 1, &dev);
+	if (ret) {
+		printf("%s: No bus %d\n", __func__, config->i2c_bus);
 		return ret;
+	}
 
 	if(config->is23018){
-		ret = i2c_write(config->i2c_addr, GPPUA, 1, &config->pullup0, 1);
+		ret = dm_i2c_write(dev, GPPUA, &config->pullup0, 1);
 		if (ret)
 			return ret;
-		ret = i2c_write(config->i2c_addr, GPPUB, 1, &config->pullup1, 1);
+		ret = dm_i2c_write(dev, GPPUB, &config->pullup1, 1);
 		if (ret)
 			return ret;
 	}
 
-	ret = i2c_write(config->i2c_addr, OLATA, 1, &config->value0, 1);
+	ret = dm_i2c_write(dev, OLATA, &config->value0, 1);
 	if (ret)
 		return ret;
-	ret = i2c_write(config->i2c_addr, OLATB, 1, &config->value1, 1);
+	ret = dm_i2c_write(dev, OLATB, &config->value1, 1);
 	if (ret)
 		return ret;
 
-	ret = i2c_write(config->i2c_addr, IODIRA, 1, &config->dir0, 1);
+	ret = dm_i2c_write(dev, IODIRA, &config->dir0, 1);
 	if (ret)
 		return ret;
-	return i2c_write(config->i2c_addr, IODIRB, 1, &config->dir1, 1);
+	return dm_i2c_write(dev, IODIRB, &config->dir1, 1);
 }
 
 static inline int setup_soft_switches(struct switch_config array[], int count)

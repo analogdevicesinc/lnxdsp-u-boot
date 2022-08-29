@@ -79,10 +79,6 @@ config DW_AUTONEG
 	bool
 	default y
 
-config SYS_I2C_ADI
-	bool
-	default y
-
 config MUSB_HCD
 	bool
 	default y

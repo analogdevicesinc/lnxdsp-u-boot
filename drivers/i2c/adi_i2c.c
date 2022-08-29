@@ -3,17 +3,23 @@
  *
  * Copyright (c) 2006-2014 Analog Devices Inc.
  *
+ * 2022 - Converted to driver model by Timesys Corporation
+ *        Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+ *
  * Licensed under the GPL-2 or later.
  */
 
 #include <common.h>
+#include <command.h>
 #include <i2c.h>
 #include <asm/mach-adi/common/clock.h>
 #include <asm/mach-adi/common/twi.h>
 #include <asm/io.h>
 #include <console.h>
-
-static struct twi_regs *i2c_get_base(struct i2c_adapter *adap);
+#include <clk.h>
+#include <dm.h>
+#include <mapmem.h>
+#include <linux/delay.h>
 
 /* Every register is 32bit aligned, but only 16bits in size */
 #define ureg(name) u16 name; u16 __pad_##name;
@@ -38,10 +44,6 @@ struct twi_regs {
 };
 #undef ureg
 
-#ifdef TWI_CLKDIV
-#define TWI0_CLKDIV TWI_CLKDIV
-#endif
-
 /*
  * The way speed is changed into duty often results in integer truncation
  * with 50% duty, so we'll force rounding up to the next duty by adding 1
@@ -52,22 +54,24 @@ struct twi_regs {
 #define I2C_SPEED_TO_DUTY(speed)  (5000000 / (speed))
 #define I2C_DUTY_MAX              (I2C_SPEED_TO_DUTY(I2C_SPEED_MAX) + 1)
 #define I2C_DUTY_MIN              0xff	/* 8 bit limited */
-#define SYS_I2C_DUTY              I2C_SPEED_TO_DUTY(CONFIG_SYS_I2C_SPEED)
-/* Note: duty is inverse of speed, so the comparisons below are correct */
-#if SYS_I2C_DUTY < I2C_DUTY_MAX || SYS_I2C_DUTY > I2C_DUTY_MIN
-# error "The I2C hardware can only operate 20KHz - 400KHz"
-#endif
+
+#define I2C_M_COMBO		0x4
+#define I2C_M_STOP		0x2
+#define I2C_M_READ		0x1
 
 /* All transfers are described by this data structure */
 struct adi_i2c_msg {
 	u8 flags;
-#define I2C_M_COMBO		0x4
-#define I2C_M_STOP		0x2
-#define I2C_M_READ		0x1
 	u32 len;		/* msg length */
 	u8 *buf;		/* pointer to msg data */
-	u32 alen;		/* addr length */
-	u8 *abuf;		/* addr buffer */
+	u32 olen;		/* addr length */
+	u8 *obuf;		/* addr buffer */
+};
+
+struct adi_i2c_dev {
+	struct twi_regs  __iomem *base;
+	u32 i2c_clk;
+	uint speed;
 };
 
 /* Allow msec timeout per ~byte transfer */
@@ -87,9 +91,9 @@ static int wait_for_completion(struct twi_regs *twi, struct adi_i2c_msg *msg)
 
 		if (int_stat & XMTSERV) {
 			writew(XMTSERV, &twi->int_stat);
-			if (msg->alen) {
-				writew(*(msg->abuf++), &twi->xmt_data8);
-				--msg->alen;
+			if (msg->olen) {
+				writew(*(msg->obuf++), &twi->xmt_data8);
+				--msg->olen;
 			} else if (!(msg->flags & I2C_M_COMBO) && msg->len) {
 				writew(*(msg->buf++), &twi->xmt_data8);
 				--msg->len;
@@ -136,23 +140,22 @@ static int wait_for_completion(struct twi_regs *twi, struct adi_i2c_msg *msg)
 	return msg->len;
 }
 
-static int i2c_transfer(struct i2c_adapter *adap, uint8_t chip, uint addr,
-			int alen, uint8_t *buffer, int len, uint8_t flags)
+static int i2c_transfer(struct twi_regs *twi, uint8_t chip, uint offset,
+			int olen, uint8_t *buffer, int len, uint8_t flags)
 {
-	struct twi_regs *twi = i2c_get_base(adap);
 	int ret;
 	u16 ctl;
-	uchar addr_buffer[] = {
-		(addr >>  0),
-		(addr >>  8),
-		(addr >> 16),
+	uchar offset_buffer[] = {
+		(offset >>  0),
+		(offset >>  8),
+		(offset >> 16),
 	};
 	struct adi_i2c_msg msg = {
 		.flags = flags | (len >= 0xff ? I2C_M_STOP : 0),
 		.buf   = buffer,
 		.len   = len,
-		.abuf  = addr_buffer,
-		.alen  = alen,
+		.obuf  = offset_buffer,
+		.olen  = olen,
 	};
 
 	/* wait for things to settle */
@@ -168,10 +171,10 @@ static int i2c_transfer(struct i2c_adapter *adap, uint8_t chip, uint addr,
 	writew(0, &twi->fifo_ctl);
 
 	/* prime the pump */
-	if (msg.alen) {
-		len = (msg.flags & I2C_M_COMBO) ? msg.alen : msg.alen + len;
-		writew(*(msg.abuf++), &twi->xmt_data8);
-		--msg.alen;
+	if (msg.olen) {
+		len = (msg.flags & I2C_M_COMBO) ? msg.olen : msg.olen + len;
+		writew(*(msg.obuf++), &twi->xmt_data8);
+		--msg.olen;
 	} else if (!(msg.flags & I2C_M_READ) && msg.len) {
 		writew(*(msg.buf++), &twi->xmt_data8);
 		--msg.len;
@@ -203,9 +206,22 @@ static int i2c_transfer(struct i2c_adapter *adap, uint8_t chip, uint addr,
 	return ret;
 }
 
-static uint adi_i2c_setspeed(struct i2c_adapter *adap, uint speed)
+static int adi_i2c_read(struct twi_regs *twi, uint8_t chip,
+			uint offset, int olen, uint8_t *buffer, int len)
 {
-	struct twi_regs *twi = i2c_get_base(adap);
+	return i2c_transfer(twi, chip, offset, olen, buffer,
+			len, olen ? I2C_M_COMBO : I2C_M_READ);
+}
+
+static int adi_i2c_write(struct twi_regs *twi, uint8_t chip,
+			uint offset, int olen, uint8_t *buffer, int len)
+{
+	return i2c_transfer(twi, chip, offset, olen, buffer, len, 0);
+}
+
+static int adi_i2c_set_bus_speed(struct udevice *bus, uint speed){
+	struct adi_i2c_dev *dev = dev_get_priv(bus);
+	struct twi_regs *twi = dev->base;
 	u16 clkdiv = I2C_SPEED_TO_DUTY(speed);
 
 	/* Set TWI interface clock */
@@ -220,82 +236,96 @@ static uint adi_i2c_setspeed(struct i2c_adapter *adap, uint speed)
 	return 0;
 }
 
-static void adi_i2c_init(struct i2c_adapter *adap, int speed, int slaveaddr)
+static int adi_i2c_ofdata_to_platdata(struct udevice *bus){
+	struct adi_i2c_dev *dev = dev_get_priv(bus);
+	struct clk clock;
+
+	dev->base = map_sysmem(dev_read_addr(bus), sizeof(struct twi_regs));
+
+	if (!dev->base)
+		return -ENOMEM;
+
+	dev->speed = dev_read_u32_default(bus, "clock-frequency",
+					  I2C_SPEED_FAST_RATE);
+
+	if (!clk_get_by_index(bus, 0, &clock))
+		dev->i2c_clk = clk_get_rate(&clock);
+
+	return 0;
+}
+
+static int adi_i2c_probe_chip(struct udevice *bus, u32 chip_addr,
+			      u32 chip_flags){
+	struct adi_i2c_dev *dev = dev_get_priv(bus);
+	u8 byte;
+
+	i2c_transfer(dev->base, chip_addr, 0, 0, &byte, 1, 0);
+	return 0;
+}
+
+static int adi_i2c_xfer(struct udevice *bus, struct i2c_msg *msg, int nmsgs){
+	struct adi_i2c_dev *dev = dev_get_priv(bus);
+	struct i2c_msg *dmsg, *omsg, dummy;
+
+	memset(&dummy, 0, sizeof(struct i2c_msg));
+
+	/* We expect either two messages (one with an offset and one with the
+	 * actual data) or one message (just data)
+	 */
+	if (nmsgs > 2 || nmsgs == 0) {
+		debug("%s: Only one or two messages are supported.", __func__);
+		return -1;
+	}
+
+	omsg = nmsgs == 1 ? &dummy : msg;
+	dmsg = nmsgs == 1 ? msg : msg + 1;
+
+	if (dmsg->flags & I2C_M_RD)
+		return adi_i2c_read(dev->base, dmsg->addr, omsg->buf, omsg->len,
+				  dmsg->buf, dmsg->len);
+	else
+		return adi_i2c_write(dev->base, dmsg->addr, omsg->buf, omsg->len,
+				   dmsg->buf, dmsg->len);
+}
+
+
+int adi_i2c_probe(struct udevice *bus)
 {
-	struct twi_regs *twi = i2c_get_base(adap);
+	struct adi_i2c_dev *dev = dev_get_priv(bus);
+	struct twi_regs *twi = dev->base;
+
 	u16 prescale = ((get_i2c_clk() / 1000 / 1000 + 5) / 10) & 0x7F;
 
 	/* Set TWI internal clock as 10MHz */
 	writew(prescale, &twi->control);
 
 	/* Set TWI interface clock as specified */
-	i2c_set_bus_speed(speed);
+	adi_i2c_set_bus_speed(bus, dev->speed);
 
 	/* Enable it */
 	writew(TWI_ENA | prescale, &twi->control);
+
+	return 0;
 }
 
-static int adi_i2c_read(struct i2c_adapter *adap, uint8_t chip,
-			uint addr, int alen, uint8_t *buffer, int len)
-{
-	return i2c_transfer(adap, chip, addr, alen, buffer,
-			len, alen ? I2C_M_COMBO : I2C_M_READ);
-}
+static const struct dm_i2c_ops adi_i2c_ops = {
+	.xfer           = adi_i2c_xfer,
+	.probe_chip     = adi_i2c_probe_chip,
+	.set_bus_speed  = adi_i2c_set_bus_speed,
+};
 
-static int adi_i2c_write(struct i2c_adapter *adap, uint8_t chip,
-			uint addr, int alen, uint8_t *buffer, int len)
-{
-	return i2c_transfer(adap, chip, addr, alen, buffer, len, 0);
-}
+static const struct udevice_id adi_i2c_ids[] = {
+	{ .compatible = "adi-i2c", },
+	{ /* sentinel */ }
+};
 
-static int adi_i2c_probe(struct i2c_adapter *adap, uint8_t chip)
-{
-	u8 byte;
-	return adi_i2c_read(adap, chip, 0, 0, &byte, 1);
-}
-
-static struct twi_regs *i2c_get_base(struct i2c_adapter *adap)
-{
-	switch (adap->hwadapnr) {
-#if CONFIG_SYS_MAX_I2C_BUS > 2
-	case 2:
-		return (struct twi_regs *)TWI2_CLKDIV;
-#endif
-#if CONFIG_SYS_MAX_I2C_BUS > 1
-	case 1:
-		return (struct twi_regs *)TWI1_CLKDIV;
-#endif
-	case 0:
-		return (struct twi_regs *)TWI0_CLKDIV;
-
-	default:
-		printf("wrong hwadapnr: %d\n", adap->hwadapnr);
-	}
-
-	return NULL;
-}
-
-U_BOOT_I2C_ADAP_COMPLETE(adi_i2c0, adi_i2c_init, adi_i2c_probe,
-			 adi_i2c_read, adi_i2c_write,
-			 adi_i2c_setspeed,
-			 CONFIG_SYS_I2C_SPEED,
-			 0,
-			 0)
-
-#if CONFIG_SYS_MAX_I2C_BUS > 1
-U_BOOT_I2C_ADAP_COMPLETE(adi_i2c1, adi_i2c_init, adi_i2c_probe,
-			 adi_i2c_read, adi_i2c_write,
-			 adi_i2c_setspeed,
-			 CONFIG_SYS_I2C_SPEED,
-			 0,
-			 1)
-#endif
-
-#if CONFIG_SYS_MAX_I2C_BUS > 2
-U_BOOT_I2C_ADAP_COMPLETE(adi_i2c2, adi_i2c_init, adi_i2c_probe,
-			 adi_i2c_read, adi_i2c_write,
-			 adi_i2c_setspeed,
-			 CONFIG_SYS_I2C_SPEED,
-			 0,
-			 2)
-#endif
+U_BOOT_DRIVER(i2c_adi) = {
+	.name = "i2c_adi",
+	.id = UCLASS_I2C,
+	.of_match = adi_i2c_ids,
+	.probe = adi_i2c_probe,
+	.ofdata_to_platdata = adi_i2c_ofdata_to_platdata,
+	.priv_auto_alloc_size = sizeof(struct adi_i2c_dev),
+	.ops = &adi_i2c_ops,
+	.flags = DM_FLAG_PRE_RELOC,
+};

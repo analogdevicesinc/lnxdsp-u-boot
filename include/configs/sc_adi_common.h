@@ -58,9 +58,6 @@
 #  define CONFIG_CMD_SF
 # endif
 */
-# ifdef CONFIG_SYS_I2C
-#  define CONFIG_CMD_I2C
-# endif
 # ifdef CONFIG_SYS_NO_FLASH
 #  undef CONFIG_CMD_FLASH
 #  undef CONFIG_CMD_IMLS
@@ -319,20 +316,6 @@
 //# define CONFIG_IP_DEFRAG
 # define CONFIG_NET_RETRY_COUNT 20
 #endif
-
-
-/*
- * I2C Settings
- */
-#ifdef CONFIG_SYS_I2C
-# ifndef CONFIG_SYS_I2C_SPEED
-#  define CONFIG_SYS_I2C_SPEED 100000
-# endif
-# ifndef CONFIG_SYS_I2C_SLAVE
-#  define CONFIG_SYS_I2C_SLAVE 0
-# endif
-#endif
-
 
 /*
  * SPI Settings

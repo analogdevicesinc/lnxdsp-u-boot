@@ -66,13 +66,6 @@
 #define CONFIG_ETHADDR	02:80:ad:20:31:e8
 
 /*
- * I2C Settings
- */
-#define CONFIG_SYS_I2C
-#define CONFIG_SYS_MAX_I2C_BUS 3
-
-
-/*
  * SPI Settings
  */
 #define CONFIG_ENV_SPI_MAX_HZ	5000000
