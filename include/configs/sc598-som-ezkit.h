@@ -95,7 +95,6 @@
 #define CONFIG_DTBNAME		"sc598-som-ezkit.dtb"
 #define CONFIG_HOSTNAME		"sc59x"
 #define CONFIG_DW_PORTS		1
-//#define CONFIG_DW_AUTONEG
 #define CONFIG_DW_ALTDESCRIPTOR
 #define CONFIG_DW_AXI_BURST_LEN 16
 #define CONFIG_MII

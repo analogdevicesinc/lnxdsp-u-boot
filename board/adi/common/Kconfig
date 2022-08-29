@@ -67,7 +67,7 @@ config SYS_MEMTEST_RESERVE_SIZE
 	hex
 	default 0x400000
 
-config DW_AUTONEG
+config SYS_I2C_ADI
 	bool
 	default y
 
