@@ -23,6 +23,8 @@
 
 static struct clk *clks[ADSP_SC57X_CLK_END];
 
+static struct clk dummy, clkin0, clkin1;
+
 static const char *cgu1_in_sels[] = {"sys_clkin0", "sys_clkin1"};
 static const char *sharc0_sels[] = {"cclk0_0", "sysclk_0", "dummy", "dummy"};
 static const char *sharc1_sels[] = {"cclk0_0", "sysclk_0", "dummy", "dummy"};
@@ -56,9 +58,13 @@ static int sc57x_clock_probe(struct udevice *dev) {
 	cdu = devm_ioremap(dev, res.start, resource_size(&res));
 
 	// Input clock configuration
-	clk_get_by_name(dev, "dummy", &clks[ADSP_SC57X_CLK_DUMMY]);
-	clk_get_by_name(dev, "sys_clkin0", &clks[ADSP_SC57X_CLK_SYS_CLKIN0]);
-	clk_get_by_name(dev, "sys_clkin1", &clks[ADSP_SC57X_CLK_SYS_CLKIN1]);
+	clk_get_by_name(dev, "dummy", &dummy);
+	clk_get_by_name(dev, "sys_clkin0", &clkin0);
+	clk_get_by_name(dev, "sys_clkin1", &clkin1);
+
+	clks[ADSP_SC57X_CLK_DUMMY] = &dummy;
+	clks[ADSP_SC57X_CLK_SYS_CLKIN0] = &clkin0;
+	clks[ADSP_SC57X_CLK_SYS_CLKIN1] = &clkin1;
 
 	clks[ADSP_SC57X_CLK_CGU1_IN] = clk_register_mux(NULL, "cgu1_in_sel",
 		cgu1_in_sels, 2, CLK_SET_RATE_PARENT, cdu + CDU_CLKINSEL, 0, 1, 0);
