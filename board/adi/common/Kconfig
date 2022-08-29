@@ -1,8 +1,4 @@
 
-config CMD_SC57X_OTP
-	bool
-	default y
-
 config DEBUG_DUMP
 	int
 	default 1

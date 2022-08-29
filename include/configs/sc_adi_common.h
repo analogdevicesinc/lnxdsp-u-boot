@@ -48,11 +48,6 @@
 # if defined(CONFIG_SC59X_CHAIN_BOOT) || defined(CONFIG_SC58X_CHAIN_BOOT) || defined(CONFIG_SC57X_CHAIN_BOOT)
 #  undef CONFIG_CMD_SAVEENV
 # endif
-#if defined(CONFIG_SC58X) || defined(CONFIG_SC59X)
-//# define CONFIG_CMD_SC58X_OTP
-#elif defined(CONFIG_SC57X)
-//# define CONFIG_CMD_SC57X_OTP
-#endif
 #endif
 
 /* Commands */

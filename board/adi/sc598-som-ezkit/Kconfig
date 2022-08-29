@@ -17,8 +17,4 @@ config USB_SC59X
 	bool
 	default n
 
-config CMD_SC58X_OTP
-	bool
-	default y
-
 endif
