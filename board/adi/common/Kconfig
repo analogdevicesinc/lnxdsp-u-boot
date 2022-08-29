@@ -1,8 +1,4 @@
 
-config ADI_GPIO2
-	bool "ADI GPIO2 driver"
-	default y
-
 config CMD_SC57X_OTP
 	bool
 	default y
