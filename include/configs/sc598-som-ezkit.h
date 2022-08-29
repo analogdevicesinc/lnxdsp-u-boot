@@ -95,10 +95,6 @@
 #define CONFIG_DTBNAME		"sc598-som-ezkit.dtb"
 #define CONFIG_HOSTNAME		"sc59x"
 #define CONFIG_DW_PORTS		1
-#define CONFIG_DW_ALTDESCRIPTOR
-#define CONFIG_DW_AXI_BURST_LEN 16
-#define CONFIG_MII
-//#define CONFIG_PHYLIB
 #define CONFIG_PHY_TI
 #define CONFIG_ETHADDR	02:80:ad:20:31:e8
 #define CONFIG_ETH1ADDR	02:80:ad:20:31:e9
