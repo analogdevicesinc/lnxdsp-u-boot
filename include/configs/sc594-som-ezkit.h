@@ -99,13 +99,6 @@
 #define CONFIG_ETHADDR	02:80:ad:20:31:e8
 #define CONFIG_ETH1ADDR	02:80:ad:20:31:e9
 
-/*
- * I2C Settings
- */
-#define CONFIG_SYS_I2C
-//#define CONFIG_SYS_I2C_ADI
-#define CONFIG_SYS_MAX_I2C_BUS 3
-
 /* OSPI - Via Device Tree Support
  *
  */
