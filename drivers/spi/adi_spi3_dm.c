@@ -27,8 +27,6 @@
 #include <fdtdec.h>
 #ifndef CONFIG_ARCH_HEADER_IN_MACH
 #include <asm/clock.h>
-#else
-#include <asm/mach-adi/common/clock.h>
 #endif
 #include <asm/mach-adi/common/gpio.h>
 #include "adi_spi3_dm.h"

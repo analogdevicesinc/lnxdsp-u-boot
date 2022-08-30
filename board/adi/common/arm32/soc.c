@@ -45,6 +45,15 @@ u32 get_cpu_id(void)
 	return cpuid;
 }
 
+ulong get_tbclk(void)
+{
+       ulong tbclk;
+
+       tbclk = CONFIG_SYS_HZ;
+
+       return tbclk;
+}
+
 int print_cpuinfo(void)
 {
 	char buf[32];
@@ -52,13 +61,6 @@ int print_cpuinfo(void)
 	printf("CPU:   ADSP %s (Detected Rev: %d.%d) (%s boot)\n",
 		CONFIG_ADI_CPU, get_cpu_id() & 0xf00000 >> 20, get_cpu_id() & 0xf,
 		get_sc_boot_mode(CONFIG_SC_BOOT_MODE));
-
-	printf("VCO: %s MHz, ", strmhz(buf, get_vco()));
-	printf("Cclk0: %s MHz, ", strmhz(buf, get_cclk()));
-	printf("Sclk0: %s MHz, ", strmhz(buf, get_sclk0()));
-	printf("Sclk1: %s MHz, ", strmhz(buf, get_sclk1()));
-	printf("DCLK: %s MHz\n", strmhz(buf, get_dclk()));
-	printf("OCLK: %s MHz\n", strmhz(buf, get_oclk()));
 
 	return 0;
 }

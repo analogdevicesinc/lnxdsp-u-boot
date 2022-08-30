@@ -13,46 +13,6 @@ config SYS_BOARD
 config SYS_CONFIG_NAME
 	default "sc594-som-ezkit"
 
-config CCLK_DIV
-	int
-	default 2
-
-config CGU1_CCLK_DIV
-	int
-	default 64
-
-config CGU1_DCLK_DIV
-	int
-	default 2
-
-config CGU1_DIV_S1SELEX
-	int
-	default 4
-
-config CGU1_OCLK_DIV
-	int
-	default 4
-
-config CGU1_SCLK0_DIV
-	int
-	default 2
-
-config CGU1_SCLK1_DIV
-	int
-	default 2
-
-config CGU1_SCLK_DIV
-	int
-	default 16
-
-config CGU1_VCO_MULT
-	int
-	default 8
-
-config DIV_S1SELEX
-	int
-	default 6
-
 config USB_SC59X
 	bool
 	default y

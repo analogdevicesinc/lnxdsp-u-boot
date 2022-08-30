@@ -9,7 +9,6 @@
 #include <post.h>
 #include <watchdog.h>
 #include <serial.h>
-#include <asm/mach-adi/common/clock.h>
 #include <asm/io.h>
 #include <linux/compiler.h>
 #include <linux/bitops.h>

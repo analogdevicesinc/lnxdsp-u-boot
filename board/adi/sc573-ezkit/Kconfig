@@ -13,27 +13,8 @@ config ADI_CPU
 	string
 	default "ADSP-SC573-0.0"
 
-endif
-config DTBLOADADDR
-	string
-	default "0x84000000"
-
-config DTBNAME
-	string
-	default "sc573-ezkit.dtb"
-
-config DW_PORTS
-	int
-	default 1
-
-config ENV_IS_EMBEDDED_IN_LDR
-	bool
-	default n
-
-config LINUX_MEMSIZE
-	string
-	default "224M"
-
 config USB_SC57X
 	bool
 	default y
+
+endif
