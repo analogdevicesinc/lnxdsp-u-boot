@@ -67,10 +67,6 @@ config SYS_MEMTEST_RESERVE_SIZE
 	hex
 	default 0x400000
 
-config SYS_I2C_ADI
-	bool
-	default y
-
 config MUSB_HCD
 	bool
 	default y
