@@ -200,6 +200,8 @@
 		i2c0@31001400 {
 			compatible = "adi-i2c";
 			reg = <0x31001400 0x1000>;
+			clocks = <&clk ADSP_SC58X_CLK_CGU0_SCLK0>;
+			clock-names = "i2c";
 			status = "okay";
 			u-boot,dm-pre-reloc;
 		};
@@ -207,6 +209,8 @@
 		i2c1@31001500 {
 			compatible = "adi-i2c";
 			reg = <0x31001500 0x1000>;
+			clocks = <&clk ADSP_SC58X_CLK_CGU0_SCLK0>;
+			clock-names = "i2c";
 			status = "okay";
 			u-boot,dm-pre-reloc;
 		};
@@ -214,6 +218,8 @@
 		i2c2@31001600 {
 			compatible = "adi-i2c";
 			reg = <0x31001600 0x1000>;
+			clocks = <&clk ADSP_SC58X_CLK_CGU0_SCLK0>;
+			clock-names = "i2c";
 			status = "okay";
 			u-boot,dm-pre-reloc;
 		};

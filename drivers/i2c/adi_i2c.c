@@ -239,6 +239,7 @@ static int adi_i2c_set_bus_speed(struct udevice *bus, uint speed){
 static int adi_i2c_ofdata_to_platdata(struct udevice *bus){
 	struct adi_i2c_dev *dev = dev_get_priv(bus);
 	struct clk clock;
+	u32 ret;
 
 	dev->base = map_sysmem(dev_read_addr(bus), sizeof(struct twi_regs));
 
@@ -248,8 +249,12 @@ static int adi_i2c_ofdata_to_platdata(struct udevice *bus){
 	dev->speed = dev_read_u32_default(bus, "clock-frequency",
 					  I2C_SPEED_FAST_RATE);
 
-	if (!clk_get_by_index(bus, 0, &clock))
+	ret = clk_get_by_name(bus, "i2c", &clock);
+	if (ret < 0) {
+		printf("%s: Can't get I2C clk: %d\n", __func__, ret);
+	}else{
 		dev->i2c_clk = clk_get_rate(&clock);
+	}
 
 	return 0;
 }
@@ -294,7 +299,7 @@ int adi_i2c_probe(struct udevice *bus)
 	struct adi_i2c_dev *dev = dev_get_priv(bus);
 	struct twi_regs *twi = dev->base;
 
-	u16 prescale = ((get_i2c_clk() / 1000 / 1000 + 5) / 10) & 0x7F;
+	u16 prescale = ((dev->i2c_clk / 1000 / 1000 + 5) / 10) & 0x7F;
 
 	/* Set TWI internal clock as 10MHz */
 	writew(prescale, &twi->control);
