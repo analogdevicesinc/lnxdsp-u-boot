@@ -14,6 +14,7 @@ void reset_cpu(ulong addr)
 	writel(1, RCU0_CTL);
 }
 
+#ifndef CONFIG_ARM64
 #ifndef CONFIG_SYS_DCACHE_OFF
 void enable_caches(void)
 {
@@ -31,20 +32,6 @@ void v7_outer_cache_enable(void)
 }
 #endif
 
-int arch_cpu_init(void)
-{
-	return 0;
-}
-
-u32 get_cpu_id(void)
-{
-	u32 cpuid = 0;
-
-	__asm__ __volatile__("mrc p15, 0, %0, c0, c0, 0" : "=r"(cpuid));
-
-	return cpuid;
-}
-
 ulong get_tbclk(void)
 {
        ulong tbclk;
@@ -53,14 +40,30 @@ ulong get_tbclk(void)
 
        return tbclk;
 }
+#endif
+
+int arch_cpu_init(void)
+{
+	return 0;
+}
+
+void print_cpu_id(void)
+{
+#ifndef CONFIG_ARM64
+	u32 cpuid = 0;
+
+	__asm__ __volatile__("mrc p15, 0, %0, c0, c0, 0" : "=r"(cpuid));
+
+	printf("Detected Revision: %d.%d\n", cpuid & 0xf00000 >> 20, cpuid & 0xf);
+#endif
+}
 
 int print_cpuinfo(void)
 {
-	char buf[32];
+	printf("CPU:   ADSP %s (%s boot)\n",
+		CONFIG_ADI_CPU,  get_sc_boot_mode(CONFIG_SC_BOOT_MODE));
 
-	printf("CPU:   ADSP %s (Detected Rev: %d.%d) (%s boot)\n",
-		CONFIG_ADI_CPU, get_cpu_id() & 0xf00000 >> 20, get_cpu_id() & 0xf,
-		get_sc_boot_mode(CONFIG_SC_BOOT_MODE));
+	print_cpu_id();
 
 	return 0;
 }

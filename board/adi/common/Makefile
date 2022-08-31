@@ -9,15 +9,7 @@
 # SPDX-License-Identifier:      GPL-2.0+
 #
 
-obj-y += init/
-
-ifndef CONFIG_SC59X_64
-obj-y += arm32/soc.o
-endif
-
-ifdef CONFIG_SC59X_64
-obj-y += arm64/soc.o
-endif
+obj-y += soc.o init/
 
 ifdef CONFIG_SC59X
 ifeq ($(CONFIG_SPL),n)
