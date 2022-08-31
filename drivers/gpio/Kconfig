@@ -487,4 +487,9 @@ config NX_GPIO
 	  The GPIOs for a device are defined in the device tree with one node
 	  for each bank.
 
+config MCP2301X_GPIO
+	bool "MCP23017/MCP23018 GPIO expander driver"
+	depends on DM_GPIO && DM_I2C
+	help
+	  Support GPIO expander access on Microchip MCP23017/MCP23018 chips
 endmenu
