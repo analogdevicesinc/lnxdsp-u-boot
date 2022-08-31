@@ -131,11 +131,9 @@ config WATCHDOG_TIMEOUT_MSECS
 
 config DTBLOADADDR
 	string
-	default "0x84000000"
 
 config DTBNAME
 	string
-	default "sc573-ezkit.dtb"
 
 config DW_PORTS
 	int
