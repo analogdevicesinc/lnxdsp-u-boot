@@ -31,6 +31,9 @@
 #include <fdt_support.h>
 #include <bootcount.h>
 #include <wdt.h>
+#if defined(CONFIG_GPIO_HOG)
+#include <asm/gpio.h>
+#endif
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -647,6 +650,11 @@ void board_init_f(ulong dummy)
 			hang();
 		}
 	}
+
+//Initialize our GPIO hogs as well, as some of these are tied into UART
+#if defined(CONFIG_GPIO_HOG)
+	gpio_hog_probe_all();
+#endif
 
 	preloader_console_init();
 }
