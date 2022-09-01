@@ -15,7 +15,6 @@
 #include <linux/delay.h>
 #include <linux/stringify.h>
 #include <watchdog.h>
-#include "soft_switch.h"
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
 #include <asm/mach-adi/common/rcu.h>
@@ -68,12 +67,6 @@ void board_boot_order(u32 *spl_boot_list)
 	//QSPI -> QSPI
 	if(bmode != 0 && bmode != 3) //(Don't allow skipping JTAG/UART BMODE settings)
 		bmode = CONFIG_ADI_SPL_FORCE_BMODE;
-#endif
-
-#if ADI_HAVE_CARRIER == 1
-#ifdef CONFIG_SOFT_SWITCH
-	adi_initialize_soft_switches();
-#endif
 #endif
 
 	if (bmode >= 0 && bmode <= sizeof(bmodes)/sizeof(bmodes[0]))

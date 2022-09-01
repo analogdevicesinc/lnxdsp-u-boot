@@ -15,51 +15,38 @@
 #include <asm/mach-adi/common/sc5xx.h>
 #include <linux/delay.h>
 #include <watchdog.h>
-#include "soft_switch.h"
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
 #include "sc598-som-ezkit-shared.h"
 
-struct switch_config switch_config_array_current_state[NUM_SWITCH];
-
-int adi_initialize_soft_switches()
-{
-	memcpy((char*)&switch_config_array_current_state[0], 
-			(char*)&switch_config_array[0], sizeof(struct switch_config));
-	memcpy((char*)&switch_config_array_current_state[1],
-			(char*)&switch_config_array[1], sizeof(struct switch_config));
-
-	setup_soft_switches(switch_config_array_current_state, NUM_SWITCH);
-}
-
 int adi_enable_ethernet_softconfig()
 {
-	u8 currentVal;
+	struct gpio_desc *eth1;
+	struct gpio_desc *eth1_reset;
+	struct gpio_desc *gige_reset;
 
-	currentVal = switch_config_array_current_state[0].value1;
-	currentVal &= ~GIGE_RESET(1);
-	currentVal &= ~ETH1_RESET(1);
-	currentVal &= ~ETH1_EN(1);
-	currentVal |= PortB_Address22_EthEnable;
-	switch_config_array_current_state[0].value1 = currentVal;
-	switch_config_array_current_state[0].pullup1 = currentVal;
+	gpio_hog_lookup_name("~eth1-en", &eth1);
+	gpio_hog_lookup_name("~eth1-reset", &eth1_reset);
+	gpio_hog_lookup_name("~gige-reset", &gige_reset);
 
-	setup_soft_switches(switch_config_array_current_state, NUM_SWITCH);
+	dm_gpio_set_value(eth1, 1);
+	dm_gpio_set_value(eth1_reset, 0);
+	dm_gpio_set_value(gige_reset, 1);
 }
 
 int adi_disable_ethernet_softconfig()
 {
-	u8 currentVal;
+	struct gpio_desc *eth1;
+	struct gpio_desc *eth1_reset;
+	struct gpio_desc *gige_reset;
 
-	currentVal = switch_config_array_current_state[0].value1;
-	currentVal &= ~GIGE_RESET(1);
-	currentVal &= ~ETH1_RESET(1);
-	currentVal &= ~ETH1_EN(1);
-	currentVal |= PortB_Address22_EthDisable;
-	switch_config_array_current_state[0].value1 = currentVal;
-	switch_config_array_current_state[0].pullup1 = currentVal;
+	gpio_hog_lookup_name("~eth1-en", &eth1);
+	gpio_hog_lookup_name("~eth1-reset", &eth1_reset);
+	gpio_hog_lookup_name("~gige-reset", &gige_reset);
 
-	setup_soft_switches(switch_config_array_current_state, NUM_SWITCH);
+	dm_gpio_set_value(eth1, 1);
+	dm_gpio_set_value(eth1_reset, 0);
+	dm_gpio_set_value(gige_reset, 0);
 }
 
 void spi_flash_override_defaults(unsigned int * bus,

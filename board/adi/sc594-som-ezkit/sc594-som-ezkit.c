@@ -14,7 +14,6 @@
 #include <asm/mach-adi/common/sc5xx.h>
 #include <linux/delay.h>
 #include <watchdog.h>
-#include "soft_switch.h"
 #include "sc594-som-ezkit-shared.h"
 
 extern char __bss_start, __bss_end;
@@ -141,9 +140,7 @@ int board_init(void)
 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + (0x100);
 
 //#if ADI_HAVE_CARRIER == 1
-#ifdef CONFIG_SOFT_SWITCH
-	adi_initialize_soft_switches();
-#else
+#ifndef CONFIG_SOFT_SWITCH
 	return 0;
 #endif
 //#endif

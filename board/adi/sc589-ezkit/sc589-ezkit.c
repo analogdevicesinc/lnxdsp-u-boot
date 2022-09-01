@@ -16,7 +16,6 @@
 #include <asm/mach-adi/common/gpio.h>
 #include <linux/delay.h>
 #include <watchdog.h>
-#include "soft_switch.h"
 
 extern char __rel_dyn_start, __rel_dyn_end;
 extern char __bss_start, __bss_end;
@@ -72,11 +71,7 @@ int misc_init_r(void)
 	set_spu_securep_msec(58, 1);
 	set_spu_securep_msec(153, 1);
 
-#ifdef CONFIG_SOFT_SWITCH
-	return setup_soft_switches(switch_config_array, NUM_SWITCH);
-#else
 	return 0;
-#endif
 }
 
 unsigned long flash_init(void)

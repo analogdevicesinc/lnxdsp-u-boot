@@ -14,7 +14,6 @@
 #include <asm/mach-adi/common/sc5xx.h>
 #include <linux/delay.h>
 #include <watchdog.h>
-#include "soft_switch.h"
 #include <asm/armv8/mmu.h>
 #include "sc598-som-ezkit-shared.h"
 
@@ -158,9 +157,7 @@ int board_phy_config(struct phy_device *phydev)
 int board_init(void)
 {
 #if ADI_HAVE_CARRIER == 1
-#ifdef CONFIG_SOFT_SWITCH
-	adi_initialize_soft_switches();
-#else
+#ifndef CONFIG_SOFT_SWITCH
 	return 0;
 #endif
 #endif

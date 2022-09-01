@@ -222,8 +222,183 @@
 			clock-names = "i2c";
 			status = "okay";
 			u-boot,dm-pre-reloc;
-		};
 
+			gpio_expander1: mcp23017@21 {
+				compatible = "microchip,mcp23017";
+				reg = <0x21>;
+				gpio-controller;
+				#gpio-cells = <2>;
+				u-boot,dm-pre-reloc;
+
+				eeprom {
+					gpio-hog;
+					gpios = <0 GPIO_ACTIVE_HIGH>;
+					output-high;
+					line-name = "~eeprom-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				uart0-flow-en {
+					gpio-hog;
+					gpios = <1 GPIO_ACTIVE_HIGH>;
+					output-high;
+					line-name = "~uart0-flow-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				uart0-en {
+					gpio-hog;
+					gpios = <2 GPIO_ACTIVE_HIGH>;
+					output-low;
+					line-name = "~uart0-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				eth0 {
+					gpio-hog;
+					gpios = <3 GPIO_ACTIVE_HIGH>;
+					output-low;
+					line-name = "~eth0-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				eth1 {
+					gpio-hog;
+					gpios = <4 GPIO_ACTIVE_HIGH>;
+					output-low;
+					line-name = "~eth1-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				mlb {
+					gpio-hog;
+					gpios = <5 GPIO_ACTIVE_HIGH>;
+					output-high;
+					line-name = "~mlb-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				can0 {
+					gpio-hog;
+					gpios = <6 GPIO_ACTIVE_HIGH>;
+					output-high;
+					line-name = "~can0-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				can1 {
+					gpio-hog;
+					gpios = <7 GPIO_ACTIVE_HIGH>;
+					output-high;
+					line-name = "~can1-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				adau1962 {
+					gpio-hog;
+					gpios = <8 GPIO_ACTIVE_HIGH>;
+					output-low;
+					line-name = "~adau1962-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				adau1979 {
+					gpio-hog;
+					gpios = <9 GPIO_ACTIVE_HIGH>;
+					output-low;
+					line-name = "~adau1979-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				sd_wp {
+					gpio-hog;
+					gpios = <11 GPIO_ACTIVE_HIGH>;
+					output-high;
+					line-name = "~sd-wp-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				spi2d2-d3 {
+					gpio-hog;
+					gpios = <12 GPIO_ACTIVE_HIGH>;
+					output-low;
+					line-name = "~spi2d2-d3-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				spi2flash-cs {
+					gpio-hog;
+					gpios = <13 GPIO_ACTIVE_HIGH>;
+					output-low;
+					line-name = "~spi2flash-cs";
+					u-boot,dm-pre-reloc;
+				};
+
+				spdif-opt {
+					gpio-hog;
+					gpios = <14 GPIO_ACTIVE_HIGH>;
+					output-high;
+					line-name = "~spdif-optical-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				spdif-dig {
+					gpio-hog;
+					gpios = <15 GPIO_ACTIVE_HIGH>;
+					output-high;
+					line-name = "~spdif-digital-en";
+					u-boot,dm-pre-reloc;
+				};
+			};
+
+			gpio_expander2: mcp23017@22 {
+				compatible = "microchip,mcp23017";
+				reg = <0x22>;
+				gpio-controller;
+				#gpio-cells = <2>;
+				u-boot,dm-pre-reloc;
+
+				pushbutton1 {
+					gpio-hog;
+					gpios = <0 GPIO_ACTIVE_HIGH>;
+					output-low;
+					line-name = "~pushbutton1-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				pushbutton2 {
+					gpio-hog;
+					gpios = <1 GPIO_ACTIVE_HIGH>;
+					output-low;
+					line-name = "~pushbutton2-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				led10 {
+					gpio-hog;
+					gpios = <2 GPIO_ACTIVE_HIGH>;
+					output-low;
+					line-name = "~led10-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				led11 {
+					gpio-hog;
+					gpios = <3 GPIO_ACTIVE_HIGH>;
+					output-low;
+					line-name = "~led11-en";
+					u-boot,dm-pre-reloc;
+				};
+
+				led12 {
+					gpio-hog;
+					gpios = <4 GPIO_ACTIVE_HIGH>;
+					output-low;
+					line-name = "~led12-en";
+					u-boot,dm-pre-reloc;
+				};
+			};
+		};
 	};
 };
 

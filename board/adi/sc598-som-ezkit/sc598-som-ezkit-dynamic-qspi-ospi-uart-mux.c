@@ -19,7 +19,6 @@
 #include <asm/mach-adi/common/sc5xx.h>
 #include <linux/delay.h>
 #include <watchdog.h>
-#include "soft_switch.h"
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
 #include "sc598-som-ezkit-shared.h"
@@ -32,6 +31,20 @@ extern bool uartReadyToEnable;
 
 int adi_enable_ospi()
 {
+	//TODO, set these once instead of calling
+	//gpio_hog_lookup_name every time
+	struct gpio_desc *ftdi;
+	struct gpio_desc *octal;
+	struct gpio_desc *uart0;
+	struct gpio_desc *spi2flash_cs;
+	struct gpio_desc *spi2d2_d3;
+
+	gpio_hog_lookup_name("~ftdi-usb-en", &ftdi);
+	gpio_hog_lookup_name("octal-spi-cs-en", &octal);
+	gpio_hog_lookup_name("~uart0-en", &uart0);
+	gpio_hog_lookup_name("~spi2flash-cs", &spi2flash_cs);
+	gpio_hog_lookup_name("~spi2d2-d3-en", &spi2d2_d3);
+
 	if (CONFIG_UART_CONSOLE != 0)
 		return 0;
 
@@ -45,29 +58,13 @@ int adi_enable_ospi()
 		serial_suspend();
 
 		//PortA on Address 22 -- Disable the FTDI
-		currentVal = switch_config_array_current_state[0].value0;
-		currentVal &= ~FTDI_USB(1);
-		currentVal |= DISABLE_FTDI_USB;
-		switch_config_array_current_state[0].value0 = currentVal;
-		switch_config_array_current_state[0].pullup0 = currentVal;
-
 		//PortB on Address 22 -- Enable Octal SPI CS
-		currentVal = switch_config_array_current_state[0].value1;
-		currentVal &= ~OCTAL_SPI_CS(1);
-		currentVal |= ENABLE_OCTAL_SPI_CS;
-		switch_config_array_current_state[0].value1 = currentVal;
-		switch_config_array_current_state[0].pullup1 = currentVal;
-
 		//PortA on Address 20 -- Disable UART0, SPI2D2_D3, SPI2FLASH_CS
-		currentVal = switch_config_array_current_state[1].value0;
-		currentVal &= ~UART0(1);
-		currentVal &= ~SPI2FLASH_CS(1);
-		currentVal &= ~SPI2D2_D3(1);
-		currentVal |= DISABLE_UART0 | DISABLE_SPI2FLASH_CS | DISABLE_SPI2D2_D3;
-		switch_config_array_current_state[1].value0 = currentVal;
-		switch_config_array_current_state[1].pullup0 = currentVal;
-
-		setup_soft_switches(switch_config_array_current_state, NUM_SWITCH);
+		dm_gpio_set_value(ftdi, 1);
+		dm_gpio_set_value(octal, 1);
+		dm_gpio_set_value(uart0, 1);
+		dm_gpio_set_value(spi2flash_cs, 1);
+		dm_gpio_set_value(spi2d2_d3, 1);
 
 		// @todo change pinctrl state
 	}
@@ -77,6 +74,20 @@ int adi_enable_ospi()
 
 int adi_disable_ospi(bool changeMuxImmediately)
 {
+	//TODO, set these once instead of calling
+	//gpio_hog_lookup_name every time
+	struct gpio_desc *ftdi;
+	struct gpio_desc *octal;
+	struct gpio_desc *uart0;
+	struct gpio_desc *spi2flash_cs;
+	struct gpio_desc *spi2d2_d3;
+
+	gpio_hog_lookup_name("~ftdi-usb-en", &ftdi);
+	gpio_hog_lookup_name("octal-spi-cs-en", &octal);
+	gpio_hog_lookup_name("~uart0-en", &uart0);
+	gpio_hog_lookup_name("~spi2flash-cs", &spi2flash_cs);
+	gpio_hog_lookup_name("~spi2d2-d3-en", &spi2d2_d3);
+
 	if (CONFIG_UART_CONSOLE != 0)
 		return 0;
 
@@ -92,29 +103,13 @@ int adi_disable_ospi(bool changeMuxImmediately)
 		serial_resume();
 
 		//PortA on Address 22 -- Enable the FTDI
-		currentVal = switch_config_array_current_state[0].value0;
-		currentVal &= ~FTDI_USB(1);
-		currentVal |= ENABLE_FTDI_USB;
-		switch_config_array_current_state[0].value0 = currentVal;
-		switch_config_array_current_state[0].pullup0 = currentVal;
-
 		//PortB on Address 22 -- Disable Octal SPI CS
-		currentVal = switch_config_array_current_state[0].value1;
-		currentVal &= ~OCTAL_SPI_CS(1);
-		currentVal |= DISABLE_OCTAL_SPI_CS;
-		switch_config_array_current_state[0].value1 = currentVal;
-		switch_config_array_current_state[0].pullup1 = currentVal;
-
 		//PortA on Address 20 -- Enable UART0, SPI2D2_D3, SPI2FLASH_CS
-		currentVal = switch_config_array_current_state[1].value0;
-		currentVal &= ~UART0(1);
-		currentVal &= ~SPI2FLASH_CS(1);
-		currentVal &= ~SPI2D2_D3(1);
-		currentVal |= ENABLE_UART0 | ENABLE_SPI2FLASH_CS | ENABLE_SPI2D2_D3;
-		switch_config_array_current_state[1].value0 = currentVal;
-		switch_config_array_current_state[1].pullup0 = currentVal;
-
-		setup_soft_switches(switch_config_array_current_state, NUM_SWITCH);
+		dm_gpio_set_value(ftdi, 0);
+		dm_gpio_set_value(octal, 0);
+		dm_gpio_set_value(uart0, 0);
+		dm_gpio_set_value(spi2flash_cs, 0);
+		dm_gpio_set_value(spi2d2_d3, 0);
 
 		uartEnabled = 1;
 	}

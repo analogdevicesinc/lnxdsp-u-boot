@@ -23,8 +23,5 @@ void spi_flash_override_defaults(unsigned int * bus,
 
 void adi_multiplex_ospi();
 
-int adi_initialize_soft_switches();
 int adi_enable_ethernet_softconfig();
 int adi_disable_ethernet_softconfig();
-
-extern struct switch_config switch_config_array_current_state[NUM_SWITCH];

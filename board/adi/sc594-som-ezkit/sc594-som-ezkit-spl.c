@@ -14,7 +14,6 @@
 #include <asm/mach-adi/common/sc5xx.h>
 #include <linux/delay.h>
 #include <watchdog.h>
-#include "soft_switch.h"
 #include <asm/spl.h>
 #include <asm/mach-adi/common/rcu.h>
 #include "sc594-som-ezkit-shared.h"
@@ -64,12 +63,6 @@ void board_boot_order(u32 *spl_boot_list)
 	}
 
 	printf("ADI Boot Mode: %x (%s)\n", bmode, bmodeString);
-
-//#if ADI_HAVE_CARRIER == 1
-#ifdef CONFIG_SOFT_SWITCH
-	adi_initialize_soft_switches();
-#endif
-//#endif
 
 	switch(bmode){
 		case 0:
