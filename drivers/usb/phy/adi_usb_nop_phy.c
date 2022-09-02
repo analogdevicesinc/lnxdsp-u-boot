@@ -23,7 +23,6 @@
 #include <dm/device_compat.h>
 #include <linux/delay.h>
 #include <power/regulator.h>
-#include <asm/mach-adi/common/gpio.h>
 
 struct usb_nop_phy_priv {
 	struct clk_bulk bulk;
@@ -42,13 +41,13 @@ printf("usb_nop_phy_reset\r\n");
 	//if (!priv->gpiod_reset)
 		//return ret;
 
-	gpio_request(GPIO_PG11, "usb_reset");
-	gpio_direction_output(GPIO_PG11, 1);
+	//gpio_request(GPIO_PG11, "usb_reset");
+	//gpio_direction_output(GPIO_PG11, 1);
 	//ret = dm_gpio_set_value(priv->gpiod_reset, 1);
 	mdelay(20);
 	//ret = dm_gpio_set_value(priv->gpiod_reset, 0);
-	gpio_request(GPIO_PG11, "usb_reset");
-	gpio_direction_output(GPIO_PG11, 0);
+	//gpio_request(GPIO_PG11, "usb_reset");
+	//gpio_direction_output(GPIO_PG11, 0);
 
 	return ret;
 }
