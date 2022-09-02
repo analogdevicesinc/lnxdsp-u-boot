@@ -27,8 +27,7 @@
 struct usb_nop_phy_priv {
 	struct clk_bulk bulk;
 	struct udevice *vcc;
-	struct gpio_desc *gpiod_reset;
-	struct gpio_desc *gpiod_vbus;
+	struct gpio_desc gpiod_reset;
 };
 
 static int usb_nop_phy_reset(struct phy *phy)
@@ -36,18 +35,12 @@ static int usb_nop_phy_reset(struct phy *phy)
 	int ret = 0;
 	struct usb_nop_phy_priv *priv = dev_get_priv(phy->dev);
 
-printf("usb_nop_phy_reset\r\n");
+	if (!dm_gpio_is_valid(&priv->gpiod_reset))
+		return ret;
 
-	//if (!priv->gpiod_reset)
-		//return ret;
-
-	//gpio_request(GPIO_PG11, "usb_reset");
-	//gpio_direction_output(GPIO_PG11, 1);
-	//ret = dm_gpio_set_value(priv->gpiod_reset, 1);
+	ret = dm_gpio_set_value(&priv->gpiod_reset, 0);
 	mdelay(20);
-	//ret = dm_gpio_set_value(priv->gpiod_reset, 0);
-	//gpio_request(GPIO_PG11, "usb_reset");
-	//gpio_direction_output(GPIO_PG11, 0);
+	ret = dm_gpio_set_value(&priv->gpiod_reset, 1);
 
 	return ret;
 }
@@ -72,6 +65,8 @@ static int usb_nop_phy_init(struct phy *phy)
 			return ret;
 		}
 	}
+
+	usb_nop_phy_reset(phy);
 
 	return ret;
 }
@@ -102,11 +97,10 @@ static int usb_nop_phy_probe(struct udevice *dev)
 	if (ret < 0)
 		clk_rate = 0;
 
-	//priv->gpiod_reset = devm_gpiod_get_optional(dev, "reset", 0);
-	//if (priv->gpiod_reset)
-		//priv->gpiod_vbus = devm_gpiod_get_optional(dev,
-		//					   "vbus-detect",
-		//					   0);
+	ret = gpio_request_by_name(dev, "reset", 0, &priv->gpiod_reset, GPIOD_IS_OUT);
+	if (ret){
+		pr_err("%s: Warning, reset line not found\n", __func__);
+	}
 
 	if (clk_rate)
 		for (i = 0; i < priv->bulk.count; i++) {

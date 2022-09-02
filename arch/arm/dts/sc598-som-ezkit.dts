@@ -139,6 +139,20 @@
 			               <ADI_ADSP_PIN('D', 4) ADI_ADSP_PINFUNC_ALT2>;
 			};
 
+			usb0_default: usb0_pins {
+				adi,pins = <ADI_ADSP_PIN('F', 3) ADI_ADSP_PINFUNC_ALT2>,
+			               <ADI_ADSP_PIN('F', 4) ADI_ADSP_PINFUNC_ALT2>,
+			               <ADI_ADSP_PIN('F', 5) ADI_ADSP_PINFUNC_ALT2>,
+			               <ADI_ADSP_PIN('F', 6) ADI_ADSP_PINFUNC_ALT2>,
+			               <ADI_ADSP_PIN('F', 7) ADI_ADSP_PINFUNC_ALT2>,
+			               <ADI_ADSP_PIN('F', 8) ADI_ADSP_PINFUNC_ALT2>,
+			               <ADI_ADSP_PIN('F', 9) ADI_ADSP_PINFUNC_ALT2>,
+			               <ADI_ADSP_PIN('F', 10) ADI_ADSP_PINFUNC_ALT2>,
+			               <ADI_ADSP_PIN('F', 11) ADI_ADSP_PINFUNC_ALT2>,
+			               <ADI_ADSP_PIN('F', 12) ADI_ADSP_PINFUNC_ALT2>,
+			               <ADI_ADSP_PIN('F', 13) ADI_ADSP_PINFUNC_ALT2>,
+			               <ADI_ADSP_PIN('F', 14) ADI_ADSP_PINFUNC_ALT2>;
+			};
 		};
 
 		gpio0: gpio@0x31004000 {
@@ -154,12 +168,6 @@
 				gpio-hog;
 				output-high;
 				gpios = <ADI_ADSP_PIN('G', 12) GPIO_ACTIVE_HIGH>;
-			};
-
-			usb_reset {
-				gpio-hog;
-				output-high;
-				gpios = <ADI_ADSP_PIN('G', 11) GPIO_ACTIVE_HIGH>;
 			};
 
 			pushbutton0 {
@@ -306,6 +314,9 @@
 		usb0_phy: usbphy {
 			compatible = "usb-nop-xceiv";
 			#phy-cells = <0>;
+			reset = <&gpio0 ADI_ADSP_PIN('G', 11) GPIO_ACTIVE_HIGH>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&usb0_default>;
 			status = "disabled";
 		};
 
@@ -316,6 +327,8 @@
 			interrupts = <GIC_SPI 241 IRQ_TYPE_LEVEL_HIGH>;
 			phys = <&usb0_phy>;
 			phy-names = "usb2-phy";
+			pinctrl-names = "default";
+			pinctrl-0 = <&usb0_default>;
 			status = "disabled";
 		};
 
