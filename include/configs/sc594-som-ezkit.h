@@ -142,6 +142,7 @@
 #define INITRAMADDR "0x85000000"
 
 #define ADI_ENV_SETTINGS \
+	"usb_pgood_delay=1000\0" \
 	"initrd_high=0xFFFFFFFF\0" \
 	"fdt_high=0xFFFFFFFF\0" \
 	"rfsfile=adsp-sc5xx-minimal-adsp-sc594-som-ezkit.jffs2\0" \

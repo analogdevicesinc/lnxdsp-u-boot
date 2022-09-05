@@ -288,3 +288,11 @@
 
 	clocks = <&clk ADSP_SC594_CLK_CGU0_SCLK1>;
 };
+
+&usb0_phy {
+	status = "okay";
+};
+
+&usb0 {
+	status = "okay";
+};

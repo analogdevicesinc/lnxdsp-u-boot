@@ -31,6 +31,28 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&eth1_default>;
 		};
+
+
+		usb0_phy: usbphy {
+			compatible = "usb-nop-xceiv";
+			#phy-cells = <0>;
+			reset = <&gpio0 ADI_ADSP_PIN('G', 11) GPIO_ACTIVE_HIGH>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&usb0_default>;
+			status = "disabled";
+		};
+
+		usb0: usb@310c5000 {
+			compatible = "snps,dwc2";
+			dr_mode = "host";
+			reg = <0x310c5000 0x2000>;
+			interrupts = <GIC_SPI 241 IRQ_TYPE_LEVEL_HIGH>;
+			phys = <&usb0_phy>;
+			phy-names = "usb2-phy";
+			pinctrl-names = "default";
+			pinctrl-0 = <&usb0_default>;
+			status = "disabled";
+		};
 	};
 };
 
@@ -83,6 +105,21 @@
 	               <ADI_ADSP_PIN('A', 3) ADI_ADSP_PINFUNC_ALT0>,
 			       <ADI_ADSP_PIN('A', 4) ADI_ADSP_PINFUNC_ALT0>,
 			       <ADI_ADSP_PIN('A', 5) ADI_ADSP_PINFUNC_ALT0>;
+	};
+
+	usb0_default: usb0_pins {
+		adi,pins = <ADI_ADSP_PIN('F', 3) ADI_ADSP_PINFUNC_ALT2>,
+	               <ADI_ADSP_PIN('F', 4) ADI_ADSP_PINFUNC_ALT2>,
+	               <ADI_ADSP_PIN('F', 5) ADI_ADSP_PINFUNC_ALT2>,
+	               <ADI_ADSP_PIN('F', 6) ADI_ADSP_PINFUNC_ALT2>,
+	               <ADI_ADSP_PIN('F', 7) ADI_ADSP_PINFUNC_ALT2>,
+	               <ADI_ADSP_PIN('F', 8) ADI_ADSP_PINFUNC_ALT2>,
+	               <ADI_ADSP_PIN('F', 9) ADI_ADSP_PINFUNC_ALT2>,
+	               <ADI_ADSP_PIN('F', 10) ADI_ADSP_PINFUNC_ALT2>,
+	               <ADI_ADSP_PIN('F', 11) ADI_ADSP_PINFUNC_ALT2>,
+	               <ADI_ADSP_PIN('F', 12) ADI_ADSP_PINFUNC_ALT2>,
+	               <ADI_ADSP_PIN('F', 13) ADI_ADSP_PINFUNC_ALT2>,
+	               <ADI_ADSP_PIN('F', 14) ADI_ADSP_PINFUNC_ALT2>;
 	};
 };
 
