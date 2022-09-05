@@ -13,8 +13,4 @@ config ADI_CPU
 	string
 	default "ADSP-SC573-0.0"
 
-config USB_SC57X
-	bool
-	default y
-
 endif

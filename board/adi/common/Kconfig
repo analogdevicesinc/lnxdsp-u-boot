@@ -102,7 +102,7 @@ config SYS_MEMTEST_RESERVE_SIZE
 
 config MUSB_HCD
 	bool
-	default y
+	default n
 
 config MUSB_TIMEOUT
 	int

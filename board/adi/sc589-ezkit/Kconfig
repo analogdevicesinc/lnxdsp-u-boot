@@ -13,8 +13,4 @@ config SYS_BOARD
 config SYS_CONFIG_NAME
 	default "sc589-ezkit"
 
-config USB_SC58X
-	bool
-	default y
-
 endif

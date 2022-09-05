@@ -83,9 +83,6 @@
 /*
  * USB Settings
  */
-#define CONFIG_MUSB_HCD
-#define CONFIG_USB_SC58X
-#define CONFIG_MUSB_TIMEOUT 100000
 #define MUSB_HW_VERSION2
 #define CONFIG_USB_STORAGE
 
