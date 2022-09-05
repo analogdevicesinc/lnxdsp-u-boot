@@ -1,6 +1,11 @@
 / {
+
+	aliases {
+		spi0 = "/ospi";
+	};
+
 	soc {
-		ospi: spi@31027000 {
+		ospi: ospi {
 			compatible = "cdns,qspi-nor";
 			#address-cells = <1>;
 			#size-cells = <0>;
