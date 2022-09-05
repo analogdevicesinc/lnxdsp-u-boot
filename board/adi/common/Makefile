@@ -11,9 +11,13 @@
 
 obj-y += soc.o init/
 
+ifndef CONFIG_SC59X_64
+obj-y += arm32/timer.o
+endif
+
 ifdef CONFIG_SC59X
 ifeq ($(CONFIG_SPL),n)
-obj-y   := arm32/lowlevel_init.o
+obj-y += arm32/lowlevel_init.o
 endif
 endif
 

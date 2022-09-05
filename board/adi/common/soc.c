@@ -31,15 +31,6 @@ void v7_outer_cache_enable(void)
 {
 }
 #endif
-
-ulong get_tbclk(void)
-{
-       ulong tbclk;
-
-       tbclk = CONFIG_SYS_HZ;
-
-       return tbclk;
-}
 #endif
 
 int arch_cpu_init(void)
