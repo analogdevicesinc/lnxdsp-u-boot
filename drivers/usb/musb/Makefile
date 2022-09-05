@@ -7,6 +7,5 @@ obj-$(CONFIG_USB_MUSB_HCD) += musb_hcd.o musb_core.o
 obj-$(CONFIG_USB_MUSB_UDC) += musb_udc.o musb_core.o
 obj-$(CONFIG_USB_OMAP3) += omap3.o
 obj-$(CONFIG_USB_AM35X) += am35x.o
-obj-$(CONFIG_USB_SC59X) += sc59x.o
 obj-$(CONFIG_USB_SC58X) += sc58x.o
 obj-$(CONFIG_USB_SC57X) += sc57x.o

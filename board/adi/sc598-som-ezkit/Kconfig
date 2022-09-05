@@ -13,8 +13,4 @@ config SYS_BOARD
 config SYS_CONFIG_NAME
 	default "sc598-som-ezkit"
 
-config USB_SC59X
-	bool
-	default n
-
 endif
