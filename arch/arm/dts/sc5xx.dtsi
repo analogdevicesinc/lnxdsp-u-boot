@@ -93,12 +93,14 @@
 			spi-max-frequency = <10000000>;
 			clock-names = "spi";
 			status = "okay";
+			u-boot,dm-pre-reloc;
 
 			flash1: is25lp512@2 {
 				#address-cells = <1>;
 				#size-cells = <1>;
 				compatible = "is25lp512";
 				reg = <1>;
+				u-boot,dm-pre-reloc;
 			};
 		};
 
