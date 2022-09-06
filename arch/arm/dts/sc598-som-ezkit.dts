@@ -363,7 +363,7 @@
 &spi2 {
 	status = "okay";
 
-	clocks = <&clk ADSP_SC598_CLK_CGU0_SCLK1>;
+	clocks = <&clk ADSP_SC598_CLK_SPI>;
 };
 
 &mmc0 {

@@ -286,7 +286,7 @@
 &spi2 {
 	status = "okay";
 
-	clocks = <&clk ADSP_SC594_CLK_CGU0_SCLK1>;
+	clocks = <&clk ADSP_SC594_CLK_SPI>;
 };
 
 &usb0_phy {
