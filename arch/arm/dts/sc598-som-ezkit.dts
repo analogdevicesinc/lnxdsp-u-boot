@@ -377,3 +377,7 @@
 &usb0 {
 	status = "okay";
 };
+
+&eth0 {
+	compatible = "snps,dwmac-5.20";
+};
