@@ -21,13 +21,56 @@
 #include <watchdog.h>
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
+#include <dm/pinctrl.h>
 #include "sc598-som-ezkit-shared.h"
 #include <asm/mach-adi/59x-64/sc598-som-ezkit-dynamic-qspi-ospi-uart-mux.h>
 
 extern bool uartEnabled;
 extern bool uartReadyToEnable;
 
-// @todo this is left broken at the moment; in the future change pinctrl states
+void enable_ospi_mux(){
+	//TODO: Consider storing dev pointers instead of looking it up every time
+	struct udevice *dev;
+	struct uclass *uc;
+	int ret;
+
+	ret = uclass_get(UCLASS_SPI, &uc);
+	if (ret){
+		return;
+	}
+	uclass_foreach_dev(dev, uc) {
+		if(strcmp("ospi", dev->name) == 0){
+			pinctrl_select_state(dev, "default");
+		}
+	}
+}
+
+void disable_ospi_mux(){
+	//TODO: Consider storing dev pointers instead of looking it up every time
+	struct udevice *dev;
+	struct uclass *uc;
+	int ret;
+
+	ret = uclass_get(UCLASS_SPI, &uc);
+	if (ret){
+		return;
+	}
+	uclass_foreach_dev(dev, uc) {
+		if(strcmp("spi2", dev->name) == 0){
+			pinctrl_select_state(dev, "default");
+		}
+	}
+
+	ret = uclass_get(UCLASS_SERIAL, &uc);
+	if (ret){
+		return;
+	}
+	uclass_foreach_dev(dev, uc) {
+		if(strcmp("serial@0x31003000", dev->name) == 0){;
+			pinctrl_select_state(dev, "default");
+		}
+	}
+}
 
 int adi_enable_ospi()
 {
@@ -66,7 +109,7 @@ int adi_enable_ospi()
 		dm_gpio_set_value(spi2flash_cs, 1);
 		dm_gpio_set_value(spi2d2_d3, 1);
 
-		// @todo change pinctrl state
+		enable_ospi_mux();
 	}
 
 	return 0;
@@ -98,7 +141,7 @@ int adi_disable_ospi(bool changeMuxImmediately)
 
 		uartReadyToEnable = 0;
 
-		// @todo change pinctrl state
+		disable_ospi_mux();
 
 		serial_resume();
 
