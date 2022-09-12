@@ -307,6 +307,12 @@ config CDU0_CLKO14
 	int "CDU0_CLKO14"
 endif
 
+config ADI_GPIO
+	default y
+
+config PINCTRL_ADI
+	default y
+
 source "board/adi/sc598-som-ezkit/Kconfig"
 source "board/adi/sc594-som-ezkit/Kconfig"
 source "board/adi/sc589-ezkit/Kconfig"

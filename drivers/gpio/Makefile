@@ -12,6 +12,7 @@ obj-$(CONFIG_$(SPL_TPL_)DM_GPIO) += gpio-uclass.o
 
 obj-$(CONFIG_$(SPL_)DM_PCA953X)	+= pca953x_gpio.o
 
+obj-$(CONFIG_ADI_GPIO)		+= gpio-adi-adsp.o
 obj-$(CONFIG_AT91_GPIO)	+= at91_gpio.o
 obj-$(CONFIG_ATMEL_PIO4)	+= atmel_pio4.o
 obj-$(CONFIG_BCM6345_GPIO)	+= bcm6345_gpio.o
@@ -47,7 +48,6 @@ obj-$(CONFIG_OMAP_GPIO)	+= omap_gpio.o
 obj-$(CONFIG_DB8500_GPIO)	+= db8500_gpio.o
 obj-$(CONFIG_BCM2835_GPIO)	+= bcm2835_gpio.o
 obj-$(CONFIG_XILINX_GPIO)	+= xilinx_gpio.o
-obj-y                       += gpio-adi-adsp.o
 obj-$(CONFIG_TCA642X)		+= tca642x.o
 obj-$(CONFIG_SUNXI_GPIO)	+= sunxi_gpio.o
 obj-$(CONFIG_LPC32XX_GPIO)	+= lpc32xx_gpio.o
