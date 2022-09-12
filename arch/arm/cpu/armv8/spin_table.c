@@ -8,23 +8,6 @@
 #include <linux/libfdt.h>
 #include <asm/spin_table.h>
 
-unsigned long spin_table_relocate(unsigned long * rsv_addr, unsigned long * rsv_size){
-	unsigned long cpu_release_addr;
-
-	//Calculate the offset of the old release addr, relative to rsv_addr
-	cpu_release_addr = (unsigned long)&spin_table_cpu_release_addr - *rsv_addr;
-
-	//Shift it by the relocation addr
-	cpu_release_addr += CONFIG_ARMV8_SPIN_TABLE_RELOCATE_ADDR;
-
-	//Copy the old spin table into the relocated address
-	memcpy(CONFIG_ARMV8_SPIN_TABLE_RELOCATE_ADDR, *rsv_addr, *rsv_size);
-
-	*rsv_addr = CONFIG_ARMV8_SPIN_TABLE_RELOCATE_ADDR;
-
-	return cpu_release_addr;
-}
-
 int spin_table_update_dt(void *fdt)
 {
 	int cpus_offset, offset;
@@ -62,13 +45,8 @@ int spin_table_update_dt(void *fdt)
 		if (!prop || strcmp(prop, "cpu"))
 			continue;
 
-#if defined(CONFIG_ARMV8_SPIN_TABLE_RELOCATE_ADDR)
-		ret = fdt_setprop_u64(fdt, offset, "cpu-release-addr",
-				spin_table_relocate(&rsv_addr, &rsv_size));
-#else
 		ret = fdt_setprop_u64(fdt, offset, "cpu-release-addr",
 				(unsigned long)&spin_table_cpu_release_addr);
-#endif
 		if (ret)
 			return -ENOSPC;
 	}

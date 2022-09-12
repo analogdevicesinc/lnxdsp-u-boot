@@ -52,18 +52,6 @@ config ARMV8_SPIN_TABLE
 	    - Reserve the code for the spin-table and the release address
 	      via a /memreserve/ region in the Device Tree.
 
-config SPL_ARMV8_SPIN_TABLE
-	bool "Support spin-table enable method from SPL"
-	depends on SPL && ARMV8_MULTIENTRY && OF_LIBFDT
-
-config ARMV8_SPIN_TABLE_RELOCATE_ADDR
-	hex "Support relocating spin-table to a fixed address prior to booting"
-	depends on ARMV8_SPIN_TABLE || SPL_ARMV8_SPIN_TABLE
-	help
-	  Address for relocating the spin table, prior to booting Linux.
-	  Do not set this if you would like to continue using default address,
-	  which is automatically determined by U-Boot during linking.
-
 menu "ARMv8 secure monitor firmware"
 config ARMV8_SEC_FIRMWARE_SUPPORT
 	bool "Enable ARMv8 secure monitor firmware framework support"
