@@ -15,7 +15,7 @@
 #include <linux/delay.h>
 #include <watchdog.h>
 #include <asm/armv8/mmu.h>
-#include "sc598-som-ezkit-shared.h"
+#include "../common/sc59x/sc59x-shared.h"
 
 static struct mm_region sc598_mem_map[] = {
 	{

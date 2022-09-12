@@ -16,7 +16,7 @@
 #include <watchdog.h>
 #include <asm/spl.h>
 #include <asm/mach-adi/common/rcu.h>
-#include "sc594-som-ezkit-shared.h"
+#include "../common/sc59x/sc59x-shared.h"
 
 #define pRCU_STAT 0x3108c004
 
@@ -77,7 +77,7 @@ void board_boot_order(u32 *spl_boot_list)
 		case 5:
 			adi_sf_default_bus = 0;
 			adi_sf_default_cs = 0;
-			adi_multiplex_ospi();
+			//adi_multiplex_ospi();
 			spl_boot_list[0] = BOOT_DEVICE_SPI;
 			break;
 		default:

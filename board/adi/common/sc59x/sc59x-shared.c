@@ -17,7 +17,7 @@
 #include <watchdog.h>
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
-#include "sc598-som-ezkit-shared.h"
+#include "sc59x-shared.h"
 
 int adi_enable_ethernet_softconfig()
 {

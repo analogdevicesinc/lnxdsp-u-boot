@@ -9,6 +9,6 @@
 # SPDX-License-Identifier:      GPL-2.0+
 #
 
-obj-y	:= $(BOARD)-shared.o $(BOARD).o
-obj-$(CONFIG_SPL_BUILD) := $(BOARD)-shared.o $(BOARD)-spl.o
+obj-y	:= $(BOARD).o
+obj-$(CONFIG_SPL_BUILD) := $(BOARD)-spl.o
 obj-y += $(BOARD)-dynamic-qspi-ospi-uart-mux.o

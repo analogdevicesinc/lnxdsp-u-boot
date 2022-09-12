@@ -22,7 +22,7 @@
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
 #include <dm/pinctrl.h>
-#include "sc598-som-ezkit-shared.h"
+#include "../common/sc59x/sc59x-shared.h"
 #include <asm/mach-adi/59x-64/sc598-som-ezkit-dynamic-qspi-ospi-uart-mux.h>
 
 extern bool uartEnabled;

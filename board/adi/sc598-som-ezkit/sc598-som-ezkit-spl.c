@@ -18,7 +18,7 @@
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
 #include <asm/mach-adi/common/rcu.h>
-#include "sc598-som-ezkit-shared.h"
+#include "../common/sc59x/sc59x-shared.h"
 
 #define pRCU_STAT 0x3108c004
 

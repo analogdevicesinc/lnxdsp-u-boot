@@ -14,7 +14,7 @@
 #include <asm/mach-adi/common/sc5xx.h>
 #include <linux/delay.h>
 #include <watchdog.h>
-#include "sc594-som-ezkit-shared.h"
+#include "../common/sc59x/sc59x-shared.h"
 
 extern char __bss_start, __bss_end;
 static void bss_clear(void)
@@ -37,7 +37,7 @@ int board_early_init_f(void)
 #endif
 
 #ifdef CONFIG_CADENCE_QSPI
-	adi_multiplex_ospi();
+	//adi_multiplex_ospi();
 #endif
 
 	return 0;

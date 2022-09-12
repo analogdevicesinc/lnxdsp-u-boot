@@ -6,8 +6,8 @@
  * Licensed under the GPL-2 or later.
  */
 
-#ifndef SC598_SOM_EZKIT_SHARED
-#define SC598_SOM_EZKIT_SHARED
+#ifndef SC59X_SHARED
+#define SC59X_SHARED
 
 int adi_enable_ethernet_softconfig();
 int adi_disable_ethernet_softconfig();
