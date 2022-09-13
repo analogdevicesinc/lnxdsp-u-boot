@@ -5,29 +5,6 @@
 #ifndef __CONFIG_SC_ADI_COMMON_H
 #define __CONFIG_SC_ADI_COMMON_H
 
-//#include <generated/autoconf.h>
-
-/*
- * Command Settings
- */
-#ifndef _CONFIG_CMD_DEFAULT_H
-
-//# include <config_cmd_default.h>
-
-/*
-# ifdef CONFIG_MMC
-#  define CONFIG_CMD_MMC
-#  define CONFIG_CMD_EXT2
-#  define CONFIG_CMD_FAT
-#  define CONFIG_DOS_PARTITION
-# endif
-# ifdef CONFIG_MUSB_HCD
-#  define CONFIG_CMD_USB
-#  define CONFIG_CMD_EXT2
-#  define CONFIG_CMD_FAT
-#  define CONFIG_DOS_PARTITION
-# endif
-*/
 # if defined(CONFIG_CMD_FAT) && !defined(CONFIG_FS_FAT)
 #  define CONFIG_FS_FAT
 #  define CONFIG_FS_FAT_MAX_CLUSTSIZE 65536
@@ -36,14 +13,12 @@
 #  define CONFIG_CMD_MMC_SPI
 # endif
 # define CONFIG_CMD_CACHE
-//# define CONFIG_CMD_ELF
 # define CONFIG_CMD_REGINFO
 # define CONFIG_CMD_STRINGS
 # define CONFIG_CMD_MEMTEST
 # if defined(CONFIG_SC59X_CHAIN_BOOT) || defined(CONFIG_SC58X_CHAIN_BOOT) || defined(CONFIG_SC57X_CHAIN_BOOT)
 #  undef CONFIG_CMD_SAVEENV
 # endif
-#endif
 
 /* Commands */
 
@@ -140,9 +115,6 @@
 #if defined(CONFIG_CMD_NET)
 # define UBOOT_ENV_FILE "u-boot-" CONFIG_SYS_BOARD ".ldr"
 # if (CONFIG_SC_BOOT_MODE == SC_BOOT_SPI_MASTER)
-#  ifndef CONFIG_SPI_IMG_SIZE
-//#   define CONFIG_SPI_IMG_SIZE 0x80000
-#  endif
 #  define UBOOT_ENV_UPDATE \
 		"sf probe " __stringify(CONFIG_SC_BOOT_SPI_BUS) ":" \
 		__stringify(CONFIG_SC_BOOT_SPI_SSEL) ";" \
@@ -254,7 +226,6 @@
  * Boot Paramter Settings
  */
 #define CONFIG_CMDLINE_TAG              1       /* enable passing of ATAGs */
-//#define CONFIG_OF_LIBFDT                /* Device Tree support */
 #define CONFIG_SETUP_MEMORY_TAGS        1
 
 /*
@@ -275,7 +246,6 @@
 #   define CONFIG_SYS_AUTOLOAD "no"
 #  endif
 # endif
-//# define CONFIG_IP_DEFRAG
 # define CONFIG_NET_RETRY_COUNT 20
 #endif
 
@@ -291,13 +261,6 @@
 # define CONFIG_SPI_FLASH_STMICRO
 # define CONFIG_SPI_FLASH_WINBOND
 #endif
-#ifndef CONFIG_SPI_MM_BASE
-//# define CONFIG_SPI_MM_BASE      0x60000000
-//# define CONFIG_SYS_FLASH_BASE   0x60000000
-#endif
-#ifndef CONFIG_SPI_MM_SIZE
-//# define CONFIG_SPI_MM_SIZE      0x20000000
-#endif
 
 /*
  * Misc Settings
@@ -308,15 +271,11 @@
 #define ADI_SCLK_HZ (ADI_VCO_HZ / CONFIG_CGU0_SCLK_DIV)
 
 #define CONFIG_SYS_HZ			1000
-//#define CONFIG_SYS_LONGHELP		/* undef to save memory */
-//#define CONFIG_SYS_PROMPT		"sc # "
 #define CONFIG_SYS_CBSIZE		512	/* Console I/O Buffer Size */
 #define CONFIG_SYS_PBSIZE		(CONFIG_SYS_CBSIZE + sizeof(CONFIG_SYS_PROMPT) + 16)
 #define CONFIG_SYS_MAXARGS		16
 #define CONFIG_BOARD_EARLY_INIT_F
-//#define CONFIG_CMD_MEMORY
 #define CONFIG_MISC_INIT_R
-//#define CONFIG_DISPLAY_CPUINFO
 
 #ifdef CONFIG_ADI_WATCHDOG
 #ifndef CONFIG_SPL_BUILD
