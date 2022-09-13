@@ -35,10 +35,6 @@
 # ifdef CONFIG_MMC_SPI
 #  define CONFIG_CMD_MMC_SPI
 # endif
-# ifdef CONFIG_SYS_NO_FLASH
-#  undef CONFIG_CMD_FLASH
-#  undef CONFIG_CMD_IMLS
-# endif
 # define CONFIG_CMD_CACHE
 //# define CONFIG_CMD_ELF
 # define CONFIG_CMD_REGINFO

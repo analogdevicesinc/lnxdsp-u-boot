@@ -139,7 +139,6 @@
 /*
  * Misc Settings
  */
-//#define CONFIG_SYS_NO_FLASH
 #define CONFIG_UART_CONSOLE	0
 #define ADI_SPI_FIT_OFFSET "0x160000"
 

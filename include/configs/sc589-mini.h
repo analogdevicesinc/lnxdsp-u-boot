@@ -96,7 +96,6 @@
 /*
  * Misc Settings
  */
-#define CONFIG_SYS_NO_FLASH
 #define CONFIG_UART_CONSOLE	0
 #define CONFIG_BAUDRATE		115200
 #define CONFIG_CMD_BOOTZ
