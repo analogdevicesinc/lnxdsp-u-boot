@@ -258,7 +258,6 @@
 #define CONFIG_CMDLINE_TAG              1       /* enable passing of ATAGs */
 //#define CONFIG_OF_LIBFDT                /* Device Tree support */
 #define CONFIG_SETUP_MEMORY_TAGS        1
-//#define CONFIG_SYS_GENERIC_BOARD
 
 /*
  * Network Settings

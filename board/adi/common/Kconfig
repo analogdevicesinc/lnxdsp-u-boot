@@ -44,10 +44,6 @@ config SPI_IMG_SIZE
 	hex
 	default 0x80000
 
-config SYS_GENERIC_BOARD
-	bool
-	default y
-
 config SPI_MM_BASE
 	hex
 	default 0x60000000
