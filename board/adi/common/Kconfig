@@ -96,10 +96,6 @@ config SMC_B0ETIM_VAL
 	hex
 	default 0x00092231
 
-config SYS_MEMTEST_RESERVE_SIZE
-	hex
-	default 0x400000
-
 config UART_CONSOLE
 	int
 	default 0

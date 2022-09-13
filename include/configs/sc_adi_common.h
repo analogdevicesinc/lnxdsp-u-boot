@@ -331,4 +331,13 @@
 #endif
 #endif
 
+/*
+ * CONFIG_CMD_MEMORY settings
+ */
+
+/* Reserve 4MB in DRAM for Tlb, Text, Malloc pool, Global data, Stack, etc. */
+#define ADI_MEMTEST_RESERVE_SIZE		(4 * 1024 * 1024)
+#define CONFIG_SYS_MEMTEST_START		CONFIG_SYS_SDRAM_BASE
+#define CONFIG_SYS_MEMTEST_END			(CONFIG_SYS_SDRAM_BASE + \
+				CONFIG_SYS_SDRAM_SIZE - ADI_MEMTEST_RESERVE_SIZE)
 #endif

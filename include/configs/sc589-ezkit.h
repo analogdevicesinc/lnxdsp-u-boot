@@ -43,12 +43,6 @@
 #define CONFIG_SYS_MONITOR_LEN	(0)
 #define CONFIG_SYS_MALLOC_LEN	(1024 * 1024)
 
-/* Reserve 4MB in DRAM for Tlb, Text, Malloc pool, Global data, Stack, etc. */
-#define CONFIG_SYS_MEMTEST_START		CONFIG_SYS_SDRAM_BASE
-#define CONFIG_SYS_MEMTEST_END			(CONFIG_SYS_SDRAM_BASE + \
-				CONFIG_SYS_SDRAM_SIZE - \
-				CONFIG_SYS_MEMTEST_RESERVE_SIZE)
-
 /*
  * Network Settings
  */
