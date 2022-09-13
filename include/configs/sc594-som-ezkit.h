@@ -8,6 +8,9 @@
 #include <asm/mach-adi/common/config.h>
 #include <linux/sizes.h>
 
+/* Do we have a carrier board attached */
+#define ADI_HAVE_CARRIER 1
+
 /*
  * Processor Settings
  */

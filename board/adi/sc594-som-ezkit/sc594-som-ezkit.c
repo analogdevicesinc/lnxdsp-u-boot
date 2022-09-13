@@ -90,6 +90,7 @@ void s_init(void)
 
 void adi_eth_init()
 {
+#if ADI_HAVE_CARRIER == 1
 	if (CONFIG_DW_PORTS >= 1) {
 		adi_enable_ethernet_softconfig();
 		mdelay(20);
@@ -100,6 +101,7 @@ void adi_eth_init()
 
 		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
 	}
+#endif
 }
 
 int board_phy_config(struct phy_device *phydev)
@@ -138,12 +140,6 @@ int board_init(void)
 	gd->bd->bi_arch_number = MACH_TYPE_SC594_SOM_EZKIT;
 	/* boot param addr */
 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + (0x100);
-
-//#if ADI_HAVE_CARRIER == 1
-#ifndef CONFIG_SOFT_SWITCH
-	return 0;
-#endif
-//#endif
 
 	adi_eth_init();
 

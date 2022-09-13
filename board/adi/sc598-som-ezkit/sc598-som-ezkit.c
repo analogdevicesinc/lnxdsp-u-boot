@@ -156,12 +156,6 @@ int board_phy_config(struct phy_device *phydev)
 
 int board_init(void)
 {
-#if ADI_HAVE_CARRIER == 1
-#ifndef CONFIG_SOFT_SWITCH
-	return 0;
-#endif
-#endif
-
 	adi_eth_init();
 
 	return 0;

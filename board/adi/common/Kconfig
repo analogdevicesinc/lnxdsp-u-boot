@@ -64,10 +64,6 @@ config SYS_HUSH_PARSER
 	bool
 	default y
 
-config SOFT_SWITCH
-	bool
-	default n
-
 config UART_CONSOLE
 	int
 	default 0
