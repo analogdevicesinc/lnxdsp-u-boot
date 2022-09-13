@@ -264,12 +264,6 @@
 #define CONFIG_BOARD_EARLY_INIT_F
 #define CONFIG_MISC_INIT_R
 
-#ifdef CONFIG_ADI_WATCHDOG
-#ifndef CONFIG_SPL_BUILD
-# define CONFIG_HW_WATCHDOG
-#endif
-#endif
-
 /*
  * CONFIG_CMD_MEMORY settings
  */
