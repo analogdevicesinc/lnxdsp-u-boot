@@ -76,10 +76,6 @@ config BUILD_LDR
 	bool
 	default y
 
-config SC5XX_BUS_WIDTH
-	int
-	default 4
-
 config UART_CONSOLE
 	int
 	default 0
