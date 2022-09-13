@@ -68,10 +68,6 @@ config SOFT_SWITCH
 	bool
 	default n
 
-config ARCH_HEADER_IN_MACH
-	bool
-	default y
-
 config UART_CONSOLE
 	int
 	default 0

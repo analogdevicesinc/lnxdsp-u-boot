@@ -25,9 +25,6 @@
 #include <errno.h>
 //#include <libfdt.h>
 #include <fdtdec.h>
-#ifndef CONFIG_ARCH_HEADER_IN_MACH
-#include <asm/clock.h>
-#endif
 #include "adi_spi3_dm.h"
 #include <clk.h>
 
