@@ -55,8 +55,6 @@
  * Debug Settings
  */
 #define CONFIG_ENV_OVERWRITE	1
-//#define CONFIG_DEBUG_DUMP	1
-//#define CONFIG_KALLSYMS		1
 #define CONFIG_PANIC_HANG	1
 
 
