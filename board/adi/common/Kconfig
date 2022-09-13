@@ -72,10 +72,6 @@ config ARCH_HEADER_IN_MACH
 	bool
 	default y
 
-config BUILD_LDR
-	bool
-	default y
-
 config UART_CONSOLE
 	int
 	default 0
