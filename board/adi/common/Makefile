@@ -11,19 +11,19 @@
 
 obj-y += soc.o init/
 
-ifdef CONFIG_SC59X_64
-obj-y += sc59x/sc59x-shared.o
-obj-$(CONFIG_SPL_BUILD) += sc59x/sc59x-shared-spl.o
-else
+ifndef CONFIG_SC59X_64
 obj-y += arm32/timer.o
 endif
 
 ifdef CONFIG_SC59X
-obj-y += sc59x/sc59x-shared.o
-obj-$(CONFIG_SPL_BUILD) += sc59x/sc59x-shared-spl.o
 ifeq ($(CONFIG_SPL),n)
 obj-y += arm32/lowlevel_init.o
 endif
+endif
+
+ifneq ($(filter y,$(CONFIG_SC59X_64) $(CONFIG_SC59X)),)
+obj-$(CONFIG_SPL_BUILD) += sc59x/sc59x-shared-spl.o
+obj-y += sc59x/sc59x-shared.o
 endif
 
 obj-$(CONFIG_SPL_BUILD) += spl.o
