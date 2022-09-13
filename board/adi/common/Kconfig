@@ -100,14 +100,6 @@ config SYS_MEMTEST_RESERVE_SIZE
 	hex
 	default 0x400000
 
-config MUSB_HCD
-	bool
-	default n
-
-config MUSB_TIMEOUT
-	int
-	default 100000
-
 config UART_CONSOLE
 	int
 	default 0
