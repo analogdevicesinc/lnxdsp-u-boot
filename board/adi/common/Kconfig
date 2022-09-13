@@ -139,10 +139,6 @@ config DW_PORTS
 	int
 	default 1
 
-config ENV_IS_EMBEDDED_IN_LDR
-	bool
-	default n
-
 config ADI_FALCON
 	bool "Enable Falcon Boot Mode Support"
 	depends on SPL_OS_BOOT_UNCOMPRESSED
