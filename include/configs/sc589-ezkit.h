@@ -10,12 +10,7 @@
 /*
  * Processor Settings
  */
-#ifdef CONFIG_SC58X_CHAIN_BOOT
-# define CONFIG_LOADADDR	0xC4000000
-# define CONFIG_RSA		/* RSA for FIT authen. */
-#else
-# define CONFIG_LOADADDR	0xC2000000
-#endif
+#define CONFIG_LOADADDR	0xC2000000
 #define CONFIG_DTBLOADADDR	"0xC4000000"
 #define CONFIG_MACH_TYPE	MACH_TYPE_SC589_EZKIT
 

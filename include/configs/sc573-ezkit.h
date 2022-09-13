@@ -11,12 +11,7 @@
  * Processor Settings
  */
 #define CONFIG_ADI_CPU		"ADSP-SC573-0.0"
-#ifdef CONFIG_SC57X_CHAIN_BOOT
-# define CONFIG_LOADADDR	0x84000000
-# define CONFIG_RSA		/* RSA for FIT authen. */
-#else
-# define CONFIG_LOADADDR	0x82000000
-#endif
+#define CONFIG_LOADADDR	0x82000000
 
 #define CONFIG_DTBNAME		"sc573-ezkit.dtb"
 #define CONFIG_DTBLOADADDR	"0x84000000"

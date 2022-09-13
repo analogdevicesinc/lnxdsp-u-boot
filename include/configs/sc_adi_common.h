@@ -16,9 +16,6 @@
 # define CONFIG_CMD_REGINFO
 # define CONFIG_CMD_STRINGS
 # define CONFIG_CMD_MEMTEST
-# if defined(CONFIG_SC59X_CHAIN_BOOT) || defined(CONFIG_SC58X_CHAIN_BOOT) || defined(CONFIG_SC57X_CHAIN_BOOT)
-#  undef CONFIG_CMD_SAVEENV
-# endif
 
 /* Commands */
 
