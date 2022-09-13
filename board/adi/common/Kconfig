@@ -80,22 +80,6 @@ config SC5XX_BUS_WIDTH
 	int
 	default 4
 
-config SMC_GCTL_VAL
-	hex
-	default 0x00000010
-
-config SMC_B0CTL_VAL
-	hex
-	default 0x01007011
-
-config SMC_B0TIM_VAL
-	hex
-	default 0x08170977
-
-config SMC_B0ETIM_VAL
-	hex
-	default 0x00092231
-
 config UART_CONSOLE
 	int
 	default 0
