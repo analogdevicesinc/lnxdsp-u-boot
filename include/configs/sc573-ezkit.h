@@ -74,7 +74,6 @@
  * Misc Settings
  */
 #define CONFIG_UART_CONSOLE	0
-#define CONFIG_LINUX_MEMSIZE	"224M"
 
 #define CONFIG_BOOTCOMMAND	"run ramboot"
 #define INITRAMADDR "0x85000000"

@@ -135,7 +135,7 @@
 #define CONFIG_SYS_NO_FLASH
 #define CONFIG_UART_CONSOLE	0
 #define CONFIG_BAUDRATE		115200
-#define CONFIG_LINUX_MEMSIZE	"992M"
+#define ADI_LINUX_MEMSIZE	"992M"
 #define CONFIG_CMD_BOOTZ
 
 #define CONFIG_BOOTCOMMAND	"run ospiboot"
@@ -248,7 +248,7 @@
                         __stringify(CONFIG_BAUDRATE) " " \
         "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
                          __stringify(CONFIG_BAUDRATE) " "\
-        "mem=" CONFIG_LINUX_MEMSIZE " " \
+        "mem=" ADI_LINUX_MEMSIZE " " \
         "vmalloc=512M"
 
 #define ADI_UPDATE_SPI \

@@ -143,10 +143,6 @@ config ENV_IS_EMBEDDED_IN_LDR
 	bool
 	default n
 
-config LINUX_MEMSIZE
-	string
-	default "224M"
-
 config ADI_FALCON
 	bool "Enable Falcon Boot Mode Support"
 	depends on SPL_OS_BOOT_UNCOMPRESSED
