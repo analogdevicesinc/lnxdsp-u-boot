@@ -228,7 +228,6 @@
         "root=/dev/mtdblock4 " \
         "rootfstype=jffs2 " \
         "clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
-        ADI_BOOTARGS_VIDEO \
         "earlyprintk=serial,uart" __stringify(CONFIG_UART_CONSOLE) "," \
                         __stringify(CONFIG_BAUDRATE) " " \
         "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \

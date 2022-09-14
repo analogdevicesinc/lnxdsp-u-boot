@@ -242,7 +242,6 @@
 #define ADI_BOOTARGS_EMMC \
         "root=/dev/mmcblk0p1 " \
         "rootfstype=ext4 rootwait " \
-        ADI_BOOTARGS_VIDEO \
         ADI_EARLYPRINTK \
         "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
                         __stringify(CONFIG_BAUDRATE) " "
@@ -250,7 +249,6 @@
 #define ADI_BOOTARGS_SPI \
         "root=/dev/mtdblock4 " \
         "rootfstype=jffs2 " \
-        ADI_BOOTARGS_VIDEO \
         ADI_EARLYPRINTK \
         "console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
                         __stringify(CONFIG_BAUDRATE) " "

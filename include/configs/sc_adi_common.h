@@ -74,18 +74,11 @@
 	#define ADI_TFTP_DTB ""
 #endif
 
-#ifdef CONFIG_VIDEO
-# define ADI_BOOTARGS_VIDEO "console=tty0 "
-#else
-# define ADI_BOOTARGS_VIDEO ""
-#endif
-
 #define ADI_BOOTARGS_ROOT_NAND "/dev/mtdblock2 rw"
 #define ADI_BOOTARGS_ROOT_SDCARD    "/dev/mmcblk0p1 rw"
 
 #define ADI_BOOTARGS_SDCARD	\
 	"root=" ADI_BOOTARGS_ROOT_SDCARD " " \
-	ADI_BOOTARGS_VIDEO \
 	ADI_EARLYPRINTK \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "
@@ -93,7 +86,6 @@
 #define ADI_BOOTARGS_NFS	\
 	"root=/dev/nfs rw " \
 	"nfsroot=${serverip}:${rootpath},tcp,nfsvers=3 " \
-	ADI_BOOTARGS_VIDEO \
 	ADI_EARLYPRINTK \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "
@@ -101,7 +93,6 @@
 #define CONFIG_BOOTARGS	\
 	"root=" ADI_BOOTARGS_ROOT_NAND " " \
 	"rootfstype=jffs2 " \
-	ADI_BOOTARGS_VIDEO \
 	ADI_EARLYPRINTK \
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "
