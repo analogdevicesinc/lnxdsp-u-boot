@@ -108,19 +108,7 @@
 # else
 #  define UBOOT_ENV_UPDATE
 # endif
-# ifdef CONFIG_NETCONSOLE
-#  define NETCONSOLE_ENV \
-	"nc=" \
-		"setenv ncip ${serverip};" \
-		"setenv stdin nc;" \
-		"setenv stdout nc;" \
-		"setenv stderr nc" \
-		"\0"
-# else
-#  define NETCONSOLE_ENV
-# endif
 # define NETWORK_ENV_SETTINGS \
-	NETCONSOLE_ENV \
 	\
 	"ubootfile=" UBOOT_ENV_FILE "\0" \
 	"update=" \
