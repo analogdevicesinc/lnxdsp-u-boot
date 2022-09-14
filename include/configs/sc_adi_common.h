@@ -30,14 +30,6 @@
 /*
  * Env Settings
  */
-#ifndef CONFIG_BOOTDELAY
-# if (CONFIG_SC_BOOT_MODE == SC_BOOT_UART)
-#  define CONFIG_BOOTDELAY	-1
-# else
-#  define CONFIG_BOOTDELAY	5
-# endif
-#endif
-
 #ifdef CONFIG_SC59X_64
 # define ADI_EARLYPRINTK "earlycon=adi_uart,0x31003000 "
 # if !CONFIG_IS_ENABLED(FIT)
