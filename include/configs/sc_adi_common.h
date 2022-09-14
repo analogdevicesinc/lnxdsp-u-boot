@@ -5,20 +5,10 @@
 #ifndef __CONFIG_SC_ADI_COMMON_H
 #define __CONFIG_SC_ADI_COMMON_H
 
-#ifdef CONFIG_MMC_SPI
-	#define CONFIG_CMD_MMC_SPI
-#endif
-
+/* Commands */
 #define CONFIG_CMD_CACHE
 #define CONFIG_CMD_REGINFO
 #define CONFIG_CMD_STRINGS
-#define CONFIG_CMD_MEMTEST
-
-/* Commands */
-
-#define CONFIG_CMDLINE_EDITING	1
-#define CONFIG_AUTO_COMPLETE	1
-#define CONFIG_LOADS_ECHO	1
 
 /*
  * Debug Settings
@@ -209,13 +199,4 @@
 #define CONFIG_BOARD_EARLY_INIT_F
 #define CONFIG_MISC_INIT_R
 
-/*
- * CONFIG_CMD_MEMORY settings
- */
-
-/* Reserve 4MB in DRAM for Tlb, Text, Malloc pool, Global data, Stack, etc. */
-#define ADI_MEMTEST_RESERVE_SIZE		(4 * 1024 * 1024)
-#define CONFIG_SYS_MEMTEST_START		CONFIG_SYS_SDRAM_BASE
-#define CONFIG_SYS_MEMTEST_END			(CONFIG_SYS_SDRAM_BASE + \
-				CONFIG_SYS_SDRAM_SIZE - ADI_MEMTEST_RESERVE_SIZE)
 #endif
