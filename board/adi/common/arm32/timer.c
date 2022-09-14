@@ -14,6 +14,9 @@ static struct gptimer3_group_regs *timer_group = (struct gptimer3_group_regs *)
 struct gptimer3 *timer_base = (struct gptimer3 *)CONFIG_SYS_TIMERBASE;
 
 #define MAX_TIM_LOAD	0xFFFFFFFF
+
+#define ADI_VCO_HZ (CONFIG_CLKIN_HZ * CONFIG_CGU0_VCO_MULT)
+#define ADI_SCLK_HZ (ADI_VCO_HZ / CONFIG_CGU0_SCLK_DIV)
 #define TIMER_CLOCK		(ADI_SCLK_HZ/CONFIG_CGU0_SCLK0_DIV)
 
 /* Functions just to satisfy the linker */
