@@ -209,11 +209,6 @@
 # ifndef CONFIG_ROOTPATH
 #  define CONFIG_ROOTPATH       "/romfs"
 # endif
-# ifdef CONFIG_CMD_DHCP
-#  ifndef CONFIG_SYS_AUTOLOAD
-#   define CONFIG_SYS_AUTOLOAD "no"
-#  endif
-# endif
 # define CONFIG_NET_RETRY_COUNT 20
 #endif
 
