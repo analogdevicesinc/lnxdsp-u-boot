@@ -5,14 +5,14 @@
 #ifndef __CONFIG_SC_ADI_COMMON_H
 #define __CONFIG_SC_ADI_COMMON_H
 
+#ifdef CONFIG_MMC_SPI
+	#define CONFIG_CMD_MMC_SPI
+#endif
 
-# ifdef CONFIG_MMC_SPI
-#  define CONFIG_CMD_MMC_SPI
-# endif
-# define CONFIG_CMD_CACHE
-# define CONFIG_CMD_REGINFO
-# define CONFIG_CMD_STRINGS
-# define CONFIG_CMD_MEMTEST
+#define CONFIG_CMD_CACHE
+#define CONFIG_CMD_REGINFO
+#define CONFIG_CMD_STRINGS
+#define CONFIG_CMD_MEMTEST
 
 /* Commands */
 
@@ -26,36 +26,35 @@
 #define CONFIG_ENV_OVERWRITE	1
 #define CONFIG_PANIC_HANG	1
 
-
 /*
  * Env Settings
  */
 #ifdef CONFIG_SC59X_64
-# define ADI_EARLYPRINTK "earlycon=adi_uart,0x31003000 "
-# if !CONFIG_IS_ENABLED(FIT)
-#  define IMAGEFILE "Image"
-#  define IMAGEFILE_RAM "Image"
-#  define ADI_BOOT_INITRD "booti ${loadaddr} ${initramaddr} ${dtbaddr};"
-#  define ADI_BOOT "booti ${loadaddr} - ${dtbaddr};"
-# else
-#  define IMAGEFILE "fitImage"
-#  define IMAGEFILE_RAM "fitImage"
-#  define ADI_BOOT_INITRD "bootm ${loadaddr} ${initramaddr};"
-#  define ADI_BOOT "bootm ${loadaddr};"
-# endif
+	#define ADI_EARLYPRINTK "earlycon=adi_uart,0x31003000 "
+	#if !CONFIG_IS_ENABLED(FIT)
+		#define IMAGEFILE "Image"
+		#define IMAGEFILE_RAM "Image"
+		#define ADI_BOOT_INITRD "booti ${loadaddr} ${initramaddr} ${dtbaddr};"
+		#define ADI_BOOT "booti ${loadaddr} - ${dtbaddr};"
+	#else
+		#define IMAGEFILE "fitImage"
+		#define IMAGEFILE_RAM "fitImage"
+		#define ADI_BOOT_INITRD "bootm ${loadaddr} ${initramaddr};"
+		#define ADI_BOOT "bootm ${loadaddr};"
+	#endif
 #else
-# define ADI_EARLYPRINTK "earlyprintk=serial,uart0," __stringify(CONFIG_BAUDRATE) " "
-# if !CONFIG_IS_ENABLED(FIT)
-#  define IMAGEFILE "zImage"
-#  define IMAGEFILE_RAM "zImage"
-#  define ADI_BOOT_INITRD "bootz ${loadaddr} ${initramaddr} ${dtbaddr};"
-#  define ADI_BOOT "bootz ${loadaddr} - ${dtbaddr};"
-# else
-#  define IMAGEFILE "fitImage"
-#  define IMAGEFILE_RAM "fitImage"
-#  define ADI_BOOT_INITRD "bootm ${loadaddr} ${initramaddr};"
-#  define ADI_BOOT "bootm ${loadaddr};"
-# endif
+	#define ADI_EARLYPRINTK "earlyprintk=serial,uart0," __stringify(CONFIG_BAUDRATE) " "
+	#if !CONFIG_IS_ENABLED(FIT)
+		#define IMAGEFILE "zImage"
+		#define IMAGEFILE_RAM "zImage"
+		#define ADI_BOOT_INITRD "bootz ${loadaddr} ${initramaddr} ${dtbaddr};"
+		#define ADI_BOOT "bootz ${loadaddr} - ${dtbaddr};"
+	#else
+		#define IMAGEFILE "fitImage"
+		#define IMAGEFILE_RAM "fitImage"
+		#define ADI_BOOT_INITRD "bootm ${loadaddr} ${initramaddr};"
+		#define ADI_BOOT "bootm ${loadaddr};"
+	#endif
 #endif
 
 #if !CONFIG_IS_ENABLED(FIT)
@@ -90,15 +89,17 @@
 			__stringify(CONFIG_BAUDRATE) " "
 
 #define UBOOT_ENV_FILE "u-boot-" CONFIG_SYS_BOARD ".ldr"
+
 #if (CONFIG_SC_BOOT_MODE == SC_BOOT_SPI_MASTER)
-# define UBOOT_ENV_UPDATE \
-		"sf probe " __stringify(CONFIG_SC_BOOT_SPI_BUS) ":" \
-		__stringify(CONFIG_SC_BOOT_SPI_SSEL) ";" \
-		"sf erase 0 " __stringify(CONFIG_SPI_IMG_SIZE) ";" \
-		"sf write ${loadaddr} 0 ${filesize}"
+	#define UBOOT_ENV_UPDATE \
+			"sf probe " __stringify(CONFIG_SC_BOOT_SPI_BUS) ":" \
+			__stringify(CONFIG_SC_BOOT_SPI_SSEL) ";" \
+			"sf erase 0 " __stringify(CONFIG_SPI_IMG_SIZE) ";" \
+			"sf write ${loadaddr} 0 ${filesize}"
 #else
-# define UBOOT_ENV_UPDATE
+	#define UBOOT_ENV_UPDATE
 #endif
+
 #define NETWORK_ENV_SETTINGS \
 	\
 	"ubootfile=" UBOOT_ENV_FILE "\0" \
@@ -188,16 +189,16 @@
  * Network Settings
  */
 #ifdef CONFIG_CMD_NET
-# define CONFIG_NETMASK         255.255.255.0
-# ifndef CONFIG_IPADDR
-#  define CONFIG_IPADDR         192.168.0.15
-#  define CONFIG_GATEWAYIP      192.168.0.1
-#  define CONFIG_SERVERIP       192.168.0.2
-# endif
-# ifndef CONFIG_ROOTPATH
-#  define CONFIG_ROOTPATH       "/romfs"
-# endif
-# define CONFIG_NET_RETRY_COUNT 20
+	#define CONFIG_NETMASK         255.255.255.0
+	#ifndef CONFIG_IPADDR
+		#define CONFIG_IPADDR         192.168.0.15
+		#define CONFIG_GATEWAYIP      192.168.0.1
+		#define CONFIG_SERVERIP       192.168.0.2
+	#endif
+	#ifndef CONFIG_ROOTPATH
+		#define CONFIG_ROOTPATH       "/romfs"
+	#endif
+	#define CONFIG_NET_RETRY_COUNT 20
 #endif
 
 /*
