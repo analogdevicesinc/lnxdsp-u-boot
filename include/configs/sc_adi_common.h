@@ -97,18 +97,17 @@
 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 			__stringify(CONFIG_BAUDRATE) " "
 
-#if defined(CONFIG_CMD_NET)
-# define UBOOT_ENV_FILE "u-boot-" CONFIG_SYS_BOARD ".ldr"
-# if (CONFIG_SC_BOOT_MODE == SC_BOOT_SPI_MASTER)
-#  define UBOOT_ENV_UPDATE \
+#define UBOOT_ENV_FILE "u-boot-" CONFIG_SYS_BOARD ".ldr"
+#if (CONFIG_SC_BOOT_MODE == SC_BOOT_SPI_MASTER)
+# define UBOOT_ENV_UPDATE \
 		"sf probe " __stringify(CONFIG_SC_BOOT_SPI_BUS) ":" \
 		__stringify(CONFIG_SC_BOOT_SPI_SSEL) ";" \
 		"sf erase 0 " __stringify(CONFIG_SPI_IMG_SIZE) ";" \
 		"sf write ${loadaddr} 0 ${filesize}"
-# else
-#  define UBOOT_ENV_UPDATE
-# endif
-# define NETWORK_ENV_SETTINGS \
+#else
+# define UBOOT_ENV_UPDATE
+#endif
+#define NETWORK_ENV_SETTINGS \
 	\
 	"ubootfile=" UBOOT_ENV_FILE "\0" \
 	"update=" \
@@ -174,9 +173,6 @@
 		"run addip;" \
 		ADI_BOOT \
 		"\0"
-#else
-# define NETWORK_ENV_SETTINGS
-#endif
 
 #if ! (defined(CONFIG_SC59X) | defined (CONFIG_SC59X_64))
 	#define ADI_ENV_SETTINGS "\0"
@@ -191,7 +187,7 @@
 	ADI_ENV_SETTINGS
 
 /*
- * Boot Paramter Settings
+ * Boot Parameter Settings
  */
 #define CONFIG_CMDLINE_TAG              1       /* enable passing of ATAGs */
 #define CONFIG_SETUP_MEMORY_TAGS        1
