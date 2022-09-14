@@ -50,7 +50,6 @@
 #define CONFIG_MII
 #define CONFIG_PHYLIB
 #define CONFIG_PHY_TI
-#define CONFIG_ETHADDR	02:80:ad:20:31:e8
 
 /*
  * SPI Settings

@@ -82,8 +82,6 @@
 #define CONFIG_MII
 //#define CONFIG_PHYLIB
 #define CONFIG_PHY_TI
-#define CONFIG_ETHADDR	02:80:ad:20:31:e8
-#define CONFIG_ETH1ADDR	02:80:ad:20:31:e9
 
 /* OSPI - Via Device Tree Support
  *

@@ -47,7 +47,6 @@
 #define CONFIG_DW_AXI_BURST_LEN 16
 #define CONFIG_MII
 #define CONFIG_PHY_TI
-#define CONFIG_ETHADDR	02:80:ad:20:31:e8
 
 /*
  * SPI Settings

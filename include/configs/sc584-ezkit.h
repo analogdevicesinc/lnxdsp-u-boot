@@ -51,7 +51,6 @@
 #define CONFIG_PHY_TI
 /*#define CONFIG_PHY_BCM89810*/
 #define CONFIG_PHY_NATSEMI
-#define CONFIG_ETHADDR	02:80:ad:20:31:e8
 
 /*
  * SPI Settings
