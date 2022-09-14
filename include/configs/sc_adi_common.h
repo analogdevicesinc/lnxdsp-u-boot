@@ -5,10 +5,7 @@
 #ifndef __CONFIG_SC_ADI_COMMON_H
 #define __CONFIG_SC_ADI_COMMON_H
 
-# if defined(CONFIG_CMD_FAT) && !defined(CONFIG_FS_FAT)
-#  define CONFIG_FS_FAT
-#  define CONFIG_FS_FAT_MAX_CLUSTSIZE 65536
-# endif
+
 # ifdef CONFIG_MMC_SPI
 #  define CONFIG_CMD_MMC_SPI
 # endif
