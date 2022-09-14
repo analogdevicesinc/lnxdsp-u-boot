@@ -178,10 +178,6 @@
 # define NETWORK_ENV_SETTINGS
 #endif
 
-#ifndef BOARD_ENV_SETTINGS
-# define BOARD_ENV_SETTINGS
-#endif
-
 #if ! (defined(CONFIG_SC59X) | defined (CONFIG_SC59X_64))
 	#define ADI_ENV_SETTINGS "\0"
 #endif
@@ -191,7 +187,6 @@
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	NETWORK_ENV_SETTINGS \
-	BOARD_ENV_SETTINGS \
 	"ethaddr=" ETH0ADDR "\0" \
 	ADI_ENV_SETTINGS
 
