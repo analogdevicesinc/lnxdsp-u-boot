@@ -188,6 +188,7 @@
 	#ifndef CONFIG_ROOTPATH
 		#define CONFIG_ROOTPATH       "/romfs"
 	#endif
+	#define CONFIG_SYS_AUTOLOAD "no"
 	#define CONFIG_NET_RETRY_COUNT 20
 #endif
 
