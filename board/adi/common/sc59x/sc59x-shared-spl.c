@@ -64,22 +64,14 @@ void board_boot_order(u32 *spl_boot_list)
 
 	printf("ADI Boot Mode: %x (%s)\n", bmode, bmodeString);
 
-#if defined(CONFIG_ADI_FALCON) && defined(CONFIG_SC59X_64)
+#if defined(CONFIG_ADI_FALCON) || defined(CONFIG_SC59X)
+
+#ifdef CONFIG_SC59X_64
 	//Push button was pressed -- let the boot rom start U-boot Proper
 	if(bmode != 0 && spl_start_uboot()){
 		spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
 		return;
 	}
-#elif defined(CONFIG_SC59X_64)
-	if (0 == bmode) {
-		printf("SPL execution has completed.  Please load U-Boot Proper via JTAG");
-		while(1)
-			;
-	}
-
-	// Everything goes back to bootrom where we'll read table parameters and ask it
-	// to load something
-	spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
 #endif
 
 	switch(bmode){
@@ -109,6 +101,18 @@ void board_boot_order(u32 *spl_boot_list)
 			spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
 			break;
 	}
+
+#elif defined(CONFIG_SC59X_64)
+	if (0 == bmode) {
+		printf("SPL execution has completed.  Please load U-Boot Proper via JTAG");
+		while(1)
+			;
+	}
+
+	// Everything goes back to bootrom where we'll read table parameters and ask it
+	// to load something
+	spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
+#endif
 }
 
 int dram_init_banksize(void)
