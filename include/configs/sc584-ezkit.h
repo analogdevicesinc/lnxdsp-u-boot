@@ -49,7 +49,6 @@
 #define CONFIG_MII
 #define CONFIG_PHYLIB
 #define CONFIG_PHY_TI
-/*#define CONFIG_PHY_BCM89810*/
 #define CONFIG_PHY_NATSEMI
 
 /*
@@ -60,7 +59,6 @@
 #define CONFIG_SF_DEFAULT_SPEED	5000000
 #define CONFIG_SPI_FLASH
 #define CONFIG_SPI_FLASH_WINBOND
-/*#define CONFIG_SPI_FLASH_MMAP*/
 
 /*
  * USB Settings
