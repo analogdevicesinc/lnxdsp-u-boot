@@ -14,6 +14,12 @@
 	};
 };
 
+&timer0 {
+	reg = <0x31001004 0x100>,
+	      <0x31001060 0x100>;
+	clocks = <&clk ADSP_SC58X_CLK_CGU0_SCLK0>;
+};
+
 &pinctrl0 {
 	mmc_default: mmc_pins {
 		u-boot,dm-pre-reloc;

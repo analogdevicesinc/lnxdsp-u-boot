@@ -255,16 +255,4 @@
 #define ADSP_SC57X_CLK_SDIO 49
 #define ADSP_SC57X_CLK_END 50
 
-// If we're not on one of these platforms and ADI_TIMER_CLK_ID is referenced, the
-// compiler will pick it up for us
-#if defined(CONFIG_SC57X)
-	#define ADI_TIMER_CLK_ID ADSP_SC57X_CLK_CGU0_SCLK0
-#elif defined(CONFIG_SC58X)
-	#define ADI_TIMER_CLK_ID ADSP_SC58X_CLK_CGU0_SCLK0
-#elif defined(CONFIG_SC59X)
-	#define ADI_TIMER_CLK_ID ADSP_SC594_CLK_CGU0_SCLK0
-#elif defined(CONFIG_SC59X_64)
-	#define ADI_TIMER_CLK_ID ADSP_SC598_CLK_CGU0_SCLK0
-#endif
-
 #endif

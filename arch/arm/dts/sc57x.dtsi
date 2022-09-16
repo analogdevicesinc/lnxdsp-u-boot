@@ -14,6 +14,10 @@
 	};
 };
 
+&timer0 {
+	clocks = <&clk ADSP_SC57X_CLK_CGU0_SCLK0>;
+};
+
 &pinctrl0 {
 	mmc_default: mmc_pins {
 	    adi,pins = <ADI_ADSP_PIN('E', 12) ADI_ADSP_PINFUNC_ALT0>,

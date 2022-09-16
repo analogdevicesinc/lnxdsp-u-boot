@@ -12,6 +12,10 @@
 	};
 };
 
+&timer0 {
+	clocks = <&clk ADSP_SC594_CLK_CGU0_SCLK0>;
+};
+
 &pinctrl0 {
 	soc_defaults: soc_pins {
 		u-boot,dm-pre-reloc;

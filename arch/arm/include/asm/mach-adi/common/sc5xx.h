@@ -3,14 +3,6 @@
  * Licensed under the GPL-2 or later.
  */
 
-#ifdef CONFIG_SC58X
-#define TIMER_GROUP                 0x31001004
-#define TIMER0_CONFIG               0x31001060
-#else
-#define TIMER_GROUP                 0x31018004
-#define TIMER0_CONFIG               0x31018060
-#endif
-
 #ifdef CONFIG_SC57X
 #define L2_SRAM_BASE                0x20000000
 #else
