@@ -32,6 +32,22 @@ config SC_BOOT_MODE
          Mode 1: boot ldr out of serial flash
          Mode 7: boot ldr over uart
 
+config SC_BOOT_SPI_BUS
+	int "sc5xx spi boot bus"
+	default 2
+	range 0 4
+	help
+		This is the SPI peripheral number to use for booting, X in the
+		expression `sf probe X:Y`
+
+config SC_BOOT_SPI_SSEL
+	int "sc5xx spi boot chipselect"
+	default 1
+	range 0 6
+	help
+		This is the SPI chip select number to use for booting, Y in the
+		expression `sf probe X:Y`
+
 config SPI_IMG_SIZE
 	hex
 	default 0x80000
