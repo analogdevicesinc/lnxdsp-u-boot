@@ -8,13 +8,25 @@
 
 #include "../common/sc59x/sc59x-shared-spl.h"
 
-u32 bootrom_stash __attribute__((section(".data")));
+// cf. include/adi/cortex-a5/defSC59x_rom_jumptable.h
+void (*adi_rom_boot)(void *addr, uint32_t flags, int32_t blocks, void *pHook, uint32_t cmd) = 0x000000E9;
 
-int board_return_to_bootrom(struct spl_image_info *spl_image,
-			    struct spl_boot_device *bootdev)
-{
-	asm volatile ("bl back_to_bootrom;");
-	return 0;
-}
-
-
+// Table 45-14 in sc594 HRM
+const struct adi_boot_args adi_rom_boot_args[] = {
+	// JTAG/no boot
+	[0] = {0, 0, 0},
+	// SPI master, used for qspi as well
+	[1] = {0x60020000, 0x00040000, 0x00000207},
+	// SPI slave
+	[2] = {0, 0, 0x00000212},
+	// UART slave
+	[3] = {0, 0, 0x00000013},
+	// Linkport slave
+	[4] = {0, 0, 0x00000014},
+	// OSPI master
+	[5] = {0x60020000, 0, 0x00000008},
+	// reserved, no boot
+	[6] = {0, 0, 0},
+	// reserved, also no boot
+	[7] = {0, 0, 0}
+};

@@ -154,20 +154,6 @@
 	#define ADI_SPI_BOOTCMD "sf read ${loadaddr} 0xC0000 ${imagesize}; sf read ${dtbaddr} 0xA0000 ${dtbsize}; bootz ${loadaddr} - ${dtbaddr}"
 #endif
 
-#ifndef CONFIG_SPL_OS_BOOT
-	#define ADI_UPDATE_SPI_UBOOT \
-		"update_spi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe ${sfdev}; sf write ${loadaddr} 0x0 ${filesize};\0"
-#else
-	#define STAGE_1_FILE "stage1-boot.ldr"
-	#define STAGE_2_FILE "stage2-boot.ldr"
-	#define ADI_UPDATE_SPI_UBOOT \
-		"stage1file=" STAGE_1_FILE "\0" \
-		"stage2file=" STAGE_2_FILE "\0" \
-		"update_spi_uboot_stage1=tftp ${loadaddr} ${stage1file}; sf probe ${sfdev}; sf write ${loadaddr} 0x0 ${filesize};\0" \
-		"update_spi_uboot_stage2=tftp ${loadaddr} ${stage2file}; sf probe ${sfdev}; sf write ${loadaddr} 0x20000 ${filesize};\0" \
-		"update_spi_uboot=run update_spi_uboot_stage1; run update_spi_uboot_stage2;\0"
-#endif
-
 #ifndef CONFIG_ADI_FALCON
 	#define ADI_UPDATE_OSPI_DTB \
 	"update_ospi_dtb=tftp ${loadaddr} ${dtbfile}; sf probe 0:0; sf write ${loadaddr} 0xA0000 ${filesize}; setenv dtbsize ${filesize};\0"
@@ -181,7 +167,7 @@
 		"update_spi_uboot=tftp ${loadaddr} ${ubootfile}; sf probe ${sfdev}; sf write ${loadaddr} 0x0 ${filesize};\0"
 #else
 	#define STAGE_1_FILE "stage1-boot.ldr"
-	#define STAGE_2_FILE "stage2-boot.img"
+	#define STAGE_2_FILE "stage2-boot.ldr"
 	#define ADI_UPDATE_SPI_UBOOT \
 		"stage1file=" STAGE_1_FILE "\0" \
 		"stage2file=" STAGE_2_FILE "\0" \

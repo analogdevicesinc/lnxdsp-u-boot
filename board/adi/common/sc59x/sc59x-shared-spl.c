@@ -63,17 +63,14 @@ void board_boot_order(u32 *spl_boot_list)
 	else
 		bmode = 0;
 
-	printf("ADI Boot Mode: %x (%s)\n", bmode, bmodeString);
+	printf("ADI Boot Mode: 0x%x (%s)\n", bmode, bmodeString);
 
-#if defined(CONFIG_ADI_FALCON) || defined(CONFIG_SC59X)
-
-#ifdef CONFIG_SC59X_64
+#if defined(CONFIG_ADI_FALCON)
 	//Push button was pressed -- let the boot rom start U-boot Proper
 	if(bmode != 0 && spl_start_uboot()){
 		spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
 		return;
 	}
-#endif
 
 	switch(bmode){
 		case 0:
@@ -103,7 +100,7 @@ void board_boot_order(u32 *spl_boot_list)
 			break;
 	}
 
-#elif defined(CONFIG_SC59X_64)
+#else
 	if (0 == bmode) {
 		printf("SPL execution has completed.  Please load U-Boot Proper via JTAG");
 		while(1)
@@ -115,6 +112,25 @@ void board_boot_order(u32 *spl_boot_list)
 	spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
 #endif
 }
+
+int board_return_to_bootrom(struct spl_image_info *spl_image,
+	struct spl_boot_device *bootdev)
+{
+#if CONFIG_ADI_SPL_FORCE_BMODE != 0
+	// see above
+	if(bmode != 0 && bmode != 3)
+		bmode = CONFIG_ADI_SPL_FORCE_BMODE;
+#endif
+
+	if (bmode >= (sizeof(adi_rom_boot_args) / sizeof(adi_rom_boot_args[0])))
+		bmode = 0;
+
+	adi_rom_boot(adi_rom_boot_args[bmode].addr,
+		adi_rom_boot_args[bmode].flags,
+		0, NULL,
+		adi_rom_boot_args[bmode].cmd);
+	return 0;
+};
 
 int dram_init_banksize(void)
 {

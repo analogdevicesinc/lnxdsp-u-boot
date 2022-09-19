@@ -34,4 +34,8 @@ extern u32 bmode;
 
 extern void adi_check_pushbuttons(void);
 
+extern void (*adi_rom_boot)(void *addr, uint32_t flags, int32_t blocks, void *pHook, uint32_t cmd);
+
+extern const struct adi_boot_args adi_rom_boot_args[8];
+
 #endif
