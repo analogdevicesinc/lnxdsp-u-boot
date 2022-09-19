@@ -9,8 +9,6 @@
 #include "../common/sc59x/sc59x-shared-spl.h"
 #include <asm/armv8/mmu.h>
 
-u64 bootrom_stash[32] __attribute__((section(".data")));
-
 // cf. include/adi/cortex-a55/defSC59x_rom_jumptable.h
 void (*adi_rom_boot)(void *addr, uint32_t flags, int32_t blocks, void *pHook,
 uint32_t cmd) = 0x000000E4;

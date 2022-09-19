@@ -21,31 +21,8 @@
  *************************************************************************/
 
 .globl	_start
-.globl	back_to_bootrom
 
 _start:
-
-#ifdef CONFIG_SC59X_64
-#ifdef CONFIG_SPL_BUILD
-	LDR	X0, =bootrom_stash
-	STP X29, X30, [X0, #16]
-	STP X27, X28, [X0, #32]
-	STP X25, X26, [X0, #48]
-	STP X23, X24, [X0, #64]
-	STP X21, X22, [X0, #80]
-	STP X19, X20, [X0, #96]
-	STP X17, X18, [X0, #112]
-	STP X15, X16, [X0, #128]
-	STP X13, X14, [X0, #144]
-	STP X11, X12, [X0, #160]
-	STP X9,  X10, [X0, #176]
-	STP X7,  X8,  [X0, #192]
-	STP X5,  X6,  [X0, #208]
-	STP X3,  X4,  [X0, #224]
-	STP X1,  X2,  [X0, #240]
-#endif
-#endif
-
 #if defined(CONFIG_LINUX_KERNEL_IMAGE_HEADER)
 #include <asm/boot0-linux-kernel-header.h>
 #elif defined(CONFIG_ENABLE_ARM_SOC_BOOT0_HOOK)
@@ -417,28 +394,3 @@ ENDPROC(c_runtime_cpu_setup)
 WEAK(save_boot_params)
 	b	save_boot_params_ret	/* back to my caller */
 ENDPROC(save_boot_params)
-
-#ifdef CONFIG_SC59X_64
-#ifdef CONFIG_SPL_BUILD
-back_to_bootrom:
-	nop
-	LDR	X0, =bootrom_stash
-	LDP X29, X30, [X0, #16]
-	LDP X27, X28, [X0, #32]
-	LDP X25, X26, [X0, #48]
-	LDP X23, X24, [X0, #64]
-	LDP X21, X22, [X0, #80]
-	LDP X19, X20, [X0, #96]
-	LDP X17, X18, [X0, #112]
-	LDP X15, X16, [X0, #128]
-	LDP X13, X14, [X0, #144]
-	LDP X11, X12, [X0, #160]
-	LDP X9,  X10, [X0, #176]
-	LDP X7,  X8,  [X0, #192]
-	LDP X5,  X6,  [X0, #208]
-	LDP X3,  X4,  [X0, #224]
-	LDP X1,  X2,  [X0, #240]
-	MOV SP, X29
-	RET
-#endif
-#endif
