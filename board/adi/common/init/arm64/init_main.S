@@ -7,7 +7,6 @@
 
 #include <linux/linkage.h>
 #include <asm/macro.h>
-#include <asm/mach-adi/59x-64/init_asm.h>
 
 #define CONFIG_INIT_ELF_STACK_ADDR	0x200a0000
 
@@ -15,8 +14,6 @@ ENTRY(_main)
 	ldr	x0, =(CONFIG_INIT_ELF_STACK_ADDR)
 	bic	sp, x0, #0xf	/* 16-byte alignment for ABI compliance */
 	bl	adi_initcode
-
-	sc598_ddr_fixups
 
 	/* This is loaded in via JTAG (GDB+OpenOCD) -- No need to return to ROM */
 	loop_forever:

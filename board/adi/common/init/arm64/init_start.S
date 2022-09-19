@@ -8,8 +8,6 @@
 #include <linux/linkage.h>
 #include <asm/macro.h>
 
-#include <asm/mach-adi/59x-64/init_asm.h>
-
 ENTRY(_start)
 	.align 3
 
@@ -19,8 +17,6 @@ ENTRY(_start)
 	str     x0, [sp, #24]
 
 	bl	adi_initcode
-
-	sc598_ddr_fixups
 
 	/* Restore stack, return to ROM */
 	nop

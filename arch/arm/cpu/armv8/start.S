@@ -10,10 +10,6 @@
 #include <asm/macro.h>
 #include <asm/armv8/mmu.h>
 
-#ifdef CONFIG_SC59X_64
-#include <asm/mach-adi/59x-64/init_asm.h>
-#endif
-
 /*************************************************************************
  *
  * Startup Code (reset vector)
@@ -58,11 +54,6 @@ _bss_end_ofs:
 	.quad	__bss_end - _start
 
 reset:
-
-#ifdef CONFIG_SC59X_64
-	sc598_setup
-#endif
-
 	/* Allow the board to save important registers */
 	b	save_boot_params
 .globl	save_boot_params_ret

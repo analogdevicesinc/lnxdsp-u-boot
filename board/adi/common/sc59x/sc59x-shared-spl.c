@@ -7,6 +7,7 @@
  */
 
 #include "sc59x-shared-spl.h"
+#include <asm/io.h>
 
 #ifdef CONFIG_SC59X
 static int adi_sf_default_bus = 0;
@@ -117,6 +118,46 @@ void board_boot_order(u32 *spl_boot_list)
 
 int dram_init_banksize(void)
 {
+#ifdef CONFIG_SC59X_64
+	void __iomem *smpus[] = {
+		0x31007800, //SMPU0
+		0x31083800, //SMPU2
+		0x31084800, //SMPU3
+		0x31085800, //SMPU4
+		0x31086800, //SMPU5
+		0x31087800, //SMPU6
+		0x310A0800, //SMPU9
+		0x310A1800, //SMPU11
+		0x31012800, //SMPU12
+	};
+	size_t i;
+
+	/* Alter outstanding transactions property of A55*/
+	writel(0x1, 0x30643108); /* SCB6 A55 M0 Ib.fn Mod */
+	isb();
+
+	/* configure DDR prefetch behavior, per ADI */
+	writel(0x1, 0x31076000);
+
+	/* configure smart mode, per ADI */
+	writel(0x1307, 0x31076004);
+
+	/* configure spu0 */
+	for (i = 0; i < 214; ++i) {
+		writel(0, 0x3108BA00 + 4*i);
+	}
+
+	/* configure spu0 wp */
+	for (i = 0; i < 214; ++i) {
+		writel(0, 0x3108B400 + i*4);
+	}
+
+	/* configure smpus permissively */
+	for (i = 0; i < ARRAY_SIZE(smpus); ++i) {
+		writel(0x500, smpus[i]);
+	}
+#endif
+
 	adi_initcode_shared();
 	return 0;
 }

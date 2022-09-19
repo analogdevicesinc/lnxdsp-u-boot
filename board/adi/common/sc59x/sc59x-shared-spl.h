@@ -20,7 +20,7 @@
 #include <watchdog.h>
 #include <asm/spl.h>
 #include <asm/mach-adi/common/rcu.h>
-#include "../common/sc59x/sc59x-shared.h"
+#include "sc59x-shared.h"
 
 struct adi_boot_args {
 	u32 addr;
