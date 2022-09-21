@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-/**
- * CGU PLL driver for ADI SC59X processors
+/*
+ * (C) Copyright 2022 - Analog Devices, Inc.
  *
- * (c) Copyright 2022, Analog Devices
+ * Written and/or maintained by Timesys Corporation
+ *
  * Author: Greg Malysa <greg.malysa@timesys.com>
  *
  * Ported from Linux: Nathan Barrett-Morrison <nathan.morrison@timesys.com>

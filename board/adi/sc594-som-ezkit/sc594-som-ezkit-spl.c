@@ -1,9 +1,11 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * U-boot - SPL management
+ * (C) Copyright 2022 - Analog Devices, Inc.
  *
- * Copyright (c) 2022 Analog Devices Inc.
+ * Written and/or maintained by Timesys Corporation
  *
- * Licensed under the GPL-2 or later.
+ * Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+ * Contact: Greg Malysa <greg.malysa@timesys.com>
  */
 
 #include "../common/sc59x/sc59x-shared-spl.h"

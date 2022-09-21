@@ -1,12 +1,11 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
 #
-# U-boot - Makefile
+# (C) Copyright 2022 - Analog Devices, Inc.
 #
-# Copyright (c) 2022 Analog Device Inc.
+# Written and/or maintained by Timesys Corporation
 #
-# (C) Copyright 2000-2012
-# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
-#
-# SPDX-License-Identifier:      GPL-2.0+
+# Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+# Contact: Greg Malysa <greg.malysa@timesys.com>
 #
 
 ifdef CONFIG_SC59X_64

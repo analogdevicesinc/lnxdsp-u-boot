@@ -1,6 +1,0 @@
-SC584-EZKIT BOARD
-M:	Aaron Wu <aaron.wu@analog.com>
-S:	Maintained
-F:	board/adi/sc584-ezkit/
-F:	include/configs/sc584-ezkit.h
-F:	configs/sc584-ezkit_defconfig

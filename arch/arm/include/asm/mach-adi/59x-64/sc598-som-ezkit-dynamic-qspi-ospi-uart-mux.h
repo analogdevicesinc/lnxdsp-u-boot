@@ -1,4 +1,12 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
+ * (C) Copyright 2022 - Analog Devices, Inc.
+ *
+ * Written and/or maintained by Timesys Corporation
+ *
+ * Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+ * Contact: Greg Malysa <greg.malysa@timesys.com>
+ *
  * U-boot - The SC598 EZKITs have pinmux conflicts between OSPI/QSPI/UART0
  *
  * UART0 uses PA6+7
@@ -11,10 +19,6 @@
  * When OSPI is turned off, the SPI2 and UART0 pinmuxes are set
  *
  * Toggling of the related GPIO expander pins (soft switches) is also performed
- *
- * Copyright (c) 2022 Analog Devices Inc.
- *
- * Licensed under the GPL-2 or later.
  */
 
 #ifndef CONFIG_SC598_SOM_EZKIT_DYNAMIC_QSPI_OSPI_UART_MUX

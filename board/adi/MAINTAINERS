@@ -1,0 +1,23 @@
+ADI SC5xx Boards
+M: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+M: Greg Malysa <greg.malysa@timesys.com>
+S: Maintained
+F: board/adi
+F: arch/arm/include/asm/mach-adi
+F: include/configs/sc573-ezkit.h
+F: include/configs/sc584-ezkit.h
+F: include/configs/sc589-ezkit.h
+F: include/configs/sc589-mini.h
+F: include/configs/sc594-som-ezkit.h
+F: include/configs/sc598-som-ezkit.h
+F: include/configs/sc_adi_common.h
+F: arch/arm/dts/sc573-ezkit.dts
+F: arch/arm/dts/sc57x.dtsi
+F: arch/arm/dts/sc584-ezkit.dts
+F: arch/arm/dts/sc589-ezkit.dts
+F: arch/arm/dts/sc589-mini.dts
+F: arch/arm/dts/sc58x.dtsi
+F: arch/arm/dts/sc594-som-ezkit.dts
+F: arch/arm/dts/sc598-som-ezkit.dts
+F: arch/arm/dts/sc59x.dtsi
+F: arch/arm/dts/sc5xx.dtsi

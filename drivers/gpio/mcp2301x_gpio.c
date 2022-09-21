@@ -1,12 +1,13 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
+ * (C) Copyright 2022 - Analog Devices, Inc.
+ *
+ * Written and/or maintained by Timesys Corporation
+ *
+ * Author: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+ * Additional Contact: Greg Malysa <greg.malysa@timesys.com>
+ *
  * mcp23017 and mcp23018, i2c-based GPIO expander driver
- *
- * Copyright (C) 2022 Analog Devices Incorporated
- *
- * Written by Timesys Corporation
- * Nathan Barrett-Morrison <nathan.morrison@timesys.com>
- *
- * SPDX-License-Identifier: GPL-2.0+
  */
 
 #include <common.h>

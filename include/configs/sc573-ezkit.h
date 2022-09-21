@@ -1,5 +1,12 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * U-boot - Configuration file for sc573 EZ-Kit board
+ * (C) Copyright 2022 - Analog Devices, Inc.
+ *
+ * Written and/or maintained by Timesys Corporation
+ *
+ * Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+ * Contact: Greg Malysa <greg.malysa@timesys.com>
+ *
  */
 
 #ifndef __CONFIG_SC573_EZKIT_H

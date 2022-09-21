@@ -1,9 +1,16 @@
-// @todo spdx identifier
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
+ * (C) Copyright 2022 - Analog Devices, Inc.
+ *
+ * Written and/or maintained by Timesys Corporation
+ *
+ * Converted to driver model by Nathan Barrett-Morrison
+ *
+ * Author: Greg Malysa <greg.malysa@timesys.com>
+ * Additional Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+ *
  * dm timer implementation for ADI ADSP-SC5xx SoCs
  *
- * Copyright (C) 2022 Analog Devices Inc.
- * Author: Greg Malysa <greg.malysa@timesys.com>
  */
 
 #include <asm/io.h>

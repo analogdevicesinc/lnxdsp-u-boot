@@ -1,6 +1,0 @@
-SC589-MINI BOARD
-M:	Aaron Wu <aaron.wu@analog.com>
-S:	Maintained
-F:	board/adi/sc589-mini/
-F:	include/configs/sc589-mini.h
-F:	configs/sc589-mini_defconfig

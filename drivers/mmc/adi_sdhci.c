@@ -1,8 +1,13 @@
-// SPDX-License-Identifier: GPL-2.0+
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * Analog Devices 2021
+ * (C) Copyright 2022 - Analog Devices, Inc.
  *
- * Based on Rockchip's adi_sdhci.c file
+ * Written and/or maintained by Timesys Corporation
+ *
+ * Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+ * Contact: Greg Malysa <greg.malysa@timesys.com>
+ *
+ * Based on Rockchip's sdhci.c file
  */
 
 #include <common.h>

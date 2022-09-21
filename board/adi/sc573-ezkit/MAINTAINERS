@@ -1,6 +1,0 @@
-SC573-EZKIT BOARD
-M:	Aaron Wu <Aaron.wu@analog.com.com>
-S:	Maintained
-F:	board/adi/sc573-ezkit/
-F:	include/configs/sc573-ezkit.h
-F:	configs/sc573-ezkit_defconfig

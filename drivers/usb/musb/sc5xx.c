@@ -1,16 +1,14 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * Analog Devices SC58x MUSB HCD driver for u-boot
+ * (C) Copyright 2022 - Analog Devices, Inc.
  *
- * Copyright (c) 2014 Analog Devices Inc.
+ * Written and/or maintained by Timesys Corporation
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
+ * Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+ * Contact: Greg Malysa <greg.malysa@timesys.com>
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Analog Devices SC5xx MUSB HCD driver for u-boot
+ *
  */
 
 #include <common.h>

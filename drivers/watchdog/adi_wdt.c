@@ -1,9 +1,16 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
+ * (C) Copyright 2022 - Analog Devices, Inc.
+ *
+ * Written and/or maintained by Timesys Corporation
+ *
+ * Converted to driver model by Nathan Barrett-Morrison
+ *
+ * Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+ * Contact: Greg Malysa <greg.malysa@timesys.com>
+ *
  * adi_wtd.c - driver for ADI on-chip watchdog
  *
- * Copyright 2014 Analog Devices Inc.
- * Author: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
  */
 
 #include <common.h>

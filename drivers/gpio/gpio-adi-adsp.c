@@ -1,8 +1,11 @@
-// @todo spdx identifier
-/**
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * (C) Copyright 2022 - Analog Devices, Inc.
  *
- * Copyright 2022 (c), Analog Devices, Inc.
+ * Written and/or maintained by Timesys Corporation
+ *
  * Author: Greg Malysa <greg.malysa@timesys.com>
+ * Additional Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
  */
 
 #include <asm-generic/gpio.h>

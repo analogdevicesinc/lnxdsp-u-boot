@@ -1,5 +1,12 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * U-boot - Configuration file for sc589-mini board
+ * (C) Copyright 2022 - Analog Devices, Inc.
+ *
+ * Written and/or maintained by Timesys Corporation
+ *
+ * Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+ * Contact: Greg Malysa <greg.malysa@timesys.com>
+ *
  */
 
 #ifndef __CONFIG_SC589_MINI_H

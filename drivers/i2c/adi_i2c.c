@@ -1,12 +1,13 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * i2c.c - driver for ADI TWI/I2C
+ * (C) Copyright 2022 - Analog Devices, Inc.
  *
- * Copyright (c) 2006-2014 Analog Devices Inc.
+ * Written and/or maintained by Timesys Corporation
  *
- * 2022 - Converted to driver model by Timesys Corporation
- *        Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+ * Converted to driver model by Nathan Barrett-Morrison
  *
- * Licensed under the GPL-2 or later.
+ * Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+ * Contact: Greg Malysa <greg.malysa@timesys.com>
  */
 
 #include <common.h>

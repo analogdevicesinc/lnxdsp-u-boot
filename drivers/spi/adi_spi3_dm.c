@@ -1,18 +1,14 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * Analog Devices SPI3 controller driver
+ * (C) Copyright 2022 - Analog Devices, Inc.
  *
- * Copyright (c) 2014 Analog Devices Inc.
+ * Written and/or maintained by Timesys Corporation
  *
- * 2020 - Converted to driver model by Timesys Corporation
+ * Converted to driver model by Nathan Barrett-Morrison
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
+ * Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+ * Contact: Greg Malysa <greg.malysa@timesys.com>
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
  */
 
 #include <common.h>
