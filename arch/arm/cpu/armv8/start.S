@@ -17,7 +17,6 @@
  *************************************************************************/
 
 .globl	_start
-
 _start:
 #if defined(CONFIG_LINUX_KERNEL_IMAGE_HEADER)
 #include <asm/boot0-linux-kernel-header.h>
@@ -152,10 +151,6 @@ pie_fixup_done:
 	bl	lowlevel_init
 
 #if defined(CONFIG_ARMV8_SPIN_TABLE) && !defined(CONFIG_SPL_BUILD)
-	branch_if_master x0, x1, master_cpu
-	b	spin_table_secondary_jump
-	/* never return */
-#elif defined(CONFIG_SPL_ARMV8_SPIN_TABLE) && defined(CONFIG_SPL_BUILD)
 	branch_if_master x0, x1, master_cpu
 	b	spin_table_secondary_jump
 	/* never return */

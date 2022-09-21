@@ -26,28 +26,6 @@ SECTIONS
 		*(.__image_copy_start)
 		CPUDIR/start.o (.text*)
 		*(.text*)
-#ifdef CONFIG_SC59X_64
-/* Bundle everything inside .text so that
-   it is properly included with --initcode flag
-   (This is only used in the case of BOOT_DEVICE_BOOTROM) */
-		. = ALIGN(8);
-		*(SORT_BY_ALIGNMENT(SORT_BY_NAME(.rodata*)))
-
-		. = ALIGN(8);
-		*(.dtb.init.rodata*)
-
-		. = ALIGN(8);
-		*(.data*)
-
-		. = ALIGN(8);
-		KEEP(*(SORT(.u_boot_list*)));
-
-		. = ALIGN(8);
-		*(.__image_copy_end)
-
-		. = ALIGN(8);
-		*(.__end)
-#endif
 	} >.sram
 
 	.rodata : {
