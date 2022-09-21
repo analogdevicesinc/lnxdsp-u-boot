@@ -45,8 +45,6 @@ endif
 
 ifdef CONFIG_SC59X_64
 INIT_TEXT_BASE = 0x20080000
-extra-y += $(ADI_ARCH)/init_emmc_boot.o
-extra-y += init-$(CONFIG_SYS_BOARD).emmc_boot
 endif
 
 quiet_cmd_link_init = LD      $@
@@ -57,9 +55,3 @@ $(obj)/init-$(CONFIG_SYS_BOARD): $(obj)/$(ADI_ARCH)/init_start.o $(obj)/init.o $
 
 $(obj)/init-$(CONFIG_SYS_BOARD).elf: $(obj)/$(ADI_ARCH)/init_main.o $(obj)/init.o $(obj)/init_return_stack.o $(obj)/dmc/dmcinit.o
 	$(call if_changed,link_init)
-
-ifdef CONFIG_SC59X_64
-#For booting via eMMC with the eMMC boot trampoline code
-$(obj)/init-$(CONFIG_SYS_BOARD).emmc_boot: $(obj)/$(ADI_ARCH)/init_start.o $(obj)/init.o $(obj)/$(ADI_ARCH)/init_emmc_boot.o $(obj)/dmc/dmcinit.o
-	$(call if_changed,link_init)
-endif

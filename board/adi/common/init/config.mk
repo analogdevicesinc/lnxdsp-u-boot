@@ -22,15 +22,5 @@ ifndef CONFIG_SC59X_64
 	PLATFORM_RELFLAGS += -fno-stack-protector -std=gnu89 -mfpu=neon-vfpv4 -march=armv7-a
 endif
 
-ifdef CONFIG_SC59X_64
-ifneq ($(CONFIG_SPL_BUILD),y)
-		INPUTS-y += u-boot-$(CONFIG_SYS_BOARD).ldr.emmc_boot_stage1
-		INPUTS-y += u-boot-$(CONFIG_SYS_BOARD).ldr.emmc_boot_stage2
-
-		EMMC_BOOT_FLAGS += --bcode=$(CONFIG_SC_BOOT_MODE)
-		EMMC_BOOT_FLAGS += --use-vmas
-endif
-endif
-
 
 

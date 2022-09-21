@@ -1327,18 +1327,6 @@ u-boot.ldr:	u-boot
 		$(LDR) -T $(CONFIG_ADI_CPU) -c $@ $< $(LDR_FLAGS)
 		$(BOARD_SIZE_CHECK)
 
-ifeq ($(CONFIG_SC59X_64),y)
-u-boot-$(CONFIG_SYS_BOARD).ldr.emmc_boot_stage1: u-boot
-		$(CREATE_LDR_ENV)
-		$(LDR) -T $(CONFIG_ADI_CPU) -c $@ board/adi/common/init/init-$(CONFIG_SYS_BOARD).emmc_boot $(EMMC_BOOT_FLAGS)
-		$(BOARD_SIZE_CHECK)
-
-u-boot-$(CONFIG_SYS_BOARD).ldr.emmc_boot_stage2: u-boot
-		$(CREATE_LDR_ENV)
-		$(LDR) -T $(CONFIG_ADI_CPU) -c $@ $< $(EMMC_BOOT_FLAGS)
-		$(BOARD_SIZE_CHECK)
-endif
-
 # binman
 # ---------------------------------------------------------------------------
 # Use 'make BINMAN_DEBUG=1' to enable debugging
