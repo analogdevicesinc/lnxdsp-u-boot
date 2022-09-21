@@ -24,8 +24,6 @@ endif
 
 obj-y += init.o
 
-extra-y := init-$(CONFIG_SYS_BOARD)
-extra-y += init-$(CONFIG_SYS_BOARD).elf
 extra-y += $(ADI_ARCH)/init_start.o
 extra-y += $(ADI_ARCH)/init_main.o
 obj-y += dmc/dmcinit.o
@@ -47,6 +45,12 @@ ifdef CONFIG_SC59X_64
 INIT_TEXT_BASE = 0x20080000
 endif
 
+#Delete me once all boards are using SPL
+ifndef CONFIG_SC59X_64
+ifndef CONFIG_SC59X
+extra-y += init-$(CONFIG_SYS_BOARD)
+extra-y += init-$(CONFIG_SYS_BOARD).elf
+
 quiet_cmd_link_init = LD      $@
       cmd_link_init = $(LD) -Ttext=$(INIT_TEXT_BASE) -nostdlib $(LDFLAGS) -o $@ $^
 
@@ -55,3 +59,5 @@ $(obj)/init-$(CONFIG_SYS_BOARD): $(obj)/$(ADI_ARCH)/init_start.o $(obj)/init.o $
 
 $(obj)/init-$(CONFIG_SYS_BOARD).elf: $(obj)/$(ADI_ARCH)/init_main.o $(obj)/init.o $(obj)/init_return_stack.o $(obj)/dmc/dmcinit.o
 	$(call if_changed,link_init)
+endif
+endif
