@@ -1324,7 +1324,7 @@ u-boot-nodtb.bin: u-boot FORCE
 
 u-boot.ldr:	u-boot
 		$(CREATE_LDR_ENV)
-		$(LDR) -T $(CONFIG_ADI_CPU) -c $@ $< $(LDR_FLAGS)
+		$(LDR) -T $(CONFIG_LDR_CPU) -c $@ $< $(LDR_FLAGS)
 		$(BOARD_SIZE_CHECK)
 
 # binman

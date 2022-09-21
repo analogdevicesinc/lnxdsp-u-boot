@@ -17,7 +17,6 @@
 /*
  * Processor Settings
  */
-#define CONFIG_ADI_CPU		"ADSP-SC573-0.0"
 #define CONFIG_LOADADDR	0x82000000
 
 #define CONFIG_DTBNAME		"sc573-ezkit.dtb"

@@ -13,8 +13,7 @@ if TARGET_SC589_MINI
 config SYS_VENDOR
 	default "adi"
 
-config ADI_CPU
-	string
+config LDR_CPU
 	default	"ADSP-SC589-0.1"
 
 config SYS_BOARD

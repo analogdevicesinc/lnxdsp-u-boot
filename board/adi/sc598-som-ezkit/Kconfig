@@ -13,8 +13,7 @@ if TARGET_SC598_SOM_EZKIT
 config SYS_VENDOR
 	default "adi"
 
-config ADI_CPU
-	string
+config LDR_CPU
 	default "ADSP-SC598-0.0"
 
 config SYS_BOARD

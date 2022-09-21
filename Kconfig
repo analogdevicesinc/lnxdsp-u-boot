@@ -760,6 +760,13 @@ config ARCH_FIXUP_FDT_MEMORY
 	  used for booting OS with different memory setup where the part of
 	  the memory location should be used for different purpose.
 
+config LDR_CPU
+	string "CPU name to be passed to LDR utility."
+	help
+	  Set the CPU name for the -T parameter in the LDR utility.  This is
+	  generally used on processors from Analog Devices, but may be also
+	  be useful for other vendors.
+
 endmenu		# Boot images
 
 source "api/Kconfig"

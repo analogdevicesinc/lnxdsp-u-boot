@@ -57,7 +57,7 @@ void print_cpu_id(void)
 int print_cpuinfo(void)
 {
 	printf("CPU:   ADSP %s (%s boot)\n",
-		CONFIG_ADI_CPU,  get_sc_boot_mode(CONFIG_SC_BOOT_MODE));
+		CONFIG_LDR_CPU,  get_sc_boot_mode(CONFIG_SC_BOOT_MODE));
 
 	print_cpu_id();
 
