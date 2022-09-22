@@ -130,10 +130,20 @@ int board_return_to_bootrom(struct spl_image_info *spl_image,
 	if (bmode >= (sizeof(adi_rom_boot_args) / sizeof(adi_rom_boot_args[0])))
 		bmode = 0;
 
+	if(bmode == 6){ //using eMMC, adjust tuning support
+		//EMSI -- Reset Controller
+		writel(0x1, pREG_EMSI0_SWRST);
+
+		//EMSI -- Tuning Support
+		writel(readl(pREG_PADS0_PCFG0) | (1<<21), pREG_PADS0_PCFG0);
+		writel(readl(pREG_PADS0_PCFG1) | (4<<28), pREG_PADS0_PCFG1);
+	}
+
 	adi_rom_boot(adi_rom_boot_args[bmode].addr,
 		adi_rom_boot_args[bmode].flags,
 		0, NULL,
 		adi_rom_boot_args[bmode].cmd);
+
 	return 0;
 };
 

@@ -32,7 +32,7 @@ const struct adi_boot_args adi_rom_boot_args[] = {
 	// OSPI master
 	[5] = {0x60020000, 0, 0x00000008},
 	// eMMC
-	[6] = {0x200, 0, 0x00082009},
+	[6] = {0x201, 0, 0x86009},
 	// reserved, also no boot
 	[7] = {0, 0, 0}
 };

@@ -33,7 +33,10 @@ struct adi_boot_args {
 	u32 cmd;
 };
 
-#define pRCU_STAT 0x3108c004
+#define pRCU_STAT           0x3108C004
+#define pREG_EMSI0_SWRST    0x310C702F
+#define pREG_PADS0_PCFG0    0x31004604
+#define pREG_PADS0_PCFG1    0x31004608
 
 extern u32 bmode;
 
