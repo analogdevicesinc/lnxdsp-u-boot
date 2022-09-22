@@ -8,4 +8,4 @@
 # Contact: Greg Malysa <greg.malysa@timesys.com>
 #
 
-obj-y	:= $(BOARD).o
+obj-y	:= $(BOARD).o $(BOARD)-spl.o

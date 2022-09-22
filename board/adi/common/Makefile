@@ -15,7 +15,6 @@ obj-y += arm32/lowlevel_init.o
 endif
 
 ifneq ($(filter y,$(CONFIG_SC59X_64) $(CONFIG_SC59X)),)
-obj-$(CONFIG_SPL_BUILD) += sc59x/sc59x-shared-spl.o
 obj-y += sc59x/sc59x-shared.o
 endif
 

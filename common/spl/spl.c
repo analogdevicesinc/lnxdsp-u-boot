@@ -31,9 +31,6 @@
 #include <fdt_support.h>
 #include <bootcount.h>
 #include <wdt.h>
-#if defined(CONFIG_GPIO_HOG)
-#include <asm/gpio.h>
-#endif
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -635,12 +632,6 @@ static int boot_from_devices(struct spl_image_info *spl_image,
 #if defined(CONFIG_SPL_FRAMEWORK_BOARD_INIT_F)
 void board_init_f(ulong dummy)
 {
-//Initialize DRAM earlier than board_init_r, as our clocks (UART, etc)
-//are also tied into this process
-#if defined (CONFIG_SC59X_64) || defined(CONFIG_SC59X)
-	dram_init_banksize();
-#endif
-
 	if (CONFIG_IS_ENABLED(OF_CONTROL)) {
 		int ret;
 
@@ -650,11 +641,6 @@ void board_init_f(ulong dummy)
 			hang();
 		}
 	}
-
-//Initialize our GPIO hogs as well, as some of these are tied into UART
-#if defined(CONFIG_GPIO_HOG)
-	gpio_hog_probe_all();
-#endif
 
 	preloader_console_init();
 }
@@ -681,7 +667,6 @@ void board_init_r(gd_t *dummy1, ulong dummy2)
 			CONFIG_SYS_SPL_MALLOC_SIZE);
 	gd->flags |= GD_FLG_FULL_MALLOC_INIT;
 #endif
-
 	if (!(gd->flags & GD_FLG_SPL_INIT)) {
 		if (spl_init())
 			hang();
@@ -720,11 +705,9 @@ void board_init_r(gd_t *dummy1, ulong dummy2)
 	initr_watchdog();
 #endif
 
-#if ! (defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64))
 	if (IS_ENABLED(CONFIG_SPL_OS_BOOT) || CONFIG_IS_ENABLED(HANDOFF) ||
 	    IS_ENABLED(CONFIG_SPL_ATF))
 		dram_init_banksize();
-#endif
 
 	bootcount_inc();
 

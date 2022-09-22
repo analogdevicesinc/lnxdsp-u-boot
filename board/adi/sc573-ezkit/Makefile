@@ -8,4 +8,5 @@
 # Contact: Greg Malysa <greg.malysa@timesys.com>
 #
 
-obj-y	:= $(BOARD).o
+obj-y	+= $(BOARD).o
+obj-$(CONFIG_SPL_BUILD) += sc573-ezkit-spl.o

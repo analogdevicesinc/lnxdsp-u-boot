@@ -10,6 +10,7 @@
 
 config SC57X
 	bool "sc57x SoC"
+	select SUPPORT_SPL
 	select CPU_V7A
 	select COMMON_CLK_ADI_SC57X
 	select TIMER
@@ -17,6 +18,7 @@ config SC57X
 
 config SC58X
 	bool "sc58x SoC"
+	select SUPPORT_SPL
 	select CPU_V7A
 	select COMMON_CLK_ADI_SC58X
 	select TIMER

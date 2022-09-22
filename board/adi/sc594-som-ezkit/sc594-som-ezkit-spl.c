@@ -8,10 +8,7 @@
  * Contact: Greg Malysa <greg.malysa@timesys.com>
  */
 
-#include "../common/sc59x/sc59x-shared-spl.h"
-
-// cf. include/adi/cortex-a5/defSC59x_rom_jumptable.h
-void (*adi_rom_boot)(void *addr, uint32_t flags, int32_t blocks, void *pHook, uint32_t cmd) = 0x000000E9;
+#include "../common/spl.h"
 
 // Table 45-14 in sc594 HRM
 const struct adi_boot_args adi_rom_boot_args[] = {

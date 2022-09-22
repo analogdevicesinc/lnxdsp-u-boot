@@ -338,10 +338,8 @@ $(obj)/$(BOARD)-spl.bin: $(obj)/u-boot-spl.bin
 	$(objtree)/tools/mkexynosspl) $(VAR_SIZE_PARAM) $< $@
 endif
 
-ifdef CONFIG_SC59X_64
 u-boot-$(CONFIG_SYS_BOARD).ldr: u-boot.ldr u-boot.img u-boot
 		cp u-boot.ldr u-boot-spl-$(CONFIG_SYS_BOARD).ldr
-		cp u-boot.img u-boot-proper-$(CONFIG_SYS_BOARD).img
 		cp spl/u-boot-spl u-boot-spl-$(CONFIG_SYS_BOARD).elf
 		cp u-boot u-boot-proper-$(CONFIG_SYS_BOARD).elf
 
@@ -349,22 +347,6 @@ u-boot.ldr:	$(obj)/u-boot-spl
 		$(CREATE_LDR_ENV)
 		$(LDR) -T $(CONFIG_LDR_CPU) -c $@ spl/u-boot-spl $(LDR_FLAGS)
 		$(BOARD_SIZE_CHECK)
-endif
-
-#Future support for multiple platforms:
-#ifdef "$(or CONFIG_SC58X,CONFIG_SC59X)"
-ifdef CONFIG_SC59X
-u-boot-$(CONFIG_SYS_BOARD).ldr: u-boot.ldr
-		cp u-boot.ldr u-boot-spl-$(CONFIG_SYS_BOARD).ldr
-		cp u-boot.img u-boot-proper-$(CONFIG_SYS_BOARD).img
-		cp spl/u-boot-spl u-boot-spl-$(CONFIG_SYS_BOARD).elf
-		cp u-boot u-boot-proper-$(CONFIG_SYS_BOARD).elf
-u-boot.ldr:	$(obj)/u-boot-spl
-		$(CREATE_LDR_ENV)
-		$(LDR) -T $(CONFIG_LDR_CPU) -c $@ spl/u-boot-spl $(LDR_FLAGS)
-		$(BOARD_SIZE_CHECK)
-endif
-
 
 quiet_cmd_objcopy = OBJCOPY $@
 cmd_objcopy = $(OBJCOPY) $(OBJCOPYFLAGS) $(OBJCOPYFLAGS_$(@F)) $< $@
