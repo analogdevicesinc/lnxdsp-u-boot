@@ -52,8 +52,6 @@
 #define CONFIG_SYS_SPI_KERNEL_SKIP_HEADER
 #endif
 
-#define CONFIG_SYS_TIMERBASE	TIMER0_CONFIG
-
 /*
  * Memory Settings
  */

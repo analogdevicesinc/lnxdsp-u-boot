@@ -63,8 +63,6 @@
 #define CONFIG_SYS_LOAD_ADDR 0x96000000 //Address used to load the FIT image into during Falcon+FIT
 #endif
 
-#define CONFIG_SYS_TIMERBASE	TIMER0_CONFIG
-
 /*
  * Memory Settings
  */
