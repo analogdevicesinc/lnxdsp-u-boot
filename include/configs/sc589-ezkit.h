@@ -13,6 +13,7 @@
 #define __CONFIG_SC589_EZKIT_H
 
 #include <asm/mach-adi/common/config.h>
+#include <linux/sizes.h>
 
 /*
  * Processor Settings
@@ -38,6 +39,18 @@
 
 #define CONFIG_SYS_MONITOR_LEN	(0)
 #define CONFIG_SYS_MALLOC_LEN	(1024 * 1024)
+
+#define CONFIG_SPL_MAX_SIZE SZ_128K
+
+#ifdef CONFIG_SPL_BUILD
+	#define CONFIG_SKIP_LOWLEVEL_INIT
+	#define CONFIG_SPL_BSS_START_ADDR	0x20080000
+	#define CONFIG_SPL_BSS_MAX_SIZE		SZ_64K
+	#define CONFIG_SYS_SPL_MALLOC_START	(CONFIG_SPL_BSS_START_ADDR + CONFIG_SPL_BSS_MAX_SIZE)
+	#define CONFIG_SYS_SPL_MALLOC_SIZE	SZ_64K
+	#define CONFIG_SPL_STACK			(CONFIG_SYS_SPL_MALLOC_START + CONFIG_SYS_SPL_MALLOC_SIZE + CONFIG_SPL_STACK_SIZE)
+	#define CONFIG_SPL_STACK_SIZE		SZ_64K
+#endif
 
 /*
  * Network Settings
