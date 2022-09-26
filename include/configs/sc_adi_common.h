@@ -12,17 +12,6 @@
 #ifndef __CONFIG_SC_ADI_COMMON_H
 #define __CONFIG_SC_ADI_COMMON_H
 
-/* Commands */
-#define CONFIG_CMD_CACHE
-#define CONFIG_CMD_REGINFO
-#define CONFIG_CMD_STRINGS
-
-/*
- * Debug Settings
- */
-#define CONFIG_ENV_OVERWRITE	1
-#define CONFIG_PANIC_HANG	1
-
 /*
  * Env Settings
  */
@@ -202,9 +191,7 @@
 /*
  * Misc Settings
  */
-
 #define CONFIG_SYS_CBSIZE		512	/* Console I/O Buffer Size */
-#define CONFIG_BOARD_EARLY_INIT_F
 #define CONFIG_MISC_INIT_R
 
 #endif

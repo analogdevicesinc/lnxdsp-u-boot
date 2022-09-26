@@ -15,6 +15,7 @@ config SC57X
 	bool "sc57x SoC"
 	select SUPPORT_SPL
 	select CPU_V7A
+	select PANIC_HANG
 	select COMMON_CLK_ADI_SC57X
 	select TIMER
 	select ADI_SC5XX_TIMER
@@ -23,6 +24,7 @@ config SC58X
 	bool "sc58x SoC"
 	select SUPPORT_SPL
 	select CPU_V7A
+	select PANIC_HANG
 	select COMMON_CLK_ADI_SC58X
 	select TIMER
 	select ADI_SC5XX_TIMER
@@ -31,6 +33,7 @@ config SC59X
 	bool "sc59x SoC"
 	select SUPPORT_SPL
 	select CPU_V7A
+	select PANIC_HANG
 	select COMMON_CLK_ADI_SC594
 	select TIMER
 	select ADI_SC5XX_TIMER
@@ -38,6 +41,7 @@ config SC59X
 config SC59X_64
 	bool "sc59x SoC"
 	select SUPPORT_SPL
+	select PANIC_HANG
 	select ARM64
 	select DM
 	select DM_SERIAL
