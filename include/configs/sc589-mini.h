@@ -32,10 +32,8 @@
 #define MEM_DMC0
 #define MEM_DMC1
 
-#define	CONFIG_NR_DRAM_BANKS		1
 #define CONFIG_SYS_SDRAM_BASE	0xC2000000
 #define CONFIG_SYS_SDRAM_SIZE	0xe000000
-#define CONFIG_SYS_TEXT_BASE	0xC2200000
 #define CONFIG_SYS_LOAD_ADDR	0x0
 #define CONFIG_SYS_INIT_SP_ADDR (CONFIG_SYS_SDRAM_BASE + 0x3f000)
 
@@ -57,28 +55,11 @@
 /*
  * Network Settings
  */
-#define ADI_CMDS_NETWORK
-#define CONFIG_NETCONSOLE
-#define CONFIG_NET_MULTI
 #define CONFIG_DTBNAME		"sc589-mini.dtb"
 #define CONFIG_HOSTNAME		"sc58x"
-#define CONFIG_DESIGNWARE_ETH
 #define CONFIG_DW_ALTDESCRIPTOR
 #define CONFIG_DW_AXI_BURST_LEN 16
-#define CONFIG_MII
-#define CONFIG_PHYLIB
 #define CONFIG_PHY_TI
-
-/*
- * SPI Settings
- */
-#define CONFIG_CMD_SPI
-#define CONFIG_ENV_SPI_MAX_HZ	5000000
-#define CONFIG_SF_DEFAULT_SPEED	5000000
-#define CONFIG_SPI_FLASH
-#define CONFIG_SPI_FLASH_STMICRO
-#define CONFIG_SPI_FLASH_ISSI
-#define CONFIG_SPI_FLASH_BAR
 
 /*
  * USB Settings
@@ -87,19 +68,8 @@
 #define CONFIG_USB_STORAGE
 
 /*
- * Env Storage Settings
- */
-#define CONFIG_ENV_IS_IN_SPI_FLASH
-#define CONFIG_ENV_SPI_BUS 2
-#define CONFIG_ENV_SPI_CS 1
-
-/*
  * Misc Settings
  */
-#define CONFIG_UART_CONSOLE	0
-#define CONFIG_BAUDRATE		115200
-#define CONFIG_CMD_BOOTZ
-
 #define CONFIG_BOOTCOMMAND	"run ramboot"
 #define INITRAMADDR "0xC5000000"
 
