@@ -56,18 +56,6 @@ void set_spu_securep_msec(int n, bool msec)
 		writel(securep & ~0x2, p);
 }
 
-/* miscellaneous platform dependent initialisations */
-int misc_init_r(void)
-{
-//	set_spu_securep_msec(55, 1);
-//	set_spu_securep_msec(56, 1);
-//	set_spu_securep_msec(58, 1);
-//	set_spu_securep_msec(153, 1);
-
-return 0;
-
-}
-
 unsigned long flash_init(void)
 {
 
@@ -140,6 +128,11 @@ int board_init(void)
 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + (0x100);
 
 	adi_eth_init();
+
+//	set_spu_securep_msec(55, 1);
+//	set_spu_securep_msec(56, 1);
+//	set_spu_securep_msec(58, 1);
+//	set_spu_securep_msec(153, 1);
 
 	return 0;
 }

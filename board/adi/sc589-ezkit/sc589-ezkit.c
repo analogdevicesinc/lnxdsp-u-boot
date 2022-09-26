@@ -63,18 +63,6 @@ void set_spu_securep_msec(int n, bool msec)
 		writel(securep & ~0x2, p);
 }
 
-/* miscellaneous platform dependent initialisations */
-int misc_init_r(void)
-{
-	printf("other init\n");
-	set_spu_securep_msec(55, 1);
-	set_spu_securep_msec(56, 1);
-	set_spu_securep_msec(58, 1);
-	set_spu_securep_msec(153, 1);
-
-	return 0;
-}
-
 unsigned long flash_init(void)
 {
 
@@ -138,6 +126,11 @@ int board_init(void)
 
 	// Configure eth0 for rgmii
 	writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
+
+	set_spu_securep_msec(55, 1);
+	set_spu_securep_msec(56, 1);
+	set_spu_securep_msec(58, 1);
+	set_spu_securep_msec(153, 1);
 
 	return 0;
 }

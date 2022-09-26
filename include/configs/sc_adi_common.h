@@ -192,6 +192,5 @@
  * Misc Settings
  */
 #define CONFIG_SYS_CBSIZE		512	/* Console I/O Buffer Size */
-#define CONFIG_MISC_INIT_R
 
 #endif
