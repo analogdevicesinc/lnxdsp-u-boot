@@ -16,9 +16,6 @@
 #include <linux/sizes.h>
 #include <linux/kconfig.h>
 
-/* Do we have a carrier board attached */
-#define ADI_HAVE_CARRIER 1
-
 #define CONFIG_SYS_BOOTM_LEN 0x1800000
 
 /* GIC */

@@ -92,17 +92,15 @@ void s_init(void)
 
 void adi_eth_init()
 {
-#if ADI_HAVE_CARRIER == 1
-	if (CONFIG_DW_PORTS >= 1) {
-		adi_enable_ethernet_softconfig();
-		mdelay(20);
-		adi_disable_ethernet_softconfig();
-		mdelay(90);
-		adi_enable_ethernet_softconfig();
-		mdelay(20);
+#if defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT)
+	adi_enable_ethernet_softconfig();
+	mdelay(20);
+	adi_disable_ethernet_softconfig();
+	mdelay(90);
+	adi_enable_ethernet_softconfig();
+	mdelay(20);
 
-		writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
-	}
+	writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
 #endif
 }
 
@@ -110,29 +108,27 @@ int board_phy_config(struct phy_device *phydev)
 {
 	int  phy_data = 0;
 
-	if (CONFIG_DW_PORTS & 1) {
-#ifdef CONFIG_PHY_TI
-		phy_data = phy_read(phydev, MDIO_DEVAD_NONE, 0x32);
-		phy_write(phydev, MDIO_DEVAD_NONE, 0x32, (1 << 7) | phy_data);
-		int cfg3 = 0;
-		#define MII_DP83867_CFG3    (0x1e)
-		/*
-		 * Pin INT/PWDN on DP83867 should be configured as an Interrupt Output
-		 * instead of a Power-Down Input on ADI SC5XX boards in order to
-		 * prevent the signal interference from other peripherals during they
-		 * are running at the same time.
-		 */
-		cfg3 = phy_read(phydev, MDIO_DEVAD_NONE, MII_DP83867_CFG3);
-		cfg3 |= (1 << 7);
-		phy_write(phydev, MDIO_DEVAD_NONE, MII_DP83867_CFG3, cfg3);
-#endif
-	}
+#ifdef CONFIG_ADI_CARRIER_SOMCRR_EZKIT
+	phy_data = phy_read(phydev, MDIO_DEVAD_NONE, 0x32);
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x32, (1 << 7) | phy_data);
+	int cfg3 = 0;
+	#define MII_DP83867_CFG3    (0x1e)
+	/*
+	 * Pin INT/PWDN on DP83867 should be configured as an Interrupt Output
+	 * instead of a Power-Down Input on ADI SC5XX boards in order to
+	 * prevent the signal interference from other peripherals during they
+	 * are running at the same time.
+	 */
+	cfg3 = phy_read(phydev, MDIO_DEVAD_NONE, MII_DP83867_CFG3);
+	cfg3 |= (1 << 7);
+	phy_write(phydev, MDIO_DEVAD_NONE, MII_DP83867_CFG3, cfg3);
 
 	if (CONFIG_DW_PORTS & 2)
 		phy_write(phydev, MDIO_DEVAD_NONE, 0x11, 3);
 
 	if (phydev->drv->config)
 		phydev->drv->config(phydev);
+#endif
 
 	return 0;
 }
