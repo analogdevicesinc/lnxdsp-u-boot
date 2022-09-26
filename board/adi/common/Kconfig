@@ -8,6 +8,9 @@
 # Contact: Greg Malysa <greg.malysa@timesys.com>
 #
 
+# All 32-bit platforms require SYS_ARM_CACHE_WRITETHROUGH
+# But it is ignored if selected here, so it must be in the defconfig
+
 config SC57X
 	bool "sc57x SoC"
 	select SUPPORT_SPL
