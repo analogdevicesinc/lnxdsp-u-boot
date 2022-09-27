@@ -13,6 +13,9 @@ if TARGET_SC584_EZKIT
 config SYS_VENDOR
 	default "adi"
 
+config LDR_CPU
+	default	"ADSP-SC584-0.1"
+
 config SYS_BOARD
 	default "sc584-ezkit"
 
