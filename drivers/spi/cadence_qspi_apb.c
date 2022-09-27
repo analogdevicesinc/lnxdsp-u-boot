@@ -1052,14 +1052,13 @@ int cadence_qspi_setup_octal_write(struct cadence_spi_platdata *plat){
 	if (plat->use_opcode2) {
 		// By default WEL inverts the WREN opcode, fix it in the non-inverted case
 		if (!plat->use_opcode2_invert) {
-			u32 wel = (SPINOR_OP_WREN << 24) | (SPINOR_OP_WREN << 16);
+			//u32 wel = (SPINOR_OP_WREN << 24) | (SPINOR_OP_WREN << 16);
 			writel(0x06060000, plat->regbase + 0xe4);
 		}
 	}
 }
 
 int cadence_qspi_setup_octal(struct cadence_spi_platdata *plat){
-	unsigned int reg;
 	unsigned int curVal;
 
 	//On the MX66, DTR mode works best with CPOL=0 and CPHA=0
@@ -1212,7 +1211,6 @@ int cadence_configure_opi_mode(struct cadence_spi_platdata *plat){
 
 	struct spi_mem_op wren;
 	char id_spi[4] = {0xff, 0xff, 0xff, 0x00};
-	char id_opi[4] = {0xff, 0xff, 0xff, 0x00};
 	struct spi_mem_op opTemp = SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
 		SPI_MEM_OP_NO_ADDR,
 		SPI_MEM_OP_NO_DUMMY,
@@ -1400,7 +1398,6 @@ int cadence_qspi_direct_read(struct cadence_spi_platdata *plat,
 int cadence_qspi_direct_write(struct cadence_spi_platdata *plat,
 				   const struct spi_mem_op *op)
 {
-	unsigned int reg;
 	unsigned int curVal;
 	unsigned int addr_value = op->addr.val;
 	unsigned int txlen = op->data.nbytes;

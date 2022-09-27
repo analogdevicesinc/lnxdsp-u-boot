@@ -447,10 +447,6 @@ __attribute__((always_inline)) static inline void dmcdelay(uint32_t delay)
         REGISTERS_59X(x) \
         REGISTERS_59X_64(x) \
     };
-
-DECLARE_DMC_REGISTERS(0)
-DECLARE_DMC_REGISTERS(1)
-
 #endif
 
 

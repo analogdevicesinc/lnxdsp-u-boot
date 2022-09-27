@@ -260,7 +260,6 @@ static int adi_uart4_ofdata_to_platdata(struct udevice *dev) {
 static int adi_uart4_probe(struct udevice *dev) {
 	struct adi_uart4_platdata *plat = dev->platdata;
 	struct uart4_reg *regs = plat->regs;
-	int ret;
 
 	/* always enable UART to 8-bit mode */
 	writel(UEN | UMOD_UART | WLS_8, &regs->control);

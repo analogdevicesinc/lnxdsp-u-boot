@@ -37,6 +37,8 @@ int adi_enable_ethernet_softconfig(void)
 	dm_gpio_set_value(eth1, 1);
 	dm_gpio_set_value(eth1_reset, 0);
 	dm_gpio_set_value(gige_reset, 1);
+
+	return 0;
 }
 
 int adi_disable_ethernet_softconfig(void)
@@ -52,6 +54,8 @@ int adi_disable_ethernet_softconfig(void)
 	dm_gpio_set_value(eth1, 1);
 	dm_gpio_set_value(eth1_reset, 0);
 	dm_gpio_set_value(gige_reset, 0);
+
+	return 0;
 }
 
 void spi_flash_override_defaults(unsigned int * bus,

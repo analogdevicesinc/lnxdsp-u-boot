@@ -9,7 +9,9 @@
  */
 
 #include <asm-generic/gpio.h>
+#include <spl.h>
 #include "spl.h"
+#include "init/init.h"
 
 static bool adi_start_uboot_proper = 1;
 

@@ -125,7 +125,8 @@ static int wait_for_completion(struct twi_regs *twi, struct adi_i2c_msg *msg)
 			if (msg->flags & I2C_M_COMBO && msg->len) {
 				ctl = readw(&twi->master_ctl);
 				ctl = (ctl & ~RSTART) |
-					(min(msg->len, 0xff) << 6) | MEN | MDIR;
+					(min((unsigned int)msg->len,
+					     (unsigned int)0xff) << 6) | MEN | MDIR;
 				writew(ctl, &twi->master_ctl);
 			} else
 				break;

@@ -48,7 +48,6 @@ int cs_is_valid(unsigned int bus, unsigned int cs)
 static int adi_spi_ofdata_to_platdata(struct udevice *bus)
 {
 	struct adi_spi_platdata *plat = dev_get_platdata(bus);
-	struct adi_spi_priv *priv = dev_get_priv(bus);
 	const void *blob = gd->fdt_blob;
 	int node = dev_of_offset(bus);
 	int subnode;
@@ -268,7 +267,6 @@ static int adi_spi_xfer(struct udevice *dev, unsigned int bitlen,
 			    const void *dout, void *din, unsigned long flags)
 {
 	struct udevice *bus = dev->parent;
-	struct adi_spi_platdata *plat = bus->platdata;
 	struct adi_spi_priv *priv = dev_get_priv(bus);
 
 	const u8 *tx = dout;

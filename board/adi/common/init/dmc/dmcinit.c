@@ -34,6 +34,14 @@ static struct dmc_param dmc;
 #define Clkcode 0ul
 #endif
 
+#ifdef MEM_DMC0
+DECLARE_DMC_REGISTERS(0)
+#endif
+
+#ifdef MEM_DMC1
+DECLARE_DMC_REGISTERS(1)
+#endif
+
 __attribute__((always_inline)) static inline void calibration_legacy(void){
     int i;
     uint32_t temp;
@@ -594,11 +602,15 @@ __attribute__((always_inline)) static inline void __dmc_config(uint32_t dmc_no){
     /* Initialize the DMC parameters list */
     dmc.dmc_no = dmc_no;
 
-    if(dmc_no == 0){
+#ifdef MEM_DMC0
+    if(dmc_no == 0)
         dmc.reg = &dmc_registers0;
-    }else if(dmc_no == 1){
+#endif
+
+#ifdef MEM_DMC1
+    if(dmc_no == 1)
         dmc.reg = &dmc_registers1;
-    }
+#endif
 
 #ifdef CONFIG_TARGET_SC584_EZKIT
     dmc.ddr_mode = DDR2_MODE;

@@ -34,3 +34,4 @@
 #define REG_ARMPMU0_PMLAR              0x31121FB0
 
 void adi_initcode(void);
+void adi_initcode_shared(void);
