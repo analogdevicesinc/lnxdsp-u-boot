@@ -42,6 +42,7 @@
 #if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
 #include <asm/mach-adi/common/ospi.h>
 #include <asm/mach-adi/common/adi_mdma.h>
+#include <env.h>
 #endif
 
 #define CQSPI_REG_POLL_US			1 /* 1us */
@@ -979,7 +980,7 @@ void cadence_ospi_append_chipinfo(){
 
 	plat = cadence_get_plat();
 
-	bootargs = env_get("bootargs") & 0xFFFFFFFF;
+	bootargs = (char*)((unsigned int) env_get("bootargs") & 0xFFFFFFFF);
 
 	if (bootargs && (bootargs[0] != '\0')) {
 		if(plat->cadenceMode == CADENCE_OSPI_MODE){

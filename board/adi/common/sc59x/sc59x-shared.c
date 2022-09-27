@@ -24,7 +24,7 @@
 #include <asm/spl.h>
 #include "sc59x-shared.h"
 
-int adi_enable_ethernet_softconfig()
+int adi_enable_ethernet_softconfig(void)
 {
 	struct gpio_desc *eth1;
 	struct gpio_desc *eth1_reset;
@@ -39,7 +39,7 @@ int adi_enable_ethernet_softconfig()
 	dm_gpio_set_value(gige_reset, 1);
 }
 
-int adi_disable_ethernet_softconfig()
+int adi_disable_ethernet_softconfig(void)
 {
 	struct gpio_desc *eth1;
 	struct gpio_desc *eth1_reset;

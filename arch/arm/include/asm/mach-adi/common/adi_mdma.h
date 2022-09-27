@@ -28,7 +28,7 @@
 
 #define MAX_DMA_PSIZE 2
 
-typedef struct dma_regs {
+struct dma_regs{
     volatile u32 DSCPTR_NXT;
     volatile u32 ADDRSTART;
     volatile u32 CFG;
@@ -49,8 +49,7 @@ typedef struct dma_regs {
     volatile u32 BWLCNT_CUR;
     volatile u32 BWMCNT;
     volatile u32 BWMCNT_CUR;
-}
-dma_regs __attribute__((packed));
+} __attribute__((packed));
 
 static u8 dma_get_msize(u32 nByteCount, u32 nAddress) {
     /* Calculate MSIZE, PSIZE, XCNT and XMOD */
@@ -68,8 +67,8 @@ static u8 dma_get_msize(u32 nByteCount, u32 nAddress) {
 }
 
 static u32 memcopy_dma(u32 * data, u32 * flash_source, size_t len) {
-    struct dma_regs * mdma_src = (dma_regs *) REG_DMA8_DSCPTR_NXT;
-    struct dma_regs * mdma_dest = (dma_regs *) REG_DMA9_DSCPTR_NXT;
+    struct dma_regs * mdma_src = (struct dma_regs *) REG_DMA8_DSCPTR_NXT;
+    struct dma_regs * mdma_dest = (struct dma_regs *) REG_DMA9_DSCPTR_NXT;
 
     u32 result = 0x00000001; /* Default success */
     u32 ByteCount = (u32) len;

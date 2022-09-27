@@ -34,7 +34,7 @@ static struct dmc_param dmc;
 #define Clkcode 0ul
 #endif
 
-__attribute__((always_inline)) static inline void calibration_legacy(){
+__attribute__((always_inline)) static inline void calibration_legacy(void){
     int i;
     uint32_t temp;
 
@@ -85,7 +85,7 @@ __attribute__((always_inline)) static inline void calibration_legacy(){
     }
 }
 
-__attribute__((always_inline)) static inline void calibration_method1(){
+__attribute__((always_inline)) static inline void calibration_method1(void){
 
 #if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
     writel(dmc.dmc_zqctl0_value, dmc.reg->REG_DMC_DDR_ZQ_CTL0);
@@ -107,7 +107,7 @@ __attribute__((always_inline)) static inline void calibration_method1(){
 
 }
 
-__attribute__((always_inline)) static inline void calibration_method2(){
+__attribute__((always_inline)) static inline void calibration_method2(void){
 
 #ifdef CONFIG_SC59X_64
   uint32_t stat_value = 0x0u;
@@ -295,13 +295,13 @@ __attribute__((always_inline)) inline void adi_dmc_lane_reset(bool reset, uint32
 
 #pragma GCC push_options
 #pragma GCC optimize ("O0")
-__attribute__((always_inline)) static inline void dummy_read(){
+__attribute__((always_inline)) static inline void dummy_read(void){
     /* Do not let this be optimized out by compiler */
     readl(0x80000000);
 }
 #pragma GCC pop_options
 
-__attribute__((always_inline)) static inline void dmc_controller_init(){
+__attribute__((always_inline)) static inline void dmc_controller_init(void){
 #if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
     uint32_t phyphase, rd_cnt, t_EMR1, t_EMR3, t_CTL, data_cyc, temp;
 #endif
@@ -490,7 +490,7 @@ __attribute__((always_inline)) static inline void dmc_controller_init(){
     }
 }
 
-__attribute__((always_inline)) static inline void dmc_init()
+__attribute__((always_inline)) static inline void dmc_init(void)
 {
     /* PHY Calibration+Initialization */
     if (dmc.phy_init_required == true){

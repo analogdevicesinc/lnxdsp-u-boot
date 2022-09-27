@@ -104,6 +104,6 @@ void cadence_qspi_apb_enter_xip(void *reg_base, char xip_dummy);
 void cadence_qspi_apb_readdata_capture(void *reg_base,
 	unsigned int bypass, unsigned int delay);
 
-struct cadence_spi_platdata * cadence_get_plat();
+struct cadence_spi_platdata * cadence_get_plat(void);
 
 #endif /* __CADENCE_QSPI_H__ */

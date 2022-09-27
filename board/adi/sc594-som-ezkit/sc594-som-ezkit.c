@@ -78,7 +78,7 @@ void s_init(void)
 {
 }
 
-void adi_eth_init()
+void adi_eth_init(void)
 {
 #if defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT)
 	adi_enable_ethernet_softconfig();

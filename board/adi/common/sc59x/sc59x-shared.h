@@ -14,7 +14,7 @@
 #ifndef SC59X_SHARED
 #define SC59X_SHARED
 
-int adi_enable_ethernet_softconfig();
-int adi_disable_ethernet_softconfig();
+int adi_enable_ethernet_softconfig(void);
+int adi_disable_ethernet_softconfig(void);
 
 #endif

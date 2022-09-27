@@ -460,14 +460,14 @@ int image_decomp(int comp, ulong load, ulong image_start, int type,
 		else
 			ret = -ENOSPC;
 		break;
-#ifdef $(CONFIG_$(SPL_TPL_)GZIP)
+#if defined(CONFIG_GZIP) || defined(CONFIG_SPL_GZIP)
 
 	case IH_COMP_GZIP: {
 		ret = gunzip(load_buf, unc_len, image_buf, &image_len);
 		break;
 	}
 #endif /* CONFIG_GZIP */
-#ifdef $(CONFIG_$(SPL_TPL_)BZIP2)
+#if defined(CONFIG_BZIP2) || defined(CONFIG_SPL_BZIP2)
 	case IH_COMP_BZIP2: {
 		uint size = unc_len;
 
@@ -483,7 +483,7 @@ int image_decomp(int comp, ulong load, ulong image_start, int type,
 		break;
 	}
 #endif /* CONFIG_BZIP2 */
-#ifdef $(CONFIG_$(SPL_TPL_)LZMA)
+#if defined(CONFIG_LZMA) || defined(CONFIG_SPL_LZMA)
 	case IH_COMP_LZMA: {
 		SizeT lzma_len = unc_len;
 
@@ -493,7 +493,7 @@ int image_decomp(int comp, ulong load, ulong image_start, int type,
 		break;
 	}
 #endif /* CONFIG_LZMA */
-#ifdef $(CONFIG_$(SPL_TPL_)LZO)
+#if defined(CONFIG_LZO) || defined(CONFIG_SPL_LZO)
 	case IH_COMP_LZO: {
 		size_t size = unc_len;
 
@@ -502,7 +502,7 @@ int image_decomp(int comp, ulong load, ulong image_start, int type,
 		break;
 	}
 #endif /* CONFIG_LZO */
-#ifdef $(CONFIG_$(SPL_TPL_)LZ4)
+#if defined(CONFIG_LZ4) || defined(CONFIG_SPL_LZ4)
 	case IH_COMP_LZ4: {
 		size_t size = unc_len;
 
@@ -511,7 +511,7 @@ int image_decomp(int comp, ulong load, ulong image_start, int type,
 		break;
 	}
 #endif /* CONFIG_LZ4 */
-#ifdef $(CONFIG_$(SPL_TPL_)ZSTD)
+#if defined(CONFIG_ZSTD) || defined(CONFIG_SPL_ZSTD)
 	case IH_COMP_ZSTD: {
 		size_t size = unc_len;
 		ZSTD_DStream *dstream;
