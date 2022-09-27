@@ -64,6 +64,8 @@
 #define CDU_MUX_WIDTH 2
 #define CDU_EN_BIT 0
 
+extern const struct clk_ops adi_clk_ops;
+
 struct clk *sc5xx_cgu_pll(const char *name, const char *parent_name,
 	void __iomem *base, u8 shift, u8 width, u32 m_offset, bool half_m);
 
@@ -111,49 +113,11 @@ static inline int cdu_check_clocks(struct clk *clks[], size_t count) {
 				clks[i]->id = i;
 			}
 		}else{
-			pr_err("ADI Clock framework: Null pointer detected on clock %d\n", i);
+			pr_err("ADI Clock framework: Null pointer detected on clock %zu\n", i);
 		}
 	}
 
 	return 0;
 }
-
-
-static inline ulong adi_get_rate(struct clk *clk)
-{
-	struct clk *c;
-	int ret;
-
-	ret = clk_get_by_id(clk->id, &c);
-	if (ret)
-		return ret;
-
-	return clk_get_rate(c);
-}
-
-static inline ulong adi_set_rate(struct clk *clk, ulong rate)
-{
-	//Not yet implemented
-	return 0;
-}
-
-static inline int adi_enable(struct clk *clk)
-{
-	//Not yet implemented
-	return 0;
-}
-
-static inline int adi_disable(struct clk *clk)
-{
-	//Not yet implemented
-	return 0;
-}
-
-static struct clk_ops adi_clk_ops = {
-	.set_rate = adi_set_rate,
-	.get_rate = adi_get_rate,
-	.enable = adi_enable,
-	.disable = adi_disable,
-};
 
 #endif

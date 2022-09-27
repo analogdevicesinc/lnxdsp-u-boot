@@ -82,7 +82,7 @@ struct clk *sc5xx_cgu_pll(const char *name, const char *parent_name,
 
 	ret = clk_register(clk, drv_name, name, parent_name);
 	if (ret) {
-		pr_err("Failed to register %s in sc5xx_cgu_pll: %ld\n", name, ERR_PTR(ret));
+		pr_err("Failed to register %s in sc5xx_cgu_pll: %d\n", name, ret);
 		kfree(pll);
 		return ERR_PTR(ret);
 	}
