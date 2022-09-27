@@ -60,39 +60,6 @@ static u32 get_offset(unsigned pin) {
 	return pin % ADSP_PORT_PIN_SIZE;
 }
 
-static int adsp_pinctrl_get_pins_count(struct udevice *udev) {
-	struct adsp_pinctrl_priv *priv = dev_get_priv(udev);
-	return priv->npins;
-}
-
-static const char *adsp_pinctrl_get_pin_name(struct udevice *udev, unsigned selector) {
-	struct adsp_pinctrl_priv *priv = dev_get_priv(udev);
-
-	if (selector < priv->npins) {
-		snprintf(priv->pinbuf, sizeof(priv->pinbuf), "pin%d", selector);
-		return priv->pinbuf;
-	}
-
-	return "";
-}
-
-static int adsp_pinctrl_get_function_count(struct udevice *udev) {
-	return ADSP_PINCTRL_FUNCTION_COUNT;
-}
-
-static const char *adsp_pinctrl_get_function_name(struct udevice *udev,
-	unsigned selector)
-{
-	struct adsp_pinctrl_priv *priv = dev_get_priv(udev);
-
-	if (selector < ADSP_PINCTRL_FUNCTION_COUNT) {
-		snprintf(priv->pinbuf, sizeof(priv->pinbuf), "alt%d", selector);
-		return priv->pinbuf;
-	}
-
-	return "";
-}
-
 static int adsp_pinctrl_pinmux_set(struct udevice *udev, unsigned pin, unsigned func)
 {
 	struct adsp_pinctrl_priv *priv = dev_get_priv(udev);
@@ -120,7 +87,6 @@ static int adsp_pinctrl_pinmux_set(struct udevice *udev, unsigned pin, unsigned 
 }
 
 static int adsp_pinctrl_set_state(struct udevice *udev, struct udevice *config) {
-	struct adsp_pinctrl_priv *priv = dev_get_priv(udev);
 	const struct fdt_property *pinlist;
 	int length = 0;
 	int ret, i;
@@ -155,18 +121,13 @@ static int adsp_pinctrl_set_state(struct udevice *udev, struct udevice *config) 
 }
 
 const struct pinctrl_ops adsp_pinctrl_ops = {
-//	.get_pins_count = adsp_pinctrl_get_pins_count,
-//	.get_pin_name = adsp_pinctrl_get_pin_name,
-//	.get_functions_count = adsp_pinctrl_get_function_count,
-//	.get_function_name = adsp_pinctrl_get_function_name,
-//	.pinmux_set = adsp_pinctrl_pinmux_set,
 	.set_state = adsp_pinctrl_set_state,
 };
 
 static int adsp_pinctrl_probe(struct udevice *udev) {
 	struct adsp_pinctrl_priv *priv = dev_get_priv(udev);
 
-	priv->base = dev_read_addr(udev);
+	priv->base = dev_read_addr_ptr(udev);
 	priv->npins = dev_read_u32_default(udev, "adi,npins", 0);
 
 	if (!priv->npins) {
