@@ -19,8 +19,6 @@
 #define ADSP_PORT_MMIO_SIZE		0x80
 #define ADSP_PORT_PIN_SIZE		16
 
-#define ADSP_PINCTRL_FUNCTION_COUNT 4
-
 #define ADSP_PORT_REG_FER			0x00
 #define ADSP_PORT_REG_FER_SET		0x04
 #define ADSP_PORT_REG_FER_CLEAR		0x08
@@ -119,7 +117,6 @@ static int adsp_gpio_get_value(struct udevice *udev, unsigned pin) {
 static int adsp_gpio_set_value(struct udevice *udev, unsigned pin, int value) {
 	struct adsp_gpio_priv *priv = dev_get_priv(udev);
 	u32 port, offset;
-	u16 val;
 	void __iomem *portbase;
 
 	if (pin < priv->ngpio) {
@@ -155,7 +152,7 @@ static int adsp_gpio_probe(struct udevice *udev) {
 		return -ENOENT;
 	}
 
-	priv->base = dev_read_addr(udev);
+	priv->base = dev_read_addr_ptr(udev);
 	priv->ngpio = uc_priv->gpio_count;
 
 	return 0;
