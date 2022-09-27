@@ -44,7 +44,7 @@ struct adi_wdt_priv {
 	struct clk clock;
 };
 
-static int adi_wdt_reset(struct udevice *dev, ulong flags)
+static int adi_wdt_reset(struct udevice *dev)
 {
 	struct adi_wdt_priv *priv = dev_get_priv(dev);
 

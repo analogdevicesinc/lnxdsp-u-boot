@@ -287,10 +287,10 @@ static int adi_i2c_xfer(struct udevice *bus, struct i2c_msg *msg, int nmsgs){
 	dmsg = nmsgs == 1 ? msg : msg + 1;
 
 	if (dmsg->flags & I2C_M_RD)
-		return adi_i2c_read(dev->base, dmsg->addr, omsg->buf, omsg->len,
+		return adi_i2c_read(dev->base, dmsg->addr, (uint)omsg->buf, omsg->len,
 				  dmsg->buf, dmsg->len);
 	else
-		return adi_i2c_write(dev->base, dmsg->addr, omsg->buf, omsg->len,
+		return adi_i2c_write(dev->base, dmsg->addr, (uint)omsg->buf, omsg->len,
 				   dmsg->buf, dmsg->len);
 }
 

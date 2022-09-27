@@ -142,7 +142,7 @@ static int mcp2301x_get_value(struct udevice *dev, uint32_t offset)
 }
 
 static int mcp2301x_set_value(struct udevice *dev, uint32_t offset,
-                                                    uint32_t value)
+                                                    int32_t value)
 {
     return mcp2301x_direction_output(dev, offset, value);
 }

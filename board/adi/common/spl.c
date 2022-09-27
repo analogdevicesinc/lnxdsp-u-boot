@@ -19,7 +19,10 @@ static int adi_sf_default_bus = CONFIG_SF_DEFAULT_BUS;
 static int adi_sf_default_cs = CONFIG_SF_DEFAULT_CS;
 static int adi_sf_default_speed = CONFIG_SF_DEFAULT_SPEED;
 
+#if defined(CONFIG_ADI_FALCON)
 static char * adi_kernel_bootargs;
+#endif
+
 u32 bmode;
 
 int spl_start_uboot(void)
@@ -152,7 +155,7 @@ int board_return_to_bootrom(struct spl_image_info *spl_image,
 	if (bmode >= (sizeof(adi_rom_boot_args) / sizeof(adi_rom_boot_args[0])))
 		bmode = 0;
 
-	adi_rom_boot(adi_rom_boot_args[bmode].addr,
+	adi_rom_boot((void*)adi_rom_boot_args[bmode].addr,
 		adi_rom_boot_args[bmode].flags,
 		0, NULL,
 		adi_rom_boot_args[bmode].cmd);

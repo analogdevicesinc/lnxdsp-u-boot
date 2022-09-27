@@ -80,17 +80,17 @@ unsigned int __weak spl_spi_get_uboot_offs(struct spi_flash *flash)
 	return CONFIG_SYS_SPI_U_BOOT_OFFS;
 }
 
-unsigned int __weak spl_spi_get_default_bus()
+unsigned int __weak spl_spi_get_default_bus(void)
 {
 	return CONFIG_SF_DEFAULT_BUS;
 }
 
-unsigned int __weak spl_spi_get_default_cs()
+unsigned int __weak spl_spi_get_default_cs(void)
 {
 	return CONFIG_SF_DEFAULT_CS;
 }
 
-unsigned int __weak spl_spi_get_default_speed()
+unsigned int __weak spl_spi_get_default_speed(void)
 {
 	return CONFIG_SF_DEFAULT_SPEED;
 }
