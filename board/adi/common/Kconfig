@@ -115,6 +115,14 @@ config DW_PORTS
 	int
 	default 1
 
+config ADI_BUG_EZKHW21
+	bool "SC584 EZKIT phy bug workaround"
+	depends on SC58X
+	default n
+	help
+	  This workaround affects the SC584 EZKIT and addresses bug EZKHW21.
+	  It disables gigabit ethernet mode and limits the board to 100 Mbps
+
 config ADI_CARRIER_SOMCRR_EZKIT
 	bool "Support the EV-SOMCRR-EZKIT"
 	depends on (SC59X || SC59X_64)

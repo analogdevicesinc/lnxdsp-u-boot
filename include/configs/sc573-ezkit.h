@@ -57,7 +57,6 @@
 #define CONFIG_HOSTNAME		"sc57x"
 #define CONFIG_DW_ALTDESCRIPTOR
 #define CONFIG_DW_AXI_BURST_LEN 16
-#define CONFIG_PHY_TI
 
 /*
  * USB Settings

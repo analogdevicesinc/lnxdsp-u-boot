@@ -14,6 +14,8 @@
 #include <asm/system.h>
 #include <cpu_func.h>
 
+#include "soc.h"
+
 void reset_cpu(ulong addr)
 {
 	writel(1, RCU0_CTL);
@@ -62,4 +64,38 @@ int print_cpuinfo(void)
 	print_cpu_id();
 
 	return 0;
+}
+
+void fixup_dp83867_phy(struct phy_device *phydev) {
+	int phy_data = 0;
+
+	phy_data = phy_read(phydev, MDIO_DEVAD_NONE, 0x32);
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x32, (1 << 7) | phy_data);
+	int cfg3 = 0;
+	#define MII_DP83867_CFG3    (0x1e)
+	/*
+	 * Pin INT/PWDN on DP83867 should be configured as an Interrupt Output
+	 * instead of a Power-Down Input on ADI SC5XX boards in order to
+	 * prevent the signal interference from other peripherals during they
+	 * are running at the same time.
+	 */
+	cfg3 = phy_read(phydev, MDIO_DEVAD_NONE, MII_DP83867_CFG3);
+	cfg3 |= (1 << 7);
+	phy_write(phydev, MDIO_DEVAD_NONE, MII_DP83867_CFG3, cfg3);
+
+	// Mystery second port fixup on ezkits with two PHYs
+	if (CONFIG_DW_PORTS & 2)
+		phy_write(phydev, MDIO_DEVAD_NONE, 0x11, 3);
+
+#ifdef CONFIG_ADI_BUG_EZKHW21
+	phydev->advertising &= PHY_BASIC_FEATURES;
+	phydev->speed = SPEED_100;
+#endif
+
+	if (phydev->drv->config)
+		phydev->drv->config(phydev);
+
+#ifdef CONFIG_ADI_BUG_EZKHW21
+	phy_write(phydev, MDIO_DEVAD_NONE, 0, 0x3100);
+#endif
 }

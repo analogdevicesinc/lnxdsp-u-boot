@@ -55,8 +55,6 @@
 #define CONFIG_DTBNAME		"sc584-ezkit.dtb"
 #define CONFIG_HOSTNAME		"sc58x"
 #define CONFIG_DW_ALTDESCRIPTOR
-#define CONFIG_PHY_TI
-#define CONFIG_PHY_NATSEMI
 
 /*
  * USB Settings
