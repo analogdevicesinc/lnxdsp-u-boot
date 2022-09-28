@@ -70,6 +70,35 @@
 #define CONFIG_BOOTCOMMAND	"run ramboot"
 #define INITRAMADDR "0xC5000000"
 
+/*
+ * Per-board Environment Settings
+ */
+
+#define ADI_ENV_SETTINGS \
+	"initrd_high=0xFFFFFFFF\0" \
+	"fdt_high=0xFFFFFFFF\0" \
+	ADI_INIT_ETHERNET \
+	ADI_NFS_BOOT \
+	ADI_RAM_BOOT \
+	ADI_MMC_BOOT \
+	ADI_UPDATE_SPI_UBOOT_ONLY \
+	ADI_UPDATE_SPI \
+	ADI_SPI_BOOT
+
+/* Per-board SPI Partitioning Offsets (16MB):
+ *
+ * 0x0000000 - 0x001FFFF : U-Boot Stage 1     (  128KB)
+ * 0x0020000 - 0x00DFFFF : U-Boot Stage 2     (  768KB)
+ * 0x00E0000 - 0x00E3FFF : U-Boot Environment (   16KB)
+ * 0x00E4000 - 0x05E3FFF : FIT or DTB+zImage  ( 5120KB)
+ * 0x05E4000 - 0x0FFFFFF : Root File System   (10352KB)
+ */
+#define ADI_SPI_SIZE     "0x1000000" //16MB
+#define ADI_UBOOT_OFFSET "0x20000"
+#define ADI_IMG_OFFSET   "0xE4000"
+#define ADI_RFS_OFFSET   "0x5E4000"
+#define ADI_JFFS2_FILE   "tiny" //use the adsp-sc5xx-tiny image
+
 #include <configs/sc_adi_common.h>
 
 #endif

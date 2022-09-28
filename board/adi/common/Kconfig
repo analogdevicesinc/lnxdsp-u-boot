@@ -72,9 +72,19 @@ config SC_BOOT_SPI_SSEL
 		This is the SPI chip select number to use for booting, Y in the
 		expression `sf probe X:Y`
 
-config SPI_IMG_SIZE
-	hex
-	default 0x80000
+config SC_BOOT_OSPI_BUS
+	int "sc5xx ospi boot bus"
+	default 0
+	help
+		This is the OSPI peripheral number to use for booting, X in the
+		expression `sf probe X:Y`
+
+config SC_BOOT_OSPI_SSEL
+	int "sc5xx ospi boot chipselect"
+	default 0
+	help
+		This is the OSPI chip select number to use for booting, Y in the
+		expression `sf probe X:Y`
 
 config SPI_MM_BASE
 	hex
