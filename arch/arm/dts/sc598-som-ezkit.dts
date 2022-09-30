@@ -19,7 +19,7 @@
 
 	config {
 		/* Offsets where U-Boot Proper is stored -- used by SPL */
-		u-boot,spl-payload-offset = <0x20000>;   /* QSPI byte offset -- 128KB  */
+		u-boot,spl-payload-offset = <0x20000>;	 /* QSPI byte offset -- 128KB  */
 		u-boot,spl-mmc-sector-offset = <0x200>;  /* MMC sector offset -- 256KB */
 	};
 
@@ -74,49 +74,49 @@
 	soc_defaults: soc_pins {
 		u-boot,dm-pre-reloc;
 		adi,pins = <ADI_ADSP_PIN('A', 14) ADI_ADSP_PINFUNC_ALT0>, /* i2c */
-	               <ADI_ADSP_PIN('A', 15) ADI_ADSP_PINFUNC_ALT0>;
+					<ADI_ADSP_PIN('A', 15) ADI_ADSP_PINFUNC_ALT0>;
 	};
 
 	mmc_defaults: mmc_pins {
 		u-boot,dm-pre-reloc;
 		adi,pins = <ADI_ADSP_PIN('D', 15) ADI_ADSP_PINFUNC_ALT1>,
-	               <ADI_ADSP_PIN('B', 15) ADI_ADSP_PINFUNC_ALT2>,
-	               <ADI_ADSP_PIN('C', 4) ADI_ADSP_PINFUNC_ALT2>,
-	               <ADI_ADSP_PIN('C', 6) ADI_ADSP_PINFUNC_ALT2>,
-	               <ADI_ADSP_PIN('E', 1) ADI_ADSP_PINFUNC_ALT1>,
-			       <ADI_ADSP_PIN('E', 6) ADI_ADSP_PINFUNC_ALT2>,
-			       <ADI_ADSP_PIN('E', 8) ADI_ADSP_PINFUNC_ALT1>,
-			       <ADI_ADSP_PIN('E', 9) ADI_ADSP_PINFUNC_ALT1>,
-			       <ADI_ADSP_PIN('G', 1) ADI_ADSP_PINFUNC_ALT2>,
-			       <ADI_ADSP_PIN('G', 2) ADI_ADSP_PINFUNC_ALT2>,
-			       <ADI_ADSP_PIN('G', 8) ADI_ADSP_PINFUNC_ALT1>,
-			       <ADI_ADSP_PIN('G', 9) ADI_ADSP_PINFUNC_ALT3>,
-			       <ADI_ADSP_PIN('G', 10) ADI_ADSP_PINFUNC_ALT1>,
-			       <ADI_ADSP_PIN('I', 6) ADI_ADSP_PINFUNC_ALT1>;
+					<ADI_ADSP_PIN('B', 15) ADI_ADSP_PINFUNC_ALT2>,
+					<ADI_ADSP_PIN('C', 4) ADI_ADSP_PINFUNC_ALT2>,
+					<ADI_ADSP_PIN('C', 6) ADI_ADSP_PINFUNC_ALT2>,
+					<ADI_ADSP_PIN('E', 1) ADI_ADSP_PINFUNC_ALT1>,
+					<ADI_ADSP_PIN('E', 6) ADI_ADSP_PINFUNC_ALT2>,
+					<ADI_ADSP_PIN('E', 8) ADI_ADSP_PINFUNC_ALT1>,
+					<ADI_ADSP_PIN('E', 9) ADI_ADSP_PINFUNC_ALT1>,
+					<ADI_ADSP_PIN('G', 1) ADI_ADSP_PINFUNC_ALT2>,
+					<ADI_ADSP_PIN('G', 2) ADI_ADSP_PINFUNC_ALT2>,
+					<ADI_ADSP_PIN('G', 8) ADI_ADSP_PINFUNC_ALT1>,
+					<ADI_ADSP_PIN('G', 9) ADI_ADSP_PINFUNC_ALT3>,
+					<ADI_ADSP_PIN('G', 10) ADI_ADSP_PINFUNC_ALT1>,
+					<ADI_ADSP_PIN('I', 6) ADI_ADSP_PINFUNC_ALT1>;
 	};
 
 	ospi_default: ospi_pins {
 		u-boot,dm-pre-reloc;
 		adi,pins = <ADI_ADSP_PIN('A', 0) ADI_ADSP_PINFUNC_ALT1>,
-	               <ADI_ADSP_PIN('A', 1) ADI_ADSP_PINFUNC_ALT1>,
-	               <ADI_ADSP_PIN('A', 2) ADI_ADSP_PINFUNC_ALT1>,
-	               <ADI_ADSP_PIN('A', 3) ADI_ADSP_PINFUNC_ALT1>,
-	               <ADI_ADSP_PIN('A', 4) ADI_ADSP_PINFUNC_ALT1>,
-	               <ADI_ADSP_PIN('A', 5) ADI_ADSP_PINFUNC_ALT1>,
-	               <ADI_ADSP_PIN('A', 6) ADI_ADSP_PINFUNC_ALT2>,
-	               <ADI_ADSP_PIN('A', 7) ADI_ADSP_PINFUNC_ALT2>,
-	               <ADI_ADSP_PIN('A', 8) ADI_ADSP_PINFUNC_ALT2>,
-	               <ADI_ADSP_PIN('A', 9) ADI_ADSP_PINFUNC_ALT2>,
-	               <ADI_ADSP_PIN('D', 4) ADI_ADSP_PINFUNC_ALT2>;
+					<ADI_ADSP_PIN('A', 1) ADI_ADSP_PINFUNC_ALT1>,
+					<ADI_ADSP_PIN('A', 2) ADI_ADSP_PINFUNC_ALT1>,
+					<ADI_ADSP_PIN('A', 3) ADI_ADSP_PINFUNC_ALT1>,
+					<ADI_ADSP_PIN('A', 4) ADI_ADSP_PINFUNC_ALT1>,
+					<ADI_ADSP_PIN('A', 5) ADI_ADSP_PINFUNC_ALT1>,
+					<ADI_ADSP_PIN('A', 6) ADI_ADSP_PINFUNC_ALT2>,
+					<ADI_ADSP_PIN('A', 7) ADI_ADSP_PINFUNC_ALT2>,
+					<ADI_ADSP_PIN('A', 8) ADI_ADSP_PINFUNC_ALT2>,
+					<ADI_ADSP_PIN('A', 9) ADI_ADSP_PINFUNC_ALT2>,
+					<ADI_ADSP_PIN('D', 4) ADI_ADSP_PINFUNC_ALT2>;
 	};
 };
 
 &clk{
 	compatible = "adi,sc598-clocks";
 	reg = <0x3108d000 0x1000>,
-	      <0x3108e000 0x1000>,
-	      <0x3108f000 0x1000>,
-	      <0x310a9000 0x1000>;
+			<0x3108e000 0x1000>,
+			<0x3108f000 0x1000>,
+			<0x310a9000 0x1000>;
 	reg-names = "cgu0", "cgu1", "cdu", "pll3";
 };
 
@@ -334,8 +334,10 @@
 		eth1-reset {
 			gpio-hog;
 			gpios = <14 GPIO_ACTIVE_HIGH>;
-			/* USB0 lines are shared with Eth1 so  Eth PHY must be held in reset
-			   when using the USB */
+			/*
+			 * USB0 lines are shared with Eth1 so  Eth PHY must be held in reset
+			 * when using the USB
+			 */
 			output-low;
 			line-name = "~eth1-reset";
 			u-boot,dm-pre-reloc;

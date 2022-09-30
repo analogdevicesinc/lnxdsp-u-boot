@@ -261,8 +261,10 @@
 		eth1-reset {
 			gpio-hog;
 			gpios = <14 GPIO_ACTIVE_HIGH>;
-			/* USB0 lines are shared with Eth1 so  Eth PHY must be held in reset
-			   when using the USB */
+			/*
+			 * USB0 lines are shared with Eth1 so  Eth PHY must be held in reset
+			 * when using the USB
+			 */
 			output-low;
 			line-name = "~eth1-reset";
 			u-boot,dm-pre-reloc;
