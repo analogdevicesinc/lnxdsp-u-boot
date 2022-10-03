@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: GPL-2.0-or-later */
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
  * (C) Copyright 2022 - Analog Devices, Inc.
  *
@@ -22,7 +22,7 @@
 #include <linux/bitops.h>
 #include <clk.h>
 
-#ifdef CONFIG_SC59X_64
+#if CONFIG_SC59X_64
 #ifdef ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
 #include <asm/mach-adi/59x-64/sc598-som-ezkit-dynamic-qspi-ospi-uart-mux.h>
 #endif
@@ -33,62 +33,62 @@
  */
 
 /* UART_CONTROL */
-#define UEN			(1 << 0)
-#define LOOP_ENA		(1 << 1)
+#define UEN			BIT(0)
+#define LOOP_ENA		BIT(1)
 #define UMOD			(3 << 4)
 #define UMOD_UART		(0 << 4)
-#define UMOD_MDB		(1 << 4)
-#define UMOD_IRDA		(1 << 4)
+#define UMOD_MDB		BIT(4)
+#define UMOD_IRDA		BIT(4)
 #define WLS			(3 << 8)
 #define WLS_5			(0 << 8)
-#define WLS_6			(1 << 8)
+#define WLS_6			BIT(8)
 #define WLS_7			(2 << 8)
 #define WLS_8			(3 << 8)
-#define STB			(1 << 12)
-#define STBH			(1 << 13)
-#define PEN			(1 << 14)
-#define EPS			(1 << 15)
-#define STP			(1 << 16)
-#define FPE			(1 << 17)
-#define FFE			(1 << 18)
-#define SB			(1 << 19)
-#define FCPOL			(1 << 22)
-#define RPOLC			(1 << 23)
-#define TPOLC			(1 << 24)
-#define MRTS			(1 << 25)
-#define XOFF			(1 << 26)
-#define ARTS			(1 << 27)
-#define ACTS			(1 << 28)
-#define RFIT			(1 << 29)
-#define RFRT			(1 << 30)
+#define STB			BIT(12)
+#define STBH			BIT(13)
+#define PEN			BIT(14)
+#define EPS			BIT(15)
+#define STP			BIT(16)
+#define FPE			BIT(17)
+#define FFE			BIT(18)
+#define SB			BIT(19)
+#define FCPOL			BIT(22)
+#define RPOLC			BIT(23)
+#define TPOLC			BIT(24)
+#define MRTS			BIT(25)
+#define XOFF			BIT(26)
+#define ARTS			BIT(27)
+#define ACTS			BIT(28)
+#define RFIT			BIT(29)
+#define RFRT			BIT(30)
 
 /* UART_STATUS */
-#define DR			(1 << 0)
-#define OE			(1 << 1)
-#define PE			(1 << 2)
-#define FE			(1 << 3)
-#define BI			(1 << 4)
-#define THRE			(1 << 5)
-#define TEMT			(1 << 7)
-#define TFI			(1 << 8)
-#define ASTKY			(1 << 9)
-#define ADDR			(1 << 10)
-#define RO			(1 << 11)
-#define SCTS			(1 << 12)
-#define CTS			(1 << 16)
-#define RFCS			(1 << 17)
+#define DR			BIT(0)
+#define OE			BIT(1)
+#define PE			BIT(2)
+#define FE			BIT(3)
+#define BI			BIT(4)
+#define THRE			BIT(5)
+#define TEMT			BIT(7)
+#define TFI			BIT(8)
+#define ASTKY			BIT(9)
+#define ADDR			BIT(10)
+#define RO			BIT(11)
+#define SCTS			BIT(12)
+#define CTS			BIT(16)
+#define RFCS			BIT(17)
 
 /* UART_EMASK */
-#define ERBFI			(1 << 0)
-#define ETBEI			(1 << 1)
-#define ELSI			(1 << 2)
-#define EDSSI			(1 << 3)
-#define EDTPTI			(1 << 4)
-#define ETFI			(1 << 5)
-#define ERFCI			(1 << 6)
-#define EAWI			(1 << 7)
-#define ERXS			(1 << 8)
-#define ETXS			(1 << 9)
+#define ERBFI			BIT(0)
+#define ETBEI			BIT(1)
+#define ELSI			BIT(2)
+#define EDSSI			BIT(3)
+#define EDTPTI			BIT(4)
+#define ETFI			BIT(5)
+#define ERFCI			BIT(6)
+#define EAWI			BIT(7)
+#define ERXS			BIT(8)
+#define ETXS			BIT(9)
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -127,15 +127,16 @@ struct adi_uart4_platdata {
 
 #define BUFFER_SIZE 4096
 bool uartEnabled = 1;
-bool uartReadyToEnable = 0;
+bool uartReadyToEnable;
 char uartBuffer[BUFFER_SIZE];
-int uartBufferPos = 0;
+int uartBufferPos;
 #endif
 
-static int adi_uart4_set_brg(struct udevice *dev, int baudrate) {
+static int adi_uart4_set_brg(struct udevice *dev, int baudrate)
+{
 	struct adi_uart4_platdata *plat = dev->platdata;
 	struct uart4_reg *regs = plat->regs;
-	uint32_t divisor, uart_base_clk_rate;
+	u32 divisor, uart_base_clk_rate;
 	struct clk uart_base_clk;
 
 	if (clk_get_by_index(dev, 0, &uart_base_clk)) {
@@ -146,10 +147,10 @@ static int adi_uart4_set_brg(struct udevice *dev, int baudrate) {
 	uart_base_clk_rate = clk_get_rate(&uart_base_clk);
 
 	if (plat->edbo) {
-		uint16_t divisor16 = (uart_base_clk_rate + (baudrate / 2)) / baudrate;
+		u16 divisor16 = (uart_base_clk_rate + (baudrate / 2)) / baudrate;
+
 		divisor = divisor16 | BIT(31);
-	}
-	else {
+	} else {
 		// Divisor is only 16 bits
 		divisor = 0x0000ffff & ((uart_base_clk_rate + (baudrate * 8)) / (baudrate * 16));
 	}
@@ -158,7 +159,8 @@ static int adi_uart4_set_brg(struct udevice *dev, int baudrate) {
 	return 0;
 }
 
-static int adi_uart4_pending(struct udevice *dev, bool input) {
+static int adi_uart4_pending(struct udevice *dev, bool input)
+{
 	struct adi_uart4_platdata *plat = dev->platdata;
 	struct uart4_reg *regs = plat->regs;
 
@@ -168,7 +170,8 @@ static int adi_uart4_pending(struct udevice *dev, bool input) {
 		return (readl(&regs->status) & THRE) ? 0 : 1;
 }
 
-static int adi_uart4_getc(struct udevice *dev) {
+static int adi_uart4_getc(struct udevice *dev)
+{
 	struct adi_uart4_platdata *plat = dev->platdata;
 	struct uart4_reg *regs = plat->regs;
 	int uart_rbr_val;
@@ -182,23 +185,24 @@ static int adi_uart4_getc(struct udevice *dev) {
 	return uart_rbr_val;
 }
 
-static int adi_uart4_putc(struct udevice *dev, const char ch) {
+static int adi_uart4_putc(struct udevice *dev, const char ch)
+{
 	struct adi_uart4_platdata *plat = dev->platdata;
 	struct uart4_reg *regs = plat->regs;
 
 #ifdef ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
-	if(uartReadyToEnable){
+	if (uartReadyToEnable) {
 		adi_disable_ospi(1);
 		writel('\n', &regs->thr);
 	}
 
 	if (!uartEnabled) {
-		if(uartBufferPos < BUFFER_SIZE)
+		if (uartBufferPos < BUFFER_SIZE)
 			uartBuffer[uartBufferPos++] = ch;
 		return 0;
-	}
-	else if(uartBufferPos) {
+	} else if (uartBufferPos) {
 		int i;
+
 		for (i = 0; i < uartBufferPos; i++) {
 			while (adi_uart4_pending(dev, false))
 				WATCHDOG_RESET();
@@ -215,19 +219,21 @@ static int adi_uart4_putc(struct udevice *dev, const char ch) {
 	return 0;
 }
 
-static void adi_uart4_suspend(struct udevice *dev) {
+static void adi_uart4_suspend(struct udevice *dev)
+{
 	struct adi_uart4_platdata *plat = dev->platdata;
 	struct uart4_reg *regs = plat->regs;
-	uint32_t val;
+	u32 val;
 
 	val = readl(&regs->control);
 	writel(val & ~UEN, &regs->control);
 }
 
-static void adi_uart4_resume(struct udevice *dev) {
+static void adi_uart4_resume(struct udevice *dev)
+{
 	struct adi_uart4_platdata *plat = dev->platdata;
 	struct uart4_reg *regs = plat->regs;
-	uint32_t val;
+	u32 val;
 
 	val = readl(&regs->control);
 	writel(val | UEN, &regs->control);
@@ -242,22 +248,23 @@ static const struct dm_serial_ops adi_uart4_serial_ops = {
 	.resume = adi_uart4_resume,
 };
 
-static int adi_uart4_ofdata_to_platdata(struct udevice *dev) {
+static int adi_uart4_ofdata_to_platdata(struct udevice *dev)
+{
 	struct adi_uart4_platdata *plat = dev->platdata;
-	int node = dev_of_offset(dev);
 	fdt_addr_t addr;
 
 	addr = dev_read_addr(dev);
 	if (addr == FDT_ADDR_T_NONE)
 		return -EINVAL;
 
-	plat->regs = (struct uart4_reg *) addr;
-	plat->edbo = fdtdec_get_bool(gd->fdt_blob, node, "adi,enable-edbo");
+	plat->regs = (struct uart4_reg *)addr;
+	plat->edbo = dev_read_bool(dev, "adi,enable-edbo");
 
 	return 0;
 }
 
-static int adi_uart4_probe(struct udevice *dev) {
+static int adi_uart4_probe(struct udevice *dev)
+{
 	struct adi_uart4_platdata *plat = dev->platdata;
 	struct uart4_reg *regs = plat->regs;
 

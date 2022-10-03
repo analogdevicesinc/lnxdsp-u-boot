@@ -24,11 +24,7 @@
 #ifndef CONFIG_SC598_SOM_EZKIT_DYNAMIC_QSPI_OSPI_UART_MUX
 #define CONFIG_SC598_SOM_EZKIT_DYNAMIC_QSPI_OSPI_UART_MUX
 
-#define QSPI_PINS_SWITCH(n) \
-	{ P_SPI##n##_SCK, P_SPI##n##_MISO, P_SPI##n##_MOSI, \
-		P_SPI##n##_D2, P_SPI##n##_D3, P_SPI##n##_SSEL1, 0}
-
-int adi_enable_ospi();
+int adi_enable_ospi(void);
 int adi_disable_ospi(bool changeMuxImmediately);
 
 #endif
