@@ -40,248 +40,9 @@
 #include "dwmac4_dma.h"
 #include "dwmac4_descs.h"
 
-static int dwmac4_wrback_get_tx_status(struct dwmac4_dev *priv, u32 idx)
-{
-	struct dwmac4_dma_desc *desc_p = &priv->tx_mac_descrtable[idx];
-	u32 tdes1, tdes2, tdes3;
-
-	tdes1 = desc_p->des1;
-	tdes2 = desc_p->des2;
-	tdes3 = desc_p->des3;
-	printf("TX DESCR NUM %d, des1 %x, des2 %x, des3 %x\n", idx, tdes1, tdes2, tdes3);
-
-	/* Get tx owner first */
-	if (tdes3 & TDES3_OWN)
-		printf("TDES3_OWN SET\n");
-
-	/* Verify tx error by looking at the last segment. */
-	if (tdes3 & TDES3_LAST_DESCRIPTOR)
-		printf("TDES3_LAST_DESCRIPTOR SET\n");
-
-	if (tdes3 & TDES3_ERROR_SUMMARY) {
-		printf("TDES3_ERROR_SUMMARY SET\n");
-		if (tdes3 & TDES3_JABBER_TIMEOUT)
-			printf("TDES3_JABBER_TIMEOUT SET\n");
-		if (tdes3 & TDES3_PACKET_FLUSHED)
-			printf("TDES3_PACKET_FLUSHED SET\n");
-		if (tdes3 & TDES3_LOSS_CARRIER) {
-			printf("TDES3_LOSS_CARRIER SET\n");
-		}
-		if (tdes3 & TDES3_NO_CARRIER) {
-			printf("TDES3_NO_CARRIER SET\n");
-		}
-		if ((tdes3 & TDES3_LATE_COLLISION) ||
-			     (tdes3 & TDES3_EXCESSIVE_COLLISION))
-					printf("TDES3_LATE_COLLISION/TDES3_EXCESSIVE_COLLISION SET\n");
-
-		if (tdes3 & TDES3_EXCESSIVE_DEFERRAL)
-			printf("TDES3_EXCESSIVE_DEFERRAL SET\n");
-
-		if (tdes3 & TDES3_UNDERFLOW_ERROR)
-			printf("TDES3_UNDERFLOW_ERROR SET\n");
-
-		if (tdes3 & TDES3_IP_HDR_ERROR)
-			printf("TDES3_IP_HDR_ERROR SET\n");
-
-		if (tdes3 & TDES3_PAYLOAD_ERROR)
-			printf("TDES3_PAYLOAD_ERROR SET\n");
-	}
-
-	if (tdes3 & TDES3_DEFERRED)
-		printf("TDES3_DEFERRED SET\n");
-
-}
-
-static int dwmac4_wrback_get_rx_status(struct dwmac4_dev *priv, u32 idx)
-{
-	struct dwmac4_dma_desc *desc_p = &priv->rx_mac_descrtable[idx];
-	u32 rdes1, rdes2, rdes3;
-
-	rdes1 = desc_p->des1;
-	rdes2 = desc_p->des2;
-	rdes3 = desc_p->des3;
-	printf("RX DESCR NUM %d, des1 %x, des2 %x, des3 %x\n", idx, rdes1, rdes2, rdes3);
-
-	if (rdes3 & RDES3_OWN)
-		printf("RDES3_OWN set\n");
-
-	/* Verify rx error by looking at the last segment. */
-	if (rdes3 & RDES3_LAST_DESCRIPTOR)
-		printf("RDES3_LAST_DESCRIPTOR set\n");
-
-	if (rdes3 & RDES3_ERROR_SUMMARY) {
-		printf("RDES3_ERROR_SUMMARY set\n");
-
-		if (rdes3 & RDES3_GIANT_PACKET)
-			printf("RDES3_GIANT_PACKET set\n");
-
-		if (rdes3 & RDES3_OVERFLOW_ERROR)
-			printf("RDES3_OVERFLOW_ERROR set\n");
-
-		if (rdes3 & RDES3_RECEIVE_WATCHDOG)
-			printf("RDES3_RECEIVE_WATCHDOG set\n");
-
-		if (rdes3 & RDES3_RECEIVE_ERROR)
-			printf("RDES3_RECEIVE_ERROR set\n");
-
-		if (rdes3 & RDES3_CRC_ERROR) {
-			printf("RDES3_CRC_ERROR set\n");
-		}
-
-		if (rdes3 & RDES3_DRIBBLE_ERROR)
-			printf("RDES3_DRIBBLE_ERROR set\n");
-	}
-
-	if (rdes1 & RDES1_IP_HDR_ERROR)
-		printf("RDES1_IP_HDR_ERROR set\n");
-	if (rdes1 & RDES1_IP_CSUM_BYPASSED)
-		printf("RDES1_IP_CSUM_BYPASSED set\n");
-	if (rdes1 & RDES1_IPV4_HEADER)
-		printf("RDES1_IPV4_HEADER set\n");
-	if (rdes1 & RDES1_IPV6_HEADER)
-		printf("RDES1_IPV6_HEADER set\n");
-
-	if (rdes1 & RDES1_PTP_PACKET_TYPE)
-		printf("RDES1_PTP_PACKET_TYPE set\n");
-	if (rdes1 & RDES1_PTP_VER)
-		printf("RDES1_PTP_VER set\n");
-	if (rdes1 & RDES1_TIMESTAMP_DROPPED)
-		printf("RDES1_TIMESTAMP_DROPPED set\n");
-
-	if (rdes2 & RDES2_SA_FILTER_FAIL) {
-		printf("RDES2_SA_FILTER_FAIL set\n");
-	}
-	if (rdes2 & RDES2_DA_FILTER_FAIL) {
-		printf("RDES2_DA_FILTER_FAIL set\n");
-	}
-
-	if (rdes2 & RDES2_L3_FILTER_MATCH)
-		printf("RDES2_L3_FILTER_MATCH set\n");
-	if (rdes2 & RDES2_L4_FILTER_MATCH)
-		printf("RDES2_L4_FILTER_MATCH set\n");
-	if ((rdes2 & RDES2_L3_L4_FILT_NB_MATCH_MASK)
-	    >> RDES2_L3_L4_FILT_NB_MATCH_SHIFT)
-		printf("RDES2_L3_L4_FILT_NB_MATCH_MASK set\n");
-}
-
-static void show_tx_process_state(u32 status)
-{
-	u32 state;
-	state = (status & DMA_CHAN_STATUS_TEB) >> DMA_CHAN_STATUS_TEB_SHIFT;
-
-	switch (state) {
-	case 0:
-		printf("- TX (Stopped): Reset or Stop command\n");
-		break;
-	case 1:
-		printf("- TX (Running): Fetching the Tx desc\n");
-		break;
-	case 2:
-		printf("- TX (Running): Waiting for end of tx\n");
-		break;
-	case 3:
-		printf("- TX (Running): Reading the data "
-		       "and queuing the data into the Tx buf\n");
-		break;
-	case 6:
-		printf("- TX (Suspended): Tx Buff Underflow "
-		       "or an unavailable Transmit descriptor\n");
-		break;
-	case 7:
-		printf("- TX (Running): Closing Tx descriptor\n");
-		break;
-	default:
-		break;
-	}
-}
-
-static void show_rx_process_state(u32 status)
-{
-	u32 state;
-	state = (status & DMA_CHAN_STATUS_REB) >> DMA_CHAN_STATUS_REB_SHIFT;
-
-	switch (state) {
-	case 0:
-		printf("- RX (Stopped): Reset or Stop command\n");
-		break;
-	case 1:
-		printf("- RX (Running): Fetching the Rx desc\n");
-		break;
-	case 2:
-		printf("- RX (Running): Checking for end of pkt\n");
-		break;
-	case 3:
-		printf("- RX (Running): Waiting for Rx pkt\n");
-		break;
-	case 4:
-		printf("- RX (Suspended): Unavailable Rx buf\n");
-		break;
-	case 5:
-		printf("- RX (Running): Closing Rx descriptor\n");
-		break;
-	case 6:
-		printf("- RX(Running): Flushing the current frame"
-		       " from the Rx buf\n");
-		break;
-	case 7:
-		printf("- RX (Running): Queuing the Rx frame"
-		       " from the Rx buf into memory\n");
-		break;
-	default:
-		break;
-	}
-}
-
-int dwmac4_dma_interrupt_status_register(void __iomem *ioaddr, u32 chan)
-{
-	u32 intr_status = readl(ioaddr + DMA_CHAN_STATUS(chan));
-
-	printf("interrupt status: 0x%x\n", intr_status);
-
-	/* ABNORMAL interrupts */
-	if (intr_status & DMA_CHAN_STATUS_AIS) {
-		printf("DMA_CHAN_STATUS_AIS SET\n");
-		if (intr_status & DMA_CHAN_STATUS_RBU)
-			printf("DMA_CHAN_STATUS_RBU SET\n");
-		if (intr_status & DMA_CHAN_STATUS_RPS)
-			printf("DMA_CHAN_STATUS_RPS SET\n");
-		if (intr_status & DMA_CHAN_STATUS_RWT)
-			printf("DMA_CHAN_STATUS_RWT SET\n");
-		if (intr_status & DMA_CHAN_STATUS_ETI)
-			printf("DMA_CHAN_STATUS_ETI SET\n");
-		if (intr_status & DMA_CHAN_STATUS_TPS) {
-			printf("DMA_CHAN_STATUS_TPS SET\n");
-		}
-		if (intr_status & DMA_CHAN_STATUS_FBE) {
-			printf("DMA_CHAN_STATUS_FBE SET\n");
-		}
-	}
-
-	/* TX/RX NORMAL interrupts */
-	if (intr_status & DMA_CHAN_STATUS_NIS) {
-			printf("DMA_CHAN_STATUS_NIS SET\n");
-		if (intr_status & DMA_CHAN_STATUS_RI) {
-			printf("DMA_CHAN_STATUS_RI SET\n");
-		}
-		if (intr_status & (DMA_CHAN_STATUS_TI |
-					  DMA_CHAN_STATUS_TBU)) {
-			printf("DMA_CHAN_STATUS_TI or DMA_CHAN_STATUS_TBU SET\n");
-		}
-		if (intr_status & DMA_CHAN_STATUS_ERI)
-			printf("DMA_CHAN_STATUS_ERI SET\n");
-	}
-
-	intr_status = readl(ioaddr + DMA_STATUS);
-	printf("DMA interrupt status is: 0x%x\n", intr_status);
-
-	intr_status = readl(ioaddr + DMA_DEBUG_STATUS_0);
-	show_rx_process_state(intr_status);
-	show_tx_process_state(intr_status);
-}
-
 static int dw_mdio_read(struct mii_dev *bus, int addr, int devad, int reg)
 {
-	struct dwmac4_dev *priv = (struct dwmac4_dev *) bus->priv;
+	struct dwmac4_dev *priv = (struct dwmac4_dev *)bus->priv;
 	ulong start;
 	u32 miiaddr;
 	int timeout = CONFIG_MDIO_TIMEOUT;
@@ -290,7 +51,7 @@ static int dw_mdio_read(struct mii_dev *bus, int addr, int devad, int reg)
 		((reg << MII_REG_SHIFT) & MII_REG_MASK);
 
 	writel(miiaddr | MII_CLKRANGE_150_250M | MII_BUSY | MII_GMAC4_READ,
-		priv->ioaddr + GMAC_MDIO_ADDR);
+	       priv->ioaddr + GMAC_MDIO_ADDR);
 
 	start = get_timer(0);
 	while (get_timer(start) < timeout) {
@@ -303,9 +64,9 @@ static int dw_mdio_read(struct mii_dev *bus, int addr, int devad, int reg)
 }
 
 static int dw_mdio_write(struct mii_dev *bus, int addr, int devad, int reg,
-			u16 val)
+			 u16 val)
 {
-	struct dwmac4_dev *priv = (struct dwmac4_dev *) bus->priv;
+	struct dwmac4_dev *priv = (struct dwmac4_dev *)bus->priv;
 	ulong start;
 	u32 miiaddr;
 	int ret = -ETIMEDOUT, timeout = CONFIG_MDIO_TIMEOUT;
@@ -315,7 +76,7 @@ static int dw_mdio_write(struct mii_dev *bus, int addr, int devad, int reg,
 		((reg << MII_REG_SHIFT) & MII_REG_MASK);
 
 	writel(miiaddr | MII_CLKRANGE_150_250M | MII_BUSY | MII_GMAC4_WRITE,
-		priv->ioaddr + GMAC_MDIO_ADDR);
+	       priv->ioaddr + GMAC_MDIO_ADDR);
 
 	start = get_timer(0);
 	while (get_timer(start) < timeout) {
@@ -377,7 +138,7 @@ static int dw_mdio_init(const char *name, struct dwmac4_dev *priv)
 	bus->reset = dw_mdio_reset;
 #endif
 
-	bus->priv = (void *) priv;
+	bus->priv = (void *)priv;
 
 	return mdio_register(bus);
 }
@@ -410,7 +171,7 @@ static void tx_descs_init(struct dwmac4_dev *priv)
 
 	writel((ulong)&desc_table_p[0], priv->ioaddr + DMA_CHAN_TX_BASE_ADDR(0));
 	writel((ulong)&desc_table_p[0], priv->ioaddr + DMA_CHAN_TX_END_ADDR(0));
-	writel(CONFIG_TX_DESCR_NUM-1, priv->ioaddr + DMA_CHAN_TX_RING_LEN(0));
+	writel(CONFIG_TX_DESCR_NUM - 1, priv->ioaddr + DMA_CHAN_TX_RING_LEN(0));
 	priv->tx_currdescnum = 0;
 }
 
@@ -427,7 +188,8 @@ static void rx_descs_init(struct dwmac4_dev *priv)
 	 * flushed into RAM.
 	 * Otherwise there's a chance to get some of them flushed in RAM when
 	 * GMAC is already pushing data to RAM via DMA. This way incoming from
-	 * GMAC data will be corrupted. */
+	 * GMAC data will be corrupted.
+	 */
 	flush_dcache_range((ulong)rxbuffs, (ulong)rxbuffs + RX_TOTAL_BUFSIZE);
 
 	// Set the buffer size that applies to all rx dma descriptors in channel 0
@@ -452,8 +214,8 @@ static void rx_descs_init(struct dwmac4_dev *priv)
 
 	writel((ulong)desc_table_p, priv->ioaddr + DMA_CHAN_RX_BASE_ADDR(0));
 	writel((ulong)(desc_table_p + CONFIG_RX_DESCR_NUM),
-		priv->ioaddr + DMA_CHAN_RX_END_ADDR(0));
-	writel(CONFIG_RX_DESCR_NUM-1, priv->ioaddr + DMA_CHAN_RX_RING_LEN(0));
+	       priv->ioaddr + DMA_CHAN_RX_END_ADDR(0));
+	writel(CONFIG_RX_DESCR_NUM - 1, priv->ioaddr + DMA_CHAN_RX_RING_LEN(0));
 }
 
 static int _dw_write_hwaddr(struct dwmac4_dev *priv, u8 *mac_id)
@@ -588,7 +350,8 @@ static int designware_eth_init(struct dwmac4_dev *priv, u8 *enetaddr)
 
 	/* Configure MTL registers to enable RX and TX queue 0 */
 	/* @todo configurable queue size; we're using 4kb to be safe but hardware typically
-	 * has around 16 kb minimum for the MTL queue, to be broken up per queue */
+	 * has around 16 kb minimum for the MTL queue, to be broken up per queue
+	 */
 	val = readl(priv->ioaddr + MTL_CHAN_RX_OP_MODE(0));
 	val |= MTL_OP_MODE_RSF;
 	val &= ~MTL_OP_MODE_RQS_MASK;
@@ -675,7 +438,7 @@ static int _dw_eth_send(struct dwmac4_dev *priv, void *packet, int length)
 
 	/* Start the transmission */
 	writel((ulong)&priv->tx_mac_descrtable[desc_num],
-		priv->ioaddr + DMA_CHAN_TX_END_ADDR(0));
+	       priv->ioaddr + DMA_CHAN_TX_END_ADDR(0));
 
 	return 0;
 }
@@ -686,7 +449,8 @@ static int _dw_eth_recv(struct dwmac4_dev *priv, uchar **packetp)
 	int length = -EAGAIN;
 
 	/* In ring mode we start at the beginning of the ring and iterate to find ready
-	 * descriptors, typically we will reuse index 0 a bunch of times */
+	 * descriptors, typically we will reuse index 0 a bunch of times
+	 */
 	for (desc_num = 0; desc_num < CONFIG_RX_DESCR_NUM; ++desc_num) {
 		struct dwmac4_dma_desc *desc_p = &priv->rx_mac_descrtable[desc_num];
 		ulong desc_start = (ulong)desc_p;
@@ -737,7 +501,7 @@ static int _dw_free_pkt(struct dwmac4_dev *priv)
 
 	/* let hardware know the ring has been updated, it will start at offset 0 again */
 	writel((ulong)(priv->rx_mac_descrtable + CONFIG_RX_DESCR_NUM),
-		priv->ioaddr + DMA_CHAN_RX_END_ADDR(0));
+	       priv->ioaddr + DMA_CHAN_RX_END_ADDR(0));
 
 	return 0;
 }
@@ -816,11 +580,11 @@ int dwmac4_initialize(ulong base_addr, u32 interface)
 	struct eth_device *dev;
 	struct dwmac4_dev *priv;
 
-	dev = (struct eth_device *) malloc(sizeof(*dev));
+	dev = malloc(sizeof(*dev));
 	if (!dev)
 		return -ENOMEM;
 
-	priv = (struct dwmac4_dev *) malloc(sizeof(*priv));
+	priv = malloc(sizeof(*priv));
 	if (!priv) {
 		free(dev);
 		return -ENOMEM;
@@ -976,8 +740,7 @@ int designware_eth_probe(struct udevice *dev)
 	else
 		reset_deassert_bulk(&reset_bulk);
 
-	debug("%s, iobase=%x, priv=%p\n", __func__, pdata->iobase, priv);
-	priv->ioaddr = pdata->iobase;
+	priv->ioaddr = map_physmem(pdata->iobase, 0, MAP_NOCACHE);
 	priv->interface = pdata->phy_interface;
 	priv->max_speed = pdata->max_speed;
 
@@ -1062,7 +825,7 @@ static int designware_eth_ofdata_to_platdata(struct udevice *dev)
 		reset_flags |= GPIOD_ACTIVE_LOW;
 
 	ret = gpio_request_by_name(dev, "snps,reset-gpio", 0,
-		&priv->reset_gpio, reset_flags);
+				   &priv->reset_gpio, reset_flags);
 	if (ret == 0) {
 		ret = dev_read_u32_array(dev, "snps,reset-delays-us",
 					 priv->reset_delays, 3);
