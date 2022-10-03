@@ -22,7 +22,7 @@
 #include <linux/delay.h>
 
 /* Every register is 32bit aligned, but only 16bits in size */
-#define ureg(name) u16 name; u16 __pad_##name;
+#define ureg(name) u16 name; u16 __pad_##name
 struct twi_regs {
 	ureg(clkdiv);
 	ureg(control);
@@ -37,11 +37,13 @@ struct twi_regs {
 	ureg(fifo_ctl);
 	ureg(fifo_stat);
 	u8 __pad[0x50];
+
 	ureg(xmt_data8);
 	ureg(xmt_data16);
 	ureg(rcv_data8);
 	ureg(rcv_data16);
 };
+
 #undef ureg
 
 /*
@@ -101,7 +103,7 @@ static int wait_for_completion(struct twi_regs *twi, struct adi_i2c_msg *msg)
 				ctl = readw(&twi->master_ctl);
 				if (msg->flags & I2C_M_COMBO)
 					writew(ctl | RSTART | MDIR,
-							&twi->master_ctl);
+					       &twi->master_ctl);
 				else
 					writew(ctl | STOP, &twi->master_ctl);
 			}
@@ -126,10 +128,11 @@ static int wait_for_completion(struct twi_regs *twi, struct adi_i2c_msg *msg)
 				ctl = readw(&twi->master_ctl);
 				ctl = (ctl & ~RSTART) |
 					(min((unsigned int)msg->len,
-					     (unsigned int)0xff) << 6) | MEN | MDIR;
+					     0xffU) << 6) | MEN | MDIR;
 				writew(ctl, &twi->master_ctl);
-			} else
+			} else {
 				break;
+			}
 		}
 
 		/* If we were able to do something, reset timeout */
@@ -141,8 +144,8 @@ static int wait_for_completion(struct twi_regs *twi, struct adi_i2c_msg *msg)
 	return msg->len;
 }
 
-static int i2c_transfer(struct twi_regs *twi, uint8_t chip, uint offset,
-			int olen, uint8_t *buffer, int len, uint8_t flags)
+static int i2c_transfer(struct twi_regs *twi, u8 chip, uint offset,
+			int olen, u8 *buffer, int len, u8 flags)
 {
 	int ret;
 	u16 ctl;
@@ -207,20 +210,21 @@ static int i2c_transfer(struct twi_regs *twi, uint8_t chip, uint offset,
 	return ret;
 }
 
-static int adi_i2c_read(struct twi_regs *twi, uint8_t chip,
-			uint offset, int olen, uint8_t *buffer, int len)
+static int adi_i2c_read(struct twi_regs *twi, u8 chip,
+			uint offset, int olen, u8 *buffer, int len)
 {
 	return i2c_transfer(twi, chip, offset, olen, buffer,
 			len, olen ? I2C_M_COMBO : I2C_M_READ);
 }
 
-static int adi_i2c_write(struct twi_regs *twi, uint8_t chip,
-			uint offset, int olen, uint8_t *buffer, int len)
+static int adi_i2c_write(struct twi_regs *twi, u8 chip,
+			 uint offset, int olen, u8 *buffer, int len)
 {
 	return i2c_transfer(twi, chip, offset, olen, buffer, len, 0);
 }
 
-static int adi_i2c_set_bus_speed(struct udevice *bus, uint speed){
+static int adi_i2c_set_bus_speed(struct udevice *bus, uint speed)
+{
 	struct adi_i2c_dev *dev = dev_get_priv(bus);
 	struct twi_regs *twi = dev->base;
 	u16 clkdiv = I2C_SPEED_TO_DUTY(speed);
@@ -237,7 +241,8 @@ static int adi_i2c_set_bus_speed(struct udevice *bus, uint speed){
 	return 0;
 }
 
-static int adi_i2c_ofdata_to_platdata(struct udevice *bus){
+static int adi_i2c_ofdata_to_platdata(struct udevice *bus)
+{
 	struct adi_i2c_dev *dev = dev_get_priv(bus);
 	struct clk clock;
 	u32 ret;
@@ -251,17 +256,17 @@ static int adi_i2c_ofdata_to_platdata(struct udevice *bus){
 					  I2C_SPEED_FAST_RATE);
 
 	ret = clk_get_by_name(bus, "i2c", &clock);
-	if (ret < 0) {
+	if (ret < 0)
 		printf("%s: Can't get I2C clk: %d\n", __func__, ret);
-	}else{
+	else
 		dev->i2c_clk = clk_get_rate(&clock);
-	}
 
 	return 0;
 }
 
 static int adi_i2c_probe_chip(struct udevice *bus, u32 chip_addr,
-			      u32 chip_flags){
+			      u32 chip_flags)
+{
 	struct adi_i2c_dev *dev = dev_get_priv(bus);
 	u8 byte;
 
@@ -269,7 +274,8 @@ static int adi_i2c_probe_chip(struct udevice *bus, u32 chip_addr,
 	return 0;
 }
 
-static int adi_i2c_xfer(struct udevice *bus, struct i2c_msg *msg, int nmsgs){
+static int adi_i2c_xfer(struct udevice *bus, struct i2c_msg *msg, int nmsgs)
+{
 	struct adi_i2c_dev *dev = dev_get_priv(bus);
 	struct i2c_msg *dmsg, *omsg, dummy;
 
@@ -293,7 +299,6 @@ static int adi_i2c_xfer(struct udevice *bus, struct i2c_msg *msg, int nmsgs){
 		return adi_i2c_write(dev->base, dmsg->addr, (uint)omsg->buf, omsg->len,
 				   dmsg->buf, dmsg->len);
 }
-
 
 int adi_i2c_probe(struct udevice *bus)
 {
