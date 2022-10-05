@@ -129,7 +129,7 @@
 					<0x31008000 0x1000>;
 			reg-names = "rcu", "sec", "wdt";
 			clock-names = "sclk0";
-			status = "disabled";
+			status = "okay";
 			u-boot,dm-pre-reloc;
 		};
 
