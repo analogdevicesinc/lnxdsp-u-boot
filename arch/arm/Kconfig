@@ -523,8 +523,16 @@ config TARGET_SC598_SOM_EZKIT
 	bool "Analog Devices SC598 SOM EZ Kit"
 	select SC59X_64
 
+config TARGET_SC598_SOM_EZLITE
+	bool "Analog Devices SC598 SOM EZ Lite"
+	select SC59X_64
+
 config TARGET_SC594_SOM_EZKIT
 	bool "Analog Devices SC594 SOM EZ Kit"
+	select SC59X
+
+config TARGET_SC594_SOM_EZLITE
+	bool "Analog Devices SC594 SOM EZ Lite"
 	select SC59X
 
 config TARGET_SC589_EZKIT

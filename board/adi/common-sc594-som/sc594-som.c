@@ -105,7 +105,11 @@ int board_phy_config(struct phy_device *phydev)
 
 int board_init(void)
 {
+#ifdef CONFIG_ADI_CARRIER_SOMCRR_EZLITE
+	gd->bd->bi_arch_number = MACH_TYPE_SC594_SOM_EZLITE;
+#else
 	gd->bd->bi_arch_number = MACH_TYPE_SC594_SOM_EZKIT;
+#endif
 	/* boot param addr */
 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + (0x100);
 

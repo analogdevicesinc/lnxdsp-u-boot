@@ -8,6 +8,18 @@
 # Contact: Greg Malysa <greg.malysa@timesys.com>
 #
 
-obj-y	:= ../common-sc598-som/sc598-som.o
-obj-$(CONFIG_SPL_BUILD) := ../common-sc598-som/sc598-som-spl.o
-obj-y += ../common-sc598-som/sc598-som-dynamic-qspi-ospi-uart-mux.o
+if TARGET_SC594_SOM_EZLITE
+
+config SYS_VENDOR
+	default "adi"
+
+config LDR_CPU
+	default "ADSP-SC594-0.0"
+
+config SYS_BOARD
+	default "sc594-som-ezlite"
+
+config SYS_CONFIG_NAME
+	default "sc594-som-ezlite"
+
+endif

@@ -9,9 +9,9 @@
  *
  */
 
-#ifndef __CONFIG_SC598_SOM_EZKIT_H
-#define __CONFIG_SC598_SOM_EZKIT_H
+#ifndef __CONFIG_SC594_SOM_EZLITE_H
+#define __CONFIG_SC594_SOM_EZLITE_H
 
-#include "sc598-som.h"
+#include "sc594-som.h"
 
 #endif

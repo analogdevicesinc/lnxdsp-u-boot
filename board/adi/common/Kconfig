@@ -140,6 +140,13 @@ config ADI_CARRIER_SOMCRR_EZKIT
 	help
 	  Support the EV-SOMCRR-EZKIT carrier board for SC594 and SC598 SOMs
 
+config ADI_CARRIER_SOMCRR_EZLITE
+	bool "Support the EV-SOMCRR-EZLITE"
+	depends on (SC59X || SC59X_64)
+	default n
+	help
+	  Support the EV-SOMCRR-EZLITE carrier board for SC594 and SC598 SOMs
+
 config ADI_FALCON
 	bool "Enable Falcon Boot Mode Support"
 	depends on SPL_OS_BOOT_UNCOMPRESSED
@@ -306,7 +313,9 @@ config ADI_GPIO
 config PINCTRL_ADI
 	default y
 
+source "board/adi/sc598-som-ezlite/Kconfig"
 source "board/adi/sc598-som-ezkit/Kconfig"
+source "board/adi/sc594-som-ezlite/Kconfig"
 source "board/adi/sc594-som-ezkit/Kconfig"
 source "board/adi/sc589-ezkit/Kconfig"
 source "board/adi/sc589-mini/Kconfig"
