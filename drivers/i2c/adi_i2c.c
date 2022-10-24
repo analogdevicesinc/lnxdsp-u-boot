@@ -266,8 +266,7 @@ static int adi_i2c_probe_chip(struct udevice *bus, u32 chip_addr,
 	struct adi_i2c_dev *dev = dev_get_priv(bus);
 	u8 byte;
 
-	i2c_transfer(dev->base, chip_addr, 0, 0, &byte, 1, 0);
-	return 0;
+	return adi_i2c_read(dev->base, chip_addr, NULL, 0, &byte, 1);
 }
 
 static int adi_i2c_xfer(struct udevice *bus, struct i2c_msg *msg, int nmsgs)
