@@ -144,21 +144,17 @@ static int wait_for_completion(struct twi_regs *twi, struct adi_i2c_msg *msg)
 	return msg->len;
 }
 
-static int i2c_transfer(struct twi_regs *twi, u8 chip, uint offset,
+static int i2c_transfer(struct twi_regs *twi, u8 chip, u8 * offset,
 			int olen, u8 *buffer, int len, u8 flags)
 {
 	int ret;
 	u16 ctl;
-	uchar offset_buffer[] = {
-		(offset >>  0),
-		(offset >>  8),
-		(offset >> 16),
-	};
+
 	struct adi_i2c_msg msg = {
 		.flags = flags | (len >= 0xff ? I2C_M_STOP : 0),
 		.buf   = buffer,
 		.len   = len,
-		.obuf  = offset_buffer,
+		.obuf  = offset,
 		.olen  = olen,
 	};
 
@@ -211,14 +207,14 @@ static int i2c_transfer(struct twi_regs *twi, u8 chip, uint offset,
 }
 
 static int adi_i2c_read(struct twi_regs *twi, u8 chip,
-			uint offset, int olen, u8 *buffer, int len)
+			u8 *offset, int olen, u8 *buffer, int len)
 {
 	return i2c_transfer(twi, chip, offset, olen, buffer,
 			len, olen ? I2C_M_COMBO : I2C_M_READ);
 }
 
 static int adi_i2c_write(struct twi_regs *twi, u8 chip,
-			 uint offset, int olen, u8 *buffer, int len)
+			 u8 *offset, int olen, u8 *buffer, int len)
 {
 	return i2c_transfer(twi, chip, offset, olen, buffer, len, 0);
 }
@@ -293,10 +289,10 @@ static int adi_i2c_xfer(struct udevice *bus, struct i2c_msg *msg, int nmsgs)
 	dmsg = nmsgs == 1 ? msg : msg + 1;
 
 	if (dmsg->flags & I2C_M_RD)
-		return adi_i2c_read(dev->base, dmsg->addr, (uint)omsg->buf, omsg->len,
+		return adi_i2c_read(dev->base, dmsg->addr, omsg->buf, omsg->len,
 				  dmsg->buf, dmsg->len);
 	else
-		return adi_i2c_write(dev->base, dmsg->addr, (uint)omsg->buf, omsg->len,
+		return adi_i2c_write(dev->base, dmsg->addr, omsg->buf, omsg->len,
 				   dmsg->buf, dmsg->len);
 }
 
