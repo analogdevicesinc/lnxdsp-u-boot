@@ -498,4 +498,11 @@ config MCP2301X_GPIO
 	depends on DM_GPIO && DM_I2C
 	help
 	  Support GPIO expander access on Microchip MCP23017/MCP23018 chips
+
+config ADP5588_GPIO
+	bool "ADP5588 GPIO expander driver"
+	depends on DM_GPIO && DM_I2C
+	help
+	  Support GPIO expander access on ADI ADP5588 chips
+
 endmenu
