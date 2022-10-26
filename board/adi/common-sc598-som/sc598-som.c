@@ -97,7 +97,7 @@ void s_init(void)
 }
 
 void adi_eth_init(void) {
-#if defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT)
+#if defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT) || defined(CONFIG_ADI_CARRIER_SOMCRR_EZLITE)
 	// Reset PHYs handled through DM-based softconfig driver
 	adi_enable_ethernet_softconfig();
 	mdelay(20);
@@ -107,12 +107,10 @@ void adi_eth_init(void) {
 	mdelay(20);
 #endif
 
-#if defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT) || defined(CONFIG_ADI_CARRIER_SOMCRR_EZLITE)
-	// select RGMII, little endian for both ports
+	// select RGMII, little endian for all eth ports
 	writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
 	writel(readl(REG_PADS0_PCFG0) & ~(1 << 19), REG_PADS0_PCFG0);
 	writel(readl(REG_PADS0_PCFG0) & ~(1 << 20), REG_PADS0_PCFG0);
-#endif
 }
 
 int board_phy_config(struct phy_device *phydev)

@@ -141,6 +141,87 @@
 &i2c2{
 	clocks = <&clk ADSP_SC598_CLK_CGU0_SCLK0>;
 
+	gpio_expander: adp5588@30 {
+		compatible = "adi,adp5588";
+		reg = <0x30>;
+		gpio-controller;
+		#gpio-cells = <2>;
+		u-boot,dm-pre-reloc;
+
+		usb-spi0 {
+			gpio-hog;
+			gpios = <8 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "usb_spi0_en";
+			u-boot,dm-pre-reloc;
+		};
+
+		usb-spi1 {
+			gpio-hog;
+			gpios = <9 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "usb_spi1_en";
+			u-boot,dm-pre-reloc;
+		};
+
+		usb-qspi-en {
+			gpio-hog;
+			gpios = <10 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "usb_qspi_en";
+			u-boot,dm-pre-reloc;
+		};
+
+		usb-qspi-reset {
+			gpio-hog;
+			gpios = <11 GPIO_ACTIVE_HIGH>;
+			output-high;
+			line-name = "usb_qspi_reset";
+			u-boot,dm-pre-reloc;
+		};
+
+		eth0-reset {
+			gpio-hog;
+			gpios = <12 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "~eth0-reset";
+			u-boot,dm-pre-reloc;
+		};
+
+		adau1372-pwrdwn {
+			gpio-hog;
+			gpios = <13 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "adau1372_pwrdwn";
+			u-boot,dm-pre-reloc;
+		};
+
+		led1 {
+			gpio-hog;
+			gpios = <15 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "led1-en";
+			u-boot,dm-pre-reloc;
+		};
+
+		led2 {
+			gpio-hog;
+			gpios = <16 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "led2-en";
+			u-boot,dm-pre-reloc;
+		};
+
+		led3 {
+			gpio-hog;
+			gpios = <17 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "led3-en";
+			u-boot,dm-pre-reloc;
+		};
+
+	};
+
 	gpio_expander1: mcp23018@20 {
 		compatible = "microchip,mcp23018";
 		reg = <0x20>;
@@ -152,7 +233,7 @@
 		led1 {
 			gpio-hog;
 			gpios = <0 GPIO_ACTIVE_HIGH>;
-			output-high;
+			output-low;
 			line-name = "led1-en";
 			u-boot,dm-pre-reloc;
 		};
@@ -160,7 +241,7 @@
 		led2 {
 			gpio-hog;
 			gpios = <1 GPIO_ACTIVE_HIGH>;
-			output-high;
+			output-low;
 			line-name = "led2-en";
 			u-boot,dm-pre-reloc;
 		};
@@ -168,7 +249,7 @@
 		led3 {
 			gpio-hog;
 			gpios = <2 GPIO_ACTIVE_HIGH>;
-			output-high;
+			output-low;
 			line-name = "led3-en";
 			u-boot,dm-pre-reloc;
 		};
@@ -218,138 +299,6 @@
 			gpios = <9 GPIO_ACTIVE_HIGH>;
 			output-high;
 			line-name = "emmc-som-en";
-			u-boot,dm-pre-reloc;
-		};
-	};
-
-	gpio_expander2: mcp23017@22 {
-		compatible = "microchip,mcp23017";
-		reg = <0x22>;
-		gpio-controller;
-		#gpio-cells = <2>;
-		u-boot,dm-pre-reloc;
-
-		eeprom {
-			gpio-hog;
-			gpios = <0 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "eeprom-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		pushbutton {
-			gpio-hog;
-			gpios = <1 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "pushbutton-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		microsd {
-			gpio-hog;
-			gpios = <2 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "~microsd-spi";
-			u-boot,dm-pre-reloc;
-		};
-
-		ftdi {
-			gpio-hog;
-			gpios = <3 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~ftdi-usb-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		can {
-			gpio-hog;
-			gpios = <4 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "~can-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		adau1962 {
-			gpio-hog;
-			gpios = <6 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "adau1962-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		adau1979 {
-			gpio-hog;
-			gpios = <7 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "adau1979-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		octal {
-			gpio-hog;
-			gpios = <8 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "octal-spi-cs-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		spdif-dig {
-			gpio-hog;
-			gpios = <9 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "~spdif-digital-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		spdif-opt {
-			gpio-hog;
-			gpios = <10 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "~spdif-optical-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		audio-jack {
-			gpio-hog;
-			gpios = <11 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "audio-jack-sel";
-			u-boot,dm-pre-reloc;
-		};
-
-		mlb {
-			gpio-hog;
-			gpios = <12 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "~mlb-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		eth1 {
-			gpio-hog;
-			gpios = <13 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~eth1-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		eth1-reset {
-			gpio-hog;
-			gpios = <14 GPIO_ACTIVE_HIGH>;
-			/*
-			 * USB0 lines are shared with Eth1 so  Eth PHY must be held in reset
-			 * when using the USB
-			 */
-			output-low;
-			line-name = "~eth1-reset";
-			u-boot,dm-pre-reloc;
-		};
-
-		gige-reset {
-			gpio-hog;
-			gpios = <15 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "~gige-reset";
 			u-boot,dm-pre-reloc;
 		};
 	};
