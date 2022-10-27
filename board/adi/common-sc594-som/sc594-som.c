@@ -82,16 +82,17 @@ void s_init(void)
 
 void adi_eth_init(void)
 {
-#if defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT)
+#if defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT) || defined(CONFIG_ADI_CARRIER_SOMCRR_EZLITE)
 	adi_enable_ethernet_softconfig();
 	mdelay(20);
 	adi_disable_ethernet_softconfig();
 	mdelay(90);
 	adi_enable_ethernet_softconfig();
 	mdelay(20);
-
-	writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
 #endif
+
+	// select RGMII
+	writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
 }
 
 int board_phy_config(struct phy_device *phydev)
