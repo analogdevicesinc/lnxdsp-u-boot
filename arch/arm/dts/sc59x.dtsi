@@ -135,12 +135,6 @@
 &gpio0 {
 	adi,ngpios = <135>;
 
-	emac0_phy_pwdn {
-		gpio-hog;
-		output-high;
-		gpios = <ADI_ADSP_PIN('G', 12) GPIO_ACTIVE_HIGH>;
-	};
-
 	pushbutton0 {
 		gpio-hog;
 		input;
