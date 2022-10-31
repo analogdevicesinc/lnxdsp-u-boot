@@ -8,7 +8,7 @@
  * Contact: Greg Malysa <greg.malysa@timesys.com>
  */
 
-#include <asm/mach-adi/common/sc5xx.h>
+#include <asm/arch-adi/sc5xx/sc5xx.h>
 #include <asm/io.h>
 #include <config.h>
 #include "cguinit.h"

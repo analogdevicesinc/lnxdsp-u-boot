@@ -13,7 +13,7 @@
 #include <common.h>
 #include <command.h>
 #include <i2c.h>
-#include <asm/mach-adi/common/twi.h>
+#include <asm/arch-adi/sc5xx/twi.h>
 #include <asm/io.h>
 #include <console.h>
 #include <clk.h>

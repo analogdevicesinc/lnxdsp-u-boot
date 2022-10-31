@@ -40,8 +40,8 @@
 #include "cadence_qspi.h"
 
 #if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
-#include <asm/mach-adi/common/ospi.h>
-#include <asm/mach-adi/common/adi_mdma.h>
+#include <asm/arch-adi/sc5xx/ospi.h>
+#include <asm/arch-adi/sc5xx/adi_mdma.h>
 #include <env.h>
 #endif
 

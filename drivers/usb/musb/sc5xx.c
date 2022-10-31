@@ -13,7 +13,7 @@
 
 #include <common.h>
 #include <usb.h>
-#include <asm/mach-adi/common/sc5xx.h>
+#include <asm/arch-adi/sc5xx/sc5xx.h>
 #include "musb_core.h"
 
 /* MUSB platform configuration */

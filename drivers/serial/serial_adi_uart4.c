@@ -24,7 +24,7 @@
 
 #if CONFIG_SC59X_64
 #ifdef ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
-#include <asm/mach-adi/59x-64/sc598-som-ezkit-dynamic-qspi-ospi-uart-mux.h>
+#include <asm/arch-adi/sc5xx-64/sc598-som-ezkit-dynamic-qspi-ospi-uart-mux.h>
 #endif
 #endif
 
