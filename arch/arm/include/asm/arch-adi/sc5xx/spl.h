@@ -15,12 +15,12 @@
 #include <phy.h>
 #include <asm/io.h>
 #include <asm/mach-types.h>
-#include <asm/mach-adi/common/sc5xx.h>
+#include <asm/arch-adi/sc5xx/sc5xx.h>
 #include <linux/delay.h>
 #include <linux/stringify.h>
 #include <watchdog.h>
 #include <asm/spl.h>
-#include <asm/mach-adi/common/rcu.h>
+#include <asm/arch-adi/sc5xx/rcu.h>
 
 struct adi_boot_args {
 	u32 addr;

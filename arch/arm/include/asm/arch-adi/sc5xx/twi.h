@@ -11,7 +11,7 @@
 #ifndef __ADI_PERIPHERAL_TWI__
 #define __ADI_PERIPHERAL_TWI__
 
-#include <asm/mach-adi/common/sc5xx.h>
+#include <asm/arch-adi/sc5xx/sc5xx.h>
 
 #define CLKLOW(x) ((x) & 0xFF)     // Periods Clock Is Held Low
 #define CLKHI(y) (((y)&0xFF)<<0x8) // Periods Clock Is High 

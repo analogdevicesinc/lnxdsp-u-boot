@@ -14,7 +14,7 @@
  */
 
 #include <common.h>
-#include <asm/mach-adi/common/sc5xx.h>
+#include <asm/arch-adi/sc5xx/sc5xx.h>
 #include <asm/io.h>
 #include <dm.h>
 #include <wdt.h>

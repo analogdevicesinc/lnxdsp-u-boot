@@ -21,14 +21,14 @@
 #include <asm/io.h>
 #include <asm/gpio.h>
 #include <asm/mach-types.h>
-#include <asm/mach-adi/common/sc5xx.h>
+#include <asm/arch-adi/sc5xx/sc5xx.h>
 #include <linux/delay.h>
 #include <watchdog.h>
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
 #include <dm/pinctrl.h>
 #include <asm/arch-adi/sc5xx/sc59x-shared.h>
-#include <asm/mach-adi/59x-64/sc598-som-ezkit-dynamic-qspi-ospi-uart-mux.h>
+#include <asm/arch-adi/sc5xx-64/sc598-som-ezkit-dynamic-qspi-ospi-uart-mux.h>
 
 extern bool uartEnabled;
 extern bool uartReadyToEnable;

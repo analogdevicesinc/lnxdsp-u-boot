@@ -12,7 +12,7 @@
 #ifndef __CONFIG_SC589_MINI_H
 #define __CONFIG_SC589_MINI_H
 
-#include <asm/mach-adi/common/config.h>
+#include <asm/arch-adi/sc5xx/config.h>
 #include <linux/sizes.h>
 
 /*

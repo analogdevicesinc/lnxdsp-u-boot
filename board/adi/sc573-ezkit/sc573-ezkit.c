@@ -13,7 +13,7 @@
 #include <phy.h>
 #include <asm/io.h>
 #include <asm/mach-types.h>
-#include <asm/mach-adi/common/sc5xx.h>
+#include <asm/arch-adi/sc5xx/sc5xx.h>
 #include <asm-generic/gpio.h>
 #include <linux/delay.h>
 #include <watchdog.h>

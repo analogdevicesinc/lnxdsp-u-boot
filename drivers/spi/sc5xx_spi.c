@@ -13,7 +13,7 @@
 
 #include <common.h>
 #include <spi.h>
-#include <asm/mach-adi/common/cpu.h>
+#include <asm/arch-adi/sc5xx/cpu.h>
 
 #ifdef CONFIG_DM_SPI
 #include "adi_spi3_dm.h"

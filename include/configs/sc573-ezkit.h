@@ -12,7 +12,7 @@
 #ifndef __CONFIG_SC573_EZKIT_H
 #define __CONFIG_SC573_EZKIT_H
 
-#include <asm/mach-adi/common/config.h>
+#include <asm/arch-adi/sc5xx/config.h>
 #include <linux/sizes.h>
 
 /*
