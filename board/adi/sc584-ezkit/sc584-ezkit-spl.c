@@ -8,7 +8,7 @@
  * Contact: Greg Malysa <greg.malysa@timesys.com>
  */
 
-#include "../common/spl.h"
+#include <asm/arch-adi/sc5xx/spl.h>
 
 // @todo pHook is actually used by the sc58x SoCs and is always 0x00000301
 

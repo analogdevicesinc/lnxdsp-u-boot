@@ -17,8 +17,8 @@
 #include <linux/delay.h>
 #include <watchdog.h>
 
-#include "../common/sc59x/sc59x-shared.h"
-#include "../common/soc.h"
+#include <asm/arch-adi/sc5xx/sc59x-shared.h>
+#include <asm/arch-adi/sc5xx/soc.h>
 
 extern char __bss_start, __bss_end;
 static void bss_clear(void)

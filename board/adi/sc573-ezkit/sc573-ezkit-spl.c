@@ -8,7 +8,7 @@
  * Contact: Greg Malysa <greg.malysa@timesys.com>
  */
 
-#include "../common/spl.h"
+#include <asm/arch-adi/sc5xx/spl.h>
 
 // Table 45-16 in SC573 HRM
 const struct adi_boot_args adi_rom_boot_args[] = {

@@ -18,7 +18,7 @@
 #include <linux/delay.h>
 #include <watchdog.h>
 
-#include "../common/soc.h"
+#include <asm/arch-adi/sc5xx/soc.h>
 
 extern char __rel_dyn_start, __rel_dyn_end;
 extern char __bss_start, __bss_end;
