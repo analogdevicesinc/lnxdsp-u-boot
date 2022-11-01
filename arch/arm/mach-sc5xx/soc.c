@@ -14,7 +14,7 @@
 #include <asm/system.h>
 #include <cpu_func.h>
 
-#include "soc.h"
+#include <asm/arch-adi/sc5xx/soc.h>
 
 void reset_cpu(ulong addr)
 {

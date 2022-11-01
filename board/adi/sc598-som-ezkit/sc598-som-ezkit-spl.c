@@ -11,7 +11,7 @@
  *
  */
 
-#include "../common/spl.h"
+#include <asm/arch-adi/sc5xx/spl.h>
 
 // Table 43-14 in SC598 hardware reference manual
 const struct adi_boot_args adi_rom_boot_args[] = {

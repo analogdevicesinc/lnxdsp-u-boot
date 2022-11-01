@@ -22,7 +22,7 @@
 #include <watchdog.h>
 #include <asm/armv8/mmu.h>
 #include <asm/spl.h>
-#include "sc59x-shared.h"
+#include <asm/arch-adi/sc5xx/sc59x-shared.h>
 
 int adi_enable_ethernet_softconfig(void)
 {

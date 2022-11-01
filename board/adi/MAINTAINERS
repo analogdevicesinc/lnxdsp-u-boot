@@ -3,6 +3,7 @@ M: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
 M: Greg Malysa <greg.malysa@timesys.com>
 S: Maintained
 F: board/adi
+F: arch/arm/mach-sc5xx/
 F: arch/arm/include/asm/arch-adi/
 F: include/configs/sc573-ezkit.h
 F: include/configs/sc584-ezkit.h

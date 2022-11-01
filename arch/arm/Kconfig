@@ -519,29 +519,8 @@ config ARCH_AT91
 	select SPL_BOARD_INIT if SPL && !TARGET_SMARTWEB
 	select SPL_SEPARATE_BSS if SPL
 
-config TARGET_SC598_SOM_EZKIT
-	bool "Analog Devices SC598 SOM EZ Kit"
-	select SC59X_64
-
-config TARGET_SC594_SOM_EZKIT
-	bool "Analog Devices SC594 SOM EZ Kit"
-	select SC59X
-
-config TARGET_SC589_EZKIT
-	bool "Analog Devices SC589 EZ Kit"
-	select SC58X
-
-config TARGET_SC589_MINI
-	bool "Analog Devices SC589 Mini Kit"
-	select SC58X
-
-config TARGET_SC584_EZKIT
-	bool "Analog Devices SC584 EZ Kit"
-	select SC58X
-
-config TARGET_SC573_EZKIT
-	bool "Analog Devices SC573 EZ Kit"
-	select SC57X
+config ARCH_SC5XX
+	bool "Analog Devices SC5xx"
 
 config TARGET_EDB93XX
 	bool "Support edb93xx"
@@ -1959,7 +1938,13 @@ source "arch/arm/mach-imx/Kconfig"
 
 source "arch/arm/mach-nexell/Kconfig"
 
-source "board/adi/common/Kconfig"
+source "arch/arm/mach-sc5xx/Kconfig"
+source "board/adi/sc573-ezkit/Kconfig"
+source "board/adi/sc584-ezkit/Kconfig"
+source "board/adi/sc589-ezkit/Kconfig"
+source "board/adi/sc589-mini/Kconfig"
+source "board/adi/sc594-som-ezkit/Kconfig"
+source "board/adi/sc598-som-ezkit/Kconfig"
 source "board/armltd/total_compute/Kconfig"
 source "board/bosch/shc/Kconfig"
 source "board/bosch/guardian/Kconfig"

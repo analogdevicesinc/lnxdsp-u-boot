@@ -18,8 +18,8 @@
 #include <watchdog.h>
 #include <asm/armv8/mmu.h>
 
-#include "../common/sc59x/sc59x-shared.h"
-#include "../common/soc.h"
+#include <asm/arch-adi/sc5xx/sc59x-shared.h>
+#include <asm/arch-adi/sc5xx/soc.h>
 
 static struct mm_region sc598_mem_map[] = {
 	{
