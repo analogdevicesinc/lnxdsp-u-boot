@@ -14,11 +14,15 @@
 #include "sc58x.dtsi"
 
 / {
+	#address-cells = <1>;
+	#size-cells = <1>;
 	model = "ADI sc589-ezkit";
 	compatible = "adi,sc589-ezkit", "adi,sc58x";
 };
 
 &i2c2 {
+	#address-cells = <1>;
+	#size-cells = <0>;
 	gpio_expander1: mcp23017@21 {
 		compatible = "microchip,mcp23017";
 		reg = <0x21>;
