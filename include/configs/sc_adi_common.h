@@ -198,6 +198,7 @@
 	"initramaddr=" INITRAMADDR "\0" \
 	"dtbfile=" CONFIG_DTBNAME "\0" \
 	"dtbaddr=" CONFIG_DTBLOADADDR "\0" \
+	"loadaddr="	__stringify(CONFIG_LOADADDR) "\0" \
 	"ramargs=setenv bootargs " CONFIG_BOOTARGS "\0" \
 	"ethaddr=" ETH0ADDR "\0" \
 	ADI_ENV_SETTINGS
