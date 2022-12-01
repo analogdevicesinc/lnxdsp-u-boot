@@ -1108,14 +1108,9 @@ int cadence_qspi_setup_octal(struct cadence_spi_platdata *plat){
 
 int cadence_enter_octal_is25(struct cadence_spi_platdata *plat, struct spi_mem_op * wren,
 								struct spi_mem_op * opTemp, char * id_spi){
-	char data[1] = {0xff};
-	opTemp->cmd.opcode = 0x81;
-	data[0] = 0xC7;
-	opTemp->data.buf.out = data;
-	opTemp->data.nbytes = 1;
-	cadence_qspi_apb_command_write(plat->regbase, opTemp);
 
-	//TODO: Read back and check for errors, like cadence_enter_octal_mx66() function
+	//The IS25LX256 only uses 1S-1S-8S in the default extended SPI mode
+	//We don't actually need to switch into DTR mode via issuing "0x81 0xC7"
 
 	plat->cadenceMode = CADENCE_OSPI_MODE;
 	cadence_qspi_setup_octal(plat);
@@ -1274,7 +1269,6 @@ int cadence_configure_opi_mode(struct cadence_spi_platdata *plat){
 			plat->write_dummy = 0;
 			plat->read_opcode = 0x8B;
 			plat->write_opcode = 0x82;
-			printf("Configure IS25LX256: Set VCR to Octal DDR without DQS\r\n");
 			return cadence_enter_octal_is25(plat, &wren, &opTemp, id_spi);
 			break;
 		default:
