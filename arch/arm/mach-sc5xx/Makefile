@@ -10,10 +10,6 @@
 
 obj-y += soc.o init/
 
-ifeq ($(CONFIG_SPL),n)
-obj-y += arm32/lowlevel_init.o
-endif
-
 ifneq ($(filter y,$(CONFIG_SC59X_64) $(CONFIG_SC59X)),)
 obj-y += sc59x/sc59x-shared.o
 endif

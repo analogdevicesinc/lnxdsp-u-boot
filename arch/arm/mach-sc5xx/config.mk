@@ -15,5 +15,5 @@ LDR_FLAGS += --use-vmas
 
 ifndef CONFIG_SC59X_64
 	# Select the Analog Devices processor.
-	PLATFORM_RELFLAGS += -fno-stack-protector -std=gnu89 -mfpu=neon-vfpv4 -march=armv7-a
+	PLATFORM_RELFLAGS += -fno-stack-protector -std=gnu89
 endif
