@@ -117,34 +117,29 @@ __attribute__((always_inline)) static inline void calibration_method1(void){
 
 __attribute__((always_inline)) static inline void calibration_method2(void){
 
-#ifdef CONFIG_SC59X_64
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
   uint32_t stat_value = 0x0u;
   uint32_t drv_pu , drv_pd, odt_pu, odt_pd;
   uint32_t ROdt, ClkDqsDrvImpedance;
   uint32_t temp;
-#endif
 
-#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
   /* Reset trigger */
   writel(0x0ul, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u);
-
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_3);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_2);
-  dmcdelay(5000u);
 
   /* Writing internal registers in calib pad to zero. Calib mode set to 1 [26], trig M1 S1 write [16],
    * this enables usage of scratch registers instead of ZQCTL registers
    */
   writel(0x04010000ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
 
   /* TRIGGER FOR M2-S2 WRITE     -> slave id 31:26  trig m2,s2 write bit 1->1
    * slave1 address is 4
    */
   writel(0x10000002ul, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
 
   /* reset Trigger */
   writel(0x0u, dmc.reg->REG_DMC_DDR_CA_CTL);
@@ -153,75 +148,60 @@ __attribute__((always_inline)) static inline void calibration_method2(void){
   /* write to slave 1, make the power down bit high */
   writel(0x1ul<<12, dmc.reg->REG_DMC_DDR_SCRATCH_3);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_2);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
 
   /* Calib mode set to 1 [26], trig M1 S1 write [16] */
   writel(0x04010000ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
 
   writel(0x10000002ul, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
 
   writel(0x0ul, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u);
-
-#ifdef CONFIG_SC59X_64
   writel(0x0, dmc.reg->REG_DMC_DDR_SCRATCH_3);
-#endif
 
   /* for slave 0 */
   writel(dmc.dmc_zqctl0_value, dmc.reg->REG_DMC_DDR_SCRATCH_2);
-  dmcdelay(5000u);
 
   /* Calib mode set to 1 [26], trig M1 S1 write [16] */
   writel(0x04010000ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
 
   writel(0x0C000002ul, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
 
   writel(0x0ul, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u);
 
   /* writing to slave 1
   calstrt is 0, but other programming is done */
   /* make power down LOW again, to kickstart BIAS circuit */
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_3);
-
-#ifdef CONFIG_SC59X_64
   writel(0x30000000ul, dmc.reg->REG_DMC_DDR_SCRATCH_2);
-#else
-  writel(0x70000000ul, dmc.reg->REG_DMC_DDR_SCRATCH_2);
-#endif
-
-  dmcdelay(5000u);
 
   /* write to ca_ctl lane, calib mode set to 1 [26], trig M1 S1 write [16]*/
   writel(0x04010000ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
 
   /*  copies data to lane controller slave
    *  TRIGGER FOR M2-S2 WRITE     -> slave id 31:26  trig m2,s2 write bit 1->1
    *  slave1 address is 4
    */
   writel(0x10000002ul, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
 
   /* reset Trigger */
   writel(0x0ul, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-
-#ifdef CONFIG_SC59X_64
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_3);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_2);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_3);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_2);
   writel(0x04010000ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
   writel(0x10000002ul, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_3);
@@ -229,15 +209,15 @@ __attribute__((always_inline)) static inline void calibration_method2(void){
   writel(0x0ul, dmc.reg->REG_DMC_DDR_SCRATCH_3);
   writel(0x50000000ul, dmc.reg->REG_DMC_DDR_SCRATCH_2);
   writel(0x04010000ul, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
   writel(0x10000002ul, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
   writel(0u, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0u, dmc.reg->REG_DMC_DDR_ROOT_CTL);
   writel(0x0C000004u, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
   writel(BITM_DMC_DDR_ROOT_CTL_TRIG_RD_XFER_ALL, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
   writel(0u, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0u, dmc.reg->REG_DMC_DDR_ROOT_CTL);
   // calculate ODT PU and PD values
@@ -257,18 +237,17 @@ __attribute__((always_inline)) static inline void calibration_method2(void){
   temp |= readl(dmc.reg->REG_DMC_DDR_SCRATCH_2);
   writel(temp, dmc.reg->REG_DMC_DDR_SCRATCH_2);
   writel(0x0C010000u, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
   writel(0x08000002u, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
   writel(0u, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0u, dmc.reg->REG_DMC_DDR_ROOT_CTL);
   writel(0x04010000u, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
   writel(0x80000002u, dmc.reg->REG_DMC_DDR_CA_CTL);
-  dmcdelay(5000u);
+  dmcdelay(2500u);
   writel(0u, dmc.reg->REG_DMC_DDR_CA_CTL);
   writel(0u, dmc.reg->REG_DMC_DDR_ROOT_CTL);
-#endif
 
 #endif
 
@@ -329,10 +308,12 @@ __attribute__((always_inline)) static inline void dmc_controller_init(void){
 #if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
     writel(dmc.dmc_mr3_value, dmc.reg->REG_DMC_EMR3);
     writel(dmc.dmc_dllctl_value, dmc.reg->REG_DMC_DLLCTL);
+    dmcdelay(2000u);
 
     temp = readl(dmc.reg->REG_DMC_DDR_CA_CTL);
     temp |= BITM_DMC_DDR_CA_CTL_SW_REFRESH;
     writel(temp, dmc.reg->REG_DMC_DDR_CA_CTL);
+    dmcdelay(5u);
 
     temp = readl(dmc.reg->REG_DMC_DDR_ROOT_CTL);
     temp |= BITM_DMC_DDR_ROOT_CTL_SW_REFRESH | (DMC_OFSTDCYCLE << BITP_DMC_DDR_ROOT_CTL_PIPE_OFSTDCYCLE);

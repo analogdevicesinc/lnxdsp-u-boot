@@ -324,8 +324,6 @@ typedef struct{
     uint32_t REG_DMC_DDR_ZQ_CTL0;
     uint32_t REG_DMC_DDR_ZQ_CTL1;
     uint32_t REG_DMC_DDR_ZQ_CTL2;
-#endif
-#if defined(CONFIG_SC59X_64)
     uint32_t REG_DMC_DDR_SCRATCH_6;
     uint32_t REG_DMC_DDR_SCRATCH_7;
     uint32_t REG_DMC_DDR_SCRATCH_STAT0;
@@ -407,19 +405,13 @@ __attribute__((always_inline)) static inline void dmcdelay(uint32_t delay)
         .REG_DMC_DDR_SCRATCH_3 = REG_DMC##x##_DDR_SCRATCH_3, \
         .REG_DMC_DDR_ZQ_CTL0 = REG_DMC##x##_DDR_ZQ_CTL0, \
         .REG_DMC_DDR_ZQ_CTL1 = REG_DMC##x##_DDR_ZQ_CTL1, \
-        .REG_DMC_DDR_ZQ_CTL2 = REG_DMC##x##_DDR_ZQ_CTL2,
-#else
-    #define REGISTERS_59X(x)
-#endif
-
-#if defined(CONFIG_SC59X_64)
-    #define REGISTERS_59X_64(x) \
+        .REG_DMC_DDR_ZQ_CTL2 = REG_DMC##x##_DDR_ZQ_CTL2, \
         .REG_DMC_DDR_SCRATCH_6 = REG_DMC##x##_DDR_SCRATCH_6, \
         .REG_DMC_DDR_SCRATCH_7 = REG_DMC##x##_DDR_SCRATCH_7, \
         .REG_DMC_DDR_SCRATCH_STAT0 = REG_DMC##x##_DDR_SCRATCH_STAT0, \
         .REG_DMC_DDR_SCRATCH_STAT1 = REG_DMC##x##_DDR_SCRATCH_STAT1,
 #else
-    #define REGISTERS_59X_64(x)
+    #define REGISTERS_59X(x)
 #endif
 
 #define DECLARE_DMC_REGISTERS(x) \
@@ -445,7 +437,6 @@ __attribute__((always_inline)) static inline void dmcdelay(uint32_t delay)
         .VAL_DMC_DATA_CALIB_ADD = DMC##x##_DATA_CALIB_ADD, \
         .REG_DMC_DT_CALIB_ADDR = REG_DMC##x##_DT_CALIB_ADDR, \
         REGISTERS_59X(x) \
-        REGISTERS_59X_64(x) \
     };
 #endif
 
