@@ -23,7 +23,7 @@
 		#define ADI_BOOT "booti ${loadaddr} - ${dtbaddr};"
 	#else
 		#define IMAGEFILE "fitImage"
-		#define ADI_BOOT_INITRD "bootm ${loadaddr} ${initramaddr};"
+		#define ADI_BOOT_INITRD "bootm ${loadaddr};"
 		#define ADI_BOOT "bootm ${loadaddr};"
 	#endif
 #else
@@ -34,7 +34,7 @@
 		#define ADI_BOOT "bootz ${loadaddr} - ${dtbaddr};"
 	#else
 		#define IMAGEFILE "fitImage"
-		#define ADI_BOOT_INITRD "bootm ${loadaddr} ${initramaddr};"
+		#define ADI_BOOT_INITRD "bootm ${loadaddr};"
 		#define ADI_BOOT "bootm ${loadaddr};"
 	#endif
 #endif
@@ -49,6 +49,7 @@
 	#define ADI_SPI_BOOTCMD "sf read ${loadaddr} " ADI_IMG_OFFSET " ${imagesize}; bootm ${loadaddr};"
 	#define ADI_MMC_LOAD "ext4load mmc 0:1 ${loadaddr} /boot/fitImage;"
 	#define ADI_TFTP_DTB ""
+	#define ADI_TFTP_INITRD	""
 #else
 	#define ADI_UPDATE_SPI_DTB_CMD " run update_spi_dtb;"
 	#define ADI_UPDATE_SPI_IMAGE_CMD " run update_spi_image;"
@@ -56,6 +57,7 @@
 	#define ADI_SPI_BOOTCMD "sf read ${loadaddr} " ADI_IMG_OFFSET " ${imagesize}; sf read ${dtbaddr} ${dtbloadaddr} ${dtbsize}; booti ${loadaddr} - ${dtbaddr}"
 	#define ADI_MMC_LOAD "ext4load mmc 0:1 ${dtbaddr} /boot/" CONFIG_DTBNAME "; ext4load mmc 0:1 ${loadaddr} /boot/Image;"
 	#define ADI_TFTP_DTB "tftp ${dtbaddr} ${tftp_dir_prefix}${dtbfile}; "
+	#define ADI_TFTP_INITRD	"tftp ${initramaddr} ${tftp_dir_prefix}${initramfile}; "
 #endif
 
 #define ADI_MMC_BOOTCMD "run mmcargs; " ADI_BOOT ""
@@ -104,7 +106,7 @@
 	"run init_ethernet; " \
 	"tftp ${loadaddr} ${tftp_dir_prefix}${imagefile}; " \
 	ADI_TFTP_DTB \
-	"tftp ${initramaddr} ${tftp_dir_prefix}${initramfile}; " \
+	ADI_TFTP_INITRD \
 	"run ramargs; " \
 	ADI_BOOT_INITRD \
 	"\0"
