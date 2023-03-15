@@ -65,7 +65,8 @@
 #define ADI_BOOTARGS_CONSOLE \
 		ADI_EARLYPRINTK \
 		"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
-						__stringify(CONFIG_BAUDRATE) " "
+						__stringify(CONFIG_BAUDRATE) " " \
+		"vmalloc=512M "
 
 #define ADI_BOOTARGS_MMC \
 		"root=/dev/mmcblk0p1 rw " \
