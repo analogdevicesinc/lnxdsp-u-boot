@@ -13,12 +13,6 @@
 #include "sc5xx.dtsi"
 #include "sc59x.dtsi"
 
-/ {
-	config {
-		u-boot,spl-payload-offset = <0x20000>;
-	};
-};
-
 &timer0 {
 	clocks = <&clk ADSP_SC594_CLK_CGU0_SCLK0>;
 };
