@@ -233,7 +233,8 @@ void adi_check_pushbuttons(bool active1, bool active2){
 	gpio_hog_lookup_name("pushbutton-en", &pbEn);
 
 	//Assert push button enablement on GPIO expander
-	dm_gpio_set_value(pbEn, 1);
+	if(pbEn)
+		dm_gpio_set_value(pbEn, 1);
 
 	if (!pb0 || !pb1)
 		return;
