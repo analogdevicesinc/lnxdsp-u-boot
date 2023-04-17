@@ -51,7 +51,7 @@ struct adi_boot_args {
 
 extern u32 bmode;
 
-extern void adi_check_pushbuttons(void);
+extern void adi_check_pushbuttons(bool active1, bool active2);
 
 extern const struct adi_boot_args adi_rom_boot_args[8];
 

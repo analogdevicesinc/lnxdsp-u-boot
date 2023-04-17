@@ -14,12 +14,6 @@
 #include "sc59x.dtsi"
 
 / {
-	config {
-		/* Offsets where U-Boot Proper is stored -- used by SPL */
-		u-boot,spl-payload-offset = <0x20000>;	 /* QSPI byte offset -- 128KB  */
-		u-boot,spl-mmc-sector-offset = <0x200>;  /* MMC sector offset -- 256KB */
-	};
-
 	soc {
 		sharc1: sharc@0x28240000 {
 			compatible = "adi,sc5xx-rproc";

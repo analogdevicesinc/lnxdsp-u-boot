@@ -13,7 +13,7 @@
 #include <asm/arch-adi/sc5xx/spl.h>
 #include "init/init.h"
 
-static bool adi_start_uboot_proper = 1;
+static bool adi_start_uboot_proper = 0;
 
 static int adi_sf_default_bus = CONFIG_SF_DEFAULT_BUS;
 static int adi_sf_default_cs = CONFIG_SF_DEFAULT_CS;
@@ -21,6 +21,8 @@ static int adi_sf_default_speed = CONFIG_SF_DEFAULT_SPEED;
 
 #if defined(CONFIG_ADI_FALCON)
 static char * adi_kernel_bootargs;
+static uint32_t initramfs_start;
+static uint32_t initramfs_len;
 #endif
 
 u32 bmode;
@@ -71,7 +73,7 @@ void board_boot_order(u32 *spl_boot_list)
 
 #ifdef CONFIG_ADI_FALCON
 	//Check for push button press to determine if we're falling back into U-Boot Proper
-	adi_check_pushbuttons();
+	adi_check_pushbuttons(ADI_PB1_POLARITY, ADI_PB2_POLARITY);
 #endif
 
 #if CONFIG_ADI_SPL_FORCE_BMODE != 0
@@ -119,7 +121,7 @@ void board_boot_order(u32 *spl_boot_list)
 			break;
 #if defined(CONFIG_MMC_SDHCI_ADI) && defined(CONFIG_SC59X_64)
 		case 6:
-			adi_kernel_bootargs = ADI_BOOTARGS_EMMC;
+			adi_kernel_bootargs = ADI_BOOTARGS_MMC;
 			spl_boot_list[0] = BOOT_DEVICE_MMC1;
 			break;
 #endif
@@ -221,22 +223,27 @@ void board_init_f(ulong dummy) {
 }
 
 #ifdef CONFIG_ADI_FALCON
-void adi_check_pushbuttons(){
+void adi_check_pushbuttons(bool active1, bool active2){
 	struct gpio_desc *pb0;
 	struct gpio_desc *pb1;
+	struct gpio_desc *pbEn;
 
 	gpio_hog_lookup_name("pushbutton0", &pb0);
 	gpio_hog_lookup_name("pushbutton1", &pb1);
+	gpio_hog_lookup_name("pushbutton-en", &pbEn);
+
+	//Assert push button enablement on GPIO expander
+	dm_gpio_set_value(pbEn, 1);
 
 	if (!pb0 || !pb1)
 		return;
 
-	if (dm_gpio_get_value(pb0) || dm_gpio_get_value(pb1)) {
+	if ((dm_gpio_get_value(pb0) == active1) || (dm_gpio_get_value(pb1) == active2)) {
+		printf("Pushbutton helding during boot -- entering U-Boot Proper");
 		adi_start_uboot_proper = 1;
-
 		//Wait until they're released, in case these pins conflict with peripherals (OSPI, etc)
-		while(dm_gpio_get_value(pb0));
-		while(dm_gpio_get_value(pb1));
+		while((dm_gpio_get_value(pb0) == active1));
+		while((dm_gpio_get_value(pb1) == active2));
 	}else{
 		adi_start_uboot_proper = 0;
 	}
@@ -307,9 +314,21 @@ void adi_fdt_fixup_kernel_bootargs(void * fdt){
 	}
 }
 
+#if defined(CONFIG_ADI_FALCON)
+void adi_store_initramfs_addr(uint32_t start, uint32_t len){
+	initramfs_start = start;
+	initramfs_len = len;
+}
+#endif
+
 int spl_board_fixup_fdt(void * fdt){
 	adi_fdt_fixup_mac_addr(fdt);
 	adi_fdt_fixup_kernel_bootargs(fdt);
+
+#if defined(CONFIG_ADI_FALCON)
+	fdt_initrd(fdt, initramfs_start, initramfs_start+initramfs_len);
+#endif
+
 	return 0;
 }
 #endif

@@ -38,23 +38,23 @@
 #endif
 
 //L2 SRAM:
-//TEXT:   0x20080000 to 0x2009FFFF (128 KB)
-//BSS:    0x200A0000 to 0x200AFFFF (64  KB)
-//MALLOC: 0x200B0000 to 0x200BFFFF (64  KB)
-//STACK:  0x200C0000 to 0x200CFFFF (64  KB)
-#define CONFIG_SPL_MAX_SIZE		SZ_128K
+//TEXT:   0x20080000 to 0x200AFFFF (192 KB)
+//BSS:    0x200B0000 to 0x200BFFFF (64  KB)
+//MALLOC: 0x200C0000 to 0x200CFFFF (64  KB)
+//STACK:  0x200D0000 to 0x200E4FFF (80  KB)
+#define CONFIG_SPL_MAX_SIZE		SZ_192K
 #ifdef CONFIG_SPL_BUILD
-#define CONFIG_SPL_BSS_START_ADDR	0x200A0000
+#define CONFIG_SPL_BSS_START_ADDR	0x200B0000
 #define CONFIG_SPL_BSS_MAX_SIZE		SZ_64K
 #define CONFIG_SYS_SPL_MALLOC_START	(CONFIG_SPL_BSS_START_ADDR + CONFIG_SPL_BSS_MAX_SIZE)
 #define CONFIG_SYS_SPL_MALLOC_SIZE	SZ_64K
 #define CONFIG_SPL_STACK		(CONFIG_SYS_SPL_MALLOC_START + CONFIG_SYS_SPL_MALLOC_SIZE + CONFIG_SPL_STACK_SIZE)
-#define CONFIG_SPL_STACK_SIZE		SZ_64K
+#define CONFIG_SPL_STACK_SIZE		(SZ_64K+SZ_16K)
 
 //Parameters used for Falcon boot
 #define CONFIG_SYS_SPI_ARGS_OFFS   0xE0000    // This is where the DTB should be stored
 #define CONFIG_SYS_SPI_ARGS_SIZE   0x10000    // Max size of the DTB
-#define CONFIG_SYS_SPI_KERNEL_OFFS 0x160000   // Where the kernel Image should be stored
+#define CONFIG_SYS_SPI_KERNEL_OFFS 0x120000   // Where the kernel Image or FIT should be stored
 #define CONFIG_SYS_SPL_ARGS_ADDR   0x99000000 // Where to load the DTB into RAM
 #define CONFIG_SYS_SPI_KERNEL_SKIP_HEADER
 #define CONFIG_SYS_MMCSD_RAW_MODE_KERNEL_SECTOR 4096 // Position of kernel Image in sectors
@@ -153,18 +153,22 @@
 
 /* Per-board QSPI/OSPI Partitioning Offsets (64MB/32MB):
  *
- * 0x0000000 - 0x001FFFF : U-Boot Stage 1     (  128KB)
- * 0x0020000 - 0x00DFFFF : U-Boot Stage 2     (  768KB)
- * 0x00E0000 - 0x00FFFFF : U-Boot Environment (  128KB)
- * 0x0100000 - 0x0FFFFFF : FIT or DTB+zImage  (15360KB)
- * 0x1000000 - end       : Root File System
+ * 0x0000000 - 0x003FFFF : U-Boot Stage 1     (  256KB)
+ * 0x0040000 - 0x00FFFFF : U-Boot Stage 2     (  768KB)
+ * 0x0100000 - 0x011FFFF : U-Boot Environment (  128KB)
+ * 0x0120000 - 0x101FFFF : FIT or DTB+zImage  (15360KB)
+ * 0x1020000 - end       : Root File System
  */
 #define ADI_SPI_SIZE     "0x4000000" //64MB
 #define ADI_OSPI_SIZE    "0x4000000" //64MB
-#define ADI_UBOOT_OFFSET "0x20000"
-#define ADI_IMG_OFFSET   "0x0100000"
-#define ADI_RFS_OFFSET   "0x1000000"
+#define ADI_UBOOT_OFFSET "0x40000"
+#define ADI_IMG_OFFSET   "0x0120000"
+#define ADI_RFS_OFFSET   "0x1020000"
 #define ADI_JFFS2_FILE   "minimal" //use the adsp-sc5xx-minimal image
+
+/* Push button polarties -- used for Falcon boot interrupt */
+#define ADI_PB1_POLARITY 1
+#define ADI_PB2_POLARITY 1
 
 #include <configs/sc_adi_common.h>
 
