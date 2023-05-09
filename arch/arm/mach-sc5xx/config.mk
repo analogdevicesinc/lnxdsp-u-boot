@@ -8,6 +8,12 @@
 # Contact: Greg Malysa <greg.malysa@timesys.com>
 #
 
-obj-y += soc.o init/
+INPUTS-y += u-boot.ldr u-boot-$(CONFIG_SYS_BOARD).ldr
 
-obj-$(CONFIG_SPL_BUILD) += spl.o
+LDR_FLAGS += --bcode=$(CONFIG_SC_BOOT_MODE)
+LDR_FLAGS += --use-vmas
+
+ifndef CONFIG_SC59X_64
+	# Select the Analog Devices processor.
+	PLATFORM_RELFLAGS += -fno-stack-protector -std=gnu89
+endif

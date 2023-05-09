@@ -1,0 +1,296 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# (C) Copyright 2022 - Analog Devices, Inc.
+#
+# Written and/or maintained by Timesys Corporation
+#
+# Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+# Contact: Greg Malysa <greg.malysa@timesys.com>
+#
+
+# All 32-bit platforms require SYS_ARM_CACHE_WRITETHROUGH
+# But it is ignored if selected here, so it must be in the defconfig
+
+if ARCH_SC5XX
+
+config TARGET_SC573_EZKIT
+	bool "Analog Devices SC573 EZ Kit"
+	select SC57X
+
+config SC57X
+	bool
+	select SUPPORT_SPL
+	select CPU_V7A
+	select PANIC_HANG
+	select COMMON_CLK_ADI_SC57X
+	select TIMER
+	select ADI_SC5XX_TIMER
+
+config SC_BOOT_MODE
+       int "SC5XX boot mode select"
+       default 1
+       range 0 7
+       help
+         Mode 0: do nothing, just idle
+         Mode 1: boot ldr out of serial flash
+         Mode 7: boot ldr over uart
+
+config SC_BOOT_SPI_BUS
+	int "sc5xx spi boot bus"
+	default 2
+	range 0 4
+	help
+		This is the SPI peripheral number to use for booting, X in the
+		expression `sf probe X:Y`
+
+config SC_BOOT_SPI_SSEL
+	int "sc5xx spi boot chipselect"
+	default 1
+	range 0 6
+	help
+		This is the SPI chip select number to use for booting, Y in the
+		expression `sf probe X:Y`
+
+config SC_BOOT_OSPI_BUS
+	int "sc5xx ospi boot bus"
+	default 0
+	help
+		This is the OSPI peripheral number to use for booting, X in the
+		expression `sf probe X:Y`
+
+config SC_BOOT_OSPI_SSEL
+	int "sc5xx ospi boot chipselect"
+	default 0
+	help
+		This is the OSPI chip select number to use for booting, Y in the
+		expression `sf probe X:Y`
+
+config SPI_MM_BASE
+	hex
+	default 0x60000000
+
+config SYS_FLASH_BASE
+	hex
+	default 0x60000000
+
+config SPI_MM_SIZE
+	hex
+	default 0x20000000
+
+config UART_CONSOLE
+	int
+	default 0
+
+config UART4_SERIAL
+	bool
+	depends on DM_SERIAL
+	default y
+
+config WDT_ADI
+	bool
+	default y
+
+config WATCHDOG_TIMEOUT_MSECS
+	int
+	default 30000
+
+config DTBLOADADDR
+	string
+
+config DTBNAME
+	string
+
+config DW_PORTS
+	int
+	default 1
+
+config ADI_BUG_EZKHW21
+	bool "SC584 EZKIT phy bug workaround"
+	depends on SC58X
+	default n
+	help
+	  This workaround affects the SC584 EZKIT and addresses bug EZKHW21.
+	  It disables gigabit ethernet mode and limits the board to 100 Mbps
+
+config ADI_CARRIER_SOMCRR_EZKIT
+	bool "Support the EV-SOMCRR-EZKIT"
+	depends on (SC59X || SC59X_64)
+	default n
+	help
+	  Support the EV-SOMCRR-EZKIT carrier board for SC594 and SC598 SOMs
+
+config ADI_CARRIER_SOMCRR_EZLITE
+	bool "Support the EV-SOMCRR-EZLITE"
+	depends on (SC59X || SC59X_64)
+	default n
+	help
+	  Support the EV-SOMCRR-EZLITE carrier board for SC594 and SC598 SOMs
+
+config ADI_FALCON
+	bool "Enable Falcon Boot Mode Support"
+	default n
+	help
+		Enable Falcon Boot Mode Support
+
+config ADI_SPL_FORCE_BMODE
+	int "Force the SPL to use this BMODE device during next boot stage"
+	default 0
+	range 0 9
+	depends on SPL
+	help
+	  Force the SPL to use this BMODE device during next boot stage.
+	  For example, if booting via QSPI, we can force the second stage
+	  Of the boot process to use other peripherals via:
+	  1 = QSPI -> QSPI
+	  5 = QSPI -> OSPI
+	  6 = QSPI -> eMMC
+
+config CLKIN_HZ
+	int "CLKIN_HZ"
+	default 25000000
+
+config CGU0_DF_DIV
+	int "CGU0_DF_DIV"
+
+config CGU0_VCO_MULT
+	int "CGU0_VCO_MULT"
+	help
+		VCO_MULT controls the MSEL (multiplier) bits in PLL_CTL
+		Values can range from 0-127 (where 0 means 128)
+
+config CGU0_CCLK_DIV
+	int "CGU0_CCLK_DIV"
+	help
+		CCLK_DIV controls the core clock divider
+		Values can range from 0-31 (where 0 means 32)
+		CCLK = (CLKIN * VCO_MULT) / CCLK_DIV
+
+config CGU0_SCLK_DIV
+	int "CGU0_SCLK_DIV"
+	help
+		SCLK_DIV controls the system clock divider
+		Values can range from 0-31 (where 0 means 32)
+		SCLK = (CLKIN * VCO_MULT) / SYSCLK_DIV
+
+config CGU0_SCLK0_DIV
+	int "CGU0_SCLK0_DIV"
+	help
+		Values can range from 0-7 (where 0 means 8)
+		SCLK0 = SCLK / SCLK0_DIV
+
+config CGU0_SCLK1_DIV
+	int "CGU0_SCLK1_DIV"
+	help
+		Values can range from 0-7 (where 0 means 8)
+		SCLK1 = SCLK / SCLK1_DIV
+
+config CGU0_DCLK_DIV
+	int "CGU0_DCLK_DIV"
+	help
+		DCLK_DIV controls the DDR clock divider
+		Values can range from 0-31 (where 0 means 32)
+
+config CGU0_OCLK_DIV
+	int "CGU0_OCLK_DIV"
+	help
+		OCLK_DIV controls the output clock divider
+		Values can range from 0-127 (where 0 means 128)
+
+if SC59X || SC59X_64
+config CGU0_DIV_S1SELEX
+	int "CGU0_DIV_S1SELEX"
+endif
+
+config CGU1_VCO_MULT
+	int "CGU1_VCO_MULT"
+
+config CGU1_DF_DIV
+	int "CGU1_DF_DIV"
+
+config CGU1_CCLK_DIV
+	int "CGU1_CCLK_DIV"
+
+config CGU1_SCLK_DIV
+	int "CGU1_SCLK_DIV"
+
+config CGU1_SCLK0_DIV
+	int "CGU1_SCLK0_DIV"
+
+config CGU1_SCLK1_DIV
+	int "CGU1_SCLK1_DIV"
+
+config CGU1_DCLK_DIV
+	int "CGU1_DCLK_DIV"
+
+config CGU1_OCLK_DIV
+	int "CGU1_OCLK_DIV"
+
+if SC59X_64
+config CGU1_DIV_S0SELEX
+	int "CGU1_DIV_S0SELEX"
+endif
+
+if SC59X || SC59X_64
+config CGU1_DIV_S1SELEX
+	int "CGU1_DIV_S1SELEX"
+endif
+
+config CDU0_CLKO0
+	int "CDU0_CLKO0"
+
+config CDU0_CLKO1
+	int "CDU0_CLKO1"
+
+config CDU0_CLKO2
+	int "CDU0_CLKO2"
+
+config CDU0_CLKO3
+	int "CDU0_CLKO3"
+
+config CDU0_CLKO4
+	int "CDU0_CLKO4"
+
+config CDU0_CLKO5
+	int "CDU0_CLKO5"
+
+config CDU0_CLKO6
+	int "CDU0_CLKO6"
+
+config CDU0_CLKO7
+	int "CDU0_CLKO7"
+
+config CDU0_CLKO8
+	int "CDU0_CLKO8"
+
+config CDU0_CLKO9
+	int "CDU0_CLKO9"
+
+if SC59X || SC59X_64
+config CDU0_CLKO10
+	int "CDU0_CLK10"
+endif
+
+if SC59X || SC59X_64
+config CDU0_CLKO12
+	int "CDU0_CLKO12"
+endif
+
+if SC59X_64
+config CDU0_CLKO13
+	int "CDU0_CLKO13"
+endif
+
+if SC59X_64
+config CDU0_CLKO14
+	int "CDU0_CLKO14"
+endif
+
+config ADI_GPIO
+	default y
+
+config PINCTRL_ADI
+	default y
+
+source "board/adi/sc573-ezkit/Kconfig"
+
+endif

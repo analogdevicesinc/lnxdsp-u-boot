@@ -583,6 +583,13 @@ config EXAMPLES
 	  U-Boot provides an API for standalone applications. Examples are
 	  provided in directory examples/.
 
+config LDR_CPU
+	string "CPU name to be passed to LDR utility."
+	help
+	  Set the CPU name for the -T parameter in the LDR utility.  This is
+	  generally used on processors from Analog Devices, but may be also
+	  be useful for other vendors.
+
 endmenu		# General setup
 
 source "api/Kconfig"
@@ -610,3 +617,4 @@ source "lib/Kconfig"
 source "test/Kconfig"
 
 source "tools/Kconfig"
+

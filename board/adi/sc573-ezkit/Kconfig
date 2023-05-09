@@ -8,6 +8,18 @@
 # Contact: Greg Malysa <greg.malysa@timesys.com>
 #
 
-obj-y += soc.o init/
+if TARGET_SC573_EZKIT
 
-obj-$(CONFIG_SPL_BUILD) += spl.o
+config SYS_VENDOR
+	default "adi"
+
+config SYS_BOARD
+	default "sc573-ezkit"
+
+config SYS_CONFIG_NAME
+	default "sc573-ezkit"
+
+config LDR_CPU
+	default "ADSP-SC573-0.0"
+
+endif
