@@ -6,7 +6,14 @@ F: board/adi
 F: arch/arm/mach-sc5xx/
 F: arch/arm/include/asm/arch-adi/
 F: include/configs/sc573-ezkit.h
+F: include/configs/sc584-ezkit.h
+F: include/configs/sc589-ezkit.h
+F: include/configs/sc589-mini.h
 F: include/configs/sc_adi_common.h
 F: arch/arm/dts/sc573-ezkit.dts
 F: arch/arm/dts/sc57x.dtsi
+F: arch/arm/dts/sc584-ezkit.dts
+F: arch/arm/dts/sc589-ezkit.dts
+F: arch/arm/dts/sc589-mini.dts
+F: arch/arm/dts/sc58x.dtsi
 F: arch/arm/dts/sc5xx.dtsi
