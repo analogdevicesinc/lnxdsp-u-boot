@@ -493,6 +493,12 @@ config DM_PCA953X
 	  8 bits:	max7310, max7315, pca6107, pca9534, pca9538, pca9554,
 			pca9556, pca9557, pca9574, tca6408, xra1202
 
+config MCP2301X_GPIO
+	bool "MCP23017/MCP23018 GPIO expander driver"
+	depends on DM_GPIO && DM_I2C
+	help
+	  Support GPIO expander access on Microchip MCP23017/MCP23018 chips
+
 	  16 bits:	max7312, max7313, pca9535, pca9539, pca9555, pca9575,
 			tca6416
 
