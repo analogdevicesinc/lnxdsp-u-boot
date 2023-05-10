@@ -2030,7 +2030,7 @@ u-boot.lds: $(LDSCRIPT) prepare FORCE
 	$(call if_changed_dep,cpp_lds)
 
 ifdef_any_of = $(filter-out undefined,$(foreach v,$(1),$(origin $(v))))
-ifneq ($(call ifdef_any_of,CONFIG_SC58X CONFIG_SC57X),)
+ifneq ($(call ifdef_any_of,CONFIG_SC59X CONFIG_SC58X CONFIG_SC57X),)
 RENAME_FILES += u-boot u-boot.bin u-boot.ldr u-boot.srec u-boot.lds u-boot.map
 
 u-boot-$(CONFIG_SYS_BOARD).ldr: $(INPUTS-y)

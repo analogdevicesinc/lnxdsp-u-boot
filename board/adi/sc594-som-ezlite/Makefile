@@ -8,10 +8,7 @@
 # Contact: Greg Malysa <greg.malysa@timesys.com>
 #
 
-obj-y += soc.o init/
+obj-y	:= ../common-sc594-som/sc594-som.o
+obj-$(CONFIG_SPL_BUILD) := ../common-sc594-som/sc594-som-spl.o
 
-ifneq ($(filter y,$(CONFIG_SC59X_64) $(CONFIG_SC59X)),)
-obj-y += sc59x/sc59x-shared.o
-endif
 
-obj-$(CONFIG_SPL_BUILD) += spl.o

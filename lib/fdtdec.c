@@ -79,6 +79,7 @@ static const char * const compat_names[COMPAT_COUNT] = {
 	COMPAT(ALTERA_SOCFPGA_CLK_INIT, "altr,socfpga-a10-clk-init")
 	COMPAT(ADI_SC57X, "adi,sc57x"),
 	COMPAT(ADI_SC58X, "adi,sc58x"),
+	COMPAT(ADI_SC59X, "adi,sc59x"),
 };
 
 static const char *const fdt_src_name[] = {

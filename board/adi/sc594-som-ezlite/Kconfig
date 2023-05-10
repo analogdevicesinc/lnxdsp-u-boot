@@ -8,10 +8,18 @@
 # Contact: Greg Malysa <greg.malysa@timesys.com>
 #
 
-obj-y += soc.o init/
+if TARGET_SC594_SOM_EZLITE
 
-ifneq ($(filter y,$(CONFIG_SC59X_64) $(CONFIG_SC59X)),)
-obj-y += sc59x/sc59x-shared.o
+config SYS_VENDOR
+	default "adi"
+
+config LDR_CPU
+	default "ADSP-SC594-0.0"
+
+config SYS_BOARD
+	default "sc594-som-ezlite"
+
+config SYS_CONFIG_NAME
+	default "sc594-som-ezlite"
+
 endif
-
-obj-$(CONFIG_SPL_BUILD) += spl.o
