@@ -282,6 +282,29 @@ struct dm_serial_ops {
 	 * @return 0 if OK, -ve on error
 	 */
 	int (*getinfo)(struct udevice *dev, struct serial_device_info *info);
+
+	/**
+	 * suspend() - Suspend uart physical operation. Intended for use
+	 * on boards where one might need to swap uart for another peripheral
+	 * and intends to swap it back later. The regular methods such as putc
+	 * are expected to complete normally in the mean time. You could buffer
+	 * the data internally or just drop it, but it shouldn't produce an
+	 * error.
+	 *
+	 * This method is optional.
+	 *
+	 * @dev: Device pointer
+	 */
+	void (*suspend)(struct udevice *dev);
+
+	/**
+	 * resume() - Resume normal uart physical operation. See @suspend.
+	 *
+	 * This method is required only if suspend is provided.
+	 *
+	 * @dev: Device pointer
+	 */
+	void (*resume)(struct udevice *dev);
 };
 
 /**
@@ -369,5 +392,7 @@ static inline void serial_flush(void) {}
 #endif
 int serial_getc(void);
 int serial_tstc(void);
+void serial_suspend(void);
+void serial_resume(void);
 
 #endif
