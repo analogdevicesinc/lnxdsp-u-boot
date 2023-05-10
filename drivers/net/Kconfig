@@ -350,6 +350,14 @@ config DW_ALTDESCRIPTOR
 	bool "Designware Ethernet MAC uses alternate (enhanced) descriptors"
 	depends on ETH_DESIGNWARE
 
+config ETH_DWMAC4
+	bool "Synopsys Designware Ethernet MAC 4+"
+	select PHYLIB
+	help
+	  This MAC is present in SoCs from various vendors. This driver is
+	  an alternative to the DWC QoS driver, based on the Linux kernel
+	  dwmac4 driver and the u-boot designware driver.
+
 config ETHOC
 	bool "OpenCores 10/100 Mbps Ethernet MAC"
 	help
