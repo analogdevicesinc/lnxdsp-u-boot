@@ -124,6 +124,11 @@ void __weak spl_perform_fixups(struct spl_image_info *spl_image)
 {
 }
 
+int __weak spl_board_fixup_fdt(void *blob)
+{
+	return 0;
+}
+
 void spl_fixup_fdt(void *fdt_blob)
 {
 #if defined(CONFIG_SPL_OF_LIBFDT)
@@ -148,6 +153,12 @@ void spl_fixup_fdt(void *fdt_blob)
 	err = arch_fixup_fdt(fdt_blob);
 	if (err) {
 		printf(SPL_TPL_PROMPT "arch_fixup_fdt err - %d\n", err);
+		return;
+	}
+
+	err = spl_board_fixup_fdt(fdt_blob);
+	if (err) {
+		printf(SPL_TPL_PROMPT "spl_board_fixup_fdt err - %d\n", err);
 		return;
 	}
 #endif
