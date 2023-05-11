@@ -10,3 +10,4 @@
 
 obj-y	:= ../common-sc598-som/sc598-som.o
 obj-$(CONFIG_SPL_BUILD) := ../common-sc598-som/sc598-som-spl.o
+obj-y += ../common-sc598-som/sc598-som-dynamic-qspi-ospi-uart-mux.o
