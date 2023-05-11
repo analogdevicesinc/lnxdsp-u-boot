@@ -29,6 +29,11 @@
 #define CQSPI_READ			2
 #define CQSPI_WRITE			3
 
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+#define CQSPI_DIRECT_READ		4
+#define CQSPI_DIRECT_WRITE		5
+#endif
+
 __weak int cadence_qspi_apb_dma_read(struct cadence_spi_priv *priv,
 				     const struct spi_mem_op *op)
 {
@@ -190,12 +195,21 @@ static int cadence_spi_set_speed(struct udevice *bus, uint hz)
 	return 0;
 }
 
+static struct cadence_spi_plat *platPointer;
+struct cadence_spi_plat *cadence_get_plat(void)
+{
+	return platPointer;
+}
+
 static int cadence_spi_probe(struct udevice *bus)
 {
 	struct cadence_spi_plat *plat = dev_get_plat(bus);
 	struct cadence_spi_priv *priv = dev_get_priv(bus);
 	struct clk clk;
 	int ret;
+
+	platPointer = plat;
+	plat->cadenceMode = -1;
 
 	priv->regbase		= plat->regbase;
 	priv->ahbbase		= plat->ahbbase;
@@ -297,6 +311,7 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 				   const struct spi_mem_op *op)
 {
 	struct udevice *bus = spi->dev->parent;
+	struct cadence_spi_plat *plat = dev_get_plat(bus);
 	struct cadence_spi_priv *priv = dev_get_priv(bus);
 	void *base = priv->regbase;
 	int err = 0;
@@ -305,6 +320,12 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 	/* Set Chip select */
 	cadence_qspi_apb_chipselect(base, spi_chip_select(spi->dev),
 				    priv->is_decoded_cs);
+
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+	if (plat->cadenceMode == -1) {
+		cadence_qspi_enter_octal(plat, priv);
+	}
+#endif
 
 	if (op->data.dir == SPI_MEM_DATA_IN && op->data.buf.in) {
 		/*
@@ -316,12 +337,20 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 		    op->data.nbytes <= CQSPI_STIG_DATA_LEN_MAX)
 			mode = CQSPI_STIG_READ;
 		else
-			mode = CQSPI_READ;
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+			mode = CQSPI_DIRECT_READ;
+#else
+ 			mode = CQSPI_READ;
+#endif
 	} else {
 		if (!op->addr.nbytes || !op->data.buf.out)
 			mode = CQSPI_STIG_WRITE;
 		else
-			mode = CQSPI_WRITE;
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+			mode = CQSPI_DIRECT_WRITE;
+#else
+ 			mode = CQSPI_WRITE;
+#endif
 	}
 
 	switch (mode) {
@@ -349,6 +378,14 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 		if (!err)
 			err = cadence_qspi_apb_write_execute(priv, op);
 		break;
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+	case CQSPI_DIRECT_WRITE:
+		err = cadence_qspi_direct_write(plat, op);
+		break;
+	case CQSPI_DIRECT_READ:
+		err = cadence_qspi_direct_read(plat, op);
+		break;
+#endif
 	default:
 		err = -1;
 		break;

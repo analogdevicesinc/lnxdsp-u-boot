@@ -35,8 +35,15 @@
 #include <wait_bit.h>
 #include <spi.h>
 #include <spi-mem.h>
+#include <linux/mtd/spi-nor.h>
 #include <malloc.h>
 #include "cadence_qspi.h"
+
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+#include <asm/arch-adi/sc5xx/ospi.h>
+#include <asm/arch-adi/sc5xx/adi_mdma.h>
+#include <env.h>
+#endif
 
 __weak void cadence_qspi_apb_enable_linear_mode(bool enable)
 {
@@ -166,6 +173,8 @@ static unsigned int cadence_qspi_wait_idle(void *reg_base)
 	       CQSPI_REG_RETRY);
 	return 0;
 }
+#define CQSPI_REG_OE_LOWER 0xE0
+
 
 void cadence_qspi_apb_readdata_capture(void *reg_base,
 				unsigned int bypass, unsigned int delay)
@@ -224,15 +233,19 @@ void cadence_qspi_apb_config_baudrate_div(void *reg_base,
 void cadence_qspi_apb_set_clk_mode(void *reg_base, uint mode)
 {
 	unsigned int reg;
+	struct cadence_spi_plat *plat = cadence_get_plat();
 
 	cadence_qspi_apb_controller_disable(reg_base);
 	reg = readl(reg_base + CQSPI_REG_CONFIG);
 	reg &= ~(CQSPI_REG_CONFIG_CLK_POL | CQSPI_REG_CONFIG_CLK_PHA);
 
-	if (mode & SPI_CPOL)
-		reg |= CQSPI_REG_CONFIG_CLK_POL;
-	if (mode & SPI_CPHA)
-		reg |= CQSPI_REG_CONFIG_CLK_PHA;
+	//On the MX66, DTR mode works best with CPOL=0 and CPHA=0
+	if (!plat->use_dtr) {
+		if (mode & SPI_CPOL)
+			reg |= CQSPI_REG_CONFIG_CLK_POL;
+		if (mode & SPI_CPHA)
+			reg |= CQSPI_REG_CONFIG_CLK_PHA;
+	}
 
 	writel(reg, reg_base + CQSPI_REG_CONFIG);
 
@@ -396,6 +409,7 @@ static int cadence_qspi_enable_dtr(struct cadence_spi_priv *priv,
 				   unsigned int shift,
 				   bool enable)
 {
+#ifdef _NOT_NOW_
 	unsigned int reg;
 	int ret;
 
@@ -415,7 +429,7 @@ static int cadence_qspi_enable_dtr(struct cadence_spi_priv *priv,
 	}
 
 	writel(reg, priv->regbase + CQSPI_REG_CONFIG);
-
+#endif
 	return 0;
 }
 
@@ -445,13 +459,18 @@ int cadence_qspi_apb_command_read(struct cadence_spi_priv *priv,
 				  const struct spi_mem_op *op)
 {
 	void *reg_base = priv->regbase;
-	unsigned int reg;
+	unsigned int reg, curVal;
 	unsigned int read_len;
 	int status;
 	unsigned int rxlen = op->data.nbytes;
 	void *rxbuf = op->data.buf.in;
 	unsigned int dummy_clk;
 	u8 opcode;
+	static char tempBuf[8];
+	unsigned int op2;
+	u8 dummy;
+	int i;
+	struct cadence_spi_plat *plat = cadence_get_plat();
 
 	if (rxlen > CQSPI_STIG_DATA_LEN_MAX || !rxbuf) {
 		printf("QSPI: Invalid input arguments rxlen %u\n", rxlen);
@@ -475,6 +494,70 @@ int cadence_qspi_apb_command_read(struct cadence_spi_priv *priv,
 		     << CQSPI_REG_CMDCTRL_DUMMY_LSB;
 
 	reg |= (0x1 << CQSPI_REG_CMDCTRL_RD_EN_LSB);
+
+	// Set Dummy cycles as per datasheet
+	if (op->dummy.nbytes && plat->cadenceMode != CADENCE_OSPI_MODE)
+		dummy = (op->dummy.nbytes * 8 / op->dummy.buswidth);
+	else
+		dummy = plat->stig_read_dummy;
+
+	reg |= ((dummy << BITP_OSPI_FCCTL_DMY) & BITM_OSPI_FCCTL_DMY);
+
+	//Handle reading while in OPI mode
+	//Handle reading with an address in SPI mode
+	if (plat->cadenceMode == CADENCE_OSPI_MODE) {
+
+		if(op->cmd.opcode == SPINOR_OP_RDID)
+			if(op->addr.nbytes == 0){
+				//1x RDID received from spi_nor_scan
+				memcpy(rxbuf, &plat->id, 4);
+				return 0;
+			}
+
+		if (plat->use_dtr) {
+			rxlen *= 2;
+			if (rxlen > 8) // 8 bytes maximum
+				rxlen = 8;
+
+			rxbuf = tempBuf;
+		}
+
+		if (plat->id != 0x195a9d) { //SC594, IS25LX256
+
+			// Set read instruction type to OPI
+			curVal = readl(reg_base + CQSPI_REG_RD_INSTR);
+			curVal |= (3UL << BITP_OSPI_DRICTL_INSTRTYP);
+			curVal |= (3UL << BITP_OSPI_DRICTL_ADDRTRNSFR);
+			curVal |= (3UL << BITP_OSPI_DRICTL_DATATRNSFR);
+			writel(curVal, reg_base + CQSPI_REG_RD_INSTR);
+
+			// Enable 4 address bytes
+			reg |= (0x1 << CQSPI_REG_CMDCTRL_ADDR_EN_LSB);
+			reg |= ((3) << CQSPI_REG_CMDCTRL_ADD_BYTES_LSB);
+			//writel(op->addr.val, reg_base + CQSPI_REG_CMDADDRESS);
+		}
+
+		// Configure the dual opcode
+		curVal = readl(reg_base + CQSPI_REG_OE_LOWER);
+		curVal &= ~BITM_OSPI_OE_LWR_XSTIGBYT;
+		if (plat->use_opcode2) {
+			switch (op->cmd.opcode) {
+				default:
+					if (plat->use_opcode2_invert) {
+						op2 = 0xFF - op->cmd.opcode;
+					} else {
+						op2 = op->cmd.opcode;
+					}
+					break;
+			}
+			curVal |= ((uint32_t)(op2) << BITP_OSPI_OE_LWR_XSTIGBYT) & BITM_OSPI_OE_LWR_XSTIGBYT;
+		}
+		writel(curVal, reg_base + CQSPI_REG_OE_LOWER);
+	} else if (op->addr.nbytes) {
+		reg |= (0x1 << CQSPI_REG_CMDCTRL_ADDR_EN_LSB);
+		reg |= ((op->addr.nbytes - 1) << CQSPI_REG_CMDCTRL_ADD_BYTES_LSB);
+		writel(op->addr.val, reg_base + CQSPI_REG_CMDADDRESS);
+	}
 
 	/* 0 means 1 byte. */
 	reg |= (((rxlen - 1) & CQSPI_REG_CMDCTRL_RD_BYTES_MASK)
@@ -509,12 +592,20 @@ int cadence_qspi_apb_command_read(struct cadence_spi_priv *priv,
 		read_len = rxlen - read_len;
 		memcpy(rxbuf, &reg, read_len);
 	}
+
+	if (plat->cadenceMode == CADENCE_OSPI_MODE && plat->use_dtr) {
+		for (i = 0; i < rxlen / 2; i++) {
+			((char *)op->data.buf.in)[i] = ((char *)tempBuf)[i * 2];
+		}
+	}
+
 	return 0;
 }
 
 int cadence_qspi_apb_command_write_setup(struct cadence_spi_priv *priv,
 					 const struct spi_mem_op *op)
 {
+#ifdef _NOT_NOW_
 	int ret;
 	unsigned int reg;
 
@@ -529,7 +620,7 @@ int cadence_qspi_apb_command_write_setup(struct cadence_spi_priv *priv,
 
 	reg = cadence_qspi_calc_rdreg(priv);
 	writel(reg, priv->regbase + CQSPI_REG_RD_INSTR);
-
+#endif
 	return 0;
 }
 
@@ -537,7 +628,7 @@ int cadence_qspi_apb_command_write_setup(struct cadence_spi_priv *priv,
 int cadence_qspi_apb_command_write(struct cadence_spi_priv *priv,
 				   const struct spi_mem_op *op)
 {
-	unsigned int reg = 0;
+	unsigned int reg = 0, curVal;
 	unsigned int wr_data;
 	unsigned int wr_len;
 	unsigned int txlen = op->data.nbytes;
@@ -545,6 +636,10 @@ int cadence_qspi_apb_command_write(struct cadence_spi_priv *priv,
 	void *reg_base = priv->regbase;
 	u32 addr;
 	u8 opcode;
+	unsigned int op1, op2;
+	struct cadence_spi_plat *plat = cadence_get_plat();
+
+	op1 = op->cmd.opcode;
 
 	/* Reorder address to SPI bus order if only transferring address */
 	if (!txlen) {
@@ -553,6 +648,52 @@ int cadence_qspi_apb_command_write(struct cadence_spi_priv *priv,
 			addr >>= 8;
 		txbuf = &addr;
 		txlen = op->addr.nbytes;
+	} else if (op->addr.nbytes) {
+		reg |= (0x1 << CQSPI_REG_CMDCTRL_ADDR_EN_LSB);
+		reg |= ((op->addr.nbytes - 1) << CQSPI_REG_CMDCTRL_ADD_BYTES_LSB);
+		writel(op->addr.val, reg_base + CQSPI_REG_CMDADDRESS);
+	}
+
+	if (plat->cadenceMode == CADENCE_OSPI_MODE) {
+		if (plat->id != 0x195a9d) { //SC594, IS25LX256
+			// Set read instruction type to OPI
+			curVal = readl(reg_base + CQSPI_REG_RD_INSTR);
+			curVal |= (3UL << BITP_OSPI_DRICTL_INSTRTYP);
+			curVal &= ~(3UL << BITP_OSPI_DRICTL_ADDRTRNSFR);
+			curVal &= ~(3UL << BITP_OSPI_DRICTL_DATATRNSFR);
+			writel(curVal, reg_base + CQSPI_REG_RD_INSTR);
+
+			// Set write instruction type to OPI
+			curVal = readl(reg_base + CQSPI_REG_WR_INSTR);
+			curVal |= (3UL << BITP_OSPI_DWICTL_ADDRTRNSFR) |
+					  (3UL << BITP_OSPI_DWICTL_DATATRNSFR);
+			writel(curVal, reg_base + CQSPI_REG_WR_INSTR);
+		}
+
+		// Configure the dual opcode
+		curVal = readl(reg_base + CQSPI_REG_OE_LOWER);
+		curVal &= ~BITM_OSPI_OE_LWR_XSTIGBYT;
+		if (plat->use_opcode2) {
+			switch (op->cmd.opcode) {
+				case 0xD8: //Block Erases
+				case 0xDC:
+					op1 = 0xDC;
+					op2 = 0x23;
+					break;
+				case 0xB7: //Enter/Exit 4 byte mode --
+				case 0xE9: //not necessary if we're in OPI already
+					return 0;
+				default:
+					if (plat->use_opcode2_invert) {
+						op2 = 0xFF - op->cmd.opcode;
+					} else {
+						op2 = op->cmd.opcode;
+					}
+					break;
+			}
+		}
+		curVal = ((uint32_t)(op2) << BITP_OSPI_OE_LWR_XSTIGBYT) & BITM_OSPI_OE_LWR_XSTIGBYT;
+		writel(curVal, reg_base + CQSPI_REG_OE_LOWER);
 	}
 
 	if (txlen > CQSPI_STIG_DATA_LEN_MAX) {
@@ -560,12 +701,7 @@ int cadence_qspi_apb_command_write(struct cadence_spi_priv *priv,
 		return -EINVAL;
 	}
 
-	if (priv->dtr)
-		opcode = op->cmd.opcode >> 8;
-	else
-		opcode = op->cmd.opcode;
-
-	reg |= opcode << CQSPI_REG_CMDCTRL_OPCODE_LSB;
+	reg |= op1 << CQSPI_REG_CMDCTRL_OPCODE_LSB;
 
 	if (txlen) {
 		/* writing data = yes */
@@ -790,13 +926,17 @@ int cadence_qspi_apb_write_setup(struct cadence_spi_priv *priv,
 	else
 		opcode = op->cmd.opcode;
 
-	reg = opcode << CQSPI_REG_WR_INSTR_OPCODE_LSB;
-	reg |= priv->data_width << CQSPI_REG_WR_INSTR_TYPE_DATA_LSB;
-	reg |= priv->addr_width << CQSPI_REG_WR_INSTR_TYPE_ADDR_LSB;
-	writel(reg, priv->regbase + CQSPI_REG_WR_INSTR);
+	//reg = opcode << CQSPI_REG_WR_INSTR_OPCODE_LSB;
+	//reg |= priv->data_width << CQSPI_REG_WR_INSTR_TYPE_DATA_LSB;
+	//reg |= priv->addr_width << CQSPI_REG_WR_INSTR_TYPE_ADDR_LSB;
+	//writel(reg, priv->regbase + CQSPI_REG_WR_INSTR);
 
-	reg = cadence_qspi_calc_rdreg(priv);
-	writel(reg, priv->regbase + CQSPI_REG_RD_INSTR);
+	//reg = cadence_qspi_calc_rdreg(priv);
+	//writel(reg, priv->regbase + CQSPI_REG_RD_INSTR);
+
+	/* Configure the opcode */
+	reg = opcode << CQSPI_REG_WR_INSTR_OPCODE_LSB;
+	writel(reg, priv->regbase + CQSPI_REG_WR_INSTR);
 
 	writel(op->addr.val, priv->regbase + CQSPI_REG_INDIRECTWRSTARTADDR);
 
@@ -955,3 +1095,570 @@ void cadence_qspi_apb_enter_xip(void *reg_base, char xip_dummy)
 	reg |= (1 << CQSPI_REG_RD_INSTR_MODE_EN_LSB);
 	writel(reg, reg_base + CQSPI_REG_RD_INSTR);
 }
+
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+
+#define SCB5_SPI2_OSPI_REMAP 0x30400000
+#define OSPI0_MMAP_ADDRESS 0x60000000
+
+#define ADI_OCTAL_USE_DMA
+
+#ifdef CONFIG_SPL_BUILD
+void cadence_ospi_append_chipinfo(char *bootcmd)
+{
+	static char currentMode[32];
+	struct cadence_spi_plat *plat;
+	char *bootargs;
+
+	plat = cadence_get_plat();
+
+	if (plat->cadenceMode == CADENCE_OSPI_MODE) {
+		if (plat->use_dtr) {
+			sprintf(currentMode, "dtr\0");
+		} else {
+			sprintf(currentMode, "str\0");
+		}
+	} else {
+		sprintf(currentMode, "spi\0");
+	}
+
+	sprintf(bootcmd + strlen(bootcmd), " cadence-quadspi.ospi_id=%d cadence-quadspi.ospi_mode=%s\0",
+		plat->id, currentMode);
+}
+#else
+void cadence_ospi_append_chipinfo(void)
+{
+	static char newArgs[2048];
+	static char currentMode[32];
+	struct cadence_spi_plat *plat;
+	char *bootargs;
+
+	plat = cadence_get_plat();
+
+	bootargs = (char *)((unsigned int)env_get("bootargs") & 0xFFFFFFFF);
+
+	if (bootargs && (bootargs[0] != '\0')) {
+		if (plat->cadenceMode == CADENCE_OSPI_MODE) {
+			if (plat->use_dtr) {
+				sprintf(currentMode, "dtr\0");
+			} else {
+				sprintf(currentMode, "str\0");
+			}
+		} else {
+			sprintf(currentMode, "spi\0");
+		}
+
+		snprintf(newArgs, sizeof(newArgs), "%s cadence-quadspi.ospi_id=%d cadence-quadspi.ospi_mode=%s\0", bootargs,
+			 plat->id, currentMode);
+		env_set("bootargs", newArgs);
+	}
+}
+#endif
+
+int cadence_qspi_setup_octal_read(struct cadence_spi_plat *plat)
+{
+	unsigned int curVal;
+
+	// Clear the contents of the Read instruction register
+	writel(0, plat->regbase + CQSPI_REG_RD_INSTR);
+
+	// Clear the DDREN in read instruction control
+	curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+	if (plat->cadenceMode == CADENCE_OSPI_MODE && plat->use_dtr)
+		curVal |= BITM_OSPI_DRICTL_DDREN;
+	else
+		curVal &= ~(BITM_OSPI_DRICTL_DDREN);
+	writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
+
+	// Clear the DTR mode bits in read instruction
+	curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
+	if (plat->cadenceMode == CADENCE_OSPI_MODE && plat->use_dtr)
+		curVal |= BITM_OSPI_CTL_DTREN;
+	else
+		curVal &= ~(BITM_OSPI_CTL_DTREN);
+	writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
+
+	/* enable DAC controller */
+	curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
+	curVal |= BITM_OSPI_CTL_DACEN;
+	writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
+}
+
+int cadence_qspi_setup_octal_write(struct cadence_spi_plat *plat)
+{
+	unsigned int curVal;
+
+	/* Configure the address mode of flash */
+	curVal = readl(plat->regbase + CQSPI_REG_SIZE);
+	curVal &= ~BITM_OSPI_DSCTL_ADDRSZ;
+	curVal |= (((uint32_t)(4U) - 1U) << BITP_OSPI_DSCTL_ADDRSZ) & BITM_OSPI_DSCTL_ADDRSZ;
+	writel(curVal, plat->regbase + CQSPI_REG_SIZE);
+
+	/* Configure the modedata value */
+	curVal = readl(plat->regbase + CQSPI_REG_MODE_BIT);
+	curVal &= ~BITM_OSPI_MBCTL_MODE;
+	curVal |= ((uint32_t)(0) << BITP_OSPI_MBCTL_MODE) & BITM_OSPI_MBCTL_MODE;
+	writel(curVal, plat->regbase + CQSPI_REG_MODE_BIT);
+
+	/* enable DAC controller */
+	curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
+	curVal |= BITM_OSPI_CTL_DACEN;
+	writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
+
+	/* configure the WEL values to use non-inverted opcodes*/
+	if (plat->use_opcode2) {
+		// By default WEL inverts the WREN opcode, fix it in the non-inverted case
+		if (!plat->use_opcode2_invert) {
+			//u32 wel = (SPINOR_OP_WREN << 24) | (SPINOR_OP_WREN << 16);
+			writel(0x06060000, plat->regbase + 0xe4);
+		}
+	}
+}
+
+int cadence_qspi_setup_octal(struct cadence_spi_plat *plat)
+{
+	unsigned int curVal;
+
+	//On the MX66, DTR mode works best with CPOL=0 and CPHA=0
+	if (plat->use_dtr) {
+		curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
+		curVal &= ~(CQSPI_REG_CONFIG_CLK_POL | CQSPI_REG_CONFIG_CLK_PHA);
+		writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
+	}
+
+	if (plat->use_opcode2) {
+		/* Make sure the dual op-code is enabled */
+		curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
+		curVal |= BITM_OSPI_CTL_OPCODEEN;
+		writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
+	} else {
+		/* Make sure the dual op-code is not enabled */
+		curVal = readl(plat->regbase + CQSPI_REG_CONFIG);
+		curVal &= ~BITM_OSPI_CTL_OPCODEEN;
+		writel(curVal, plat->regbase + CQSPI_REG_CONFIG);
+	}
+
+	if (plat->use_dtr) {
+		curVal = readl(plat->regbase + CQSPI_REG_RD_DATA_CAPTURE);
+		curVal &= ~BITM_OSPI_RDC_DLYRD;
+		curVal &= ~BITM_OSPI_RDC_DDRDLYRD;
+		curVal |= CQSPI_REG_RD_DATA_CAPTURE_BYPASS;
+		curVal |= plat->dly_rd << BITP_OSPI_RDC_DLYRD;
+		curVal |= plat->ddr_dly_rd << BITP_OSPI_RDC_DDRDLYRD;
+		curVal = writel(curVal, plat->regbase + CQSPI_REG_RD_DATA_CAPTURE);
+	}
+
+	/* Configure the address mode of flash */
+	curVal = readl(plat->regbase + CQSPI_REG_SIZE);
+	curVal &= ~BITM_OSPI_DSCTL_ADDRSZ;
+	curVal |= (((uint32_t)(4U) - 1U) << BITP_OSPI_DSCTL_ADDRSZ) & BITM_OSPI_DSCTL_ADDRSZ;
+	writel(curVal, plat->regbase + CQSPI_REG_SIZE);
+
+	// Configure the modedata value
+	curVal = readl(plat->regbase + CQSPI_REG_MODE_BIT);
+	curVal &= ~BITM_OSPI_MBCTL_MODE;
+	curVal |= ((uint32_t)(0) << BITP_OSPI_MBCTL_MODE) & BITM_OSPI_MBCTL_MODE;
+	writel(curVal, plat->regbase + CQSPI_REG_MODE_BIT);
+
+	//Disable automatic polling in WCCTL and erase opcode
+	writel(1 << BITP_OSPI_WCCTL_DIS, plat->regbase + 0x38);
+}
+
+int cadence_enter_octal_is25(struct cadence_spi_plat *plat, struct cadence_spi_priv *priv,
+			     struct spi_mem_op *wren, struct spi_mem_op *opTemp, char *id_spi){
+	//The IS25LX256 only uses 1S-1S-8S in the default extended SPI mode
+	//We don't actually need to switch into DTR mode via issuing "0x81 0xC7"
+
+	plat->cadenceMode = CADENCE_OSPI_MODE;
+	cadence_qspi_setup_octal(plat);
+	cadence_qspi_setup_octal_read(plat);
+	cadence_qspi_setup_octal_write(plat);
+	return 0;
+}
+
+int cadence_enter_octal_mx66(struct cadence_spi_plat *plat, struct cadence_spi_priv *priv,
+			     struct spi_mem_op *wren, struct spi_mem_op *opTemp, char *id_spi){
+	char id_opi[4] = {0xff, 0xff, 0xff, 0x00};
+	char conf_reg2[1] = {0xff};
+	unsigned int curVal;
+
+	//Check if the read control register is already configured for OPI mode
+	curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+	curVal &= (3UL << BITP_OSPI_DRICTL_INSTRTYP) |
+			  (3UL << BITP_OSPI_DRICTL_ADDRTRNSFR) |
+			  (3UL << BITP_OSPI_DRICTL_DATATRNSFR);
+
+	if (!curVal) {
+		//Enter Octal Mode - Write Configuration Register 2
+		if (plat->use_dtr)
+			conf_reg2[0] = 0x02;
+		else
+			conf_reg2[0] = 0x01;
+		opTemp->cmd.opcode = 0x72;
+		opTemp->addr.val = 0x0;
+		opTemp->data.nbytes = 1;
+		opTemp->addr.nbytes = 4;
+		opTemp->data.buf.out = conf_reg2;
+		udelay(100000);
+		cadence_qspi_apb_command_write(priv, wren);
+		udelay(100000);
+		cadence_qspi_apb_command_write(priv, opTemp);
+		udelay(100000);
+	}
+
+	plat->cadenceMode = CADENCE_OSPI_MODE;
+	cadence_qspi_setup_octal(plat);
+	cadence_qspi_setup_octal_read(plat);
+	cadence_qspi_setup_octal_write(plat);
+
+	//RDID - OPI Mode
+	opTemp->cmd.opcode = SPINOR_OP_RDID;
+	opTemp->addr.val = 0x0;
+	opTemp->addr.nbytes = 4;
+	opTemp->data.nbytes = 3;
+	opTemp->data.buf.out = id_opi;
+	cadence_qspi_apb_command_read(priv, opTemp);
+	if (plat->use_dtr)
+		printf("Read ID via 8x OPI+DTR: %x %x %x\n", id_opi[0], id_opi[1], id_opi[2]);
+	else
+		printf("Read ID via 8x OPI+STR: %x %x %x\n", id_opi[0], id_opi[1], id_opi[2]);
+
+	if (strncmp(id_spi, id_opi, 3) != 0) {
+		printf("\tError: ID Mismatch!\n");
+		return -1;
+	} else {
+		printf("\tSuccess: ID Match!\n");
+	}
+
+	//Read Configuration Register 2 @ 0x0
+	opTemp->cmd.opcode = 0x71;
+	opTemp->addr.val = 0x0;
+	opTemp->addr.nbytes = 4;
+	opTemp->data.nbytes = 1;
+	opTemp->data.buf.out = conf_reg2;
+	conf_reg2[0] = 0xff;
+	cadence_qspi_apb_command_read(priv, opTemp);
+	printf("Configuration Register 2(0x0): %x\n", conf_reg2[0]);
+
+	if (plat->use_dtr) {
+		if (conf_reg2[0] != 2) {
+			printf("\tError: Not in DTR OPI Mode!\n");
+			return -1;
+		} else {
+			printf("\tSuccess: In DTR OPI Mode!\n");
+		}
+	} else {
+		if (conf_reg2[0] != 1) {
+			printf("\tError: Not in STR OPI Mode!\n");
+			return -1;
+		} else {
+			printf("\tSuccess: In STR OPI Mode!\n");
+		}
+	}
+	return 0;
+}
+
+int cadence_configure_opi_mode(struct cadence_spi_plat *plat, struct cadence_spi_priv *priv)
+{
+	struct spi_mem_op wren;
+	char id_spi[4] = {0xff, 0xff, 0xff, 0x00};
+	struct spi_mem_op opTemp = SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
+		SPI_MEM_OP_NO_ADDR,
+		SPI_MEM_OP_NO_DUMMY,
+		SPI_MEM_OP_DATA_IN(3, NULL, 1));
+	int curVal;
+
+	//WREN
+	wren.data.nbytes = 0;
+	wren.addr.nbytes = 0;
+	wren.cmd.opcode = SPINOR_OP_WREN;
+
+	//RDID - SPI Mode
+	opTemp.data.buf.out = id_spi;
+
+	//Check if the read control register is already configured for OPI mode
+	curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+	curVal &= (3UL << BITP_OSPI_DRICTL_INSTRTYP) |
+			  (3UL << BITP_OSPI_DRICTL_ADDRTRNSFR) |
+			  (3UL << BITP_OSPI_DRICTL_DATATRNSFR);
+
+	if (curVal) {
+		memcpy(id_spi, 0x20000000, 4); //Read back the ID from SRAM
+	} else {
+		cadence_qspi_apb_command_read(priv, &opTemp);
+		printf("Read ID via 1x SPI: %x %x %x\n", id_spi[0], id_spi[1], id_spi[2]);
+		memcpy(0x20000000, id_spi, 4); //Store the ID at the beginning of SRAM
+	}
+
+	plat->id = *(uint32_t *)id_spi;
+
+	switch (*(uint32_t *)id_spi) {
+		case 0x3b85c2: //MX66LM1G45
+			plat->use_opcode2 = 1;
+			plat->use_opcode2_invert = 1;
+			plat->stig_read_dummy = 4;
+			plat->read_dummy = 20;
+			plat->write_dummy = 0;
+			plat->write_opcode = SPINOR_OP_PP_4B;
+			#if ADI_USE_MACRONIX_OSPI_DTR
+				plat->use_dtr = 1;
+			#else
+				plat->use_dtr = 0;
+			#endif
+			plat->dly_rd = 0xE;
+			plat->ddr_dly_rd = 0x2;
+
+			if (plat->use_dtr) {
+				plat->read_opcode = 0xEE;
+				printf("Configure MX66LM1G45: OPI DTR = on\n");
+			} else {
+				plat->read_opcode = 0xEC;
+				printf("Configure MX66LM1G45: OPI STR = on\n");
+			}
+			return cadence_enter_octal_mx66(plat, priv, &wren, &opTemp, id_spi);
+			break;
+		case 0x195a9d: //IS25LX256
+			plat->use_opcode2 = 0;
+			plat->use_opcode2_invert = 0;
+			plat->stig_read_dummy = 0;
+			plat->read_dummy = 8;
+			plat->write_dummy = 0;
+			plat->read_opcode = 0x8B;
+			plat->write_opcode = 0x82;
+			return cadence_enter_octal_is25(plat, priv, &wren, &opTemp, id_spi);
+			break;
+		default:
+			plat->cadenceMode = CADENCE_SPI_MODE;
+			plat->use_opcode2 = 0;
+			plat->use_opcode2_invert = 0;
+			plat->stig_read_dummy = 0;
+			plat->read_dummy = 0;
+			plat->write_dummy = 0;
+			plat->read_opcode = SPINOR_OP_READ_4B;
+			plat->write_opcode = SPINOR_OP_PP_4B;
+			printf("Unrecognized SPI device, cannot switch into octal mode... proceeding in 1x mode\n");
+			return 0;
+	}
+}
+
+int cadence_qspi_enter_octal(struct cadence_spi_plat *plat, struct cadence_spi_priv *priv)
+{
+	return cadence_configure_opi_mode(plat, priv);
+}
+
+int cadence_qspi_direct_read(struct cadence_spi_plat *plat,
+			     const struct spi_mem_op *op)
+{
+	unsigned int curVal;
+	unsigned int addr_value = op->addr.val;
+	unsigned int rxlen = op->data.nbytes;
+	u8 *rxbuf = op->data.buf.in;
+
+	if (plat->use_dtr) {
+		if (rxlen % 2)
+			rxlen++;
+	}
+
+	*(uint32_t *)SCB5_SPI2_OSPI_REMAP = 0x1U;
+
+	cadence_qspi_apb_controller_enable(plat->regbase);
+
+	// Configure the read opcode
+	curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+	if (plat->cadenceMode == CADENCE_OSPI_MODE) {
+		curVal |= (((uint32_t)(plat->read_opcode) << BITP_OSPI_DRICTL_OPCODERD) & BITM_OSPI_DRICTL_OPCODERD) |
+				  (((uint32_t)(plat->read_dummy) << BITP_OSPI_DRICTL_DMYRD) & BITM_OSPI_DRICTL_DMYRD);
+				  //(((uint32_t)(1) << BITP_OSPI_DRICTL_MODEEN) & BITM_OSPI_DRICTL_MODEEN);
+	} else {
+		curVal |= (((uint32_t)(plat->read_opcode) << BITP_OSPI_DRICTL_OPCODERD) & BITM_OSPI_DRICTL_OPCODERD) |
+				  (((uint32_t)(plat->read_dummy) << BITP_OSPI_DRICTL_DMYRD) & BITM_OSPI_DRICTL_DMYRD);
+				  //(((uint32_t)(1) << BITP_OSPI_DRICTL_MODEEN) & BITM_OSPI_DRICTL_MODEEN);
+	}
+	writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
+
+	if (plat->use_opcode2) {
+		// Configure the dual read opcode
+		curVal = readl(plat->regbase + CQSPI_REG_OE_LOWER);
+		curVal &= ~BITM_OSPI_OE_LWR_XRDBYT;
+		if (plat->use_opcode2_invert) {
+			curVal |= ((uint32_t)(0xFF - plat->read_opcode) << BITP_OSPI_OE_LWR_XRDBYT) & BITM_OSPI_OE_LWR_XRDBYT;
+		} else {
+			curVal |= ((uint32_t)(plat->read_opcode) << BITP_OSPI_OE_LWR_XRDBYT) & BITM_OSPI_OE_LWR_XRDBYT;
+		}
+		writel(curVal, plat->regbase + CQSPI_REG_OE_LOWER);
+	}
+
+	//Configure the read control register for OPI mode
+	curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+	if (plat->cadenceMode == CADENCE_OSPI_MODE) {
+		// OSPI Octal Mode
+		curVal |= (3UL << BITP_OSPI_DRICTL_INSTRTYP) |
+				  (3UL << BITP_OSPI_DRICTL_ADDRTRNSFR) |
+				  (3UL << BITP_OSPI_DRICTL_DATATRNSFR);
+	} else {
+		// OSPI Single Mode
+		curVal |= (0UL << BITP_OSPI_DRICTL_INSTRTYP) |
+				  (0UL << BITP_OSPI_DRICTL_ADDRTRNSFR) |
+				  (0UL << BITP_OSPI_DRICTL_DATATRNSFR);
+	}
+	writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
+
+	if (plat->cadenceMode == CADENCE_OSPI_MODE && plat->id == 0x195a9d) { //SC594, IS25LX256
+		//Octal address and instruction are broken on IS25LX256 at the moment
+		curVal = readl(plat->regbase + CQSPI_REG_RD_INSTR);
+		curVal &= ~(3UL << BITP_OSPI_DRICTL_INSTRTYP);
+		curVal &= ~(3UL << BITP_OSPI_DRICTL_ADDRTRNSFR);
+		writel(curVal, plat->regbase + CQSPI_REG_RD_INSTR);
+	}
+
+#ifdef ADI_OCTAL_USE_DMA
+	memcopy_dma(rxbuf, OSPI0_MMAP_ADDRESS + addr_value, rxlen);
+#else
+	/* Perform the transfer */
+	u32 count = 0;
+	u64 *pReadBuffer = rxbuf;
+	u64 *pFlashAddress = (uint64_t *)(OSPI0_MMAP_ADDRESS + addr_value);
+	u8 *pReadBuffer8;
+	u8 *pFlashAddress8;
+
+	for (count = 0U; count < (rxlen / 8); count++)
+	{
+		*(uint64_t *)pReadBuffer++ = *(uint64_t *)pFlashAddress++;
+	}
+
+	if (rxlen % 8) {
+		pReadBuffer8 = (uint8_t *)pReadBuffer;
+		pFlashAddress8 = (uint8_t *)pFlashAddress;
+
+		for (count = 0U; count < (rxlen % 8); count++)
+		{
+			*(uint8_t *)pReadBuffer8++ = *(uint8_t *)pFlashAddress8++;
+		}
+	}
+#endif
+
+	/* Make sure the OSPI controller is no longer busy */
+	int nCount = 4U;
+
+	while (nCount-- > 0U) {
+		while (!((readl(plat->regbase + CQSPI_REG_CONFIG) & BITM_OSPI_CTL_IDLE) >> BITP_OSPI_CTL_IDLE));
+	}
+
+	return 0;
+}
+
+int cadence_qspi_direct_write(struct cadence_spi_plat *plat,
+			      const struct spi_mem_op *op)
+{
+	unsigned int curVal;
+	unsigned int addr_value = op->addr.val;
+	unsigned int txlen = op->data.nbytes;
+	u8 *txbuf = op->data.buf.out;
+	u8 *txbufTemp;
+	bool needFreeBuf = false;
+
+	if (plat->use_dtr) {
+		if (txlen % 2) {
+			txbufTemp = txbuf;
+			txbuf = malloc(txlen + 1);
+			memcpy(txbuf, txbufTemp, txlen);
+			txbuf[txlen] = 0xFF;
+			txlen++;
+			needFreeBuf = true;
+		}
+	}
+
+	*(uint32_t *)SCB5_SPI2_OSPI_REMAP = 0x1U;
+
+	cadence_qspi_apb_controller_enable(plat->regbase);
+
+	/* Clear the contents of the Write instruction register */
+	writel(0, plat->regbase + CQSPI_REG_WR_INSTR);
+
+	/* Configure the opcode */
+	curVal = readl(plat->regbase + CQSPI_REG_WR_INSTR);
+	if (plat->cadenceMode == CADENCE_OSPI_MODE) {
+		curVal |= (((uint32_t)(plat->write_opcode) << BITP_OSPI_DWICTL_OPCODEWR) & BITM_OSPI_DWICTL_OPCODEWR) |
+				  (((uint32_t)(plat->write_dummy) << BITP_OSPI_DWICTL_DMYWR) & BITM_OSPI_DWICTL_DMYWR) |
+				  (((uint32_t)(0) << BITP_OSPI_DWICTL_WELDIS) & BITM_OSPI_DWICTL_WELDIS);
+	} else {
+		curVal |= (((uint32_t)(plat->write_opcode) << BITP_OSPI_DWICTL_OPCODEWR) & BITM_OSPI_DWICTL_OPCODEWR) |
+				  (((uint32_t)(plat->write_dummy) << BITP_OSPI_DWICTL_DMYWR) & BITM_OSPI_DWICTL_DMYWR) |
+				  (((uint32_t)(0) << BITP_OSPI_DWICTL_WELDIS) & BITM_OSPI_DWICTL_WELDIS);
+	}
+	writel(curVal, plat->regbase + CQSPI_REG_WR_INSTR);
+
+	if (plat->use_opcode2) {
+		/* Configure the dual opcode */
+		curVal = readl(plat->regbase + CQSPI_REG_OE_LOWER);
+		curVal &= ~BITM_OSPI_OE_LWR_XWRBYT;
+		if (plat->use_opcode2_invert) {
+			curVal |= ((uint32_t)(0xFF - plat->write_opcode) << BITP_OSPI_OE_LWR_XWRBYT) & BITM_OSPI_OE_LWR_XWRBYT;
+		} else {
+			curVal |= ((uint32_t)(plat->write_opcode) << BITP_OSPI_OE_LWR_XWRBYT) & BITM_OSPI_OE_LWR_XWRBYT;
+		}
+		writel(curVal, plat->regbase + CQSPI_REG_OE_LOWER);
+	}
+
+	curVal = readl(plat->regbase + CQSPI_REG_WR_INSTR);
+	if (plat->cadenceMode == CADENCE_OSPI_MODE) {
+		/* OSPI Octal Mode */
+		curVal |= (3UL << BITP_OSPI_DWICTL_ADDRTRNSFR) |
+				  (3UL << BITP_OSPI_DWICTL_DATATRNSFR);
+	} else {
+		/* OSPI Single Mode */
+		curVal |= (0UL << BITP_OSPI_DWICTL_ADDRTRNSFR) |
+				  (0UL << BITP_OSPI_DWICTL_DATATRNSFR);
+	}
+	writel(curVal, plat->regbase + CQSPI_REG_WR_INSTR);
+
+	if (plat->cadenceMode == CADENCE_OSPI_MODE && plat->id == 0x195a9d) { //SC594, IS25LX256
+		//Octal address is broken on IS25LX256 at the moment
+		curVal = readl(plat->regbase + CQSPI_REG_WR_INSTR);
+		curVal &= ~((3UL << BITP_OSPI_DRICTL_ADDRTRNSFR));
+		writel(curVal, plat->regbase + CQSPI_REG_WR_INSTR);
+	}
+
+#ifdef ADI_OCTAL_USE_DMA
+	memcopy_dma(OSPI0_MMAP_ADDRESS + addr_value, txbuf, txlen);
+#else
+	/* Perform the transfer */
+	u32 count = 0;
+	u64 *pWriteBuffer = txbuf;
+	u64 *pFlashAddress = (uint64_t *)(OSPI0_MMAP_ADDRESS + addr_value);
+	u8 *pWriteBuffer8;
+	u8 *pFlashAddress8;
+
+	for (count = 0U; count < (txlen / 8); count++)
+	{
+		*(uint64_t *)pFlashAddress++ = *(uint64_t *)pWriteBuffer++;
+	}
+
+	if (txlen % 8) {
+		pWriteBuffer8 = (uint8_t *)pWriteBuffer;
+		pFlashAddress8 = (uint8_t *)pFlashAddress;
+
+		for (count = 0U; count < (txlen % 8); count++)
+		{
+			*(uint8_t *)pFlashAddress8++ = *(uint8_t *)pWriteBuffer8++;
+		}
+	}
+#endif
+
+	/* Make sure the OSPI controller is no longer busy */
+	int nCount = 4U;
+
+	while (nCount-- > 0U) {
+		while (!((readl(plat->regbase + CQSPI_REG_CONFIG) & BITM_OSPI_CTL_IDLE) >> BITP_OSPI_CTL_IDLE));
+	}
+
+	if (needFreeBuf) {
+		free(txbuf);
+		txbuf = txbufTemp;
+		txlen--;
+	}
+
+	return 0;
+}
+
+#endif

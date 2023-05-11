@@ -197,6 +197,12 @@
 	(((readl((reg_base) + CQSPI_REG_SDRAMLEVEL)) >>	\
 	CQSPI_REG_SDRAMLEVEL_WR_LSB) & CQSPI_REG_SDRAMLEVEL_WR_MASK)
 
+typedef enum {
+	CADENCE_SPI_MODE = 0,
+	CADENCE_QSPI_MODE = 1,
+	CADENCE_OSPI_MODE = 2
+} CADENCE_MODE;
+
 struct cadence_spi_plat {
 	unsigned int	max_hz;
 	void		*regbase;
@@ -218,6 +224,20 @@ struct cadence_spi_plat {
 	u32		tslch_ns;
 
 	bool            is_dma;
+
+	/* Additional parameters */
+	CADENCE_MODE cadenceMode;
+	bool use_opcode2;
+	bool use_opcode2_invert;
+	bool use_dtr;
+	u32 stig_read_dummy;
+	u32 read_dummy;
+	u32 write_dummy;
+	u32 read_opcode;
+	u32 write_opcode;
+	u32 dly_rd;
+	u32 ddr_dly_rd;
+	u32 id;
 };
 
 struct cadence_spi_priv {
@@ -305,5 +325,7 @@ int cadence_qspi_apb_wait_for_dma_cmplt(struct cadence_spi_priv *priv);
 int cadence_qspi_apb_exec_flash_cmd(void *reg_base, unsigned int reg);
 int cadence_qspi_versal_flash_reset(struct udevice *dev);
 void cadence_qspi_apb_enable_linear_mode(bool enable);
+
+struct cadence_spi_plat *cadence_get_plat(void);
 
 #endif /* __CADENCE_QSPI_H__ */
