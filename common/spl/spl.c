@@ -278,14 +278,15 @@ static int spl_load_fit_image(struct spl_image_info *spl_image,
 	const char *fit_uname_config = NULL;
 	uintptr_t fdt_hack;
 	const char *uname;
-	ulong fw_data = 0, dt_data = 0, img_data = 0;
-	ulong fw_len = 0, dt_len = 0, img_len = 0;
+	ulong fw_data = 0, dt_data = 0, rd_data, img_data = 0;
+	ulong fw_len = 0, dt_len = 0, rd_len, img_len = 0;
 	int idx, conf_noffset;
 	int ret;
 
 #ifdef CONFIG_SPL_FIT_SIGNATURE
 	images.verify = 1;
 #endif
+#if !(defined(CONFIG_SC59X_64) || defined(CONFIG_SC59X))
 	ret = fit_image_load(&images, (ulong)header,
 			     NULL, &fit_uname_config,
 			     IH_ARCH_DEFAULT, IH_TYPE_STANDALONE, -1,
@@ -301,11 +302,14 @@ static int spl_load_fit_image(struct spl_image_info *spl_image,
 	}
 
 	if (ret < 0) {
+#endif
 		ret = fit_image_load(&images, (ulong)header, NULL,
 				     &fit_uname_config, IH_ARCH_DEFAULT,
 				     IH_TYPE_KERNEL, -1, FIT_LOAD_OPTIONAL,
 				     &fw_data, &fw_len);
+#if !(defined(CONFIG_SC59X_64) || defined(CONFIG_SC59X))
 	}
+#endif
 
 	if (ret < 0)
 		return ret;
@@ -319,6 +323,19 @@ static int spl_load_fit_image(struct spl_image_info *spl_image,
 
 	debug(SPL_TPL_PROMPT "payload image: %32s load addr: 0x%lx size: %d\n",
 	      spl_image->name, spl_image->load_addr, spl_image->size);
+
+//Load initramfs
+#if (defined(CONFIG_SC59X_64) || defined(CONFIG_SC59X))
+	ret = fit_image_load(&images, (ulong)header, NULL,
+			     &fit_uname_config, IH_ARCH_DEFAULT,
+			     IH_TYPE_RAMDISK, -1, FIT_LOAD_OPTIONAL,
+			     &rd_data, &rd_len);
+	if (ret < 0) {
+		printf("Warning: Unable to load initramfs\n");
+	}
+
+	adi_store_initramfs_addr(rd_data, rd_len);
+#endif
 
 #ifdef CONFIG_SPL_FIT_SIGNATURE
 	images.verify = 1;
