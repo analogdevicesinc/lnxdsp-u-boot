@@ -81,6 +81,21 @@ u32 __weak spl_spi_boot_cs(void)
 	return CONFIG_SF_DEFAULT_CS;
 }
 
+unsigned int __weak spl_spi_get_default_bus(void)
+{
+	return CONFIG_SF_DEFAULT_BUS;
+}
+
+unsigned int __weak spl_spi_get_default_cs(void)
+{
+	return CONFIG_SF_DEFAULT_CS;
+}
+
+unsigned int __weak spl_spi_get_default_speed(void)
+{
+	return CONFIG_SF_DEFAULT_SPEED;
+}
+
 /*
  * The main entry for SPI booting. It's necessary that SDRAM is already
  * configured and available since this code loads the main U-Boot image
@@ -101,9 +116,11 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 	 * In DM mode: defaults speed and mode will be
 	 * taken from DT when available
 	 */
-	flash = spi_flash_probe(sf_bus, sf_cs,
-				CONFIG_SF_DEFAULT_SPEED,
-				CONFIG_SF_DEFAULT_MODE);
+	flash = spi_flash_probe(spl_spi_get_default_bus(),
+				spl_spi_get_default_cs(),
+				spl_spi_get_default_speed(),
+ 				CONFIG_SF_DEFAULT_MODE);
+
 	if (!flash) {
 		puts("SPI probe failed.\n");
 		return -ENODEV;

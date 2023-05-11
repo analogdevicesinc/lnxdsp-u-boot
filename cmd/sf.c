@@ -83,6 +83,14 @@ static ulong bytes_per_second(unsigned int len, ulong start_ms)
 		return 1024 * len / max(get_timer(start_ms), 1UL);
 }
 
+void __weak spi_flash_override_defaults(unsigned int *bus,
+					unsigned int *cs,
+					unsigned int *speed,
+					unsigned int *mode)
+{
+	return;
+}
+
 static int do_spi_flash_probe(int argc, char *const argv[])
 {
 	unsigned int bus = CONFIG_SF_DEFAULT_BUS;
@@ -126,6 +134,8 @@ static int do_spi_flash_probe(int argc, char *const argv[])
 			return -1;
 		use_dt = false;
 	}
+
+	spi_flash_override_defaults(&bus, &cs, &speed, &mode);
 
 #if CONFIG_IS_ENABLED(DM_SPI_FLASH)
 	/* Remove the old device, otherwise probe will just be a nop */
