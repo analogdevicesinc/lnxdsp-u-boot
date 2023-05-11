@@ -46,19 +46,51 @@ void sdhci_prepare_adma_table(struct sdhci_adma_desc *table,
 	uint desc_count = DIV_ROUND_UP(trans_bytes, ADMA_MAX_LEN);
 	struct sdhci_adma_desc *desc = table;
 	int i = desc_count;
+#if ADMA_BOUNDARY_SIZE > 0
+	int extraEntries = 0;
+#endif
 
 	while (--i) {
-		sdhci_adma_desc(desc, addr, ADMA_MAX_LEN, false);
-		addr += ADMA_MAX_LEN;
-		trans_bytes -= ADMA_MAX_LEN;
-		desc++;
-	}
+#if ADMA_BOUNDARY_SIZE > 0
+		//Check if this ADMA descriptor is going to cross a boundary
+		//If it does cross the boundary, adjust the descriptor so that it does not cross the boundary,
+		//by splitting the descriptor into two separate descriptors
+		if ((addr & ADMA_BOUNDARY_SIZE) != ((addr + ADMA_MAX_LEN) & ADMA_BOUNDARY_SIZE)) {
+			//len = Number of bytes we can transfer before crossing the boundary
+			int len = (ADMA_BOUNDARY_SIZE - 1) - (addr & (ADMA_BOUNDARY_SIZE - 1)) + 1;
+
+			//Let the while loop run one more iteration, so that it generates the second half of the split descriptor
+			if ((trans_bytes) <= (ADMA_MAX_LEN * MMC_MAX_BLOCK_LEN)) { //Make sure we have room for the extra entry
+				i++;
+			}
+			extraEntries++;
+
+			//Generate and add new descriptor entry
+			sdhci_adma_desc(desc, addr, len, false);
+			addr += len;
+			trans_bytes -= len;
+			desc++;
+		} else {
+#endif
+			sdhci_adma_desc(desc, addr, ADMA_MAX_LEN, false);
+			addr += ADMA_MAX_LEN;
+			trans_bytes -= ADMA_MAX_LEN;
+			desc++;
+#if ADMA_BOUNDARY_SIZE > 0
+		}
+#endif
+    }
 
 	sdhci_adma_desc(desc, addr, trans_bytes, true);
 
 	flush_cache((dma_addr_t)table,
+#if ADMA_BOUNDARY_SIZE > 0
+		    ROUND((desc_count + extraEntries) * sizeof(struct sdhci_adma_desc),
+			  #else
 		    ROUND(desc_count * sizeof(struct sdhci_adma_desc),
+#endif
 			  ARCH_DMA_MINALIGN));
+
 }
 
 /**
