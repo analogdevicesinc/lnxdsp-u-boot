@@ -25,6 +25,10 @@
 #include <linux/bug.h>
 #endif
 
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+#include <linux/mtd/spi-nor.h>
+#endif
+
 #ifndef __UBOOT__
 /**
  * spi_controller_dma_map_mem_op_data() - DMA-map the buffer attached to a
@@ -421,8 +425,36 @@ int spi_mem_exec_op(struct spi_slave *slave, const struct spi_mem_op *op)
 
 	/* 2nd transfer: rx or tx data path */
 	if (tx_buf || rx_buf) {
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+		flag = SPI_XFER_END;
+
+		/*
+		 * If current SPI command is a SPI quad read or write,
+		 * mark the flags of next SPI transfer operation as
+		 * SPI_XFER_QUAD, for the adi_spi3 driver
+		 */
+		u32 quadOperationList[] = {
+			SPINOR_OP_PP_1_1_4,
+			SPINOR_OP_PP_1_4_4,
+			SPINOR_OP_READ_1_1_4,
+			SPINOR_OP_READ_1_4_4,
+			SPINOR_OP_READ_1_1_4_4B,
+			SPINOR_OP_READ_1_4_4_4B,
+			SPINOR_OP_PP_1_1_4_4B,
+			SPINOR_OP_PP_1_4_4_4B,
+		};
+
+		for (i = 0; i < 8; i++) {
+			if (op->cmd.opcode == quadOperationList[i])
+				flag |= SPI_XFER_QUAD;
+		}
+
+		ret = spi_xfer(slave, op->data.nbytes * 8, tx_buf,
+			       rx_buf, flag);
+#else
 		ret = spi_xfer(slave, op->data.nbytes * 8, tx_buf,
 			       rx_buf, SPI_XFER_END);
+#endif
 		if (ret)
 			return ret;
 	}
