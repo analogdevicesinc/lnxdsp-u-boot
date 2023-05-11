@@ -629,6 +629,14 @@ int bootm_process_cmdline_env(int flags)
 	do_silent = IS_ENABLED(CONFIG_SILENT_CONSOLE) &&
 	    !IS_ENABLED(CONFIG_SILENT_U_BOOT_ONLY) && (flags & BOOTM_CL_SILENT);
 	if (!do_silent && !IS_ENABLED(CONFIG_BOOTARGS_SUBST))
+
+		//When booting from U-Boot into Linux, the OSPI chip and peripheral remains configured
+		//for 1x or 8x modes.  Eventually, we may want to reset the chip+peripheral and let Linux
+		//reconfigure -- skipping for now.  Let's just append the current state into bootargs instead
+		#if defined(CONFIG_SC59X_64) || defined(CONFIG_SC59X)
+			cadence_ospi_append_chipinfo();
+		#endif
+
 		return 0;
 
 	env = env_get("bootargs");

@@ -310,6 +310,7 @@ void adi_fdt_fixup_kernel_bootargs(void *fdt)
 		char temp_bootargs[2048];
 
 		memcpy(temp_bootargs, adi_kernel_bootargs, strlen(adi_kernel_bootargs) + 1);
+		cadence_ospi_append_chipinfo(temp_bootargs);
 		do_fixup_by_path(fdt, "/chosen", "bootargs", temp_bootargs, strlen(temp_bootargs) + 1, 0);
 	} else {
 		do_fixup_by_path(fdt, "/chosen", "bootargs", adi_kernel_bootargs, strlen(adi_kernel_bootargs) + 1, 0);
