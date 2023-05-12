@@ -1364,6 +1364,8 @@ dtb-$(CONFIG_TARGET_CORSTONE1000) += corstone1000-mps3.dtb \
 
 include $(srctree)/scripts/Makefile.dts
 
+dtb-$(CONFIG_TARGET_SC573_EZKIT) += sc573-ezkit.dtb
+
 targets += $(dtb-y)
 
 # Add any required device tree compiler flags here
