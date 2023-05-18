@@ -4083,11 +4083,15 @@ int spi_nor_scan(struct spi_nor *nor)
 		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION)
 			spi_nor_set_4byte_opcodes(nor, info);
 #else
-	/* Configure the BAR - discover bank cmds and read current bank */
-	nor->addr_width = 3;
-	ret = read_bar(nor, info);
-	if (ret < 0)
-		return ret;
+	if (info->flags & SPI_NOR_4B_MODE) {
+		nor->addr_width = 4;
+	} else {
+		/* Configure the BAR - discover bank cmds and read current bank */
+		nor->addr_width = 3;
+		ret = read_bar(nor, info);
+		if (ret < 0)
+			return ret;
+	}
 #endif
 	}
 
