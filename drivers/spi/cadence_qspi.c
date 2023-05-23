@@ -24,6 +24,12 @@
 
 #define NSEC_PER_SEC			1000000000L
 
+#ifdef CONFIG_SC59X_64
+#ifdef ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
+#include <asm/arch-adi/sc5xx-64/sc598-som-ezkit-dynamic-qspi-ospi-uart-mux.h>
+#endif
+#endif
+
 #define CQSPI_STIG_READ			0
 #define CQSPI_STIG_WRITE		1
 #define CQSPI_READ			2
@@ -317,6 +323,12 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 	int err = 0;
 	u32 mode;
 
+#ifdef CONFIG_SC59X_64
+#ifdef ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
+	adi_enable_ospi();
+#endif
+#endif
+
 	/* Set Chip select */
 	cadence_qspi_apb_chipselect(base, spi_chip_select(spi->dev),
 				    priv->is_decoded_cs);
@@ -390,6 +402,12 @@ static int cadence_spi_mem_exec_op(struct spi_slave *spi,
 		err = -1;
 		break;
 	}
+
+#ifdef CONFIG_SC59X_64
+#ifdef ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
+	adi_disable_ospi(0);
+#endif
+#endif
 
 	return err;
 }
