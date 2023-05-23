@@ -105,6 +105,10 @@
 #define ADI_USE_MACRONIX_OSPI 0
 #define ADI_USE_MACRONIX_OSPI_DTR 0
 
+//Allow U-Boot to dynamically pinmux between the three conflicting ezkit peripherals (OSPI/QSPI/UART)
+//This allows U-boot to use all three peripherals
+#define ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
+
 #define CONFIG_CQSPI_REF_CLK		500000000 // = 500 MHz
 
 /*
