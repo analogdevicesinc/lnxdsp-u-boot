@@ -22,6 +22,12 @@
 #include <linux/bitops.h>
 #include <clk.h>
 
+#if CONFIG_SC59X_64
+#ifdef ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
+#include <asm/arch-adi/sc5xx-64/sc598-som-ezkit-dynamic-qspi-ospi-uart-mux.h>
+#endif
+#endif
+
 /*
  * UART4 Masks
  */
@@ -112,6 +118,20 @@ struct adi_uart4_platdata {
 	bool edbo;
 };
 
+#ifdef ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
+
+//If we're using the dynamic muxing of OSPI/QSPI/UART due to pinmux conflicts,
+//Use a buffer to store characters which could not be transmitted while UART was disabled
+//Once UART is reenabled and attempts to send another character, transmit through anything in
+//the buffer first
+
+#define BUFFER_SIZE 4096
+bool uartEnabled = 1;
+bool uartReadyToEnable;
+char uartBuffer[BUFFER_SIZE];
+int uartBufferPos;
+#endif
+
 static int adi_uart4_set_brg(struct udevice *dev, int baudrate)
 {
 	struct adi_uart4_platdata *plat = dev_get_plat(dev);
@@ -169,6 +189,28 @@ static int adi_uart4_putc(struct udevice *dev, const char ch)
 {
 	struct adi_uart4_platdata *plat = dev_get_plat(dev);
 	struct uart4_reg *regs = plat->regs;
+
+#ifdef ADI_DYNAMIC_OSPI_QSPI_UART_MANAGEMENT
+	if (uartReadyToEnable) {
+		adi_disable_ospi(1);
+		writel('\n', &regs->thr);
+	}
+
+	if (!uartEnabled) {
+		if (uartBufferPos < BUFFER_SIZE)
+			uartBuffer[uartBufferPos++] = ch;
+		return 0;
+	} else if (uartBufferPos) {
+		int i;
+
+		for (i = 0; i < uartBufferPos; i++) {
+			while (adi_uart4_pending(dev, false));
+				;
+			writel(uartBuffer[i], &regs->thr);
+		}
+		uartBufferPos = 0;
+	}
+#endif
 
 	if (adi_uart4_pending(dev, false))
 		return -EAGAIN;
