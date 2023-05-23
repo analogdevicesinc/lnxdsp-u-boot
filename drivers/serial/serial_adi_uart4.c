@@ -205,7 +205,10 @@ static int adi_uart4_putc(struct udevice *dev, const char ch)
 
 		for (i = 0; i < uartBufferPos; i++) {
 			while (adi_uart4_pending(dev, false));
-				;
+#if defined(CONFIG_HW_WATCHDOG)
+				WATCHDOG_RESET();
+#endif
+
 			writel(uartBuffer[i], &regs->thr);
 		}
 		uartBufferPos = 0;
