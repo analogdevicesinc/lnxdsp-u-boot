@@ -189,6 +189,7 @@
 #define ETH1ADDR "02:80:ad:20:31:e9"
 
 #define CFG_EXTRA_ENV_SETTINGS \
+	"autoload=no\0" \
 	"ubootfile=" UBOOT_ENV_FILE "\0" \
 	"addip=setenv bootargs ${bootargs} " \
 		"ip=${ipaddr}:${serverip}:${gatewayip}:${netmask}:" \
