@@ -153,15 +153,15 @@
 /* Per-board QSPI/OSPI Partitioning Offsets (64MB/32MB):
  *
  * 0x0000000 - 0x003FFFF : U-Boot Stage 1     (  256KB)
- * 0x0040000 - 0x00FFFFF : U-Boot Stage 2     (  768KB)
- * 0x0100000 - 0x011FFFF : U-Boot Environment (  128KB)
- * 0x0120000 - 0x101FFFF : FIT or DTB+zImage  (15360KB)
+ * 0x0040000 - 0x017FFFF : U-Boot Stage 2     ( 1310KB)
+ * 0x0180000 - 0x019FFFF : U-Boot Environment (  128KB)
+ * 0x01a0000 - 0x101FFFF : FIT or DTB+zImage  (15204KB)
  * 0x1020000 - end       : Root File System
  */
 #define ADI_SPI_SIZE     "0x4000000" //64MB
 #define ADI_OSPI_SIZE    "0x4000000" //64MB
 #define ADI_UBOOT_OFFSET "0x40000"
-#define ADI_IMG_OFFSET   "0x0120000"
+#define ADI_IMG_OFFSET   "0x01a0000"
 #define ADI_RFS_OFFSET   "0x1020000"
 #define ADI_JFFS2_FILE   "minimal" //use the adsp-sc5xx-minimal image
 
