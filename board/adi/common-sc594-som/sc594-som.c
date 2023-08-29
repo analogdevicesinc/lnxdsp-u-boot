@@ -20,22 +20,9 @@
 #include <asm/arch-adi/sc5xx/sc59x-shared.h>
 #include <asm/arch-adi/sc5xx/soc.h>
 
-extern char __bss_start, __bss_end;
-static void bss_clear(void)
-{
-	u32 *to = (void *)&__bss_start;
-	int i, sz;
-
-	sz = &__bss_end - &__bss_start;
-	for (i = 0; i < sz; i += 4)
-		*to++ = 0;
-}
-
 DECLARE_GLOBAL_DATA_PTR;
 int board_early_init_f(void)
 {
-	bss_clear();
-
 #ifdef CONFIG_HW_WATCHDOG
 	hw_watchdog_init();
 #endif
