@@ -22,10 +22,6 @@
 
 #include "clk.h"
 
-static struct clk *clks[ADSP_SC594_CLK_END];
-
-static struct clk dummy, clkin0, clkin1;
-
 static const char *cgu1_in_sels[] = {"sys_clkin0", "sys_clkin1"};
 static const char *cgu0_s1sels[] = {"cgu0_s1seldiv", "cgu0_s1selexdiv"};
 static const char *cgu1_s1sels[] = {"cgu1_s1seldiv", "cgu1_s1selexdiv"};
@@ -49,6 +45,9 @@ static int sc594_clock_probe(struct udevice *dev)
 	void __iomem *cdu;
 	int ret;
 	struct resource res;
+
+	struct clk *clks[ADSP_SC594_CLK_END];
+	struct clk dummy, clkin0, clkin1;
 
 	ret = dev_read_resource_byname(dev, "cgu0", &res);
 	if (ret)

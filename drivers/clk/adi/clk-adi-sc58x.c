@@ -22,10 +22,6 @@
 
 #include "clk.h"
 
-static struct clk *clks[ADSP_SC58X_CLK_END];
-
-static struct clk dummy, clkin0, clkin1;
-
 static const char *cgu1_in_sels[] = {"sys_clkin0", "sys_clkin1"};
 static const char *sharc0_sels[] = {"cclk0_0", "sysclk_0", "dummy", "dummy"};
 static const char *sharc1_sels[] = {"cclk0_0", "sysclk_0", "dummy", "dummy"};
@@ -45,6 +41,9 @@ static int sc58x_clock_probe(struct udevice *dev)
 	void __iomem *cdu;
 	int ret;
 	struct resource res;
+
+	struct clk *clks[ADSP_SC58X_CLK_END];
+	struct clk dummy, clkin0, clkin1;
 
 	ret = dev_read_resource_byname(dev, "cgu0", &res);
 	if (ret)
