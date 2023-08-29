@@ -107,9 +107,9 @@ static int sc594_clock_probe(struct udevice *dev)
 							 "sysclk_0", cgu0 + CGU_DIV, 5, 3, 0);
 	clks[ADSP_SC594_CLK_CGU0_S1SELDIV] = cgu_divider("cgu0_s1seldiv",
 							 "sysclk_0", cgu0 + CGU_DIV, 13, 3, 0);
-	clks[ADSP_SC598_CLK_CGU0_S1SELEXDIV] = cgu_divider("cgu0_s1selexdiv",
+	clks[ADSP_SC594_CLK_CGU0_S1SELEXDIV] = cgu_divider("cgu0_s1selexdiv",
 							   "cgu0_pllclk", cgu0 + CGU_DIVEX, 16, 8, 0);
-	clks[ADSP_SC598_CLK_CGU0_S1SEL] = clk_register_mux(NULL, "cgu0_sclk1sel",
+	clks[ADSP_SC594_CLK_CGU0_S1SEL] = clk_register_mux(NULL, "cgu0_sclk1sel",
 							   cgu0_s1sels, 2, CLK_SET_RATE_PARENT, cgu0 + CGU_CTL, 17, 1, 0);
 
 	clks[ADSP_SC594_CLK_CGU1_CDIV] = cgu_divider("cgu1_cdiv", "cgu1_pllclk",
@@ -124,9 +124,9 @@ static int sc594_clock_probe(struct udevice *dev)
 							 "sysclk_1", cgu1 + CGU_DIV, 5, 3, 0);
 	clks[ADSP_SC594_CLK_CGU1_S1SELDIV] = cgu_divider("cgu1_s1seldiv",
 							 "sysclk_1", cgu1 + CGU_DIV, 13, 3, 0);
-	clks[ADSP_SC598_CLK_CGU1_S1SELEXDIV] = cgu_divider("cgu1_s1selexdiv",
+	clks[ADSP_SC594_CLK_CGU1_S1SELEXDIV] = cgu_divider("cgu1_s1selexdiv",
 							   "cgu1_pllclk", cgu1 + CGU_DIVEX, 16, 8, 0);
-	clks[ADSP_SC598_CLK_CGU1_S1SEL] = clk_register_mux(NULL, "cgu1_sclk1sel",
+	clks[ADSP_SC594_CLK_CGU1_S1SEL] = clk_register_mux(NULL, "cgu1_sclk1sel",
 							   cgu1_s1sels, 2, CLK_SET_RATE_PARENT, cgu1 + CGU_CTL, 17, 1, 0);
 
 	// Gates to enable CGU outputs
