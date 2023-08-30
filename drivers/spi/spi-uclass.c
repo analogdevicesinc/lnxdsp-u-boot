@@ -237,7 +237,7 @@ static int spi_child_pre_probe(struct udevice *dev)
 	struct dm_spi_slave_plat *plat = dev_get_parent_plat(dev);
 	struct spi_slave *slave = dev_get_parent_priv(dev);
 
-	#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+	#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64) || defined(CONFIG_SC58X)
 		plat->mode |= SPI_TX_QUAD | SPI_RX_QUAD;
 	#endif
 
