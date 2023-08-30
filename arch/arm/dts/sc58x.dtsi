@@ -10,6 +10,7 @@
 
 / {
 	soc {
+
 		mmc: mmc0@31010000 {
 			compatible = "snps,dw-mshc";
 			reg = <0x31010000 0x400>;
@@ -21,6 +22,27 @@
 			max-frequency = <52000000>;
 			status = "disabled";
 		};
+
+		usb0: musb@310c1000 {
+			compatible = "adi,sc5xx-musb";
+			reg = <0x310c1000 0x390>;
+			reg-names = "mc";
+			interrupts = <GIC_SPI 132 IRQ_TYPE_LEVEL_HIGH>,
+						 <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "mc", "dma";
+			status = "okay";
+		};
+
+		usb1: musb@310c2000 {
+			compatible = "adi,sc5xx-musb";
+			reg = <0x310c2000 0x390>;
+			reg-names = "mc";
+			interrupts = <GIC_SPI 134 IRQ_TYPE_LEVEL_HIGH>,
+						 <GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "mc", "dma";
+			status = "disabled";
+		};
+
 	};
 };
 
