@@ -18,7 +18,7 @@
 /*
  * Processor Settings
  */
-#define CONFIG_LOADADDR	0x82000000
+#define CONFIG_LOADADDR	0x83000000
 
 #define CONFIG_DTBNAME		"sc573-ezkit.dtb"
 #define CONFIG_DTBLOADADDR	"0x84000000"
