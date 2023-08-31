@@ -25,7 +25,7 @@
 #include <linux/bug.h>
 #endif
 
-#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64) || defined (CONFIG_SC58X)
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64) || defined (CONFIG_SC58X) || defined (CONFIG_SC57X)
 #include <linux/mtd/spi-nor.h>
 #endif
 
@@ -425,7 +425,7 @@ int spi_mem_exec_op(struct spi_slave *slave, const struct spi_mem_op *op)
 
 	/* 2nd transfer: rx or tx data path */
 	if (tx_buf || rx_buf) {
-#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64) || defined (CONFIG_SC58X)
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64) || defined (CONFIG_SC58X) || defined (CONFIG_SC57X)
 		flag = SPI_XFER_END;
 
 		/*
