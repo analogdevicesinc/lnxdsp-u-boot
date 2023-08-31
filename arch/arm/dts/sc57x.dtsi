@@ -21,6 +21,17 @@
 			max-frequency = <52000000>;
 			status = "disabled";
 		};
+
+		usb0: musb@310c1000 {
+			compatible = "adi,sc5xx-musb";
+			reg = <0x310c1000 0x390>;
+			reg-names = "mc";
+			interrupts = <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>,
+						 <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "mc", "dma";
+			status = "okay";
+		};
+
 	};
 };
 
