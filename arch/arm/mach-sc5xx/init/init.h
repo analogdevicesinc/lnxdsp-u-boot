@@ -26,7 +26,7 @@
 #define REG_SPU0_SECUREC1              0x3108C984
 #define REG_SPU0_SECUREC2              0x3108C988
 #define REG_SPU0_SECUREP_START         0x3108CA00
-#define REG_SPU0_SECUREP_END           0x3108CD24
+#define REG_SPU0_SECUREP_END           0x3108CCF0
 #endif
 
 #define REG_ARMPMU0_PMCR               0x31121E04
