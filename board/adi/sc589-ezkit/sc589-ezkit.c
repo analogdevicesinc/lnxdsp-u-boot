@@ -54,17 +54,6 @@ int board_early_init_f(void)
 	return 0;
 }
 
-void set_spu_securep_msec(int n, bool msec)
-{
-	void __iomem *p = (void __iomem *)(REG_SPU0_CTL + 0xA00 + 4 * n);
-	u32 securep = readl(p);
-
-	if (msec)
-		writel(securep | 0x2, p);
-	else
-		writel(securep & ~0x2, p);
-}
-
 unsigned long flash_init(void)
 {
 #if 0
@@ -102,11 +91,6 @@ int board_init(void)
 
 	// Configure eth0 for rgmii
 	writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
-
-	set_spu_securep_msec(55, 1);
-	set_spu_securep_msec(56, 1);
-	set_spu_securep_msec(58, 1);
-	set_spu_securep_msec(153, 1);
 
 	return 0;
 }
