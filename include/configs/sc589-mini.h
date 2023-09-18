@@ -98,7 +98,7 @@
 #define ADI_UBOOT_OFFSET "0x20000"
 #define ADI_IMG_OFFSET   "0xE0000"
 #define ADI_RFS_OFFSET   "0x6E0000"
-#define ADI_JFFS2_FILE   "tiny" //use the adsp-sc5xx-tiny image
+#define ADI_JFFS2_FILE   "minimal" //use the adsp-sc5xx-minimal image
 
 #include <configs/sc_adi_common.h>
 
