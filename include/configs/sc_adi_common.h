@@ -89,7 +89,7 @@
 #define UBOOT_ENV_FILE "u-boot-" CONFIG_SYS_BOARD ".ldr"
 
 #define ADI_INIT_ETHERNET \
-	"init_ethernet=mii info; dhcp; setenv serverip ${serverip};\0"
+	"init_ethernet=mii info; dhcp; setenv serverip ${tftpserverip};\0"
 
 #define ADI_NFS_BOOT \
 	"nfsargs=setenv bootargs " ADI_BOOTARGS_NFS "\0" \
