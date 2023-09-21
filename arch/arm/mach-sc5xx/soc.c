@@ -15,6 +15,7 @@
 #include <cpu_func.h>
 
 #include <asm/arch-adi/sc5xx/soc.h>
+#include <asm/arch-adi/sc5xx/idcode.h>
 
 void reset_cpu(void)
 {
@@ -45,6 +46,53 @@ int arch_cpu_init(void)
 	return 0;
 }
 
+
+
+
+void print_device_type(u32 device_type)
+{
+	printf("[Detected] Device: "); 
+	if(device_type == GRFN_SC58X_JTAGID)
+		printf("sc58x\n");
+	else if(device_type == GRFN_SC59X_JTAGID)
+		printf("sc59x\n");
+	else
+		printf("unknown [%016x]\n",device_type);
+}
+
+/* 
+* It sees like the revision ID is similarly coded for different boards
+* and as a result, is currently left to be shared by different devices 
+*/
+void print_si_version(u32 si_version)
+{
+	printf("[Detected] Silicon version: ");
+	if(si_version == GRFN_SC58X_SI_REVID_0_0)
+		printf("0.0\n");
+	else if(si_version == GRFN_SC58X_SI_REVID_0_1)
+		printf("0.1\n");
+	else if(si_version == GRFN_SC58X_SI_REVID_1_0)
+		printf("1.0\n");
+	else if(si_version == GRFN_SC58X_SI_REVID_1_2)
+		printf("1.2\n");
+	else
+		printf("x.x [%04x]\n",si_version);
+}
+
+int auth_reading(u32 mfid,u32 lsb)
+{
+	if ((mfid != ADI_MNFID) || (lsb != ADI_LSB)) {
+		printf("WARNING: UNEXPECTED VALUES IN ID CODE\n");
+		printf("[MNFID]EXPECTED: %02x, GOT: %02x\n", ADI_MNFID, mfid);
+		printf("[LSB]EXPECTED: %02x, GOT: %02x\n", ADI_LSB, lsb);
+		printf("ABORTING AUTO DETECTION\n");
+		return -1;
+	} else {
+		printf("[Detected] ADI Device\n");
+	}
+	return 0;
+}
+
 void print_cpu_id(void)
 {
 #ifndef CONFIG_ARM64
@@ -52,12 +100,25 @@ void print_cpu_id(void)
 
 	__asm__ __volatile__("mrc p15, 0, %0, c0, c0, 0" : "=r"(cpuid));
 
-	printf("Detected Revision: %d.%d\n", cpuid & 0xf00000 >> 20, cpuid & 0xf);
+	printf("[Detected] Revision: %d.%d\n", cpuid & 0xf00000 >> 20, cpuid & 0xf);
+#else
+	u32 id = *(TAPC_IDCODE);
+	
+	u32 si_version = ((id & BITM_SI_REVID) & BITM_SI_REVID) >> 28;
+	u32 device_type = ((id & BITM_JTAGID) & BITM_JTAGID) >> 12;
+	u32 mfid = ((id & BITM_MNFID) & BITM_MNFID) >> 1;
+	u32 lsb = (id & BITM_LSB) & BITM_LSB;
+
+	if(!auth_reading(mfid,lsb)) {
+		print_device_type(device_type);
+		print_si_version(si_version);
+	}
 #endif
 }
 
 int print_cpuinfo(void)
 {
+
 	printf("CPU:   ADSP %s (%s boot)\n",
 	       CONFIG_LDR_CPU,  get_sc_boot_mode(CONFIG_SC_BOOT_MODE));
 
