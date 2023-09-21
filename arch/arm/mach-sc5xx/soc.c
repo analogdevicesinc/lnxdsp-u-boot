@@ -61,9 +61,10 @@ void print_device_type(u32 device_type)
 }
 
 /* 
-* It sees like the revision ID is similarly coded for different boards
-* and as a result, is currently left to be shared by different devices 
-*/
+* Revision ID is similarly coded for different boards
+* and as a result, is currently set to be shared by different 
+* devices 
+* */
 void print_si_version(u32 si_version)
 {
 	printf("[Detected] Silicon version: ");
@@ -93,15 +94,9 @@ int auth_reading(u32 mfid,u32 lsb)
 	return 0;
 }
 
-void print_cpu_id(void)
+
+voi read_tapc_idcode(void)
 {
-#ifndef CONFIG_ARM64
-	u32 cpuid = 0;
-
-	__asm__ __volatile__("mrc p15, 0, %0, c0, c0, 0" : "=r"(cpuid));
-
-	printf("[Detected] Revision: %d.%d\n", cpuid & 0xf00000 >> 20, cpuid & 0xf);
-#else
 	u32 id = *(TAPC_IDCODE);
 	
 	u32 si_version = ((id & BITM_SI_REVID) & BITM_SI_REVID) >> 28;
@@ -113,6 +108,16 @@ void print_cpu_id(void)
 		print_device_type(device_type);
 		print_si_version(si_version);
 	}
+}
+
+void print_cpu_id(void)
+{
+#ifndef CONFIG_ARM64
+	u32 cpuid = 0;
+
+	__asm__ __volatile__("mrc p15, 0, %0, c0, c0, 0" : "=r"(cpuid));
+
+	printf("[Detected] Revision: %d.%d\n", cpuid & 0xf00000 >> 20, cpuid & 0xf);
 #endif
 }
 
@@ -123,6 +128,8 @@ int print_cpuinfo(void)
 	       CONFIG_LDR_CPU,  get_sc_boot_mode(CONFIG_SC_BOOT_MODE));
 
 	print_cpu_id();
+	printf("Reading on-board IDCODE register\n");
+	read_tapc_idcode();
 
 	return 0;
 }
