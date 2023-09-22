@@ -95,7 +95,7 @@ int auth_reading(u32 mfid,u32 lsb)
 }
 
 
-voi read_tapc_idcode(void)
+void read_tapc_idcode(void)
 {
 	u32 id = *(TAPC_IDCODE);
 	
