@@ -94,7 +94,7 @@
  * 0x00E0000 - 0x06DFFFF : FIT or DTB+zImage  ( 6144KB)
  * 0x06E0000 - 0x0FFFFFF : Root File System   ( 9592KB)
  */
-#define ADI_SPI_SIZE     "0x1000000" //16MB
+#define ADI_SPI_SIZE     "0x4000000" //64MB
 #define ADI_UBOOT_OFFSET "0x20000"
 #define ADI_IMG_OFFSET   "0xE0000"
 #define ADI_RFS_OFFSET   "0x6E0000"
