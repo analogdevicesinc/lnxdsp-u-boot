@@ -91,13 +91,13 @@
  * 0x0000000 - 0x001FFFF : U-Boot Stage 1     (  128KB)
  * 0x0020000 - 0x00CFFFF : U-Boot Stage 2     (  720KB)
  * 0x00D0000 - 0x00DFFFF : U-Boot Environment (   64KB)
- * 0x00E0000 - 0x06DFFFF : FIT or DTB+zImage  ( 6144KB)
- * 0x06E0000 - 0x0FFFFFF : Root File System   ( 9592KB)
+ * 0x00E0000 - 0x08DFFFF : FIT or DTB+zImage  ( 8388KB)
+ * 0x08E0000 - 0x3FFFFFF : Root File System   (57802KB)
  */
 #define ADI_SPI_SIZE     "0x4000000" //64MB
 #define ADI_UBOOT_OFFSET "0x20000"
 #define ADI_IMG_OFFSET   "0xE0000"
-#define ADI_RFS_OFFSET   "0x6E0000"
+#define ADI_RFS_OFFSET   "0x8E0000"
 #define ADI_JFFS2_FILE   "minimal" //use the adsp-sc5xx-minimal image
 
 #include <configs/sc_adi_common.h>
