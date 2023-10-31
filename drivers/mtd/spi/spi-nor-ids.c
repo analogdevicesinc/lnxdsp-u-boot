@@ -214,7 +214,7 @@ const struct flash_info spi_nor_ids[] = {
 	{ INFO("is25lp256",  0x9d6019, 0, 64 * 1024, 512,
 			SECT_4K | SPI_NOR_DUAL_READ) },
 	{ INFO("is25lp512",  0x9d601a, 0, 64 * 1024, 1024,
-			SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
 	{ INFO("is25lp01g",  0x9d601b, 0, 64 * 1024, 2048,
 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
 	{ INFO("is25lx256", 0x9d5a19, 0, 128 * 1024, 256, SPI_NOR_4B_MODE) },
