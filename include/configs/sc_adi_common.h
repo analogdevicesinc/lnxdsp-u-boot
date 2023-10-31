@@ -117,8 +117,8 @@
 #define ADI_UPDATE_SPI_UBOOT \
 	"stage1file=" STAGE_1_FILE "\0" \
 	"stage2file=" STAGE_2_FILE "\0" \
-	"update_spi_uboot_stage1=tftp ${loadaddr} ${tftp_dir_prefix}${stage1file}; sf probe ${sfdev}; sf write ${loadaddr} 0x0 ${filesize};\0" \
-	"update_spi_uboot_stage2=tftp ${loadaddr} ${tftp_dir_prefix}${stage2file}; sf probe ${sfdev}; sf write ${loadaddr} " ADI_UBOOT_OFFSET " ${filesize};\0" \
+	"update_spi_uboot_stage1=tftp ${loadaddr} ${tftp_dir_prefix}${stage1file}; sf probe ${sfdev}; sf update ${loadaddr} 0x0 ${filesize};\0" \
+	"update_spi_uboot_stage2=tftp ${loadaddr} ${tftp_dir_prefix}${stage2file}; sf probe ${sfdev}; sf update ${loadaddr} " ADI_UBOOT_OFFSET " ${filesize};\0" \
 	"update_spi_uboot=run update_spi_uboot_stage1; run update_spi_uboot_stage2;\0"
 
 #if CONFIG_ADI_FALCON
@@ -126,19 +126,19 @@
 		#define ADI_UPDATE_SPI_DTB ""
 	#else
 		#define ADI_UPDATE_SPI_DTB \
-		"update_spi_dtb=tftp ${loadaddr} ${tftp_dir_prefix}${dtbfile}; sf probe ${sfdev}; run ${argscmd}; fdt addr ${loadaddr}; fdt resize 0x10000; fdt boardsetup; fdt chosen; sf write ${loadaddr} 0xE0000 0x10000; setenv dtbsize 0x10000;\0"
+		"update_spi_dtb=tftp ${loadaddr} ${tftp_dir_prefix}${dtbfile}; sf probe ${sfdev}; run ${argscmd}; fdt addr ${loadaddr}; fdt resize 0x10000; fdt boardsetup; fdt chosen; sf update ${loadaddr} 0xE0000 0x10000; setenv dtbsize 0x10000;\0"
 	#endif
 #else
 	#if CONFIG_IS_ENABLED(FIT)
 		#define ADI_UPDATE_SPI_DTB ""
 	#else
 		#define ADI_UPDATE_SPI_DTB \
-		"update_spi_dtb=tftp ${loadaddr} ${tftp_dir_prefix}${dtbfile}; sf probe ${sfdev}; setexpr dtbloadaddr ${imagesize} + " ADI_IMG_OFFSET "; sf write ${loadaddr} ${dtbloadaddr} ${filesize}; setenv dtbsize ${filesize};\0"
+		"update_spi_dtb=tftp ${loadaddr} ${tftp_dir_prefix}${dtbfile}; sf probe ${sfdev}; setexpr dtbloadaddr ${imagesize} + " ADI_IMG_OFFSET "; sf update ${loadaddr} ${dtbloadaddr} ${filesize}; setenv dtbsize ${filesize};\0"
 	#endif
 #endif
 
 #define ADI_UPDATE_SPI \
-	"start_update_spi=run init_ethernet; sf probe ${sfdev}; sf erase 0 ${sfsize};" \
+	"start_update_spi=run init_ethernet; sf probe ${sfdev};" \
 	ADI_UPDATE_SPI_UBOOT_CMD \
 	ADI_UPDATE_SPI_IMAGE_CMD \
 	ADI_UPDATE_SPI_FIT_CMD \
@@ -147,12 +147,12 @@
 	" sleep 3; saveenv\0" \
 	ADI_UPDATE_SPI_UBOOT \
 	ADI_UPDATE_SPI_DTB \
-	"update_spi_image=tftp ${loadaddr} ${tftp_dir_prefix}${imagefile}; sf probe ${sfdev}; sf write ${loadaddr} " ADI_IMG_OFFSET " ${filesize}; setenv imagesize ${filesize};\0" \
-	"update_spi_fit=tftp ${loadaddr} ${tftp_dir_prefix}${imagefile}; sf probe ${sfdev}; sf write ${loadaddr} " ADI_IMG_OFFSET " ${filesize}; setenv imagesize ${filesize};\0" \
-	"update_spi_rfs=tftp ${loadaddr} ${tftp_dir_prefix}${jffs2file}; sf probe ${sfdev}; sf write ${loadaddr} " ADI_RFS_OFFSET " ${filesize};\0"
+	"update_spi_image=tftp ${loadaddr} ${tftp_dir_prefix}${imagefile}; sf probe ${sfdev}; sf update ${loadaddr} " ADI_IMG_OFFSET " ${filesize}; setenv imagesize ${filesize};\0" \
+	"update_spi_fit=tftp ${loadaddr} ${tftp_dir_prefix}${imagefile}; sf probe ${sfdev}; sf update ${loadaddr} " ADI_IMG_OFFSET " ${filesize}; setenv imagesize ${filesize};\0" \
+	"update_spi_rfs=tftp ${loadaddr} ${tftp_dir_prefix}${jffs2file}; sf probe ${sfdev}; sf update ${loadaddr} " ADI_RFS_OFFSET " ${filesize};\0"
 
 #define ADI_UPDATE_SPI_UBOOT_ONLY \
-	"start_update_spi_uboot_only=run init_ethernet; sf probe ${sfdev}; sf erase 0 " ADI_IMG_OFFSET ";" \
+	"start_update_spi_uboot_only=run init_ethernet; sf probe ${sfdev};" \
 	ADI_UPDATE_SPI_UBOOT_CMD \
 	" sleep 3; saveenv\0" \
 	ADI_UPDATE_SPI_UBOOT \
