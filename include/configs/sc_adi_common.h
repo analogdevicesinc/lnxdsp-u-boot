@@ -137,6 +137,11 @@
 	#endif
 #endif
 
+#define ADI_ERASE_SPI \
+	"erase_spi=setenv sfdev "  \
+		__stringify(CONFIG_SC_BOOT_SPI_BUS) ":" __stringify(CONFIG_SC_BOOT_SPI_SSEL) "; " \
+		"setenv sfsize " ADI_SPI_SIZE "; sf probe ${sfdev}; sf erase 0 ${sfsize};\0"
+
 #define ADI_UPDATE_SPI \
 	"start_update_spi=run init_ethernet; sf probe ${sfdev};" \
 	ADI_UPDATE_SPI_UBOOT_CMD \
@@ -156,6 +161,11 @@
 	ADI_UPDATE_SPI_UBOOT_CMD \
 	" sleep 3; saveenv\0" \
 	ADI_UPDATE_SPI_UBOOT \
+
+#define ADI_ERASE_OSPI \
+	"erase_ospi=setenv sfdev "  \
+		__stringify(CONFIG_SC_BOOT_OSPI_BUS) ":" __stringify(CONFIG_SC_BOOT_OSPI_SSEL) "; " \
+		"setenv sfsize " ADI_OSPI_SIZE "; sf probe ${sfdev}; sf erase 0 ${sfsize};\0"
 
 #define ADI_OSPI_BOOT \
 	"update_ospi=setenv sfdev " \
