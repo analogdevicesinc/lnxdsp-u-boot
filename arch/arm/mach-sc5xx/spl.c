@@ -8,6 +8,10 @@
  * Contact: Greg Malysa <greg.malysa@timesys.com>
  */
 
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+
 #include <asm-generic/gpio.h>
 #include <spl.h>
 #include <asm/arch-adi/sc5xx/spl.h>
@@ -26,6 +30,11 @@ static u32 initramfs_len;
 #endif
 
 u32 bmode;
+
+
+#if defined(CONFIG_ADI_DEVELOPER)
+#define LOADADDR 0x82000000
+#endif
 
 int spl_start_uboot(void)
 {
@@ -68,6 +77,8 @@ void board_boot_order(u32 *spl_boot_list)
 	};
 
 	char *bmodeString = "unknown";
+	int i = 0;
+
 
 	bmode = (readl(pRCU_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
 
@@ -131,10 +142,27 @@ void board_boot_order(u32 *spl_boot_list)
 	}
 
 #else
+
+#if defined(CONFIG_ADI_DEVELOPER)
+
+	bmode = *((unsigned int *) LOADADDR) - 1;
+	printf("Entering Developer Mode...\n");
+	if ((ARRAY_SIZE(bmodes) <= bmode) || (0 >= bmode)) {
+		printf("Please enter a bootmode at 0x%08x via JTAG:\n",LOADADDR);
+		
+		for (i = 0; i < ARRAY_SIZE(bmodes); i++)
+			printf("[%d]	%s\n", i+1, bmodes[i]);
+		
+		bmode = 0; //allow continuing to load U-boot proper if needed
+	} else {
+		printf("Booting into %s\n", bmodes[bmode], bmode);
+	}
+
+#endif
+
 	if (bmode == 0) {
 		printf("SPL execution has completed.  Please load U-Boot Proper via JTAG");
-		while (1)
-			;
+		while (1);
 	}
 
 	// Everything goes back to bootrom where we'll read table parameters and ask it

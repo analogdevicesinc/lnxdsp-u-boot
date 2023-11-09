@@ -191,6 +191,12 @@ config ADI_FALCON
 	help
 		Enable Falcon Boot Mode Support
 
+config ADI_DEVELOPER
+	bool "Enable Development Support"
+	default n
+	help
+		Allows changing bootmode via JTAG
+
 config ADI_SPL_FORCE_BMODE
 	int "Force the SPL to use this BMODE device during next boot stage"
 	default 0
