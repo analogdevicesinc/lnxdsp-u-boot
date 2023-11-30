@@ -127,7 +127,7 @@
 };
 
 &mmc{
-	clocks = <&dummy>, <&clk ADSP_SC58X_CLK_CGU0_SCLK0>;
+	clocks = <&clk ADSP_SC58X_CLK_CGU0_SCLK0>, <&clk ADSP_SC58X_CLK_SDIO>;
 };
 
 &i2c0{
