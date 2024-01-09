@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * (C) Copyright 2022 - Analog Devices, Inc.
+ * (C) Copyright 2022-2024 - Analog Devices, Inc.
  *
  * Written and/or maintained by Timesys Corporation
  *
@@ -327,6 +327,13 @@ __attribute__((always_inline)) static inline void dmc_controller_init(void)
 #ifndef CONFIG_SC59X
     writel(dmc.dmc_data_calib_add_value, dmc.reg->REG_DMC_DT_CALIB_ADDR);
 #endif
+
+#if defined(CONFIG_SC57X) || defined(CONFIG_SC58X)
+    // SC58xx and SC57xx programming DMC_DLLCTL.DLLCALRDCNT should be done before DMC Initialisaiton 
+    /* Program the DMCx_CTL.DLLCTL register with 0x948 value
+     * (DATACYC=9,    DLLCALRDCNT=72). */
+    writel(0x00000948, dmc.reg->REG_DMC_DLLCTL);
+#endif 
     /* 3. Program the DMCx_CTL register with INIT bit set to start
      * the DMC initialization sequence */
     writel(dmc.dmc_ctl_value, dmc.reg->REG_DMC_CTL);
@@ -461,11 +468,6 @@ __attribute__((always_inline)) static inline void dmc_controller_init(void)
 	}
 	dmcdelay(2500u);
     #endif
-
-#else
-    /* 5. Program the DMCx_CTL.DLLCTL register with 0x948 value
-     * (DATACYC=9,    DLLCALRDCNT=72). */
-    writel(0x00000948, dmc.reg->REG_DMC_DLLCTL);
 #endif
 
     /* 6. Workaround for anomaly#20000037 */
