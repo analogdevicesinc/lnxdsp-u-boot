@@ -18,8 +18,8 @@
 /*
  * Processor Settings
  */
-#define CONFIG_LOADADDR	0x82000000
-#define CONFIG_DTBLOADADDR	"0x84000000"
+#define CONFIG_LOADADDR	0xA2000000
+#define CONFIG_DTBLOADADDR	"0xA4000000"
 #ifdef CONFIG_ADI_CARRIER_SOMCRR_EZLITE
 #define CONFIG_MACH_TYPE MACH_TYPE_SC594_SOM_EZLITE;
 #else
@@ -47,8 +47,8 @@
 #define CFG_SYS_SPI_ARGS_OFFS   0xA0000    // This is where the DTB should be stored
 #define CFG_SYS_SPI_ARGS_SIZE   0x10000    // Max size of the DTB
 #define CFG_SYS_SPI_KERNEL_OFFS 0x120000   // Where the kernel Image or FIT should be stored
-#define CONFIG_SYS_SPL_ARGS_ADDR   0x80000000 // Where to load the DTB into RAM
-#define CONFIG_SYS_LOAD_ADDR       0x82000000 // Where to load the Image into RAM
+#define CONFIG_SYS_SPL_ARGS_ADDR   0xA0000000 // Where to load the DTB into RAM
+#define CONFIG_SYS_LOAD_ADDR       0xA2000000 // Where to load the Image into RAM
 #define CONFIG_SYS_SPI_KERNEL_SKIP_HEADER
 #endif
 
@@ -59,8 +59,8 @@
 #define MEM_ISSI_8Gb_DDR3_800MHZ
 #define MEM_DMC0
 
-#define CFG_SYS_SDRAM_BASE	0x82000000
-#define CFG_SYS_SDRAM_SIZE	0x3E000000
+#define CFG_SYS_SDRAM_BASE	0xA2000000 //Remaining region is reserved for SHARC
+#define CFG_SYS_SDRAM_SIZE	0x1E000000 //512 MB is available to ARM
 #ifndef CONFIG_SPL_BUILD
 #define CONFIG_SYS_LOAD_ADDR	0x0
 #endif
@@ -95,10 +95,10 @@
 /*
  * Misc Settings
  */
-#define ADI_LINUX_MEMSIZE	"992M"
+#define ADI_LINUX_MEMSIZE	"480M"
 
 #define CONFIG_BOOTCOMMAND	"run ospiboot"
-#define INITRAMADDR "0x85000000"
+#define INITRAMADDR "0xA5000000"
 
 #define ADI_ENV_SETTINGS \
 	"usb_pgood_delay=1000\0" \

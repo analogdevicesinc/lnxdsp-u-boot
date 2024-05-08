@@ -62,10 +62,17 @@
 
 #define ADI_MMC_BOOTCMD "run mmcargs; " ADI_BOOT ""
 
+#ifdef CONFIG_SC59X
+#define ADI_MEM_SIZE	"mem=512M "
+#else
+#define ADI_MEM_SIZE	""
+#endif
+
 #define ADI_BOOTARGS_CONSOLE \
 		ADI_EARLYPRINTK \
 		"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
-						__stringify(CONFIG_BAUDRATE) " " \
+				__stringify(CONFIG_BAUDRATE) " " \
+				ADI_MEM_SIZE \ 
 		"vmalloc=512M "
 
 #define ADI_BOOTARGS_MMC \
