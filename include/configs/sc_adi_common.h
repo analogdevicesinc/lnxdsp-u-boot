@@ -216,7 +216,7 @@
 	\
 	"imagefile=" IMAGEFILE "\0" \
 	"initramfile=adsp-sc5xx-ramdisk-adsp-" CONFIG_SYS_BOARD ".cpio.xz.u-boot\0" \
-	"jffs2file=adsp-sc5xx-" ADI_JFFS2_FILE "-adsp-" CONFIG_SYS_BOARD ".jffs2\0" \
+	"jffs2file=adsp-sc5xx-" ADI_JFFS2_FILE "-adsp-" CONFIG_SYS_BOARD ".rootfs.jffs2\0" \
 	"initramaddr=" INITRAMADDR "\0" \
 	"dtbfile=" CONFIG_DTBNAME "\0" \
 	"dtbaddr=" CONFIG_DTBLOADADDR "\0" \
