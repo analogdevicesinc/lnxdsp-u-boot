@@ -62,7 +62,8 @@
 
 #define ADI_MMC_BOOTCMD "run mmcargs; " ADI_BOOT ""
 
-#ifdef CONFIG_SC59X
+//only applicable for SC594
+#if defined CONFIG_SC59X && !CONFIG_SC59X_64
 #define ADI_MEM_SIZE	"mem=512M "
 #else
 #define ADI_MEM_SIZE	""
