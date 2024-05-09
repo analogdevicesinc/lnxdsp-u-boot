@@ -60,7 +60,7 @@
 #define MEM_DMC0
 
 #define CFG_SYS_SDRAM_BASE	0xA2000000 //Remaining region is reserved for SHARC
-#define CFG_SYS_SDRAM_SIZE	0x1E000000 //512 MB is available to ARM
+#define CFG_SYS_SDRAM_SIZE	0x1E000000 //480 MB is available to ARM
 #ifndef CONFIG_SPL_BUILD
 #define CONFIG_SYS_LOAD_ADDR	0x0
 #endif
@@ -98,7 +98,7 @@
 #define ADI_LINUX_MEMSIZE	"480M"
 
 #define CONFIG_BOOTCOMMAND	"run ospiboot"
-#define INITRAMADDR "0xA5000000"
+#define INITRAMADDR "0xA8000000"
 
 #define ADI_ENV_SETTINGS \
 	"usb_pgood_delay=1000\0" \
