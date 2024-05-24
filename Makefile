@@ -2035,7 +2035,7 @@ RENAME_FILES += u-boot u-boot.bin u-boot.ldr u-boot.srec u-boot.lds u-boot.map
 
 u-boot-$(CONFIG_SYS_BOARD).ldr: $(INPUTS-y)
 	@$(foreach file,$(RENAME_FILES),\
-		mv $(file) $(subst u-boot, u-boot-$(CONFIG_SYS_BOARD), $(file));)
+		cp $(file) $(subst u-boot, u-boot-$(CONFIG_SYS_BOARD), $(file));)
 endif
 spl/u-boot-spl.bin: spl/u-boot-spl
 	@:

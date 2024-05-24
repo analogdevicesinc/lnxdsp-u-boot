@@ -381,14 +381,14 @@ $(obj)/$(BOARD)-spl.bin: $(obj)/u-boot-spl.bin
 	$(objtree)/tools/mkexynosspl) $(VAR_SIZE_PARAM) $< $@
 endif
 
-u-boot-$(CONFIG_SYS_BOARD).ldr: u-boot.ldr u-boot
-		cp u-boot.ldr u-boot-spl-$(CONFIG_SYS_BOARD).ldr
-		cp spl/u-boot-spl u-boot-spl-$(CONFIG_SYS_BOARD).elf
-		cp u-boot u-boot-proper-$(CONFIG_SYS_BOARD).elf
+u-boot-$(CONFIG_SYS_BOARD).ldr: u-boot $(obj)/u-boot-spl $(obj)/u-boot-spl.ldr
+		cp u-boot u-boot-$(CONFIG_SYS_BOARD).elf
+		cp $(obj)/u-boot-spl u-boot-spl-$(CONFIG_SYS_BOARD).elf
+		cp $(obj)/u-boot-spl.ldr u-boot-spl-$(CONFIG_SYS_BOARD).ldr
 
-u-boot.ldr:	$(obj)/u-boot-spl
+$(obj)/u-boot-spl.ldr:	$(obj)/u-boot-spl
 		$(CREATE_LDR_ENV)
-		$(LDR) -T $(CONFIG_LDR_CPU) -c $@ spl/u-boot-spl $(LDR_FLAGS)
+		$(LDR) -T $(CONFIG_LDR_CPU) -c $@ $< $(LDR_FLAGS)
 		$(BOARD_SIZE_CHECK)
 
 quiet_cmd_objcopy = OBJCOPY $@
