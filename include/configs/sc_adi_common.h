@@ -143,8 +143,15 @@
 	#define ADI_TFTP_DTB ""
 #endif
 
+//only applicable for SC594
+#if defined CONFIG_SC59X && !CONFIG_SC59X_64
+#define ADI_MEM_SIZE	"mem=512M "
+#else
+#define ADI_MEM_SIZE	""
+#endif
+
 #ifdef CONFIG_VIDEO
-# define ADI_BOOTARGS_VIDEO "console=tty0 "
+# define ADI_BOOTARGS_VIDEO "console=tty0 " ADI_MEM_SIZE " "
 #else
 # define ADI_BOOTARGS_VIDEO ""
 #endif

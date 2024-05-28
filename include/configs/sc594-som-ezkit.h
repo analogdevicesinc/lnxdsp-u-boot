@@ -13,12 +13,12 @@
  */
 //#define CONFIG_ADI_CPU		"ADSP-SC589-0.1"
 #ifdef CONFIG_SC59X_CHAIN_BOOT
-# define CONFIG_LOADADDR	0x84000000
+# define CONFIG_LOADADDR	0xA4000000
 # define CONFIG_RSA		/* RSA for FIT authen. */
 #else
-# define CONFIG_LOADADDR	0x82000000
+# define CONFIG_LOADADDR	0xA2000000
 #endif
-#define CONFIG_DTBLOADADDR	"0x84000000"
+#define CONFIG_DTBLOADADDR	"0xA4000000"
 #define CONFIG_MACH_TYPE	MACH_TYPE_SC594_SOM_EZKIT
 #define CONFIG_SYS_ARM_CACHE_WRITETHROUGH
 
@@ -43,8 +43,8 @@
 #define CONFIG_SYS_SPI_ARGS_OFFS   0xA0000    // This is where the DTB should be stored
 #define CONFIG_SYS_SPI_ARGS_SIZE   0x10000    // Max size of the DTB
 #define CONFIG_SYS_SPI_KERNEL_OFFS 0xC0000   // Where the kernel Image should be stored
-#define CONFIG_SYS_SPL_ARGS_ADDR   0x84000000 // Where to load the DTB into RAM
-#define CONFIG_SYS_LOAD_ADDR       0x82000000 // Where to load the Image into RAM
+#define CONFIG_SYS_SPL_ARGS_ADDR   0xA4000000 // Where to load the DTB into RAM
+#define CONFIG_SYS_LOAD_ADDR       0xA2000000 // Where to load the Image into RAM
 #define CONFIG_SYS_SPI_KERNEL_SKIP_HEADER
 #endif
 
@@ -58,8 +58,8 @@
 #define MEM_DMC0
 
 #define	CONFIG_NR_DRAM_BANKS		1
-#define CONFIG_SYS_SDRAM_BASE	0x82000000
-#define CONFIG_SYS_SDRAM_SIZE	0x3E000000
+#define CONFIG_SYS_SDRAM_BASE	0xA0000000
+#define CONFIG_SYS_SDRAM_SIZE	0x20000000
 #define CONFIG_SYS_TEXT_BASE	0xB2200000
 #ifndef CONFIG_SPL_BUILD
 #define CONFIG_SYS_LOAD_ADDR	0x0
@@ -145,11 +145,11 @@
 #define CONFIG_SYS_NO_FLASH
 #define CONFIG_UART_CONSOLE	0
 #define CONFIG_BAUDRATE		115200
-#define CONFIG_LINUX_MEMSIZE	"992M"
+#define CONFIG_LINUX_MEMSIZE	"512M"
 #define CONFIG_CMD_BOOTZ
 
 #define CONFIG_BOOTCOMMAND	"run ospiboot"
-#define INITRAMADDR "0x85000000"
+#define INITRAMADDR "0xA8000000"
 
 #define ADI_ENV_SETTINGS \
 	"initrd_high=0xFFFFFFFF\0" \
