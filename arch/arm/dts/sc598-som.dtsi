@@ -128,59 +128,19 @@
 };
 
 &i2c2{
+
 	clocks = <&clk ADSP_SC598_CLK_CGU0_SCLK0>;
 
-	gpio_expander1: mcp23018@20 {
-		compatible = "microchip,mcp23018";
-		reg = <0x20>;
+	gpio_expander1: adp5587@34 {
+		compatible = "adi,adp5588";
+		reg = <0x34>;
 		gpio-controller;
 		#gpio-cells = <2>;
 		u-boot,dm-pre-reloc;
-		drive-pullups;
-
-		led1 {
-			gpio-hog;
-			gpios = <0 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "led1-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		led2 {
-			gpio-hog;
-			gpios = <1 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "led2-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		led3 {
-			gpio-hog;
-			gpios = <2 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "led3-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		spi2d2-d3 {
-			gpio-hog;
-			gpios = <3 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~spi2d2-d3-en";
-			u-boot,dm-pre-reloc;
-		};
-
-		spi2flash-cs {
-			gpio-hog;
-			gpios = <4 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~spi2flash-cs";
-			u-boot,dm-pre-reloc;
-		};
-
+		
 		uart0 {
 			gpio-hog;
-			gpios = <5 GPIO_ACTIVE_HIGH>;
+			gpios = <0 GPIO_ACTIVE_HIGH>;
 			output-low;
 			line-name = "~uart0-en";
 			u-boot,dm-pre-reloc;
@@ -188,9 +148,25 @@
 
 		uart0-flow-en {
 			gpio-hog;
-			gpios = <6 GPIO_ACTIVE_HIGH>;
+			gpios = <1 GPIO_ACTIVE_HIGH>;
 			output-high;
 			line-name = "~uart0-flow-en";
+			u-boot,dm-pre-reloc;
+		};
+
+		spi2d2-d3 {
+			gpio-hog;
+			gpios = <2 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "~spi2d2-d3-en";
+			u-boot,dm-pre-reloc;
+		};
+
+		spi2flash-cs {
+			gpio-hog;
+			gpios = <3 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "~spi2flash-cs";
 			u-boot,dm-pre-reloc;
 		};
 
@@ -209,6 +185,31 @@
 			line-name = "emmc-som-en";
 			u-boot,dm-pre-reloc;
 		};
+		
+		led1 {
+			gpio-hog;
+			gpios = <15 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "led1-en";
+			u-boot,dm-pre-reloc;
+		};
+
+		led2 {
+			gpio-hog;
+			gpios = <16 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "led2-en";
+			u-boot,dm-pre-reloc;
+		};
+
+		led3 {
+			gpio-hog;
+			gpios = <17 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "led3-en";
+			u-boot,dm-pre-reloc;
+		};
+		
 	};
 };
 
