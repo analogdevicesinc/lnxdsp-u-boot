@@ -92,6 +92,30 @@
 			status = "okay";
 			u-boot,dm-pre-reloc;
 		};
+		
+		i2c0: i2c0@31001400 {
+			compatible = "adi-i2c";
+			reg = <0x31001400 0x1000>;
+			clock-names = "i2c";
+			status = "okay";
+			u-boot,dm-pre-reloc;
+		};
+
+		i2c1: i2c1@31001500 {
+			compatible = "adi-i2c";
+			reg = <0x31001500 0x1000>;
+			clock-names = "i2c";
+			status = "okay";
+			u-boot,dm-pre-reloc;
+		};
+
+		i2c2: i2c2@31001600 {
+			compatible = "adi-i2c";
+			reg = <0x31001600 0x1000>;
+			clock-names = "i2c";
+			status = "okay";
+			u-boot,dm-pre-reloc;
+		};
 
 		uart0: serial@0x31003000 {
 			compatible = "adi,uart4";
@@ -115,10 +139,10 @@
 			status = "okay";
 			u-boot,dm-pre-reloc;
 
-			flash1: is25lp512@1 {
+			flash1: is25lp01g@1 {
 				#address-cells = <1>;
 				#size-cells = <1>;
-				compatible = "jedec,spi-nor", "is25lp512";
+				compatible = "jedec,spi-nor", "is25lp01g";
 				reg = <1>;
 				spi-tx-bus-width = <4>;
 				spi-rx-bus-width = <4>;
@@ -148,28 +172,5 @@
 			status = "okay";
 		};
 
-		i2c0: i2c0@31001400 {
-			compatible = "adi-i2c";
-			reg = <0x31001400 0x1000>;
-			clock-names = "i2c";
-			status = "okay";
-			u-boot,dm-pre-reloc;
-		};
-
-		i2c1: i2c1@31001500 {
-			compatible = "adi-i2c";
-			reg = <0x31001500 0x1000>;
-			clock-names = "i2c";
-			status = "okay";
-			u-boot,dm-pre-reloc;
-		};
-
-		i2c2: i2c2@31001600 {
-			compatible = "adi-i2c";
-			reg = <0x31001600 0x1000>;
-			clock-names = "i2c";
-			status = "okay";
-			u-boot,dm-pre-reloc;
-		};
 	};
 };
