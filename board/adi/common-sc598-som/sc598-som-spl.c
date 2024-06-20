@@ -18,7 +18,7 @@ const struct adi_boot_args adi_rom_boot_args[] = {
 	// JTAG/no boot
 	[0] = {0, 0, 0},
 	// SPI master, used for qspi as well
-	[1] = {0x60040000, 0x00040000, 0x00000207},
+	[1] = {0x60040000, 0x00040000, 0x20620247},
 	// SPI slave
 	[2] = {0, 0, 0x00000212},
 	// UART slave
