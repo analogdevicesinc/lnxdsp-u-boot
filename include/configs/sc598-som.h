@@ -51,7 +51,7 @@
 //Parameters used for Falcon boot
 #define CFG_SYS_SPI_ARGS_OFFS   0xE0000    // This is where the DTB should be stored
 #define CFG_SYS_SPI_ARGS_SIZE   0x10000    // Max size of the DTB
-#define CFG_SYS_SPI_KERNEL_OFFS 0x120000   // Where the kernel Image or FIT should be stored
+#define CFG_SYS_SPI_KERNEL_OFFS 0x1a0000   // Where the kernel Image or FIT should be stored
 #define CONFIG_SYS_SPL_ARGS_ADDR   0x99000000 // Where to load the DTB into RAM
 #define CONFIG_SYS_SPI_KERNEL_SKIP_HEADER
 #define CONFIG_SYS_MMCSD_RAW_MODE_KERNEL_SECTOR 4096 // Position of kernel Image in sectors
