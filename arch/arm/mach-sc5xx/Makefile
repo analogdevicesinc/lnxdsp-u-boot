@@ -15,3 +15,4 @@ obj-y += sc59x/sc59x-shared.o
 endif
 
 obj-$(CONFIG_SPL_BUILD) += spl.o
+obj-$(CONFIG_SPL_BUILD) += sc5xx_sharc_idle.o

@@ -224,6 +224,12 @@ void board_init_f(ulong dummy)
 		panic("spl_early_init() failed\n");
 
 	preloader_console_init();
+
+#ifdef CONFIG_SET_SHARC_IDLE
+	ret = set_sharc_cores_idle();
+	if (ret)
+		printf("Warn: failed to set SHARC cores idle (%d)\n", ret);
+#endif
 }
 
 #ifdef CONFIG_ADI_FALCON
