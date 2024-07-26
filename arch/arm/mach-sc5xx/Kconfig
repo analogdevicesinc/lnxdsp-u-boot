@@ -25,6 +25,9 @@ config SC57X
 	select COMMON_CLK_ADI_SC57X
 	select TIMER
 	select ADI_SC5XX_TIMER
+	select TARGET_SC573_EZKIT
+	select USB
+	select USB_HOST
 
 config SC58X
 	bool
@@ -35,6 +38,8 @@ config SC58X
 	select COMMON_CLK_ADI_SC58X
 	select TIMER
 	select ADI_SC5XX_TIMER
+	select USB
+	select USB_HOST
 
 config SC59X
 	bool
@@ -46,6 +51,8 @@ config SC59X
 	select TIMER
 	select ADI_SC5XX_TIMER
 	select NOP_PHY if PHY
+	select USB
+	select USB_HOST
 
 config SC59X_64
 	bool
@@ -60,8 +67,63 @@ config SC59X_64
 	select GICV3
 	select GIC_600_CLEAR_RDPD
 	select NOP_PHY if PHY
+	select USB
+	select USB_HOST
 
 endchoice
+
+if SC58X
+choice
+	prompt "SC58x board select"
+
+config TARGET_SC584_EZKIT
+	bool
+	prompt "SC584-EZKIT"
+
+config TARGET_SC589_MINI
+	bool
+	prompt "SC589-MINI"
+
+config TARGET_SC589_EZKIT
+	bool
+	prompt "SC589-EZKIT"
+
+endchoice
+endif
+
+if SC59X
+choice
+	prompt "SC59x 32-bit board select"
+
+config TARGET_SC594_SOM_EZLITE
+	bool
+	prompt "SC594-SOM with SOMCRR-EZLITE"
+	select CONFIG_ADI_CARRIER_SOMCRR_EZLITE
+
+config TARGET_SC594_SOM_EZKIT
+	bool
+	prompt "SC594-SOM with SOMCRR-EZKIT"
+	select CONFIG_ADI_CARRIER_SOMCRR_EZKIT
+
+endchoice
+endif
+
+if SC59X_64
+choice
+	prompt "SC59x 64-bit board select"
+
+config TARGET_SC598_SOM_EZLITE
+	bool
+	prompt "SC598-SOM with SOMCRR-EZLITE"
+	select CONFIG_ADI_CARRIER_SOMCRR_EZLITE
+
+config TARGET_SC598_SOM_EZKIT
+	bool
+	prompt "SC598-SOM with SOMCRR-EZKIT"
+	select CONFIG_ADI_CARRIER_SOMCRR_EZKIT
+
+endchoice
+endif
 
 config SC_BOOT_MODE
 	int "SC5XX boot mode select"
@@ -134,6 +196,9 @@ config ADI_BUG_EZKHW21
 	  This workaround affects the SC584 EZKIT and addresses bug EZKHW21.
 	  It disables gigabit ethernet mode and limits the board to 100 Mbps
 
+choice
+optional
+
 config ADI_CARRIER_SOMCRR_EZKIT
 	bool "Support the EV-SOMCRR-EZKIT"
 	depends on (SC59X || SC59X_64)
@@ -149,6 +214,8 @@ config ADI_CARRIER_SOMCRR_EZLITE
 	  Say y to include support for the EV-SOMCRR-EZLITE carrier board,
 	  which is compatible with the SC594 and SC598 SOMs. The EZLITE is
 	  mutually incompatible with the EZKIT.
+
+endchoice
 
 config ADI_SPL_FORCE_BMODE
 	int "Force the SPL to use this BMODE device during next boot stage"
@@ -480,5 +547,14 @@ config ADI_GPIO
 config PINCTRL_ADI
 	bool
 	default y
+
+# source "board/adi/sc598-som-ezlite/Kconfig"
+source "board/adi/sc598-som-ezkit/Kconfig"
+# source "board/adi/sc594-som-ezlite/Kconfig"
+# source "board/adi/sc594-som-ezkit/Kconfig"
+# source "board/adi/sc589-ezkit/Kconfig"
+# source "board/adi/sc589-mini/Kconfig"
+# source "board/adi/sc584-ezkit/Kconfig"
+# source "board/adi/sc573-ezkit/Kconfig"
 
 endif
