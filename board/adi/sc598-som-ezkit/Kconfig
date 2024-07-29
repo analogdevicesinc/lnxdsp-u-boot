@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# (C) Copyright 2022 - Analog Devices, Inc.
+#
+# Written and/or maintained by Timesys Corporation
+#
+# Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+# Contact: Greg Malysa <greg.malysa@timesys.com>
+#
+
+if TARGET_SC598_SOM_EZKIT
+
+config SYS_VENDOR
+	default "adi"
+
+config LDR_CPU
+	default "ADSP-SC598-0.0"
+
+config SYS_BOARD
+	default "sc598-som-ezkit"
+
+config SYS_CONFIG_NAME
+	default "sc598-som-ezkit"
+
+config DEFAULT_DEVICE_TREE
+	default "sc598-som-ezkit"
+
+endif
