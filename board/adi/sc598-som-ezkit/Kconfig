@@ -22,4 +22,7 @@ config SYS_BOARD
 config SYS_CONFIG_NAME
 	default "sc598-som-ezkit"
 
+config DEFAULT_DEVICE_TREE
+	default "sc598-som-ezkit"
+
 endif
