@@ -12,6 +12,23 @@
 
 #include <linux/types.h>
 
+#ifdef CONFIG_SC58X
+#define REG_SPU0_CTL                0x3108C000    // SPU0 Control Register
+#else
+#define REG_SPU0_CTL                0x3108B000    // SPU0 Control Register
+#define REG_SPU0_SECUREC0           0x3108B980    // SPU0 Secure Core Registers
+#define REG_SPU0_SECUREC1           0x3108B984    // SPU0 Secure Core Registers
+#define REG_SPU0_SECUREC2           0x3108B988    // SPU0 Secure Core Registers
+#define REG_SPU0_SECURECn(i)        (REG_SPU0_SECUREC0 + (i * 4))
+#define REG_SPU0_SECURECn_COUNT              3
+#endif
+
+#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
+#define REG_PADS0_PCFG0             0x31004604    // PADS0 Peripheral Configuration0 Register
+#else
+#define REG_PADS0_PCFG0             0x31004404    // PADS0 Peripheral Configuration0 Register
+#endif
+
 #define TWI0_CLKDIV                 0x31001400    // TWI0 SCL Clock Divider Register
 #define TWI1_CLKDIV                 0x31001500    // TWI1 SCL Clock Divider Register
 #define TWI2_CLKDIV                 0x31001600    // TWI2 SCL Clock Divider Register

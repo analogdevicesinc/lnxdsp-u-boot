@@ -548,6 +548,21 @@ config PINCTRL_ADI
 	bool
 	default y
 
+config CMDLINE_TAG
+	default y
+
+config SETUP_MEMORY_TAGS
+	default y
+
+# Network Configuration
+if CMD_NET
+
+config NETMASK
+	default "255.255.255.0"
+
+endif
+
+
 # source "board/adi/sc598-som-ezlite/Kconfig"
 source "board/adi/sc598-som-ezkit/Kconfig"
 # source "board/adi/sc594-som-ezlite/Kconfig"
