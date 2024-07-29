@@ -25,4 +25,7 @@ config SYS_CONFIG_NAME
 config MACH_TYPE
 	default "MACH_TYPE_SC598_SOM_EZKIT"
 
+config DEFAULT_DEVICE_TREE
+	default "sc598-som-ezkit"
+
 endif
