@@ -44,7 +44,7 @@ config SC59X
 	select COMMON_CLK_ADI_SC594
 	select TIMER
 	select ADI_SC5XX_TIMER
-	select NOP_PHY
+	select NOP_PHY if PHY
 
 config SC59X_64
 	bool "SC59x 64-bit series"
@@ -57,7 +57,7 @@ config SC59X_64
 	select COMMON_CLK_ADI_SC598
 	select GICV3
 	select GIC_600_CLEAR_RDPD
-	select NOP_PHY
+	select NOP_PHY if PHY
 
 endchoice
 
