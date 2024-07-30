@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# (C) Copyright 2022 - Analog Devices, Inc.
+#
+# Written and/or maintained by Timesys Corporation
+#
+# Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+# Contact: Greg Malysa <greg.malysa@timesys.com>
+#
+
+if TARGET_SC573_EZKIT
+
+config SYS_VENDOR
+	default "adi"
+
+config SYS_BOARD
+	default "sc573-ezkit"
+
+config SYS_CONFIG_NAME
+	default "sc573-ezkit"
+
+config LDR_CPU
+	default "ADSP-SC573-0.0"
+
+config MACH_TYPE
+	default "MACH_TYPE_SC573_EZKIT"
+
+endif

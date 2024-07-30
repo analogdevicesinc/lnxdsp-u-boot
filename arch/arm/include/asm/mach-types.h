@@ -5050,4 +5050,12 @@
 #define MACH_TYPE_NASM25               5112
 #define MACH_TYPE_TOMATO               5113
 #define MACH_TYPE_OMAP3_MRC3D          5114
+#define MACH_TYPE_SC573_EZKIT          5115
+#define MACH_TYPE_SC584_EZKIT          5116
+#define MACH_TYPE_SC589_MINI           5117
+#define MACH_TYPE_SC589_EZKIT          5118
+#define MACH_TYPE_SC594_SOM_EZKIT      5119
+#define MACH_TYPE_SC598_SOM_EZKIT      5120
+#define MACH_TYPE_SC594_SOM_EZLITE     5121
+#define MACH_TYPE_SC598_SOM_EZLITE     5122
 #endif

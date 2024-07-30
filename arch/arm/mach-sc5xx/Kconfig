@@ -533,4 +533,13 @@ config PINCTRL_ADI
 	bool
 	default y
 
+source "board/adi/sc598-som-ezlite/Kconfig"
+source "board/adi/sc598-som-ezkit/Kconfig"
+source "board/adi/sc594-som-ezlite/Kconfig"
+source "board/adi/sc594-som-ezkit/Kconfig"
+source "board/adi/sc589-ezkit/Kconfig"
+source "board/adi/sc589-mini/Kconfig"
+source "board/adi/sc584-ezkit/Kconfig"
+source "board/adi/sc573-ezkit/Kconfig"
+
 endif
