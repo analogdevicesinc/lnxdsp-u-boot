@@ -83,7 +83,6 @@ dtb-$(CONFIG_ROCKCHIP_RK3288) += \
 	rk3288-vyasa.dtb
 
 dtb-$(CONFIG_ROCKCHIP_RK3368) += \
-	rk3368-lion-haikou.dtb \
 	rk3368-sheep.dtb \
 	rk3368-geekbox.dtb \
 	rk3368-px5-evb.dtb \
@@ -94,7 +93,11 @@ dtb-$(CONFIG_ARCH_S5P4418) += \
 dtb-$(CONFIG_ARCH_MESON) += \
 	meson-a1-ad401.dtb
 
-dtb-$(CONFIG_ARCH_TEGRA) += tegra20-harmony.dtb \
+dtb-$(CONFIG_ARCH_TEGRA) += \
+	tegra20-asus-sl101.dtb \
+	tegra20-asus-tf101.dtb \
+	tegra20-asus-tf101g.dtb \
+	tegra20-harmony.dtb \
 	tegra20-medcom-wide.dtb \
 	tegra20-paz00.dtb \
 	tegra20-plutux.dtb \
@@ -118,9 +121,12 @@ dtb-$(CONFIG_ARCH_TEGRA) += tegra20-harmony.dtb \
 	tegra30-cardhu.dtb \
 	tegra30-colibri.dtb \
 	tegra30-htc-endeavoru.dtb \
+	tegra30-lenovo-ideapad-yoga-11.dtb \
 	tegra30-lg-p880.dtb \
 	tegra30-lg-p895.dtb \
+	tegra30-microsoft-surface-rt.dtb \
 	tegra30-tec-ng.dtb \
+	tegra30-wexler-qc750.dtb \
 	tegra114-dalmore.dtb \
 	tegra124-apalis.dtb \
 	tegra124-jetson-tk1.dtb \
@@ -143,7 +149,6 @@ dtb-$(CONFIG_ARCH_MVEBU) +=			\
 	armada-385-atl-x530.dtb			\
 	armada-385-atl-x530DP.dtb		\
 	armada-385-db-88f6820-amc.dtb		\
-	armada-385-synology-ds116.dtb		\
 	armada-385-thecus-n2350.dtb		\
 	armada-385-turris-omnia.dtb		\
 	armada-388-clearfog.dtb			\
@@ -835,10 +840,7 @@ dtb-$(CONFIG_MX6SLL) += imx6sll-evk.dtb
 dtb-$(CONFIG_MX6SX) += \
 	imx6sx-sabreauto.dtb \
 	imx6sx-sdb.dtb \
-	imx6sx-softing-vining-2000.dtb \
-	imx6sx-udoo-neo-basic.dtb \
-	imx6sx-udoo-neo-extended.dtb \
-	imx6sx-udoo-neo-full.dtb
+	imx6sx-softing-vining-2000.dtb
 
 dtb-$(CONFIG_MX6UL) += \
 	imx6ul-geam.dtb \
@@ -1291,6 +1293,7 @@ targets += $(dtb-y)
 # Add any required device tree compiler flags here
 DTC_FLAGS += -a 0x8
 
+DTC_FLAGS_imx8mp-dhcom-som-overlay-rev100 += -Wno-avoid_default_addr_size -Wno-reg_format
 DTC_FLAGS_imx8mp-dhcom-pdk3-overlay-rev100 += -Wno-avoid_default_addr_size -Wno-reg_format
 
 PHONY += dtbs

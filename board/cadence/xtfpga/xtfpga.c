@@ -23,7 +23,6 @@ DECLARE_GLOBAL_DATA_PTR;
  * (Print information about the board to stdout.)
  */
 
-
 #if defined(CONFIG_XTFPGA_LX60)
 const char *board = "XT_AV60";
 const char *description = "Avnet Xilinx LX60 FPGA Evaluation Board / ";
@@ -64,6 +63,11 @@ unsigned long get_board_sys_clk(void)
 	/* early Tensilica bitstreams lack this reg, but most run at 50 MHz */
 	return 50000000;
 #endif
+}
+
+int dram_init(void)
+{
+	return 0;
 }
 
 int board_postclk_init(void)

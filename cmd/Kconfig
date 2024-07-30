@@ -271,7 +271,7 @@ config CMD_BOOTM_PRE_LOAD
        depends on CMD_BOOTM
        depends on IMAGE_PRE_LOAD
        help
-         Enable support of stage pre-load for the bootm command.
+	 Enable support of stage pre-load for the bootm command.
 	 This stage allow to check or modify the image provided
 	 to the bootm command.
 
@@ -320,6 +320,13 @@ config BOOTM_EFI
 	default y
 	help
 	  Support booting UEFI FIT images via the bootm command.
+
+config BOOTM_ELF
+	bool "Support booting ELF images"
+	depends on CMD_BOOTM && LIB_ELF
+	default y if LIB_ELF
+	help
+	  Support booting ELF images via the bootm command.
 
 config CMD_BOOTZ
 	bool "bootz"
@@ -493,8 +500,7 @@ config CMD_ELF
 config CMD_ELF_FDT_SETUP
 	bool "Flattened Device Tree setup in bootelf cmd"
 	depends on CMD_ELF
-	select LIB_LIBFDT
-	select LMB
+	select OF_LIBFDT
 	help
 	  Do FDT setup in bootelf command optionally by param -d, which
 	  allows to bring additional system info (e.g. /memory node) to
@@ -905,9 +911,9 @@ config CMD_MX_CYCLIC
 	bool "Enable cyclic md/mw commands"
 	depends on CMD_MEMORY
 	help
-          Add the "mdc" and "mwc" memory commands. These are cyclic
-          "md/mw" commands.
-          Examples:
+	  Add the "mdc" and "mwc" memory commands. These are cyclic
+	  "md/mw" commands.
+	  Examples:
 
 	  => mdc.b 10 4 500
 	  This command will print 4 bytes (10,11,12,13) each 500 ms.
@@ -1803,6 +1809,23 @@ config CMD_DHCP6
 	  Will perform 4-message exchange with DHCPv6 server, requesting
 	  the minimum required options to TFTP boot. Complies with RFC 8415.
 
+if CMD_DHCP6
+
+config DHCP6_PXE_CLIENTARCH
+	hex
+	default 0x16 if ARM64
+	default 0x15 if ARM
+	default 0xFF
+
+config DHCP6_PXE_DHCP_OPTION
+	bool "Request & store 'pxe_configfile' from DHCP6 server"
+
+config DHCP6_ENTERPRISE_ID
+	int "Enterprise ID to send in DHCPv6 Vendor Class Option"
+	default 0
+
+endif
+
 config BOOTP_MAY_FAIL
 	bool "Allow for the BOOTP/DHCP server to not be found"
 	depends on CMD_BOOTP
@@ -1919,23 +1942,6 @@ config BOOTP_VCI_STRING
 	default "U-Boot.armv8" if ARM64
 	default "U-Boot.arm" if ARM
 	default "U-Boot"
-
-if CMD_DHCP6
-
-config DHCP6_PXE_CLIENTARCH
-	hex
-	default 0x16 if ARM64
-	default 0x15 if ARM
-	default 0xFF
-
-config DHCP6_PXE_DHCP_OPTION
-	bool "Request & store 'pxe_configfile' from DHCP6 server"
-
-config DHCP6_ENTERPRISE_ID
-	int "Enterprise ID to send in DHCPv6 Vendor Class Option"
-	default 0
-
-endif
 
 config CMD_TFTPBOOT
 	bool "tftpboot"
@@ -2161,12 +2167,12 @@ config CMD_BLKMAP
 
 	  Example use-cases:
 	  - Treat a region of RAM as a block device, i.e. a RAM disk. This let's
-            you extract files from filesystem images stored in RAM (perhaps as a
-            result of a TFTP transfer).
+	    you extract files from filesystem images stored in RAM (perhaps as a
+	    result of a TFTP transfer).
 	  - Create a virtual partition on an existing device. This let's you
-            access filesystems that aren't stored at an exact partition
-            boundary. A common example is a filesystem image embedded in an FIT
-            image.
+	    access filesystems that aren't stored at an exact partition
+	    boundary. A common example is a filesystem image embedded in an FIT
+	    image.
 
 config CMD_BUTTON
 	bool "button"
@@ -2945,7 +2951,7 @@ config CMD_UBI_RENAME
        bool "Enable rename"
        depends on CMD_UBI
        help
-         Enable a "ubi" command to rename ubi volume:
+	 Enable a "ubi" command to rename ubi volume:
 	   ubi rename <oldname> <newname>
 
 config CMD_UBIFS
