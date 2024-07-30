@@ -26,6 +26,7 @@ config SC57X
 	select COMMON_CLK_ADI_SC57X
 	select TIMER
 	select ADI_SC5XX_TIMER
+	select TARGET_SC573_EZKIT
 
 config SC58X
 	bool "SC58x series"
@@ -60,6 +61,59 @@ config SC59X_64
 	select NOP_PHY if PHY
 
 endchoice
+
+if SC58X
+choice
+	prompt "SC58x board select"
+
+config TARGET_SC584_EZKIT
+	bool
+	prompt "SC584-EZKIT"
+
+config TARGET_SC589_MINI
+	bool
+	prompt "SC589-MINI"
+
+config TARGET_SC589_EZKIT
+	bool
+	prompt "SC589-EZKIT"
+
+endchoice
+endif
+
+if SC59X
+choice
+	prompt "SC59x 32-bit board select"
+
+config TARGET_SC594_SOM_EZLITE
+	bool
+	prompt "SC594-SOM with SOMCRR-EZLITE"
+	select ADI_CARRIER_SOMCRR_EZLITE
+
+config TARGET_SC594_SOM_EZKIT
+	bool
+	prompt "SC594-SOM with SOMCRR-EZKIT"
+	select ADI_CARRIER_SOMCRR_EZKIT
+
+endchoice
+endif
+
+if SC59X_64
+choice
+	prompt "SC59x 64-bit board select"
+
+config TARGET_SC598_SOM_EZLITE
+	bool
+	prompt "SC598-SOM with SOMCRR-EZLITE"
+	select ADI_CARRIER_SOMCRR_EZLITE
+
+config TARGET_SC598_SOM_EZKIT
+	bool
+	prompt "SC598-SOM with SOMCRR-EZKIT"
+	select ADI_CARRIER_SOMCRR_EZKIT
+
+endchoice
+endif
 
 config SC_BOOT_MODE
 	int "SC5XX boot mode select"
