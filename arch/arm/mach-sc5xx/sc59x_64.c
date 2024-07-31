@@ -9,6 +9,7 @@
  */
 
 #include <asm/io.h>
+#include <asm/armv8/mmu.h>
 #include <asm/arch-adi/sc5xx/sc5xx.h>
 #include <asm/arch-adi/sc5xx/spl.h>
 
@@ -23,6 +24,30 @@
 #define REG_SCB5_SPI2_OSPI_REMAP 0x30400000
 #define BITM_SCB5_SPI2_OSPI_REMAP_REMAP 0x00000003
 #define ENUM_SCB5_SPI2_OSPI_REMAP_OSPI0 0x00000001
+
+static struct mm_region sc598_mem_map[] = {
+	{
+		/* Peripherals */
+		.virt = 0x0UL,
+		.phys = 0x0UL,
+		.size = 0x80000000UL,
+		.attrs = PTE_BLOCK_MEMTYPE(MT_DEVICE_NGNRNE) |
+			 PTE_BLOCK_NON_SHARE |
+			 PTE_BLOCK_PXN | PTE_BLOCK_UXN
+	}, {
+		/* DDR */
+		.virt = 0x80000000UL,
+		.phys = 0x80000000UL,
+		.size = 0x40000000UL,
+		.attrs = PTE_BLOCK_MEMTYPE(MT_NORMAL) |
+			 PTE_BLOCK_INNER_SHARE
+	}, {
+		/* List terminator */
+		0,
+	}
+};
+
+struct mm_region *mem_map = sc598_mem_map;
 
 adi_rom_boot_fn adi_rom_boot = (adi_rom_boot_fn)0x000000e4;
 
@@ -95,3 +120,44 @@ void sc5xx_soc_init(void)
 
 	sc5xx_enable_ns_sharc_access(REG_SPU0_SECUREC0);
 }
+
+extern char __bss_start, __bss_end;
+static void bss_clear(void)
+{
+	u32 *to = (void *)&__bss_start;
+	int i, sz;
+
+	sz = &__bss_end - &__bss_start;
+	for (i = 0; i < sz; i += 4)
+		*to++ = 0;
+}
+
+#ifdef PHY
+int board_phy_config(struct phy_device *phydev)
+{
+#ifdef CONFIG_ADI_CARRIER_SOMCRR_EZKIT
+	fixup_dp83867_phy(phydev);
+#endif
+	return 0;
+}
+#endif
+
+#ifdef ETH
+void adi_eth_init(void)
+{
+#if defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT) || defined(CONFIG_ADI_CARRIER_SOMCRR_EZLITE)
+	// Reset PHYs handled through DM-based softconfig driver
+	adi_enable_ethernet_softconfig();
+	mdelay(20);
+	adi_disable_ethernet_softconfig();
+	mdelay(90);
+	adi_enable_ethernet_softconfig();
+	mdelay(20);
+#endif
+
+	// select RGMII, little endian for all eth ports
+	writel((readl(REG_PADS0_PCFG0) | 0xc), REG_PADS0_PCFG0);
+	writel(readl(REG_PADS0_PCFG0) & ~(1 << 19), REG_PADS0_PCFG0);
+	writel(readl(REG_PADS0_PCFG0) & ~(1 << 20), REG_PADS0_PCFG0);
+}
+#endif
