@@ -20,7 +20,11 @@ choice
 
 config SC57X
 	bool "SC57x series"
+	select SPL
 	select SUPPORT_SPL
+	select SPL_SERIAL
+	select SPL_I2C
+	select SPL_BOOTROM_SUPPORT
 	select CPU_V7A
 	select PANIC_HANG
 	select COMMON_CLK_ADI_SC57X
@@ -32,7 +36,11 @@ config SC57X
 
 config SC58X
 	bool "SC58x series"
+	select SPL
 	select SUPPORT_SPL
+	select SPL_SERIAL
+	select SPL_I2C
+	select SPL_BOOTROM_SUPPORT
 	select CPU_V7A
 	select PANIC_HANG
 	select COMMON_CLK_ADI_SC58X
@@ -43,7 +51,11 @@ config SC58X
 
 config SC59X
 	bool "SC59x 32-bit series"
+	select SPL
 	select SUPPORT_SPL
+	select SPL_SERIAL
+	select SPL_I2C
+	select SPL_BOOTROM_SUPPORT
 	select CPU_V7A
 	select PANIC_HANG
 	select COMMON_CLK_ADI_SC594
@@ -55,7 +67,14 @@ config SC59X
 
 config SC59X_64
 	bool "SC59x 64-bit series"
+	select SPL
 	select SUPPORT_SPL
+	select SPL_SERIAL
+	select SPL_I2C
+	select SPL_BOOTROM_SUPPORT
+	select SPL_DM_SPI
+	select SPL_DM_SPI_FLASH
+	select SPL_OS_BOOT
 	select PANIC_HANG
 	select MMC_SDHCI_ADMA_FORCE_32BIT
 	select ARM64
@@ -67,6 +86,7 @@ config SC59X_64
 	select NOP_PHY if PHY
 	select USB
 	select USB_HOST
+	select TIMER
 
 endchoice
 
@@ -165,6 +185,9 @@ config SC_BOOT_OSPI_SSEL
 config SYS_FLASH_BASE
 	hex
 	default 0x60000000
+
+config SYS_MALLOC_F_LEN
+	default 0x14000
 
 config UART_CONSOLE
 	int
@@ -532,6 +555,38 @@ config CDU0_CLKO14
 	  Clock source select. Refer to SOC Hardware Reference Manual
 
 endmenu
+
+# SPL Options
+
+config SPL_BSS_MAX_SIZE
+	default 0x65536
+
+config SPL_DM_SEQ_ALIAS
+	default y
+
+config SPL_GPIO_HOG
+	default y
+
+config SPL_DM_GPIO_LOOKUP_LABEL
+	default y
+
+config SPL_PINCTRL
+	default y
+
+config SPL_TIMER
+	default y
+
+config SPL_TEXT_BASE
+	default 0x20080000
+	
+config SPL_GPIO
+	default y
+
+config SPL_LIBCOMMON_SUPPORT
+	default y
+
+config SPL_LIBGENERIC_SUPPORT
+	default y
 
 config ADI_GPIO
 	bool
