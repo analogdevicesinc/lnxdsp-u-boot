@@ -90,6 +90,25 @@ config CGU1_DIV_S0SELEX
 config CGU1_DIV_S1SELEX
 	default 90
 
+# SPL
+
+config SPL_PAYLOAD_ARGS_ADDR
+	default 0x99000000
+
+config SPL_OF_LIBFDT_ASSUME_MASK
+	default 0x0
+
+# SPI Flash
+
+config SF_DEFAULT_BUS
+	default 2
+
+config SF_DEFAULT_CS
+	default 1
+
+config SF_DEFAULT_SPEED
+	default 10000000
+
 # Misc Options
 
 config TEXT_BASE
