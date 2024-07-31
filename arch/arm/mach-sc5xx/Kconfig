@@ -26,6 +26,8 @@ config SC57X
 	select COMMON_CLK_ADI_SC57X
 	select TIMER
 	select ADI_SC5XX_TIMER
+	select USB
+	select USB_HOST
 	select TARGET_SC573_EZKIT
 
 config SC58X
@@ -36,6 +38,8 @@ config SC58X
 	select COMMON_CLK_ADI_SC58X
 	select TIMER
 	select ADI_SC5XX_TIMER
+	select USB
+	select USB_HOST
 
 config SC59X
 	bool "SC59x 32-bit series"
@@ -46,6 +50,8 @@ config SC59X
 	select TIMER
 	select ADI_SC5XX_TIMER
 	select NOP_PHY if PHY
+	select USB
+	select USB_HOST
 
 config SC59X_64
 	bool "SC59x 64-bit series"
@@ -59,6 +65,8 @@ config SC59X_64
 	select GICV3
 	select GIC_600_CLEAR_RDPD
 	select NOP_PHY if PHY
+	select USB
+	select USB_HOST
 
 endchoice
 
