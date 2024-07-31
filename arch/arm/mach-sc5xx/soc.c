@@ -172,6 +172,29 @@ void fixup_dp83867_phy(struct phy_device *phydev)
 		phy_write(phydev, MDIO_DEVAD_NONE, 0, 0x3100);
 }
 
+#ifdef ETH
+__weak void adi_eth_init(void) {}
+#endif
+
+__weak void bss_clear(void) {}
+
+int board_early_init_f(void)
+{
+	bss_clear();
+	return 0;
+}
+
+int board_init(void)
+{
+	gd->bd->bi_arch_number = CONFIG_MACH_TYPE;
+
+#ifdef ETH
+	adi_eth_init();
+#endif
+
+	return 0;
+}
+
 int dram_init(void)
 {
 	gd->ram_size = CFG_SYS_SDRAM_SIZE;
