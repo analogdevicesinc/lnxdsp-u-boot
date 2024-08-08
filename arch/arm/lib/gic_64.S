@@ -99,7 +99,12 @@ ENTRY(gic_init_secure_percpu)
 5:      ldr     w10, [x9, GICR_PWRR]    /* Wait until the power on state is reflected */
         tbnz    w10, #1, 5b             /* If RDPD == 0 then powered on */
 #endif
-
+#ifdef CONFIG_SC59X_64
+	/* Power on the redistributor BITM_GIC_GICR0_PWRR_RDPD */
+	ldr w10, [x9, GICR_PWRR]
+	bic w10, w10, #1
+	str w10, [x9, GICR_PWRR]
+#endif
 	/* x9: ReDistributor Base Address of Current CPU */
 	mov	w10, #~0x2
 	ldr	w11, [x9, GICR_WAKER]
