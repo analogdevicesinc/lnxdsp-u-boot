@@ -70,7 +70,10 @@ config SC59X_64
 	select SPL
 	select SUPPORT_SPL
 	select SPL_SERIAL
+	select I2C
 	select SPL_I2C
+	select DM_I2C
+	select SYS_I2C_ADI
 	select SPL_BOOTROM_SUPPORT
 	select SPL_DM_SPI
 	select SPL_DM_SPI_FLASH

@@ -97,6 +97,15 @@ config SPL_DM_GPIO_LOOKUP_LABEL
 	  different gpios on different hardware versions
 	  for the same functionality in board code.
 
+config ADI_GPIO
+	bool "ADI GPIO driver"
+	depends on DM_GPIO && (SC57X || SC58X || SC59X || SC59X_64)
+	help
+	  This driver supports GPIO banks on SC5xx processors. It
+	  supports inputs and outputs but does not support pin
+	  interrupt functionality (PINT) or other features in the
+	  Linux version of the driver.
+
 config ALTERA_PIO
 	bool "Altera PIO driver"
 	depends on DM_GPIO
@@ -259,6 +268,12 @@ config MCP230XX_GPIO
 	   - MCP23S08
 	   - MCP23S17
 	   - MCP23S18
+
+config ADI_MCP2301X_GPIO
+	bool "ADI MCP2301X GPIO driver"
+	depends on DM
+	help
+	  ADI-written driver for Microchip MCP2301x series GPIO.
 
 config MSCC_SGPIO
 	bool "Microsemi Serial GPIO driver"

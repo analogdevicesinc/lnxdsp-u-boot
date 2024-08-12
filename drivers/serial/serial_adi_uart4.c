@@ -203,6 +203,9 @@ static int adi_uart4_probe(struct udevice *dev)
 	/* always enable UART to 8-bit mode */
 	writel(UEN | UMOD_UART | WLS_8, &regs->control);
 
+	u32 test = readl(&regs->control);
+	printf("%x\n", test);
+
 	writel(-1, &regs->status);
 
 	return 0;
