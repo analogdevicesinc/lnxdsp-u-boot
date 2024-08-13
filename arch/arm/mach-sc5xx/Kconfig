@@ -123,6 +123,12 @@ config TARGET_SC598_SOM_EZKIT
 endchoice
 endif
 
+config ADI_IMAGE
+	string "ADI fitImage type"
+	help
+	  The image built by the ADI ADSP Linux build system.
+	  Is one of tiny, minimal, full.
+
 config SC_BOOT_MODE
 	int "SC5XX boot mode select"
 	default 1
