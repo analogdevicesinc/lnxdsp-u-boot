@@ -20,7 +20,7 @@ config SYS_BOARD
 	default "sc589-ezkit"
 
 config SYS_CONFIG_NAME
-	default "sc589-ezkit"
+	default "sc589"
 
 config MACH_TYPE
 	default "MACH_TYPE_SC589_EZKIT"
@@ -30,5 +30,33 @@ config SPL_MAX_SIZE
 
 config ADI_IMAGE
 	default "tiny"
+
+config SPL_BSS_START_ADDR
+	hex
+	default 0x20080000
+
+config SPL_BSS_MAX_SIZE
+	hex
+	default 0x10000 # 64K
+
+config SYS_SPL_MALLOC_START
+	hex
+	default 0x20090000
+
+config SYS_SPL_MALLOC_SIZE
+	hex
+	default 0x10000 # 64K
+
+config SPL_STACK
+	hex
+	default 0x200B0000
+
+config SPL_STACK_SIZE
+	hex
+	default 0x10000 # 64K
+
+config CUSTOM_SYS_INIT_SP_ADDR
+	hex
+	default 0xC203f000
 
 endif

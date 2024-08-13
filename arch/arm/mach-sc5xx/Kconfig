@@ -20,9 +20,7 @@ choice
 
 config SC57X
 	bool "SC57x series"
-	select SUPPORT_SPL
 	select CPU_V7A
-	select PANIC_HANG
 	select COMMON_CLK_ADI_SC57X
 	select TIMER
 	select ADI_SC5XX_TIMER
@@ -32,9 +30,7 @@ config SC57X
 
 config SC58X
 	bool "SC58x series"
-	select SUPPORT_SPL
 	select CPU_V7A
-	select PANIC_HANG
 	select COMMON_CLK_ADI_SC58X
 	select TIMER
 	select ADI_SC5XX_TIMER
@@ -43,9 +39,7 @@ config SC58X
 
 config SC59X
 	bool "SC59x 32-bit series"
-	select SUPPORT_SPL
 	select CPU_V7A
-	select PANIC_HANG
 	select COMMON_CLK_ADI_SC594
 	select TIMER
 	select ADI_SC5XX_TIMER
@@ -55,8 +49,6 @@ config SC59X
 
 config SC59X_64
 	bool "SC59x 64-bit series"
-	select SUPPORT_SPL
-	select PANIC_HANG
 	select MMC_SDHCI_ADMA_FORCE_32BIT
 	select ARM64
 	select DM
@@ -64,6 +56,7 @@ config SC59X_64
 	select COMMON_CLK_ADI_SC598
 	select GICV3
 	select GIC_600_CLEAR_RDPD
+	select GICV3_SUPPORT_GIC600
 	select NOP_PHY if PHY
 	select USB
 	select USB_HOST
@@ -168,9 +161,21 @@ config SC_BOOT_OSPI_SSEL
 	  This is the OSPI chip select number to use for booting, Y in the
 	  expression `sf probe X:Y`
 
+config SYS_BOOTM_LEN
+	hex
+	default 0x1800000
+
 config SYS_FLASH_BASE
 	hex
 	default 0x60000000
+
+config SYS_LOAD_ADDR
+	hex
+	default 0x0
+
+config SYS_MALLOC_LEN
+	hex
+	default 1048576
 
 config UART_CONSOLE
 	int

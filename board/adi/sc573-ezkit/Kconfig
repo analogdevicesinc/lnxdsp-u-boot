@@ -31,4 +31,32 @@ config SPL_MAX_SIZE
 config ADI_IMAGE
 	default "tiny"
 
+config SPL_BSS_START_ADDR
+	hex
+	default 0x200A0000
+
+config SPL_BSS_MAX_SIZE
+	hex
+	default 0x10000 # 64K
+
+config SYS_SPL_MALLOC_START
+	hex
+	default 0x200B0000
+
+config SYS_SPL_MALLOC_SIZE
+	hex
+	default 0x10000 # 64K
+
+config SPL_STACK
+	hex
+	default 0x200D0000
+
+config SPL_STACK_SIZE
+	hex
+	default 0x10000 # 64K
+
+config CUSTOM_SYS_INIT_SP_ADDR
+	hex
+	default 0x8203f000
+
 endif

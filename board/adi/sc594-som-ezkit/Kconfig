@@ -20,15 +20,43 @@ config SYS_BOARD
 	default "sc594-som-ezkit"
 
 config SYS_CONFIG_NAME
-	default "sc594-som-ezkit"
+	default "sc594-som"
 
 config MACH_TYPE
 	default "MACH_TYPE_SC594_SOM_EZKIT"
 
 config SPL_MAX_SIZE
-	default 0x40000 # 256KB
+	default 0x30000 # 256KB
 
 config ADI_IMAGE
 	default "minimal"
+
+config SPL_BSS_START_ADDR
+	hex
+	default 0x200B0000
+
+config SPL_BSS_MAX_SIZE
+	hex
+	default 0x10000 # 64K
+
+config SYS_SPL_MALLOC_START
+	hex
+	default 0x200C0000
+
+config SYS_SPL_MALLOC_SIZE
+	hex
+	default 0x10000 # 64K
+
+config SPL_STACK
+	hex
+	default 0x200E4000
+
+config SPL_STACK_SIZE
+	hex
+	default 0x14000 # 64K
+
+config CUSTOM_SYS_INIT_SP_ADDR
+	hex
+	default 0xA003f000
 
 endif
