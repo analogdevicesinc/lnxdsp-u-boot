@@ -25,4 +25,7 @@ config SYS_CONFIG_NAME
 config MACH_TYPE
 	default "MACH_TYPE_SC594_SOM_EZKIT"
 
+config SPL_MAX_SIZE
+	default 0x40000 # 256KB
+
 endif
