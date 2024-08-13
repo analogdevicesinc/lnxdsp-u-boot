@@ -28,4 +28,7 @@ config MACH_TYPE
 config SPL_MAX_SIZE
 	default 0x20000 # 128KB
 
+config ADI_IMAGE
+	default "minimal"
+
 endif
