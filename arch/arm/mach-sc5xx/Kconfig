@@ -47,6 +47,13 @@ config SC59X_64
 
 endchoice
 
+if SC57X
+
+config TARGET_SC573_EZKIT
+	bool "Support SC573-EZKIT"
+
+endif
+
 if SC58X
 choice
 	prompt "SC58x board select"
