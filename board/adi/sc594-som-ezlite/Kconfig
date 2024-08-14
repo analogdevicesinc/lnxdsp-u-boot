@@ -25,6 +25,9 @@ config SYS_CONFIG_NAME
 config MACH_TYPE
 	default "MACH_TYPE_SC594_SOM_EZLITE"
 
+config DEFAULT_DEVICE_TREE
+	default "sc594-som-ezlite"
+
 config SPL_MAX_SIZE
 	default 0x30000 # 256KB
 

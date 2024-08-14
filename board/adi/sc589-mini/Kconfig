@@ -25,6 +25,9 @@ config SYS_CONFIG_NAME
 config MACH_TYPE
 	default "MACH_TYPE_SC589_MINI"
 
+config DEFAULT_DEVICE_TREE
+	default "sc589-mini"
+
 config SPL_MAX_SIZE
 	default 0x20000 # 128KB
 

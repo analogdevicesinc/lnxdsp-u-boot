@@ -25,6 +25,9 @@ config LDR_CPU
 config MACH_TYPE
 	default "MACH_TYPE_SC573_EZKIT"
 
+config DEFAULT_DEVICE_TREE
+	default "sc573-ezkit"
+
 config SPL_MAX_SIZE
 	default 0x20000 # 128KB
 
