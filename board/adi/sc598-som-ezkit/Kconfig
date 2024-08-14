@@ -31,8 +31,8 @@ config DEFAULT_DEVICE_TREE
 config SPL_MAX_SIZE
 	default 0x30000 # 256KB
 
-# config ADI_IMAGE
-# 	default "minimal"
+config ADI_IMAGE
+	default "minimal"
 
 config NR_DRAM_BANKS
 	default 1

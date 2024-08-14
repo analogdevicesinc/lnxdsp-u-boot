@@ -31,8 +31,8 @@ config SPL_MAX_SIZE
 config ADI_IMAGE
 	default "minimal"
 
-# config NR_DRAM_BANKS
-# 	default 1
+config NR_DRAM_BANKS
+	default 1
 
 config SPL_BSS_START_ADDR
 	hex
