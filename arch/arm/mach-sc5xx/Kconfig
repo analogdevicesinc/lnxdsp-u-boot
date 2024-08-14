@@ -61,6 +61,7 @@ choice
 config TARGET_SC584_EZKIT
 	bool
 	prompt "SC584-EZKIT"
+	select ADI_USE_DDR2
 
 config TARGET_SC589_MINI
 	bool
