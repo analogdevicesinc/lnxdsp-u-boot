@@ -2,13 +2,7 @@
 /*
  * Analog Devices ADSP family SRU control driver device tree bindings
  *
- * (C) Copyright 2022 - Analog Devices, Inc.
- *
- * Written and/or maintained by Timesys Corporation
- *
- * Author: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
- * Contact: Greg Malysa <greg.malysa@timesys.com>
- *
+ * (C) Copyright 2024 - Analog Devices, Inc.
  */
 
 //DAI0 Destinations

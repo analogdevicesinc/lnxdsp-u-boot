@@ -1,10 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0-or-later */
 /*
  * (C) Copyright 2024 - Analog Devices, Inc.
- *
- * Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
- * Contact: Greg Malysa <greg.malysa@timesys.com>
- *
  */
 
 #ifndef __CONFIG_SC573_EZKIT_H
