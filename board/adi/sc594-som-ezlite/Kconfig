@@ -22,9 +22,6 @@ config SYS_BOARD
 config SYS_CONFIG_NAME
 	default "sc594-som"
 
-config MACH_TYPE
-	default "MACH_TYPE_SC594_SOM_EZLITE"
-
 config DEFAULT_DEVICE_TREE
 	default "sc594-som-ezlite"
 

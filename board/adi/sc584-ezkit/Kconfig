@@ -22,9 +22,6 @@ config SYS_BOARD
 config SYS_CONFIG_NAME
 	default "sc584-ezkit"
 
-config MACH_TYPE
-	default "MACH_TYPE_SC584_EZKIT"
-
 config DEFAULT_DEVICE_TREE
 	default "sc584-ezkit"
 

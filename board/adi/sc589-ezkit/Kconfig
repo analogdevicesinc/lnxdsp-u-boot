@@ -22,9 +22,6 @@ config SYS_BOARD
 config SYS_CONFIG_NAME
 	default "sc589"
 
-config MACH_TYPE
-	default "MACH_TYPE_SC589_EZKIT"
-
 config DEFAULT_DEVICE_TREE
 	default "sc589-ezkit"
 

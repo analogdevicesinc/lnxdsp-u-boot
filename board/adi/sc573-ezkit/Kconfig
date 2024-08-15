@@ -22,9 +22,6 @@ config SYS_CONFIG_NAME
 config LDR_CPU
 	default "ADSP-SC573-0.0"
 
-config MACH_TYPE
-	default "MACH_TYPE_SC573_EZKIT"
-
 config DEFAULT_DEVICE_TREE
 	default "sc573-ezkit"
 
