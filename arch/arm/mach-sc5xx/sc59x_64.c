@@ -121,17 +121,6 @@ void sc5xx_soc_init(void)
 	sc5xx_enable_ns_sharc_access(REG_SPU0_SECUREC0);
 }
 
-extern char __bss_start, __bss_end;
-static void bss_clear(void)
-{
-	u32 *to = (void *)&__bss_start;
-	int i, sz;
-
-	sz = &__bss_end - &__bss_start;
-	for (i = 0; i < sz; i += 4)
-		*to++ = 0;
-}
-
 #ifdef PHY
 int board_phy_config(struct phy_device *phydev)
 {

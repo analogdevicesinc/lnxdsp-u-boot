@@ -172,7 +172,19 @@ void fixup_dp83867_phy(struct phy_device *phydev)
 		phy_write(phydev, MDIO_DEVAD_NONE, 0, 0x3100);
 }
 
-__weak void bss_clear(void) {}
+
+extern char __bss_start, __bss_end;
+void bss_clear(void)
+{
+	#ifdef CONFIG_SC59X_64
+	u32 *to = (void *)&__bss_start;
+	int i, sz;
+
+	sz = &__bss_end - &__bss_start;
+	for (i = 0; i < sz; i += 4)
+		*to++ = 0;
+	#endif
+}
 
 int board_early_init_f(void)
 {
