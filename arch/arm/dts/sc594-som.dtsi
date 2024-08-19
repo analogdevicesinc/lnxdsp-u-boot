@@ -1,181 +1,19 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * (C) Copyright 2022 - Analog Devices, Inc.
- *
- * Written and/or maintained by Timesys Corporation
- *
- * Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
- * Contact: Greg Malysa <greg.malysa@timesys.com>
+ * (C) Copyright 2024 - Analog Devices, Inc.
  */
 
 /dts-v1/;
 
 #include "sc5xx.dtsi"
-#include "sc59x.dtsi"
 
 &timer0 {
 	clocks = <&clk ADSP_SC594_CLK_CGU0_SCLK0>;
 };
 
-&pinctrl0 {
-	soc_defaults: soc_pins {
-		bootph-all;
-		adi,pins = <ADI_ADSP_PIN('A', 14) ADI_ADSP_PINFUNC_ALT0>, /* i2c */
-		       <ADI_ADSP_PIN('A', 15) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('F', 2) ADI_ADSP_PINFUNC_ALT0>, /* emmc */
-		       <ADI_ADSP_PIN('F', 3) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('F', 4) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('F', 5) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('F', 6) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('F', 7) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('F', 8) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('F', 9) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('F', 10) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('F', 11) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('F', 12) ADI_ADSP_PINFUNC_ALT0>;
-	};
-
-	ospi_default: ospi_pins {
-		bootph-all;
-		adi,pins = <ADI_ADSP_PIN('C', 8) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('C', 9) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('C', 10) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('C', 11) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('C', 12) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('C', 13) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('C', 14) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('C', 15) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('D', 0) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('D', 1) ADI_ADSP_PINFUNC_ALT0>,
-		       <ADI_ADSP_PIN('D', 4) ADI_ADSP_PINFUNC_ALT2>;
-	};
-};
-
 &clk{
 	compatible = "adi,sc594-clocks";
-};
-
-&uart0{
-	clocks = <&clk ADSP_SC594_CLK_CGU0_SCLK0>;
-};
-
-&wdog{
-	clocks = <&clk ADSP_SC594_CLK_CGU0_SCLK0>;
-};
-
-&i2c0{
-	clocks = <&clk ADSP_SC594_CLK_CGU0_SCLK0>;
-};
-
-&i2c1{
-	clocks = <&clk ADSP_SC594_CLK_CGU0_SCLK0>;
-};
-
-&i2c2{
-	clocks = <&clk ADSP_SC594_CLK_CGU0_SCLK0>;
-
-	gpio_expander1: mcp23017@21 {
-		compatible = "microchip,mcp23017";
-		reg = <0x21>;
-		gpio-controller;
-		#gpio-cells = <2>;
-		bootph-all;
-
-		led1 {
-			gpio-hog;
-			gpios = <0 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "led1-en";
-			bootph-all;
-		};
-
-		led2 {
-			gpio-hog;
-			gpios = <1 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "led2-en";
-			bootph-all;
-		};
-
-		led3 {
-			gpio-hog;
-			gpios = <2 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "led3-en";
-			bootph-all;
-		};
-
-		spi2flash-cs {
-			gpio-hog;
-			gpios = <3 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~spi2flash-cs";
-			bootph-all;
-		};
-
-		spi2d2-d3 {
-			gpio-hog;
-			gpios = <4 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~spi2d2-d3-en";
-			bootph-all;
-		};
-
-		uart0 {
-			gpio-hog;
-			gpios = <5 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~uart0-en";
-			bootph-all;
-		};
-
-		uart0-flow-en {
-			gpio-hog;
-			gpios = <6 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "~uart0-flow-en";
-			bootph-all;
-		};
-
-		ospiflash-cs {
-			gpio-hog;
-			gpios = <7 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~ospiflash-cs";
-			bootph-all;
-		};
-	};
-};
-
-&ospi {
-	status = "okay";
-
-	clocks = <&clk ADSP_SC594_CLK_OSPI>;
-
-	flash0: is25lx256@0 {
-		#address-cells = <1>;
-		#size-cells = <1>;
-		compatible = "jedec,spi-nor", "is25lx256";
-		reg = <0>;
-		spi-max-frequency = <112000000>;
-		tshsl-ns = <50>;
-		tsd2d-ns = <50>;
-		tchsh-ns = <4>;
-		tslch-ns = <4>;
-		bootph-all;
-	};
-};
-
-&spi2 {
-	status = "okay";
-
-	clocks = <&clk ADSP_SC594_CLK_SPI>;
-};
-
-&usb0_phy {
-	status = "okay";
-};
-
-&usb0 {
-	status = "okay";
+	reg = <0x3108d000 0x1000>,
+              <0x3108e000 0x1000>,
+              <0x3108f000 0x1000>;
 };

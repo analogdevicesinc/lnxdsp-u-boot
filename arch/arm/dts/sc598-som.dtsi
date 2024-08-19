@@ -1,237 +1,29 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * (C) Copyright 2022 - Analog Devices, Inc.
- *
- * Written and/or maintained by Timesys Corporation
- *
- * Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
- * Contact: Greg Malysa <greg.malysa@timesys.com>
+ * (C) Copyright 2024 - Analog Devices, Inc.
  */
 
 /dts-v1/;
 
 #include "sc5xx.dtsi"
-#include "sc59x.dtsi"
 
 / {
-	soc {
-		sharc1: sharc@0x28240000 {
-			compatible = "adi,sc5xx-rproc";
-			reg = <0x28240000 0x100>;
-			status = "okay";
-			adi,coreid = <1>;
-			adi,rcu-reg = <0x3108c000>;
-		};
-
-		sharc2: sharc@0x28a40000 {
-			compatible = "adi,sc5xx-rproc";
-			reg = <0x28a40000 0x100>;
-			status = "okay";
-			adi,coreid = <2>;
-			adi,rcu-reg = <0x3108c000>;
-		};
-
-		clocks {
-			compatible = "simple-bus";
-			#address-cells = <1>;
-			#size-cells = <0>;
-			bootph-all;
-
-			emmcclk: emmcclk@0 {
-				compatible = "fixed-clock";
-				reg = <0>;
-				#clock-cells = <0>;
-				clock-frequency = <50000000>; /* 50 MHz */
-				bootph-all;
-			};
-		};
-
-		mmc0: mmc@310C7000 {
-			compatible = "designware,sdhci-5.1";
-			reg = <0x310C7000 0x1000>;
-			interrupts = <GIC_SPI 237 IRQ_TYPE_LEVEL_HIGH>;
-			pinctrl-names = "default";
-			pinctrl-0 = <&mmc_defaults>;
-			clocks = <&emmcclk>;
-			clock-names = "core";
-			max-frequency = <50000000>;
-			bus-width = <8>;
-			bootph-all;
-		};
-	};
-};
-
-&pinctrl0 {
-	soc_defaults: soc_pins {
-		bootph-all;
-		adi,pins = <ADI_ADSP_PIN('A', 14) ADI_ADSP_PINFUNC_ALT0>, /* i2c */
-					<ADI_ADSP_PIN('A', 15) ADI_ADSP_PINFUNC_ALT0>;
-	};
-
-	mmc_defaults: mmc_pins {
-		bootph-all;
-		adi,pins = <ADI_ADSP_PIN('D', 15) ADI_ADSP_PINFUNC_ALT1>,
-					<ADI_ADSP_PIN('B', 15) ADI_ADSP_PINFUNC_ALT2>,
-					<ADI_ADSP_PIN('C', 4) ADI_ADSP_PINFUNC_ALT2>,
-					<ADI_ADSP_PIN('C', 6) ADI_ADSP_PINFUNC_ALT2>,
-					<ADI_ADSP_PIN('E', 1) ADI_ADSP_PINFUNC_ALT1>,
-					<ADI_ADSP_PIN('E', 6) ADI_ADSP_PINFUNC_ALT2>,
-					<ADI_ADSP_PIN('E', 8) ADI_ADSP_PINFUNC_ALT1>,
-					<ADI_ADSP_PIN('E', 9) ADI_ADSP_PINFUNC_ALT1>,
-					<ADI_ADSP_PIN('G', 1) ADI_ADSP_PINFUNC_ALT2>,
-					<ADI_ADSP_PIN('G', 2) ADI_ADSP_PINFUNC_ALT2>,
-					<ADI_ADSP_PIN('G', 8) ADI_ADSP_PINFUNC_ALT1>,
-					<ADI_ADSP_PIN('G', 9) ADI_ADSP_PINFUNC_ALT3>,
-					<ADI_ADSP_PIN('G', 10) ADI_ADSP_PINFUNC_ALT1>,
-					<ADI_ADSP_PIN('I', 6) ADI_ADSP_PINFUNC_ALT1>;
-	};
-
-	ospi_default: ospi_pins {
-		bootph-all;
-		adi,pins = <ADI_ADSP_PIN('A', 0) ADI_ADSP_PINFUNC_ALT1>,
-					<ADI_ADSP_PIN('A', 1) ADI_ADSP_PINFUNC_ALT1>,
-					<ADI_ADSP_PIN('A', 2) ADI_ADSP_PINFUNC_ALT1>,
-					<ADI_ADSP_PIN('A', 3) ADI_ADSP_PINFUNC_ALT1>,
-					<ADI_ADSP_PIN('A', 4) ADI_ADSP_PINFUNC_ALT1>,
-					<ADI_ADSP_PIN('A', 5) ADI_ADSP_PINFUNC_ALT1>,
-					<ADI_ADSP_PIN('A', 6) ADI_ADSP_PINFUNC_ALT2>,
-					<ADI_ADSP_PIN('A', 7) ADI_ADSP_PINFUNC_ALT2>,
-					<ADI_ADSP_PIN('A', 8) ADI_ADSP_PINFUNC_ALT2>,
-					<ADI_ADSP_PIN('A', 9) ADI_ADSP_PINFUNC_ALT2>,
-					<ADI_ADSP_PIN('D', 4) ADI_ADSP_PINFUNC_ALT2>;
+	gic: interrupt-controller@31200000 {
+		compatible = "arm,gic-v3";
+		#interrupt-cells = <3>;
+		interrupt-controller;
+		reg = <0x31200000 0x40000>, /* GIC Dist */
+		      <0x31240000 0x40000>; /* GICR */
 	};
 };
 
 &clk{
 	compatible = "adi,sc598-clocks";
 	reg = <0x3108d000 0x1000>,
-			<0x3108e000 0x1000>,
-			<0x3108f000 0x1000>,
-			<0x310a9000 0x1000>;
+	      <0x3108e000 0x1000>,
+	      <0x3108f000 0x1000>,
+	      <0x310a9000 0x1000>;
 	reg-names = "cgu0", "cgu1", "cdu", "pll3";
-};
-
-&uart0{
-	clocks = <&clk ADSP_SC598_CLK_CGU0_SCLK0>;
-};
-
-&wdog{
-	clocks = <&clk ADSP_SC598_CLK_CGU0_SCLK0>;
-};
-
-&i2c0{
-	clocks = <&clk ADSP_SC598_CLK_CGU0_SCLK0>;
-};
-
-&i2c1{
-	clocks = <&clk ADSP_SC598_CLK_CGU0_SCLK0>;
-};
-
-&i2c2{
-	clocks = <&clk ADSP_SC598_CLK_CGU0_SCLK0>;
-
-	gpio_expander1: mcp23018@20 {
-		compatible = "microchip,mcp23018";
-		reg = <0x20>;
-		gpio-controller;
-		#gpio-cells = <2>;
-		bootph-all;
-		drive-pullups;
-
-		led1 {
-			gpio-hog;
-			gpios = <0 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "led1-en";
-			bootph-all;
-		};
-
-		led2 {
-			gpio-hog;
-			gpios = <1 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "led2-en";
-			bootph-all;
-		};
-
-		led3 {
-			gpio-hog;
-			gpios = <2 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "led3-en";
-			bootph-all;
-		};
-
-		spi2d2-d3 {
-			gpio-hog;
-			gpios = <3 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~spi2d2-d3-en";
-			bootph-all;
-		};
-
-		spi2flash-cs {
-			gpio-hog;
-			gpios = <4 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~spi2flash-cs";
-			bootph-all;
-		};
-
-		uart0 {
-			gpio-hog;
-			gpios = <5 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~uart0-en";
-			bootph-all;
-		};
-
-		uart0-flow-en {
-			gpio-hog;
-			gpios = <6 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "~uart0-flow-en";
-			bootph-all;
-		};
-
-		emmc {
-			gpio-hog;
-			gpios = <8 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "emmc-en";
-			bootph-all;
-		};
-
-		emmc-som-en {
-			gpio-hog;
-			gpios = <9 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "emmc-som-en";
-			bootph-all;
-		};
-	};
-};
-
-&spi2 {
-	status = "okay";
-
-	clocks = <&clk ADSP_SC598_CLK_SPI>;
-};
-
-&mmc0 {
-	status = "okay";
-};
-
-&usb0_phy {
-	status = "okay";
-};
-
-&usb0 {
-	status = "okay";
-};
-
-&eth0 {
-	compatible = "snps,dwmac-5.20";
 };
 
 &timer0 {
