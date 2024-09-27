@@ -56,7 +56,15 @@ config ADI_SPI3
 	bool "Enable ADI SPI Driver"
 	help
 	  Enable the ADI (Analog Devices) SPI controller driver. This
-	  driver enables the support for SC5XX spi controller.
+	  driver enables the support for SC5XX spi controller for generic
+	  SPI.
+
+config ADI_QSPI
+	bool "Enable ADI QSPI Driver"
+	help
+	  Enable the ADI SPI controller in memory mapped mode. This driver
+	  does not support generic SPI. The implementation supports only the
+	  spi-mem interface.
 
 config ALTERA_SPI
 	bool "Altera SPI driver"
