@@ -14,7 +14,7 @@
 #include <vsprintf.h>
 
 /**
- * distro_efi_get_fdt_name() - get the filename for reading the .dtb file
+ * efi_get_distro_fdt_name() - get the filename for reading the .dtb file
  *
  * @fname:	buffer for filename
  * @size:	buffer size
@@ -42,6 +42,9 @@ int efi_get_distro_fdt_name(char *fname, int size, int seq)
 		break;
 	case 2:
 		prefix = "/dtb/current";
+		break;
+	case 3:
+		prefix = "/dtbs";
 		break;
 	default:
 		return log_msg_ret("pref", -EINVAL);

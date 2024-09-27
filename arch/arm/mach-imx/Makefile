@@ -129,7 +129,7 @@ DEPFILE_EXISTS := $(shell $(CPP) $(cpp_flags) -x c -o u-boot-dtb.cfgout $(srctre
 else ifeq ($(CONFIG_ARCH_IMX8M), y)
 IMAGE_TYPE := imx8mimage
 DEPFILE_EXISTS := 0
-else ifeq ($(CONFIG_ARCH_IMX9), y)
+else ifeq ($(CONFIG_ARCH_IMX9)$(CONFIG_ARCH_IMX8ULP), y)
 IMAGE_TYPE := imx8image
 DEPFILE_EXISTS := 0
 else
@@ -215,10 +215,10 @@ flash.bin: spl/u-boot-spl.bin FORCE
 endif
 endif
 
-ifeq ($(CONFIG_ARCH_IMX9), y)
+ifeq ($(CONFIG_ARCH_IMX9)$(CONFIG_ARCH_IMX8ULP), y)
 
-quiet_cmd_imx9_check = CHECK    $@
-cmd_imx9_check = $(srctree)/tools/imx9_image.sh $@
+quiet_cmd_cpp_cfg_imx9_check = CHECK    $@
+cmd_cpp_cfg_imx9_check = $(CPP) $(cpp_flags) -D__ASSEMBLY__ -x c -o $@ $< && $(srctree)/tools/imx9_image.sh $@
 
 SPL: spl/u-boot-spl.bin spl/u-boot-spl.cfgout u-boot-container.cfgout FORCE
 
@@ -227,15 +227,13 @@ flash.bin: MKIMAGEOUTPUT = flash.log
 
 spl/u-boot-spl.cfgout: $(IMX_CONFIG) FORCE
 	$(Q)mkdir -p $(dir $@)
-	$(call if_changed_dep,cpp_cfg)
-	$(call if_changed,imx9_check)
+	$(call if_changed_dep,cpp_cfg_imx9_check)
 
 spl/u-boot-spl-ddr.bin: spl/u-boot-spl.bin spl/u-boot-spl.cfgout FORCE
 
 u-boot-container.cfgout: $(IMX_CONTAINER_CFG) FORCE
 	$(Q)mkdir -p $(dir $@)
-	$(call if_changed_dep,cpp_cfg)
-	$(call if_changed,imx9_check)
+	$(call if_changed_dep,cpp_cfg_imx9_check)
 
 flash.bin: spl/u-boot-spl-ddr.bin container.cfgout FORCE
 	$(call if_changed,mkimage)
