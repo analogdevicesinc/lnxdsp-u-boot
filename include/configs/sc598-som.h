@@ -120,8 +120,8 @@
 	#define ADI_OSPI_SF_DEFAULT_SPEED	CONFIG_CQSPI_REF_CLK / 12 //41.66 MHz DTR (Double Transfer Rate)
 #else
 	//Maximum STR read speed = 128mbyte / 2.17s = 58.98 mbyte/s
-	#define ADI_OSPI_ENV_SPI_MAX_HZ		CONFIG_CQSPI_REF_CLK / 6 //83.33 MHz STR (Single Transfer Rate)
-	#define ADI_OSPI_SF_DEFAULT_SPEED	CONFIG_CQSPI_REF_CLK / 6 //83.33 MHz STR (Single Transfer Rate)
+	#define ADI_OSPI_ENV_SPI_MAX_HZ		CONFIG_CQSPI_REF_CLK / 4 //83.33 MHz STR (Single Transfer Rate)
+	#define ADI_OSPI_SF_DEFAULT_SPEED	CONFIG_CQSPI_REF_CLK / 4 //83.33 MHz STR (Single Transfer Rate)
 #endif
 
 #define CONFIG_ENV_SPI_MAX_HZ	10000000
