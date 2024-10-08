@@ -102,7 +102,7 @@
  *
  */
 //Set this to 1 if you would like to use the maximum SPI speeds for OSPI and will not be using QSPI
-#define ADI_USE_MACRONIX_OSPI 0
+#define ADI_USE_MACRONIX_OSPI 1
 #define ADI_USE_MACRONIX_OSPI_DTR 0
 
 //Allow U-Boot to dynamically pinmux between the three conflicting ezkit peripherals (OSPI/QSPI/UART)

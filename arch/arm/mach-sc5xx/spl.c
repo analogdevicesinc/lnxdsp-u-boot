@@ -331,7 +331,8 @@ void adi_store_initramfs_addr(u32 start, uint32_t len)
 
 int spl_board_fixup_fdt(void *fdt)
 {
-	adi_fdt_fixup_mac_addr(fdt);
+	//dont care
+	//adi_fdt_fixup_mac_addr(fdt);
 	adi_fdt_fixup_kernel_bootargs(fdt);
 
 #if defined(CONFIG_ADI_FALCON)
