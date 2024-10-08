@@ -126,8 +126,8 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 	 * In DM mode: defaults speed and mode will be
 	 * taken from DT when available
 	 */
-	flash = spi_flash_probe(spl_spi_get_default_bus(),
-				spl_spi_get_default_cs(),
+	flash = spi_flash_probe(0,
+				0,
 				spl_spi_get_default_speed(),
  				CONFIG_SF_DEFAULT_MODE);
 
