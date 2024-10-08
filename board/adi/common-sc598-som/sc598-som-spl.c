@@ -134,8 +134,11 @@ void spl_board_prepare_ethernet(void)
 
 void spl_board_prepare_for_linux(void)
 {
-	spl_board_prepare_ethernet();
-	adi_disable_ospi(1);
+// 	we dont need ethernet
+//	spl_board_prepare_ethernet();
+
+//	ideally dont want to disable ospi, maybe let linux handle that
+//	adi_disable_ospi(1);
 }
 
 #if defined(CONFIG_SPL_LOAD_FIT)
