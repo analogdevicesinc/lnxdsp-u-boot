@@ -82,8 +82,6 @@
 		ADI_BOOTARGS_CONSOLE
 
 #define ADI_BOOTARGS_SPI \
-		"root=/dev/mtdblock4 rw " \
-		"rootfstype=jffs2 " \
 		ADI_BOOTARGS_CONSOLE
 
 #define ADI_BOOTARGS_NFS	\
