@@ -31,16 +31,19 @@ static int spi_load_image_os(struct spl_image_info *spl_image,
 	int err;
 
 #if CONFIG_IS_ENABLED(LOAD_FIT_FULL) || CONFIG_IS_ENABLED(LOAD_FIT)
-	spi_flash_read(flash, CFG_SYS_SPI_KERNEL_OFFS, sizeof(struct fdt_header),
+	spi_flash_read(flash, CFG_SYS_SPI_KERNEL_OFFS, sizeof(struct fdt_header) + 1,
 		       (void *)header);
 
+	header = (struct legacy_img_hdr *)((u8 *)header + 1);
 	if (image_get_magic(header) == FDT_MAGIC)
 		spi_flash_read(flash, CFG_SYS_SPI_KERNEL_OFFS,
-			       roundup(fdt_totalsize(header), 4), CONFIG_SYS_LOAD_ADDR);
+			       roundup(fdt_totalsize(header) + 1, 4), CONFIG_SYS_LOAD_ADDR);
 
-	err = spl_parse_image_header(spl_image, bootdev, CONFIG_SYS_LOAD_ADDR);
+	printf("Parsing header\n");
+	err = spl_parse_image_header(spl_image, bootdev, CONFIG_SYS_LOAD_ADDR + 1);
 	if (err)
 		return err;
+	printf("Parsing done\n");
 #else
 	/* Read for a header, parse or error out. */
 	spi_flash_read(flash, CFG_SYS_SPI_KERNEL_OFFS, sizeof(*header),
@@ -149,6 +152,7 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 	if (spl_start_uboot() || spi_load_image_os(spl_image, bootdev, flash, header))
 #endif
 	{
+		printf("Preliminary checks done\n");
 		/* Load u-boot, mkimage header is 64 bytes. */
 		err = spi_flash_read(flash, payload_offs, sizeof(*header),
 				     (void *)header);
@@ -161,12 +165,14 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 		if (IS_ENABLED(CONFIG_SPL_LOAD_FIT_FULL) &&
 		    image_get_magic(header) == FDT_MAGIC) {
 			err = spi_flash_read(flash, payload_offs,
-					     roundup(fdt_totalsize(header), 4),
+					     roundup(fdt_totalsize(header) + 1, 4),
 					     (void *)CONFIG_SYS_LOAD_ADDR);
 			if (err)
 				return err;
+			
+			printf("Parsing header\n");
 			err = spl_parse_image_header(spl_image, bootdev,
-					(struct legacy_img_hdr *)CONFIG_SYS_LOAD_ADDR);
+					(struct legacy_img_hdr *)((u8*)CONFIG_SYS_LOAD_ADDR + 1));
 		} else if (IS_ENABLED(CONFIG_SPL_LOAD_FIT) &&
 			   image_get_magic(header) == FDT_MAGIC) {
 			struct spl_load_info load;

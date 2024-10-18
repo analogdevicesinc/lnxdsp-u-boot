@@ -243,8 +243,8 @@ void cadence_qspi_apb_set_clk_mode(void *reg_base, uint mode)
 	if (!plat->use_dtr) {
 		if (mode & SPI_CPOL)
 			reg |= CQSPI_REG_CONFIG_CLK_POL;
-		if (mode & SPI_CPHA)
-			reg |= CQSPI_REG_CONFIG_CLK_PHA;
+//		if (mode & SPI_CPHA)
+//			reg |= CQSPI_REG_CONFIG_CLK_PHA;
 	}
 
 	writel(reg, reg_base + CQSPI_REG_CONFIG);
@@ -1299,11 +1299,11 @@ int cadence_enter_octal_mx66(struct cadence_spi_plat *plat, struct cadence_spi_p
 		opTemp->data.nbytes = 1;
 		opTemp->addr.nbytes = 4;
 		opTemp->data.buf.out = conf_reg2;
-		//udelay(100000);
+		udelay(100000);
 		cadence_qspi_apb_command_write(priv, wren);
-		//udelay(100000);
+		udelay(100000);
 		cadence_qspi_apb_command_write(priv, opTemp);
-		//udelay(100000);
+		udelay(100000);
 	}
 
 	plat->cadenceMode = CADENCE_OSPI_MODE;
@@ -1512,7 +1512,15 @@ int cadence_qspi_direct_read(struct cadence_spi_plat *plat,
 	}
 
 #ifdef ADI_OCTAL_USE_DMA
+#ifdef CONFIG_SPL_BUILD
+
 	memcopy_dma(rxbuf, OSPI0_MMAP_ADDRESS + addr_value, rxlen);
+//	printf("Got shifted data\n");
+//	for(u32 i = 0; i < rxlen; i++) 
+//		memcopy_dma(rxbuf + i, (u8*)rxbuf + i + 1, 1);
+#else
+	memcopy_dma(rxbuf, OSPI0_MMAP_ADDRESS + addr_value, rxlen);
+#endif
 #else
 	/* Perform the transfer */
 	u32 count = 0;
