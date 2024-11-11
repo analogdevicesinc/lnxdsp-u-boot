@@ -204,6 +204,10 @@ config ADI_SPL_FORCE_BMODE
 	  5 = QSPI -> OSPI
 	  6 = QSPI -> eMMC
 
+config SET_SHARC_IDLE
+	bool "Force the SHARC cores' idle register to be set during boot"
+	default n
+
 config CLKIN_HZ
 	int "CLKIN_HZ"
 	default 25000000
