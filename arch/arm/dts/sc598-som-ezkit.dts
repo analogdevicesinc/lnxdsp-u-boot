@@ -165,7 +165,6 @@
 		 /* This is board dependent to some extent.  We've been able to
 		    set it higher on some boards */
 		spi-max-frequency = <40000000>;
-
 		tshsl-ns = <50>;
 		tsd2d-ns = <50>;
 		tchsh-ns = <4>;
