@@ -1299,11 +1299,8 @@ int cadence_enter_octal_mx66(struct cadence_spi_plat *plat, struct cadence_spi_p
 		opTemp->data.nbytes = 1;
 		opTemp->addr.nbytes = 4;
 		opTemp->data.buf.out = conf_reg2;
-		udelay(100000);
 		cadence_qspi_apb_command_write(priv, wren);
-		udelay(100000);
 		cadence_qspi_apb_command_write(priv, opTemp);
-		udelay(100000);
 	}
 
 	plat->cadenceMode = CADENCE_OSPI_MODE;

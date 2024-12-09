@@ -18,6 +18,9 @@
 #include <asm/global_data.h>
 #include <dm/ofnode.h>
 
+#define OSPI_BUS 0
+#define OSPI_CS 0
+
 #if CONFIG_IS_ENABLED(OS_BOOT)
 /*
  * Load the kernel, check for a valid header we can parse, and if found load
@@ -106,6 +109,11 @@ unsigned int __weak spl_spi_get_default_speed(void)
 	return CONFIG_SF_DEFAULT_SPEED;
 }
 
+unsigned int spl_get_ezkit_fastest_spi_clock(void)
+{
+	return ADI_OSPI_SF_DEFAULT_SPEED;
+}
+
 /*
  * The main entry for SPI booting. It's necessary that SDRAM is already
  * configured and available since this code loads the main U-Boot image
@@ -126,11 +134,18 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 	 * In DM mode: defaults speed and mode will be
 	 * taken from DT when available
 	 */
+	
+#if defined(CONFIG_ADI_FALCON) && defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT) 
+	printf("Probe @%dHz\n", spl_get_ezkit_fastest_spi_clock());
+	flash = spi_flash_probe(OSPI_BUS, OSPI_CS,
+				spl_get_ezkit_fastest_spi_clock(),
+ 				CONFIG_SF_DEFAULT_MODE);
+#else
 	flash = spi_flash_probe(spl_spi_get_default_bus(),
 				spl_spi_get_default_cs(),
 				spl_spi_get_default_speed(),
  				CONFIG_SF_DEFAULT_MODE);
-
+#endif
 	if (!flash) {
 		puts("SPI probe failed.\n");
 		return -ENODEV;

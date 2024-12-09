@@ -81,10 +81,16 @@
 		"rootfstype=ext4 rootwait " \
 		ADI_BOOTARGS_CONSOLE
 
+
+#if defined(CONFIG_ADI_FALCON)
+#define ADI_BOOTARGS_SPI \
+		ADI_BOOTARGS_CONSOLE
+#else
 #define ADI_BOOTARGS_SPI \
 		"root=/dev/mtdblock4 rw " \
 		"rootfstype=jffs2 " \
 		ADI_BOOTARGS_CONSOLE
+#endif
 
 #define ADI_BOOTARGS_NFS	\
 		"root=/dev/nfs rw " \
