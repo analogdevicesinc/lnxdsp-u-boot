@@ -51,14 +51,14 @@
 //Parameters used for Falcon boot
 #define CFG_SYS_SPI_ARGS_OFFS   0xE0000    // This is where the DTB should be stored
 #define CFG_SYS_SPI_ARGS_SIZE   0x10000    // Max size of the DTB
-#define CFG_SYS_SPI_KERNEL_OFFS 0x120000   // Where the kernel Image or FIT should be stored
+#define CFG_SYS_SPI_KERNEL_OFFS 0x01a0000   // Where the kernel Image or FIT should be stored
 #define CONFIG_SYS_SPL_ARGS_ADDR   0x99000000 // Where to load the DTB into RAM
 #define CONFIG_SYS_SPI_KERNEL_SKIP_HEADER
 #define CONFIG_SYS_MMCSD_RAW_MODE_KERNEL_SECTOR 4096 // Position of kernel Image in sectors
 #define CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTOR   2048 // Position of DTB in sectors
 #define CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTORS  256  // Size of DTB in sectors
 
-#define CONFIG_SYS_LOAD_ADDR 0x96000000 //Address used to load the FIT image into during Falcon+FIT
+#define CONFIG_SYS_LOAD_ADDR 0x9a1fff20 //Address used to load the FIT image into during Falcon+FIT
 #endif
 
 /*
@@ -102,8 +102,8 @@
  *
  */
 //Set this to 1 if you would like to use the maximum SPI speeds for OSPI and will not be using QSPI
-#define ADI_USE_MACRONIX_OSPI 0
-#define ADI_USE_MACRONIX_OSPI_DTR 0
+#define ADI_USE_MACRONIX_OSPI 1
+#define ADI_USE_MACRONIX_OSPI_DTR 1
 
 //Allow U-Boot to dynamically pinmux between the three conflicting ezkit peripherals (OSPI/QSPI/UART)
 //This allows U-boot to use all three peripherals
