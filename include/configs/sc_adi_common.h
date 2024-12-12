@@ -177,15 +177,15 @@
 	ADI_UPDATE_SPI_UBOOT \
 
 #define ADI_ERASE_OSPI \
-	"erase_ospi=setenv sfdev "  \
+	"erase_ospi=setenv sfdev 0:0"  \
 		__stringify(CONFIG_SC_BOOT_OSPI_BUS) ":" __stringify(CONFIG_SC_BOOT_OSPI_SSEL) "; " \
 		"setenv sfsize " ADI_OSPI_SIZE "; sf probe ${sfdev}; sf erase 0 ${sfsize};\0"
 
 #define ADI_OSPI_BOOT \
-	"update_ospi=setenv sfdev " \
+	"update_ospi=setenv sfdev 0:0" \
 		__stringify(CONFIG_SC_BOOT_OSPI_BUS) ":" __stringify(CONFIG_SC_BOOT_OSPI_SSEL) "; " \
 		"setenv sfsize " ADI_OSPI_SIZE "; setenv bootcmd \'run ospiboot\'; setenv argscmd ospiargs; run start_update_spi;\0" \
-	"update_ospi_uboot_only=setenv sfdev " \
+	"update_ospi_uboot_only=setenv sfdev 0:0" \
 		__stringify(CONFIG_SC_BOOT_OSPI_BUS) ":" __stringify(CONFIG_SC_BOOT_OSPI_SSEL) "; run start_update_spi_uboot_only;\0" \
 	"ospiargs=setenv bootargs " ADI_BOOTARGS_SPI "\0" \
 	"ospi_boot=run ospiargs; sf probe ${sfdev};" ADI_SPI_BOOTCMD "\0" \
