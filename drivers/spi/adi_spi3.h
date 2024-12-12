@@ -208,15 +208,28 @@
 #define SPI_ILAT_CLR_RFI    0x00000400 /*Receive Finish Indication */
 #define SPI_ILAT_CLR_TFI    0x00000800 /*Transmit Finish Indication */
 /* SPI_MMRDH */
-#define SPI_MMRDH_MERGE     0x04000000 /*Merge Enable */
-#define SPI_MMRDH_DMY_SZ    0x00007000 /*Bytes of Dummy */
-#define SPI_MMRDH_ADDR_PINS 0x00000800 /*Pins used for Address */
-#define SPI_MMRDH_ADDR_SZ   0x00000700 /*Bytes of Read Address */
-#define SPI_MMRDH_OPCODE    0x000000FF /*Read Opcode */
+#define SPI_MMRDH_OPCODE_BITM	    0xFF	  /* initial opcode */
+#define SPI_MMRDH_ADRSIZE_1	    0x00000100	 /* 1 Byte address */
+#define SPI_MMRDH_ADRSIZE_2	    0x00000200	 /* 2 Byte address */
+#define SPI_MMRDH_ADRSIZE_3	    0x00000300	 /* 3 Byte address */
+#define SPI_MMRDH_ADRSIZE_4	    0x00000400	 /* 4 Byte address */
+#define SPI_MMRDH_ADRPINS	    0x00000800	 /* 1 Byte address */
 
-#define SPI_MMRDH_TRIDMY_OFF	24 /*Bytes of Dummy offset */
-#define SPI_MMRDH_DMY_SZ_OFF	12 /*Bytes of Dummy offset */
-#define SPI_MMRDH_ADDR_SZ_OFF	8  /*Bytes of Read Address offset */
+#define SPI_MMRDH_DUMMY_SIZE_1	    0x00001000	 /* 1 Byte address */
+#define SPI_MMRDH_DUMMY_SIZE_2	    0x00002000	 /* 1 Byte address */
+#define SPI_MMRDH_DUMMY_SIZE_3	    0x00003000	 /* 1 Byte address */
+#define SPI_MMRDH_DUMMY_SIZE_4	    0x00004000	 /* 1 Byte address */
+#define SPI_MMRDH_DUMMY_SIZE_5	    0x00005000	 /* 1 Byte address */
+#define SPI_MMRDH_DUMMY_SIZE_6	    0x00006000	 /* 1 Byte address */
+#define SPI_MMRDH_DUMMY_SIZE_7	    0x00007000	 /* 1 Byte address */
+#define SPI_MMRDH_MODE_BITM	    0x00FF0000	 /* 1 Byte address */
+#define SPI_MMRDH_TRIDMY_4_BITS	    0x01000000
+#define SPI_MMRDH_TRIDMY_8_BITS	    0x02000000
+#define SPI_MMRDH_TRIDMY_NEVER	    0x03000000
+#define SPI_MMRDH_MERGE		   0x04000000
+#define SPI_MMRDH_WRAP		   0x08000000
+#define SPI_MMRDH_CMDSKIP	   0x10000000
+#define SPI_MMRDH_CMDPINS	   0x20000000
 
 #define BIT_SSEL_VAL(x) ((1 << 8) << (x)) /* Slave Select input value bit */
 #define BIT_SSEL_EN(x) (1 << (x))         /* Slave Select enable bit*/
@@ -260,12 +273,14 @@ struct adi_spi_platdata {
 struct adi_spi_priv {
 	u32 control;
 	u32 clock;
+	u32 mode;
 	u32 bus_num;
-	struct adi_spi_regs *regs;
+	struct adi_spi_regs __iomem *regs;
 	unsigned short *pins;
 	int cs_pol;
 	int cs_num;
-	void *memory_map;
+	void __iomem *memory_map;
+	void *reg_checkpoint;
 };
 
 void adi_spi_setup_reg(struct adi_spi_platdata *platdata, int bus);
