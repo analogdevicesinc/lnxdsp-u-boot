@@ -96,17 +96,29 @@ u32 __weak spl_spi_boot_cs(void)
 
 unsigned int __weak spl_spi_get_default_bus(void)
 {
-	return CONFIG_SF_DEFAULT_BUS;
+	#if defined(CONFIG_ADI_FALCON) && defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT)
+		return OSPI_BUS;
+	#else
+		return CONFIG_SF_DEFAULT_BUS;
+	#endif
 }
 
 unsigned int __weak spl_spi_get_default_cs(void)
 {
-	return CONFIG_SF_DEFAULT_CS;
+	#if defined(CONFIG_ADI_FALCON) && defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT)
+		return OSPI_CS;
+	#else
+		return CONFIG_SF_DEFAULT_CS;
+	#endif
 }
 
 unsigned int __weak spl_spi_get_default_speed(void)
 {
-	return CONFIG_SF_DEFAULT_SPEED;
+	#if defined(CONFIG_ADI_FALCON) && defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT)
+		return ADI_OSPI_SF_DEFAULT_SPEED;
+	#else
+		return CONFIG_SF_DEFAULT_SPEED;
+	#endif
 }
 
 unsigned int spl_get_ezkit_fastest_spi_clock(void)
@@ -134,18 +146,12 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 	 * In DM mode: defaults speed and mode will be
 	 * taken from DT when available
 	 */
-	
-#if defined(CONFIG_ADI_FALCON) && defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT) 
-	printf("Probe @%dHz\n", spl_get_ezkit_fastest_spi_clock());
-	flash = spi_flash_probe(OSPI_BUS, OSPI_CS,
-				spl_get_ezkit_fastest_spi_clock(),
- 				CONFIG_SF_DEFAULT_MODE);
-#else
+
 	flash = spi_flash_probe(spl_spi_get_default_bus(),
 				spl_spi_get_default_cs(),
 				spl_spi_get_default_speed(),
  				CONFIG_SF_DEFAULT_MODE);
-#endif
+
 	if (!flash) {
 		puts("SPI probe failed.\n");
 		return -ENODEV;
