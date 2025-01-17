@@ -58,7 +58,7 @@
 #define CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTOR   2048 // Position of DTB in sectors
 #define CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTORS  256  // Size of DTB in sectors
 
-#define CONFIG_SYS_LOAD_ADDR 0x9a1fff20 //Address used to load the FIT image into during Falcon+FIT
+#define CONFIG_SYS_LOAD_ADDR 0x96000000 //Address used to load the FIT image into during Falcon+FIT
 #endif
 
 /*
