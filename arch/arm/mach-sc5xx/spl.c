@@ -195,8 +195,8 @@ void board_init_f(ulong dummy)
 	writel(0x1, 0x30643108); /* SCB6 A55 M0 Ib.fn Mod */
 	isb();
 
-	/* configure DDR prefetch behavior, per ADI */
-	writel(0x1, 0x31076000);
+	/* disable DDR prefetch behavior */
+	writel(0x0, 0x31076000);
 
 	/* configure smart mode, per ADI */
 	writel(0x1307, 0x31076004);
