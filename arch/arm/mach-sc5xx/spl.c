@@ -192,7 +192,7 @@ void board_init_f(ulong dummy)
 	size_t i;
 
 	/* Alter outstanding transactions property of A55*/
-	writel(0x1, 0x30643108); /* SCB6 A55 M0 Ib.fn Mod */
+	writel(0x3, 0x30643108); /* SCB6 A55 M0 Ib.fn Mod */
 	isb();
 
 	/* disable DDR prefetch behavior */
