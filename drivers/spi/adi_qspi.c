@@ -516,12 +516,12 @@ static const struct dm_spi_ops adi_spi_ops = {
 };
 
 static const struct udevice_id adi_spi_ids[] = {
-	{ .compatible = "adi,spi-mm" },
+	{ .compatible = "adi,qspi" },
 	{ }
 };
 
 U_BOOT_DRIVER(adi_spi3) = {
-	.name = "adi_spi3",
+	.name = "adi_qspi",
 	.id = UCLASS_SPI,
 	.of_match = adi_spi_ids,
 	.ops = &adi_spi_ops,
