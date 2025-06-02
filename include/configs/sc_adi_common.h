@@ -82,7 +82,7 @@
 		ADI_BOOTARGS_CONSOLE
 
 
-#if defined(CONFIG_ADI_FALCON)
+#if (defined(CONFIG_ADI_FALCON) || defined(CONFIG_SC57X))
 #define ADI_BOOTARGS_SPI \
 		ADI_BOOTARGS_CONSOLE
 #else
