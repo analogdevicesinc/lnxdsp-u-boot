@@ -25,7 +25,7 @@ const struct adi_boot_args adi_rom_boot_args[] = {
 	// Linkport slave
 	[4] = {0, 0, 0x00000014},
 	// OSPI master
-	[5] = {0x60040000, 0, 0x00000008},
+	[5] = {0x60040000, 0, 0x20620247},
 	// reserved, no boot
 	[6] = {0, 0, 0},
 	// reserved, also no boot
