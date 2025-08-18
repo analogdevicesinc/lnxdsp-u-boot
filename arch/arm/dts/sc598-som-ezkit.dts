@@ -43,40 +43,40 @@
 
 		microsd {
 			gpio-hog;
-			gpios = <2 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "~microsd-spi";
+			gpios = <2 GPIO_ACTIVE_LOW>;
+			output-low;
+			line-name = "microsd-spi";
 			u-boot,dm-pre-reloc;
 		};
 
 		ftdi {
 			gpio-hog;
-			gpios = <3 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~ftdi-usb-en";
+			gpios = <3 GPIO_ACTIVE_LOW>;
+			output-high;
+			line-name = "ftdi-usb-en";
 			u-boot,dm-pre-reloc;
 		};
 
 		can {
 			gpio-hog;
-			gpios = <4 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "~can-en";
+			gpios = <4 GPIO_ACTIVE_LOW>;
+			output-low;
+			line-name = "can-en";
 			u-boot,dm-pre-reloc;
 		};
 
 		adau1962 {
 			gpio-hog;
-			gpios = <6 GPIO_ACTIVE_HIGH>;
-			output-low;
+			gpios = <6 GPIO_ACTIVE_LOW>;
+			output-high;
 			line-name = "adau1962-en";
 			u-boot,dm-pre-reloc;
 		};
 
 		adau1979 {
 			gpio-hog;
-			gpios = <7 GPIO_ACTIVE_HIGH>;
-			output-low;
+			gpios = <7 GPIO_ACTIVE_LOW>;
+			output-high;
 			line-name = "adau1979-en";
 			u-boot,dm-pre-reloc;
 		};
@@ -91,17 +91,17 @@
 
 		spdif-dig {
 			gpio-hog;
-			gpios = <9 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "~spdif-digital-en";
+			gpios = <9 GPIO_ACTIVE_LOW>;
+			output-low;
+			line-name = "spdif-digital-en";
 			u-boot,dm-pre-reloc;
 		};
 
 		spdif-opt {
 			gpio-hog;
-			gpios = <10 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "~spdif-optical-en";
+			gpios = <10 GPIO_ACTIVE_LOW>;
+			output-low;
+			line-name = "spdif-optical-en";
 			u-boot,dm-pre-reloc;
 		};
 
@@ -123,21 +123,21 @@
 
 		eth1 {
 			gpio-hog;
-			gpios = <13 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~eth1-en";
+			gpios = <13 GPIO_ACTIVE_LOW>;
+			output-high;
+			line-name = "eth1-en";
 			u-boot,dm-pre-reloc;
 		};
 
 		eth1-reset {
 			gpio-hog;
-			gpios = <14 GPIO_ACTIVE_HIGH>;
+			gpios = <14 GPIO_ACTIVE_LOW>;
 			/*
 			 * USB0 lines are shared with Eth1 so  Eth PHY must be held in reset
 			 * when using the USB
 			 */
-			output-low;
-			line-name = "~eth1-reset";
+			output-high;
+			line-name = "eth1-reset";
 			u-boot,dm-pre-reloc;
 		};
 
@@ -145,7 +145,7 @@
 			gpio-hog;
 			gpios = <15 GPIO_ACTIVE_HIGH>;
 			output-high;
-			line-name = "~gige-reset";
+			line-name = "gige-reset";
 			u-boot,dm-pre-reloc;
 		};
 	};
