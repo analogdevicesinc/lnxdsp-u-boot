@@ -89,11 +89,11 @@ int adi_enable_ospi(void)
 	struct gpio_desc *spi2flash_cs;
 	struct gpio_desc *spi2d2_d3;
 
-	gpio_hog_lookup_name("~ftdi-usb-en", &ftdi);
+	gpio_hog_lookup_name("ftdi-usb-en", &ftdi);
 	gpio_hog_lookup_name("octal-spi-cs-en", &octal);
-	gpio_hog_lookup_name("~uart0-en", &uart0);
-	gpio_hog_lookup_name("~spi2flash-cs", &spi2flash_cs);
-	gpio_hog_lookup_name("~spi2d2-d3-en", &spi2d2_d3);
+	gpio_hog_lookup_name("uart0-en", &uart0);
+	gpio_hog_lookup_name("spi2flash-cs", &spi2flash_cs);
+	gpio_hog_lookup_name("spi2d2-d3-en", &spi2d2_d3);
 
 	if (CONFIG_UART_CONSOLE != 0)
 		return 0;
@@ -132,11 +132,11 @@ int adi_disable_ospi(bool changeMuxImmediately)
 	struct gpio_desc *spi2flash_cs;
 	struct gpio_desc *spi2d2_d3;
 
-	gpio_hog_lookup_name("~ftdi-usb-en", &ftdi);
+	gpio_hog_lookup_name("ftdi-usb-en", &ftdi);
 	gpio_hog_lookup_name("octal-spi-cs-en", &octal);
-	gpio_hog_lookup_name("~uart0-en", &uart0);
-	gpio_hog_lookup_name("~spi2flash-cs", &spi2flash_cs);
-	gpio_hog_lookup_name("~spi2d2-d3-en", &spi2d2_d3);
+	gpio_hog_lookup_name("uart0-en", &uart0);
+	gpio_hog_lookup_name("spi2flash-cs", &spi2flash_cs);
+	gpio_hog_lookup_name("spi2d2-d3-en", &spi2d2_d3);
 
 	if (CONFIG_UART_CONSOLE != 0)
 		return 0;

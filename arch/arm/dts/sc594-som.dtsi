@@ -107,41 +107,41 @@
 
 		spi2flash-cs {
 			gpio-hog;
-			gpios = <3 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~spi2flash-cs";
+			gpios = <3 GPIO_ACTIVE_LOW>;
+			output-high;
+			line-name = "spi2flash-cs";
 			u-boot,dm-pre-reloc;
 		};
 
 		spi2d2-d3 {
 			gpio-hog;
-			gpios = <4 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~spi2d2-d3-en";
+			gpios = <4 GPIO_ACTIVE_LOW>;
+			output-high;
+			line-name = "spi2d2-d3-en";
 			u-boot,dm-pre-reloc;
 		};
 
 		uart0 {
 			gpio-hog;
-			gpios = <5 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~uart0-en";
+			gpios = <5 GPIO_ACTIVE_LOW>;
+			output-high;
+			line-name = "uart0-en";
 			u-boot,dm-pre-reloc;
 		};
 
 		uart0-flow-en {
 			gpio-hog;
-			gpios = <6 GPIO_ACTIVE_HIGH>;
-			output-high;
-			line-name = "~uart0-flow-en";
+			gpios = <6 GPIO_ACTIVE_LOW>;
+			output-low;
+			line-name = "uart0-flow-en";
 			u-boot,dm-pre-reloc;
 		};
 
 		ospiflash-cs {
 			gpio-hog;
-			gpios = <7 GPIO_ACTIVE_HIGH>;
-			output-low;
-			line-name = "~ospiflash-cs";
+			gpios = <7 GPIO_ACTIVE_LOW>;
+			output-high;
+			line-name = "ospiflash-cs";
 			u-boot,dm-pre-reloc;
 		};
 	};
