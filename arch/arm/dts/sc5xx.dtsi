@@ -129,7 +129,7 @@
 
 		wdog: watchdog@31008000 {
 			compatible = "adi,wdt";
-			reg = <0x3108b000 0x1000>,
+			reg = <0x3108c000 0x1000>,
 					<0x31089000 0x1000>,
 					<0x31008000 0x1000>;
 			reg-names = "rcu", "sec", "wdt";
