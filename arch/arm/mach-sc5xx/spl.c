@@ -161,6 +161,11 @@ int board_return_to_bootrom(struct spl_image_info *spl_image,
 	if (bmode >= (ARRAY_SIZE(adi_rom_boot_args)))
 		bmode = 0;
 
+	printf("ADI ROM Boot Args for bmode %d:\n", bmode);
+	printf("  addr:  0x%08x\n", adi_rom_boot_args[bmode].addr);
+	printf("  flags: 0x%08x\n", adi_rom_boot_args[bmode].flags);
+	printf("  cmd:   0x%08x\n", adi_rom_boot_args[bmode].cmd);
+
 	adi_rom_boot((void *)adi_rom_boot_args[bmode].addr,
 		     adi_rom_boot_args[bmode].flags,
 		0, &adi_rom_boot_hook,
