@@ -6,12 +6,19 @@
 #ifndef _SC5XX_SHARC_IDLE_H_
 #define _SC5XX_SHARC_IDLE_H_
 
+#ifdef CONFIG_SC58X
+#define ADI_RCU_REG_BASE 0x3108B000
+/* Register offsets for SC58x family */
+#define ADI_RCU_REG_MSG				0x60
+#define ADI_RCU_REG_MSG_SET			0x64
+#define ADI_RCU_REG_MSG_CLR			0x68
+#else
 #define ADI_RCU_REG_BASE 0x3108c000
-
-/* Register offsets */
+/* Register offsets for SC59x family */
 #define ADI_RCU_REG_MSG				0x6c
 #define ADI_RCU_REG_MSG_SET			0x70
 #define ADI_RCU_REG_MSG_CLR			0x74
+#endif
 
 /* Bit values for the RCU0_MSG register */
 #define RCU0_MSG_C0IDLE			0x00000100		/* Core 0 Idle */
