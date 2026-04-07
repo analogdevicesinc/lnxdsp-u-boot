@@ -110,11 +110,11 @@ int adi_enable_ospi(void)
 		//PortA on Address 22 -- Disable the FTDI
 		//PortB on Address 22 -- Enable Octal SPI CS
 		//PortA on Address 20 -- Disable UART0, SPI2D2_D3, SPI2FLASH_CS
-		dm_gpio_set_value(ftdi, 1);
+		dm_gpio_set_value(ftdi, 0);
 		dm_gpio_set_value(octal, 1);
-		dm_gpio_set_value(uart0, 1);
-		dm_gpio_set_value(spi2flash_cs, 1);
-		dm_gpio_set_value(spi2d2_d3, 1);
+		dm_gpio_set_value(uart0, 0);
+		dm_gpio_set_value(spi2flash_cs, 0);
+		dm_gpio_set_value(spi2d2_d3, 0);
 
 		enable_ospi_mux();
 	}
@@ -155,11 +155,11 @@ int adi_disable_ospi(bool changeMuxImmediately)
 		//PortA on Address 22 -- Enable the FTDI
 		//PortB on Address 22 -- Disable Octal SPI CS
 		//PortA on Address 20 -- Enable UART0, SPI2D2_D3, SPI2FLASH_CS
-		dm_gpio_set_value(ftdi, 0);
+		dm_gpio_set_value(ftdi, 1);
 		dm_gpio_set_value(octal, 0);
-		dm_gpio_set_value(uart0, 0);
-		dm_gpio_set_value(spi2flash_cs, 0);
-		dm_gpio_set_value(spi2d2_d3, 0);
+		dm_gpio_set_value(uart0, 1);
+		dm_gpio_set_value(spi2flash_cs, 1);
+		dm_gpio_set_value(spi2d2_d3, 1);
 
 		uartEnabled = 1;
 	}
