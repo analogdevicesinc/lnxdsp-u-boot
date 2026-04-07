@@ -36,7 +36,7 @@ int adi_enable_ethernet_softconfig(void)
 	gpio_hog_lookup_name("gige-reset", &gige_reset);
 
 	dm_gpio_set_value(eth1, 1);
-	dm_gpio_set_value(eth1_reset, 0);
+	dm_gpio_set_value(eth1_reset, 1);
 	dm_gpio_set_value(gige_reset, 1);
 #elif defined(CONFIG_ADI_CARRIER_SOMCRR_EZLITE)
 	gpio_hog_lookup_name("eth0-reset", &gige_reset);
@@ -58,7 +58,7 @@ int adi_disable_ethernet_softconfig(void)
 	gpio_hog_lookup_name("gige-reset", &gige_reset);
 
 	dm_gpio_set_value(eth1, 1);
-	dm_gpio_set_value(eth1_reset, 0);
+	dm_gpio_set_value(eth1_reset, 1);
 	dm_gpio_set_value(gige_reset, 0);
 #elif defined(CONFIG_ADI_CARRIER_SOMCRR_EZLITE)
 	gpio_hog_lookup_name("eth0-reset", &gige_reset);
