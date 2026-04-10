@@ -60,6 +60,7 @@
 			phy-names = "usb2-phy";
 			pinctrl-names = "default";
 			pinctrl-0 = <&usb0_default>;
+			hnp-srp-disable;
 			status = "disabled";
 		};
 	};
