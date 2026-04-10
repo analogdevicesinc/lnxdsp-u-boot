@@ -240,7 +240,7 @@ static struct usb_hub_device *usb_hub_allocate(void)
 }
 #endif
 
-#define MAX_TRIES 5
+#define MAX_TRIES 10
 
 static inline const char *portspeed(int portstatus)
 {
@@ -367,9 +367,15 @@ int usb_hub_port_connect_change(struct usb_device *dev, int port)
 	     (!(portstatus & USB_PORT_STAT_ENABLE))) ||
 	    usb_device_has_child_on_port(dev, port)) {
 		debug("usb_disconnect(&hub->children[port]);\n");
-		/* Return now if nothing is connected */
-		if (!(portstatus & USB_PORT_STAT_CONNECTION))
+
+		/* Check for stuck reset condition. If a device shows no device connection
+		*  but is still reporting a reset, let the reset sequence below catch if a
+		* device is actually connected.
+		*/
+		if (!(portstatus & USB_PORT_STAT_RESET) &&
+		    !(portstatus & USB_PORT_STAT_CONNECTION)) {
 			return -ENOTCONN;
+		}
 	}
 
 	/* Reset the port */
